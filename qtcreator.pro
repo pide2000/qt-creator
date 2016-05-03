@@ -131,7 +131,7 @@ bindist.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_SOURCE\" && 7z a 
 #OPENMV-DIFF# #bindist_installer.depends = deployqt
 bindist_installer.depends = deployqt
 #OPENMV-DIFF# bindist_installer.commands = 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_INSTALLER_SOURCE\"
-bindist_installer.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_SOURCE\" && 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_SOURCE\"
+bindist_installer.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_INSTALLER_SOURCE\" && 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_INSTALLER_SOURCE\"
 installer.depends = bindist_installer
 #OPENMV-DIFF# installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${QTCREATOR_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME"
 #OPENMV-DIFF#

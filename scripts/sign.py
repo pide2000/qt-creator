@@ -81,6 +81,8 @@ def main():
     args = parser.parse_args()
 
     target = args.target
+    if target.endswith('*'):
+        target = target[:-1]
     if not os.path.isabs(target):
         target = os.path.abspath(target)
 
