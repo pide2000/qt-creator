@@ -27,10 +27,18 @@ exists(shared/qbs/qbs.pro) {
 }
 TR_EXCLUDE = shared/qbs
 
+#OPENMV-DIFF#
+#SUBDIRS += \
+#    libs \
+#    app \
+#    plugins \
+#    tools \
+#    share/qtcreator/data.pro \
+#    share/3rdparty/data.pro
+#OPENMV-DIFF#
 SUBDIRS += \
     libs \
     app \
     plugins \
     tools \
-    share/qtcreator/data.pro \
     share/3rdparty/data.pro

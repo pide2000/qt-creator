@@ -17,7 +17,8 @@
    <item>
     <widget class="QCheckBox" name="launchQtCreatorCheckBox">
      <property name="text">
-      <string>Launch Qt Creator</string>
+      <!--OPENMV-DIFF<string>Launch Qt Creator</string>-->
+      <string>Launch OpenMV IDE</string>
      </property>
      <property name="checked">
       <bool>true</bool>

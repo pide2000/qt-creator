@@ -30,7 +30,8 @@
 sourceFolder="$1"
 intermediateFolder=$(mktemp -d "/tmp/packagedir.XXXXX")
 finalDMGName="$2"
-title="Qt Creator"
+#OPENMV-DIFF# title="Qt Creator"
+title="OpenMV IDE"
 
 echo Preparing image artifacts...
 cp -a "${sourceFolder}/" "${intermediateFolder}"

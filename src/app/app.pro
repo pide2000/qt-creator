@@ -25,22 +25,25 @@ win32 {
     INSTALLS += target
 } else:macx {
     LIBS += -framework CoreFoundation
-    ASSETCATALOG.files = $$PWD/qtcreator.xcassets
-    macx-xcode {
-        QMAKE_BUNDLE_DATA += ASSETCATALOG
-    } else {
-        ASSETCATALOG.output = $$IDE_DATA_PATH/qtcreator.icns
-        ASSETCATALOG.commands = xcrun actool \
-            --app-icon qtcreator \
-            --output-partial-info-plist $$shell_quote($(TMPDIR)/qtcreator.Info.plist) \
-            --platform macosx \
-            --minimum-deployment-target 10.7 \
-            --compile $$shell_quote($$IDE_DATA_PATH) \
-            $$shell_quote($$PWD/qtcreator.xcassets) > /dev/null
-        ASSETCATALOG.input = ASSETCATALOG.files
-        ASSETCATALOG.CONFIG += no_link target_predeps
-        QMAKE_EXTRA_COMPILERS += ASSETCATALOG
-    }
+    #OPENMV-DIFF#
+    #ASSETCATALOG.files = $$PWD/qtcreator.xcassets
+    #macx-xcode {
+    #    QMAKE_BUNDLE_DATA += ASSETCATALOG
+    #} else {
+    #    ASSETCATALOG.output = $$IDE_DATA_PATH/qtcreator.icns
+    #    ASSETCATALOG.commands = xcrun actool \
+    #        --app-icon qtcreator \
+    #        --output-partial-info-plist $$shell_quote($(TMPDIR)/qtcreator.Info.plist) \
+    #        --platform macosx \
+    #        --minimum-deployment-target 10.7 \
+    #        --compile $$shell_quote($$IDE_DATA_PATH) \
+    #        $$shell_quote($$PWD/qtcreator.xcassets) > /dev/null
+    #    ASSETCATALOG.input = ASSETCATALOG.files
+    #    ASSETCATALOG.CONFIG += no_link target_predeps
+    #    QMAKE_EXTRA_COMPILERS += ASSETCATALOG
+    #}
+    #OPENMV-DIFF#
+    ICON = ../../../openmv-media/icons/openmv-icon/openmv.icns
     QMAKE_INFO_PLIST = Info.plist
 } else {
     target.path  = $$INSTALL_BIN_PATH

@@ -2,21 +2,27 @@ include(../../qtcreator.pri)
 
 TEMPLATE  = subdirs
 
+#OPENMV-DIFF#
+#SUBDIRS   = \
+#    aggregation \
+#    extensionsystem \
+#    utils \
+#    languageutils \
+#    cplusplus \
+#    modelinglib \
+#    qmljs \
+#    qmldebug \
+#    qmleditorwidgets \
+#    glsl \
+#    ssh \
+#    timeline \
+#    sqlite \
+#    clangbackendipc
+#OPENMV-DIFF#
 SUBDIRS   = \
     aggregation \
     extensionsystem \
-    utils \
-    languageutils \
-    cplusplus \
-    modelinglib \
-    qmljs \
-    qmldebug \
-    qmleditorwidgets \
-    glsl \
-    ssh \
-    timeline \
-    sqlite \
-    clangbackendipc
+    utils
 
 for(l, SUBDIRS) {
     QTC_LIB_DEPENDS =
@@ -25,13 +31,19 @@ for(l, SUBDIRS) {
     $$lv = $$QTC_LIB_DEPENDS
 }
 
-SUBDIRS += \
-    utils/process_stub.pro
+#OPENMV-DIFF#
+#SUBDIRS += \
+#    utils/process_stub.pro
+#OPENMV-DIFF#
 
-win32:SUBDIRS += utils/process_ctrlc_stub.pro
+#OPENMV-DIFF#
+#win32:SUBDIRS += utils/process_ctrlc_stub.pro
+#OPENMV-DIFF#
 
-# Windows: Compile Qt Creator CDB extension if Debugging tools can be detected.
-win32 {
-    include(qtcreatorcdbext/cdb_detect.pri)
-    exists($$CDB_PATH):SUBDIRS += qtcreatorcdbext
-}
+#OPENMV-DIFF#
+## Windows: Compile Qt Creator CDB extension if Debugging tools can be detected.
+#win32 {
+#    include(qtcreatorcdbext/cdb_detect.pri)
+#    exists($$CDB_PATH):SUBDIRS += qtcreatorcdbext
+#}
+#OPENMV-DIFF#

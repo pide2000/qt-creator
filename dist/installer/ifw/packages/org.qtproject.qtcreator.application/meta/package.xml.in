@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <Package>
-    <DisplayName>Qt Creator Application</DisplayName>
-    <Description>The IDE of choice for Qt development.</Description>
+    <!--OPENMV-DIFF<DisplayName>Qt Creator Application</DisplayName>-->
+    <DisplayName>OpenMV IDE Application</DisplayName>
+    <!--OPENMV-DIFF<Description>The IDE of choice for Qt development.</Description>-->
+    <Description>The IDE of choice for OpenMV Cam Development.</Description>
     <Version>{version}</Version>
     <ReleaseDate>{date}</ReleaseDate>
     <Name>org.qtproject.qtcreator.application</Name>

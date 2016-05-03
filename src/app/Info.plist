@@ -237,17 +237,21 @@
 		</dict>
 	</array>
 	<key>NSHumanReadableCopyright</key>
-	<string>(C) 2016 The Qt Company Ltd</string>
+	<!--OPENMV-DIFF<string>(C) 2016 The Qt Company Ltd</string>-->
+	<string>(C) 2016 OpenMV LLC</string>
 	<key>CFBundleIconFile</key>
-	<string>qtcreator</string>
+	<!--OPENMV-DIFF<string>qtcreator</string>-->
+	<string>openmv</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
-	<string>Qt Creator</string>
+	<!--OPENMV-DIFF<string>Qt Creator</string>-->
+	<string>OpenMV IDE</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.qt-project.qtcreator</string>
+	<!--OPENMV-DIFF<string>org.qt-project.qtcreator</string>-->
+	<string>org.openmv.openmvide</string>
 	<key>CFBundleVersion</key>
 	<string>@FULL_VERSION@</string>
 	<key>CFBundleShortVersionString</key>

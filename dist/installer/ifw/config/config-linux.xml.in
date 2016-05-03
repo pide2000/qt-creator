@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Installer>
+<!--OPENMV-DIFF<Installer>
     <Name>Qt Creator</Name>
     <Version>{version}</Version>
     <Title>Qt Creator {display_version}</Title>
@@ -9,8 +9,19 @@
     <InstallerWindowIcon>logo.png</InstallerWindowIcon>
     <Watermark>watermark.png</Watermark>
     <WizardDefaultHeight>520</WizardDefaultHeight>
-    <MaintenanceToolName>QtCreatorUninstaller</MaintenanceToolName>
+    <MaintenanceToolName>QtCreatorUninstaller</MaintenanceToolName>-->
     <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
-    <TargetDir>@homeDir@/qtcreator-{display_version}</TargetDir>
+    <!--OPENMV-DIFF<TargetDir>@homeDir@/qtcreator-{display_version}</TargetDir>
     <AdminTargetDir>/opt/qtcreator-{display_version}</AdminTargetDir>
+</Installer>-->
+<Installer>
+    <Name>OpenMV IDE</Name>
+    <Version>{version}</Version>
+    <Title>OpenMV IDE {display_version}</Title>
+    <Publisher>OpenMV LLC</Publisher>
+    <ProductUrl>https://openmv.io</ProductUrl>
+
+    <MaintenanceToolName>OpenMVIDEUninstaller</MaintenanceToolName>
+    <TargetDir>@homeDir@/openmvide</TargetDir>
+    <AdminTargetDir>/opt/openmvide</AdminTargetDir>
 </Installer>

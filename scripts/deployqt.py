@@ -72,11 +72,13 @@ def is_debug(fpath):
     # bootstrap exception
     if coredebug.search(fpath):
         return True
-    output = subprocess.check_output(['dumpbin', '/imports', fpath])
+    #OPENMV-DIFF# output = subprocess.check_output(['dumpbin', '/imports', fpath])
+    output = subprocess.check_output(['objdump', '-x', fpath])
     return coredebug.search(output) != None
 
 def is_debug_build(install_dir):
-    return is_debug(os.path.join(install_dir, 'bin', 'qtcreator.exe'))
+    #OPENMV-DIFF# return is_debug(os.path.join(install_dir, 'bin', 'qtcreator.exe'))
+    return is_debug(os.path.join(install_dir, 'bin', 'openmvide.exe'))
 
 def op_failed(details = None):
     if details != None:
@@ -287,10 +289,12 @@ def main():
     QT_INSTALL_BINS = qt_install_info['QT_INSTALL_BINS']
     QT_INSTALL_PLUGINS = qt_install_info['QT_INSTALL_PLUGINS']
     QT_INSTALL_IMPORTS = qt_install_info['QT_INSTALL_IMPORTS']
-    QT_INSTALL_QML = qt_install_info['QT_INSTALL_QML']
+    #OPENMV-DIFF# QT_INSTALL_QML = qt_install_info['QT_INSTALL_QML']
+    QT_INSTALL_QML = ""
     QT_INSTALL_TRANSLATIONS = qt_install_info['QT_INSTALL_TRANSLATIONS']
 
-    plugins = ['accessible', 'codecs', 'designer', 'iconengines', 'imageformats', 'platformthemes', 'platforminputcontexts', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
+    #OPENMV-DIFF# plugins = ['accessible', 'codecs', 'designer', 'iconengines', 'imageformats', 'platformthemes', 'platforminputcontexts', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
+    plugins = ['iconengines', 'imageformats', 'platforms', 'printsupport']
     imports = ['Qt', 'QtWebKit']
 
     if common.is_windows_platform():
@@ -308,8 +312,8 @@ def main():
     if not common.is_windows_platform():
         print "fixing rpaths..."
         common.fix_rpaths(install_dir, os.path.join(qt_deploy_prefix, 'lib'), qt_install_info, chrpath_bin)
-        add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
-    add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
+        #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
+    #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
 
 if __name__ == "__main__":
     if common.is_mac_platform():
