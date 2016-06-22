@@ -61,7 +61,8 @@ TEMPLATE  = subdirs
 #OPENMV-DIFF#
 SUBDIRS   = \
     coreplugin \
-    texteditor
+    texteditor \
+    openmv
 
 #OPENMV-DIFF#
 #DO_NOT_BUILD_QMLDESIGNER = $$(DO_NOT_BUILD_QMLDESIGNER)

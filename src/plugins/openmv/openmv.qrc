@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../../../../openmv-media/splash/openmv-splash/splash-small.png</file>
+        <file>../../../../openmv-media/graphics/pinout/pinout.png</file>
+    </qresource>
+</RCC>
