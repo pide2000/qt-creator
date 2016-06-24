@@ -168,7 +168,7 @@ void WindowList::addWindow(QWidget *window)
     action->setChecked(false);
     Command *cmd = ActionManager::registerAction(action, id);
     cmd->setAttribute(Command::CA_UpdateText);
-    ActionManager::actionContainer(Constants::M_WINDOW)->addAction(cmd, Constants::G_WINDOW_LIST);
+    // OPENMV-DIFF // ActionManager::actionContainer(Constants::M_WINDOW)->addAction(cmd, Constants::G_WINDOW_LIST);
     action->setVisible(window->isVisible() || window->isMinimized()); // minimized windows are hidden but should be shown
     QObject::connect(window, &QWidget::windowTitleChanged, [window]() { WindowList::updateTitle(window); });
     if (m_dockMenu)

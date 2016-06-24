@@ -5,15 +5,27 @@
 #include <QtGui>
 #include <QtWidgets>
 
-#include <extensionsystem/iplugin.h>
-
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
+#include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/coreconstants.h>
+#include <coreplugin/fancyactionbar.h>
+#include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
+#include <coreplugin/id.h>
 
+#include <extensionsystem/iplugin.h>
+#include <extensionsystem/pluginmanager.h>
+
+#include <utils/hostosinfo.h>
+
+#define ICON_PATH ":/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv-media/splash/openmv-splash/splash-small.png"
-#define PINOUT_PATH ":/openmv-media/graphics/pinout/pinout.png"
+#define START_PATH ":/projectexplorer/images/debugger_start.png"
+#define STOP_PATH ":/debugger/images/debugger_stop_32.png"
+
+#define SETTINGS_GROUP "OpenMV"
+#define EDITOR_MANAGER_STATE "EditorManagerState"
 
 namespace OpenMV {
 namespace Internal {
@@ -30,6 +42,25 @@ public:
 
     bool initialize(const QStringList &arguments, QString *errorMessage);
     void extensionsInitialized();
+
+public slots:
+
+    void saveSettingsRequested();
+
+    void docsClicked();
+    void forumsClicked();
+    void pinoutClicked();
+    void aboutClicked();
+
+private:
+
+    Core::Command *m_startCommand;
+    Core::Command *m_stopCommand;
+
+    Core::Command *m_docsCommand;
+    Core::Command *m_forumsCommand;
+    Core::Command *m_pinoutCommand;
+    Core::Command *m_aboutCommand;
 };
 
 } // namespace Internal

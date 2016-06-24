@@ -74,7 +74,7 @@ Locator::~Locator()
     m_corePlugin->removeObject(m_openDocumentsFilter);
     m_corePlugin->removeObject(m_fileSystemFilter);
     m_corePlugin->removeObject(m_executeFilter);
-    m_corePlugin->removeObject(m_settingsPage);
+    //OPENMV-DIFF// m_corePlugin->removeObject(m_settingsPage);
     m_corePlugin->removeObject(m_externalToolsFilter);
     delete m_openDocumentsFilter;
     delete m_fileSystemFilter;
@@ -89,7 +89,7 @@ void Locator::initialize(CorePlugin *corePlugin, const QStringList &, QString *)
     m_corePlugin = corePlugin;
 
     m_settingsPage = new LocatorSettingsPage(this);
-    m_corePlugin->addObject(m_settingsPage);
+    //OPENMV-DIFF// m_corePlugin->addObject(m_settingsPage);
 
     m_locatorWidget = new LocatorWidget(this);
     m_locatorWidget->setEnabled(false);
@@ -101,14 +101,14 @@ void Locator::initialize(CorePlugin *corePlugin, const QStringList &, QString *)
 
     QAction *action = new QAction(m_locatorWidget->windowIcon(), m_locatorWidget->windowTitle(), this);
     Command *cmd = ActionManager::registerAction(action, Constants::LOCATE);
-    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+K")));
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+K")));
     connect(action, &QAction::triggered, this, &Locator::openLocator);
     connect(cmd, &Command::keySequenceChanged,
             this, [this, cmd]() { updatePlaceholderText(cmd); });
     updatePlaceholderText(cmd);
 
-    ActionContainer *mtools = ActionManager::actionContainer(Constants::M_TOOLS);
-    mtools->addAction(cmd);
+    // OPENMV-DIFF // ActionContainer *mtools = ActionManager::actionContainer(Constants::M_TOOLS);
+    // OPENMV-DIFF // mtools->addAction(cmd);
 
     m_corePlugin->addObject(new LocatorManager(m_locatorWidget));
 
@@ -202,14 +202,16 @@ void Locator::updateEditorManagerPlaceholderText()
           "<div style=\"font-size:20px\">Open a document</div>"
           "<table><tr><td>"
           "<hr/>"
-          "<div style=\"margin-top: 5px\">&bull; File > Open File or Project (%1)</div>"
+          // OPENMV-DIFF // "<div style=\"margin-top: 5px\">&bull; File > Open File or Project (%1)</div>"
+          "<div style=\"margin-top: 5px\">&bull; File > Open File (%1)</div>"
+          "<div style=\"margin-top: 5px\">&bull; File > Examples </div>"
           "<div style=\"margin-top: 5px\">&bull; File > Recent Files</div>"
-          "<div style=\"margin-top: 5px\">&bull; Tools > Locate (%2) and</div>"
-          "<div style=\"margin-left: 1em\">- type to open file from any open project</div>"
-          "%4"
-          "%5"
-          "<div style=\"margin-left: 1em\">- type <code>%3&lt;space&gt;&lt;filename&gt;</code> to open file from file system</div>"
-          "<div style=\"margin-left: 1em\">- select one of the other filters for jumping to a location</div>"
+          // OPENMV-DIFF // "<div style=\"margin-top: 5px\">&bull; Tools > Locate (%2) and</div>"
+          // OPENMV-DIFF // "<div style=\"margin-left: 1em\">- type to open file from any open project</div>"
+          // OPENMV-DIFF // "%4"
+          // OPENMV-DIFF // "%5"
+          // OPENMV-DIFF // "<div style=\"margin-left: 1em\">- type <code>%3&lt;space&gt;&lt;filename&gt;</code> to open file from file system</div>"
+          // OPENMV-DIFF // "<div style=\"margin-left: 1em\">- select one of the other filters for jumping to a location</div>"
           "<div style=\"margin-top: 5px\">&bull; Drag and drop files here</div>"
           "</td></tr></table>"
           "</div>"

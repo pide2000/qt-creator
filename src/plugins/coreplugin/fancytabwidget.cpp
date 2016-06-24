@@ -430,6 +430,9 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     : QWidget(parent)
 {
     m_tabBar = new FancyTabBar(this);
+    // OPENMV-DIFF //
+    m_tabBar->hide();
+    // OPENMV-DIFF //
 
     m_selectionWidget = new QWidget(this);
     QVBoxLayout *selectionLayout = new QVBoxLayout;
@@ -456,7 +459,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     QVBoxLayout *cornerWidgetLayout = new QVBoxLayout;
     cornerWidgetLayout->setSpacing(0);
     cornerWidgetLayout->setMargin(0);
-    cornerWidgetLayout->addStretch();
+    // OPENMV-DIFF // cornerWidgetLayout->addStretch();
     m_cornerWidgetContainer->setLayout(cornerWidgetLayout);
 
     selectionLayout->addWidget(m_cornerWidgetContainer, 0);

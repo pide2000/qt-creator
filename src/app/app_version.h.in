@@ -34,14 +34,28 @@ namespace Constants {
 
 #define IDE_VERSION $${QTCREATOR_VERSION}
 #define IDE_VERSION_STR STRINGIFY(IDE_VERSION)
+//OPENMV-DIFF//
+#define OMV_IDE_VERSION $${OPENMVIDE_VERSION}
+#define OMV_IDE_VERSION_STR STRINGIFY(OMV_IDE_VERSION)
+//OPENMV-DIFF//
 
 #define IDE_VERSION_MAJOR $$replace(QTCREATOR_VERSION, "^(\\d+)\\.\\d+\\.\\d+(-.*)?$", \\1)
 #define IDE_VERSION_MINOR $$replace(QTCREATOR_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
 #define IDE_VERSION_RELEASE $$replace(QTCREATOR_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
+//OPENMV-DIFF//
+#define OMV_IDE_VERSION_MAJOR $$replace(OMV_IDE_VERSION, "^(\\d+)\\.\\d+\\.\\d+(-.*)?$", \\1)
+#define OMV_IDE_VERSION_MINOR $$replace(OMV_IDE_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
+#define OMV_IDE_VERSION_RELEASE $$replace(OMV_IDE_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
+//OPENMV-DIFF//
 
 const char * const IDE_VERSION_LONG      = IDE_VERSION_STR;
 const char * const IDE_AUTHOR            = \"The Qt Company Ltd\";
 const char * const IDE_YEAR              = \"2016\";
+//OPENMV-DIFF//
+const char * const OMV_IDE_VERSION_LONG  = OMV_IDE_VERSION_STR;
+const char * const OMV_IDE_AUTHOR        = \"OpenMV LLC\";
+const char * const OMV_IDE_YEAR          = \"2016\";
+//OPENMV-DIFF//
 
 #ifdef IDE_VERSION_DESCRIPTION
 const char * const IDE_VERSION_DESCRIPTION_STR = STRINGIFY(IDE_VERSION_DESCRIPTION);

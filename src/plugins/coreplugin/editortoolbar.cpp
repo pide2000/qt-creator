@@ -188,6 +188,14 @@ EditorToolBar::EditorToolBar(QWidget *parent) :
     toplayout->addWidget(d->m_toolBarPlaceholder, 1); // Custom toolbar stretches
     toplayout->addWidget(d->m_splitButton);
     toplayout->addWidget(d->m_closeSplitButton);
+    // OPENMV-DIFF //
+    d->m_backButton->hide();
+    d->m_forwardButton->hide();
+    d->m_lockButton->hide();
+    d->m_dragHandle->hide();
+    d->m_splitButton->hide();
+    d->m_closeSplitButton->hide();
+    // OPENMV-DIFF //
 
     setLayout(toplayout);
 

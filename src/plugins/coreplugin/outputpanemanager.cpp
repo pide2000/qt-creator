@@ -214,11 +214,11 @@ static inline QKeySequence paneShortCut(int number)
 
 void OutputPaneManager::init()
 {
-    ActionContainer *mwindow = ActionManager::actionContainer(Constants::M_WINDOW);
+    // OPENMV-DIFF // ActionContainer *mwindow = ActionManager::actionContainer(Constants::M_WINDOW);
 
     // Window->Output Panes
     ActionContainer *mpanes = ActionManager::createMenu(Constants::M_WINDOW_PANES);
-    mwindow->addMenu(mpanes, Constants::G_WINDOW_PANES);
+    // OPENMV-DIFF // mwindow->addMenu(mpanes, Constants::G_WINDOW_PANES);
     mpanes->menu()->setTitle(tr("Output &Panes"));
     mpanes->appendGroup("Coreplugin.OutputPane.ActionsGroup");
     mpanes->appendGroup("Coreplugin.OutputPane.PanesGroup");
@@ -230,17 +230,17 @@ void OutputPaneManager::init()
     mpanes->addAction(cmd, "Coreplugin.OutputPane.ActionsGroup");
 
     cmd = ActionManager::registerAction(m_prevAction, "Coreplugin.OutputPane.previtem");
-    cmd->setDefaultKeySequence(QKeySequence(tr("Shift+F6")));
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(tr("Shift+F6")));
     m_prevToolButton->setDefaultAction(cmd->action());
     mpanes->addAction(cmd, "Coreplugin.OutputPane.ActionsGroup");
 
     cmd = ActionManager::registerAction(m_nextAction, "Coreplugin.OutputPane.nextitem");
     m_nextToolButton->setDefaultAction(cmd->action());
-    cmd->setDefaultKeySequence(QKeySequence(tr("F6")));
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(tr("F6")));
     mpanes->addAction(cmd, "Coreplugin.OutputPane.ActionsGroup");
 
     cmd = ActionManager::registerAction(m_minMaxAction, "Coreplugin.OutputPane.minmax");
-    cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? tr("Ctrl+Shift+9") : tr("Alt+Shift+9")));
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? tr("Ctrl+Shift+9") : tr("Alt+Shift+9")));
     cmd->setAttribute(Command::CA_UpdateText);
     cmd->setAttribute(Command::CA_UpdateIcon);
     mpanes->addAction(cmd, "Coreplugin.OutputPane.ActionsGroup");
@@ -298,7 +298,7 @@ void OutputPaneManager::init()
         m_actions.append(action);
         m_ids.append(id);
 
-        cmd->setDefaultKeySequence(paneShortCut(shortcutNumber));
+        // OPENMV-DIFF // cmd->setDefaultKeySequence(paneShortCut(shortcutNumber));
         OutputPaneToggleButton *button = new OutputPaneToggleButton(shortcutNumber, outPane->displayName(),
                                                                     cmd->action());
         ++shortcutNumber;

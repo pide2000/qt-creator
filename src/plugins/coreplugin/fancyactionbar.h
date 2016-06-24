@@ -26,6 +26,10 @@
 #ifndef FANCYACTIONBAR_H
 #define FANCYACTIONBAR_H
 
+//OPENMV-DIFF//
+#include "core_global.h"
+//OPENMV-DIFF//
+
 #include <QToolButton>
 
 QT_BEGIN_NAMESPACE
@@ -35,7 +39,8 @@ QT_END_NAMESPACE
 namespace Core {
 namespace Internal {
 
-class FancyToolButton : public QToolButton
+//OPENMV-DIFF// class FancyToolButton : public QToolButton
+class CORE_EXPORT FancyToolButton : public QToolButton
 {
     Q_OBJECT
 
@@ -59,7 +64,8 @@ private:
     void actionChanged();
 };
 
-class FancyActionBar : public QWidget
+//OPENMV-DIFF// class FancyActionBar : public QWidget
+class CORE_EXPORT FancyActionBar : public QWidget
 {
     Q_OBJECT
 

@@ -329,11 +329,11 @@ TextEditorSettings::TextEditorSettings(QObject *parent)
 
     d->m_highlighterSettingsPage =
         new HighlighterSettingsPage(Constants::TEXT_EDITOR_HIGHLIGHTER_SETTINGS, this);
-    ExtensionSystem::PluginManager::addObject(d->m_highlighterSettingsPage);
+    //OPENMV-DIFF// ExtensionSystem::PluginManager::addObject(d->m_highlighterSettingsPage);
 
     d->m_snippetsSettingsPage =
         new SnippetsSettingsPage(Constants::TEXT_EDITOR_SNIPPETS_SETTINGS, this);
-    ExtensionSystem::PluginManager::addObject(d->m_snippetsSettingsPage);
+    //OPENMV-DIFF// ExtensionSystem::PluginManager::addObject(d->m_snippetsSettingsPage);
 
     connect(d->m_fontSettingsPage, &FontSettingsPage::changed,
             this, &TextEditorSettings::fontSettingsChanged);
@@ -359,8 +359,8 @@ TextEditorSettings::~TextEditorSettings()
     ExtensionSystem::PluginManager::removeObject(d->m_fontSettingsPage);
     ExtensionSystem::PluginManager::removeObject(d->m_behaviorSettingsPage);
     ExtensionSystem::PluginManager::removeObject(d->m_displaySettingsPage);
-    ExtensionSystem::PluginManager::removeObject(d->m_highlighterSettingsPage);
-    ExtensionSystem::PluginManager::removeObject(d->m_snippetsSettingsPage);
+    //OPENMV-DIFF// ExtensionSystem::PluginManager::removeObject(d->m_highlighterSettingsPage);
+    //OPENMV-DIFF// ExtensionSystem::PluginManager::removeObject(d->m_snippetsSettingsPage);
 
     delete d;
 

@@ -108,7 +108,8 @@ MainWindow::MainWindow() :
     m_coreImpl(new ICore(this)),
     m_lowPrioAdditionalContexts(Constants::C_GLOBAL),
     m_settingsDatabase(new SettingsDatabase(QFileInfo(PluginManager::settings()->fileName()).path(),
-                                            QLatin1String("QtCreator"),
+                                            //OPENMV-DIFF// QLatin1String("QtCreator"),
+                                            QLatin1String("OpenMVIDE"),
                                             this)),
     m_printer(0),
     m_windowSupport(0),
@@ -145,11 +146,14 @@ MainWindow::MainWindow() :
 
     HistoryCompleter::setSettings(PluginManager::settings());
 
-    setWindowTitle(tr("Qt Creator"));
+    //OPENMV-DIFF// setWindowTitle(tr("Qt Creator"));
+    setWindowTitle(tr("OpenMV IDE"));
     if (HostOsInfo::isLinuxHost())
         QApplication::setWindowIcon(Icons::QTLOGO_128.icon());
-    QCoreApplication::setApplicationName(QLatin1String("QtCreator"));
-    QCoreApplication::setApplicationVersion(QLatin1String(Constants::IDE_VERSION_LONG));
+    //OPENMV-DIFF// QCoreApplication::setApplicationName(QLatin1String("QtCreator"));
+    QCoreApplication::setApplicationName(QLatin1String("OpenMVIDE"));
+    //OPENMV-DIFF// QCoreApplication::setApplicationVersion(QLatin1String(Constants::IDE_VERSION_LONG));
+    QCoreApplication::setApplicationVersion(QLatin1String(Constants::OMV_IDE_VERSION_LONG));
     QCoreApplication::setOrganizationName(QLatin1String(Constants::IDE_SETTINGSVARIANT_STR));
     QString baseName = QApplication::style()->objectName();
     // Sometimes we get the standard windows 95 style as a fallback
@@ -202,6 +206,9 @@ MainWindow::MainWindow() :
     connect(qApp, &QApplication::focusChanged, this, &MainWindow::updateFocusWidget);
     // Add a small Toolbutton for toggling the navigation widget
     statusBar()->insertPermanentWidget(0, m_toggleSideBarButton);
+    // OPENMV-DIFF //
+    m_toggleSideBarButton->hide();
+    // OPENMV-DIFF //
 
 //    setUnifiedTitleAndToolBarOnMac(true);
     //if (HostOsInfo::isAnyUnixHost())
@@ -261,11 +268,11 @@ MainWindow::~MainWindow()
     delete m_windowSupport;
     m_windowSupport = 0;
 
-    PluginManager::removeObject(m_shortcutSettings);
+    //OPENMV-DIFF// PluginManager::removeObject(m_shortcutSettings);
     PluginManager::removeObject(m_generalSettings);
-    PluginManager::removeObject(m_systemSettings);
-    PluginManager::removeObject(m_toolSettings);
-    PluginManager::removeObject(m_mimeTypeSettings);
+    //OPENMV-DIFF// PluginManager::removeObject(m_systemSettings);
+    //OPENMV-DIFF// PluginManager::removeObject(m_toolSettings);
+    //OPENMV-DIFF// PluginManager::removeObject(m_mimeTypeSettings);
     PluginManager::removeObject(m_systemEditor);
     delete m_externalToolManager;
     m_externalToolManager = 0;
@@ -329,10 +336,10 @@ bool MainWindow::init(QString *errorMessage)
     m_progressManager->init(); // needs the status bar manager
 
     PluginManager::addObject(m_generalSettings);
-    PluginManager::addObject(m_systemSettings);
-    PluginManager::addObject(m_shortcutSettings);
-    PluginManager::addObject(m_toolSettings);
-    PluginManager::addObject(m_mimeTypeSettings);
+    //OPENMV-DIFF// PluginManager::addObject(m_systemSettings);
+    //OPENMV-DIFF// PluginManager::addObject(m_shortcutSettings);
+    //OPENMV-DIFF// PluginManager::addObject(m_toolSettings);
+    //OPENMV-DIFF// PluginManager::addObject(m_mimeTypeSettings);
     PluginManager::addObject(m_systemEditor);
 
     // Add widget to the bottom, we create the view here instead of inside the
@@ -504,7 +511,8 @@ void MainWindow::registerDefaultActions()
 
     // New File Action
     QIcon icon = QIcon::fromTheme(QLatin1String("document-new"), Icons::NEWFILE.icon());
-    m_newAction = new QAction(icon, tr("&New File or Project..."), this);
+    // OPENMV-DIFF // m_newAction = new QAction(icon, tr("&New File or Project..."), this);
+    m_newAction = new QAction(icon, tr("&New File..."), this);
     cmd = ActionManager::registerAction(m_newAction, Constants::NEW);
     cmd->setDefaultKeySequence(QKeySequence::New);
     mfile->addAction(cmd, Constants::G_FILE_NEW);
@@ -518,16 +526,17 @@ void MainWindow::registerDefaultActions()
 
     // Open Action
     icon = QIcon::fromTheme(QLatin1String("document-open"), Icons::OPENFILE.icon());
-    m_openAction = new QAction(icon, tr("&Open File or Project..."), this);
+    // OPENMV-DIFF // m_openAction = new QAction(icon, tr("&Open File or Project..."), this);
+    m_openAction = new QAction(icon, tr("&Open File..."), this);
     cmd = ActionManager::registerAction(m_openAction, Constants::OPEN);
     cmd->setDefaultKeySequence(QKeySequence::Open);
     mfile->addAction(cmd, Constants::G_FILE_OPEN);
     connect(m_openAction, &QAction::triggered, this, &MainWindow::openFile);
 
-    // Open With Action
+    //// Open With Action
     m_openWithAction = new QAction(tr("Open File &With..."), this);
     cmd = ActionManager::registerAction(m_openWithAction, Constants::OPEN_WITH);
-    mfile->addAction(cmd, Constants::G_FILE_OPEN);
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_OPEN);
     connect(m_openWithAction, &QAction::triggered, this, &MainWindow::openFileWith);
 
     // File->Recent Files Menu
@@ -697,10 +706,10 @@ void MainWindow::registerDefaultActions()
     m_toggleSideBarAction->setCheckable(true);
     cmd = ActionManager::registerAction(m_toggleSideBarAction, Constants::TOGGLE_SIDEBAR);
     cmd->setAttribute(Command::CA_UpdateText);
-    cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? tr("Ctrl+0") : tr("Alt+0")));
+    // OPENMV-DIFFF // cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? tr("Ctrl+0") : tr("Alt+0")));
     connect(m_toggleSideBarAction, &QAction::triggered, this, &MainWindow::setSidebarVisible);
     m_toggleSideBarButton->setDefaultAction(cmd->action());
-    mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
+    // OPENMV-DIFFF // mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
     m_toggleSideBarAction->setEnabled(false);
 
     // Show Mode Selector Action
@@ -709,11 +718,11 @@ void MainWindow::registerDefaultActions()
     cmd = ActionManager::registerAction(m_toggleModeSelectorAction, Constants::TOGGLE_MODE_SELECTOR);
     connect(m_toggleModeSelectorAction, &QAction::triggered,
             ModeManager::instance(), &ModeManager::setModeSelectorVisible);
-    mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
+    // OPENMV-DIFFF // mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
 
     // Window->Views
     ActionContainer *mviews = ActionManager::createMenu(Constants::M_WINDOW_VIEWS);
-    mwindow->addMenu(mviews, Constants::G_WINDOW_VIEWS);
+    // OPENMV-DIFFF // mwindow->addMenu(mviews, Constants::G_WINDOW_VIEWS);
     mviews->menu()->setTitle(tr("&Views"));
 
     // "Help" separators
@@ -729,7 +738,7 @@ void MainWindow::registerDefaultActions()
         tmpaction = new QAction(icon, tr("About &Qt Creator..."), this);
     tmpaction->setMenuRole(QAction::AboutRole);
     cmd = ActionManager::registerAction(tmpaction, Constants::ABOUT_QTCREATOR);
-    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+    // OPENMV-DIFF // mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
     connect(tmpaction, &QAction::triggered, this, &MainWindow::aboutQtCreator);
 
@@ -737,7 +746,7 @@ void MainWindow::registerDefaultActions()
     tmpaction = new QAction(tr("About &Plugins..."), this);
     tmpaction->setMenuRole(QAction::ApplicationSpecificRole);
     cmd = ActionManager::registerAction(tmpaction, Constants::ABOUT_PLUGINS);
-    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+    // OPENMV-DIFF // mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
     connect(tmpaction, &QAction::triggered, this, &MainWindow::aboutPlugins);
     // About Qt Action

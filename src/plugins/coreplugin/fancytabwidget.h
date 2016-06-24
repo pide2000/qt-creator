@@ -26,6 +26,10 @@
 #ifndef FANCYTABWIDGET_H
 #define FANCYTABWIDGET_H
 
+//OPENMV-DIFF//
+#include "core_global.h"
+//OPENMV-DIFF//
+
 #include <QIcon>
 #include <QWidget>
 
@@ -41,7 +45,8 @@ QT_END_NAMESPACE
 namespace Core {
 namespace Internal {
 
-class FancyTab : public QObject
+//OPENMV-DIFF// class FancyTab : public QObject
+class CORE_EXPORT FancyTab : public QObject
 {
     Q_OBJECT
 
@@ -68,7 +73,8 @@ private:
     float m_fader;
 };
 
-class FancyTabBar : public QWidget
+//OPENMV-DIFF// class FancyTabBar : public QWidget
+class CORE_EXPORT FancyTabBar : public QWidget
 {
     Q_OBJECT
 
@@ -134,7 +140,8 @@ private:
 
 };
 
-class FancyTabWidget : public QWidget
+//OPENMV-DIFF// class FancyTabWidget : public QWidget
+class CORE_EXPORT FancyTabWidget : public QWidget
 {
     Q_OBJECT
 

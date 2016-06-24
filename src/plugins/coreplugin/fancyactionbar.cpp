@@ -358,6 +358,9 @@ FancyActionBar::FancyActionBar(QWidget *parent)
     spacerLayout->addSpacing(sbh);
     spacerLayout->setMargin(0);
     spacerLayout->setSpacing(0);
+    // OPENMV-DIFF //
+    spacerLayout->addStretch();
+    // OPENMV-DIFF //
     setLayout(spacerLayout);
     setContentsMargins(0,2,0,0);
 }

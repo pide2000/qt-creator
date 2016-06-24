@@ -46,6 +46,10 @@
 
 #include <functional>
 
+// OPENMV-DIFF //
+#include <QInputDialog>
+// OPENMV-DIFF //
+
 namespace TextEditor {
 namespace Internal {
 
@@ -266,12 +270,35 @@ void TextEditorActionHandlerPrivate::createActions()
             [this] (TextEditorWidget *w) { w->paste(); }, true);
     m_selectAllAction = registerAction(SELECTALL,
             [this] (TextEditorWidget *w) { w->selectAll(); }, true);
+    // OPENMV-DIFF //
+    //m_gotoAction = registerAction(GOTO, [this] (TextEditorWidget *) {
+    //        QString locatorString = TextEditorPlugin::lineNumberFilter()->shortcutString();
+    //        locatorString += QLatin1Char(' ');
+    //        const int selectionStart = locatorString.size();
+    //        locatorString += TextEditorActionHandler::tr("<line>:<column>");
+    //        Core::LocatorManager::show(locatorString, selectionStart, locatorString.size() - selectionStart);
+    //    });
+    // OPENMV-DIFF //
     m_gotoAction = registerAction(GOTO, [this] (TextEditorWidget *) {
-            QString locatorString = TextEditorPlugin::lineNumberFilter()->shortcutString();
-            locatorString += QLatin1Char(' ');
-            const int selectionStart = locatorString.size();
-            locatorString += TextEditorActionHandler::tr("<line>:<column>");
-            Core::LocatorManager::show(locatorString, selectionStart, locatorString.size() - selectionStart);
+            Core::IEditor *editor = Core::EditorManager::currentEditor();
+            if (editor) {
+                bool ok;
+                QString line = QInputDialog::getText(Core::ICore::mainWindow(), tr("Go to Line..."), tr("Line number..."), QLineEdit::Normal, QString::number(editor->currentLine()), &ok
+#ifdef Q_OS_MAC
+                , Qt::WindowTitleHint | Qt::WindowSystemMenuHint,
+#else
+                , Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint,
+#endif
+                Qt::ImhDigitsOnly);
+                if (ok) {
+                    int lineNumber = line.toInt(&ok);
+                    if (ok) {
+                        Core::EditorManager::addCurrentPositionToNavigationHistory();
+                        editor->gotoLine(lineNumber);
+                        Core::EditorManager::activateEditor(editor);
+                    }
+                }
+            }
         });
     m_printAction = registerAction(PRINT,
             [this] (TextEditorWidget *widget) { widget->print(Core::ICore::printer()); });
@@ -346,9 +373,9 @@ void TextEditorActionHandlerPrivate::createActions()
 
     // register "Edit" Menu Actions
     Core::ActionContainer *editMenu = Core::ActionManager::actionContainer(M_EDIT);
-    m_selectEncodingAction = registerAction(SELECT_ENCODING,
-            [this] (TextEditorWidget *w) { w->selectEncoding(); }, false, tr("Select Encoding..."),
-            QKeySequence(), G_EDIT_OTHER, editMenu);
+    //OPENMV-DIFF// m_selectEncodingAction = registerAction(SELECT_ENCODING,
+    //OPENMV-DIFF//         [this] (TextEditorWidget *w) { w->selectEncoding(); }, false, tr("Select Encoding..."),
+    //OPENMV-DIFF//         QKeySequence(), G_EDIT_OTHER, editMenu);
     m_circularPasteAction = registerAction(CIRCULAR_PASTE,
             [this] (TextEditorWidget *w) { w->circularPaste(); }, false, tr("Paste from Clipboard History"),
             QKeySequence(tr("Ctrl+Shift+V")), G_EDIT_COPYPASTE, editMenu);
@@ -435,22 +462,24 @@ void TextEditorActionHandlerPrivate::createActions()
             [this] (TextEditorWidget *w) { w->zoomReset(); }, false, tr("Reset Font Size"),
             QKeySequence(Core::UseMacShortcuts ? tr("Meta+0") : tr("Ctrl+0")),
             G_EDIT_FONT, advancedEditMenu);
-    m_gotoBlockStartAction = registerAction(GOTO_BLOCK_START,
-            [this] (TextEditorWidget *w) { w->gotoBlockStart(); }, true, tr("Go to Block Start"),
-            QKeySequence(tr("Ctrl+[")),
-            G_EDIT_BLOCKS, advancedEditMenu);
-    m_gotoBlockEndAction = registerAction(GOTO_BLOCK_END,
-            [this] (TextEditorWidget *w) { w->gotoBlockEnd(); }, true, tr("Go to Block End"),
-            QKeySequence(tr("Ctrl+]")),
-            G_EDIT_BLOCKS, advancedEditMenu);
-    m_selectBlockUpAction = registerAction(SELECT_BLOCK_UP,
-            [this] (TextEditorWidget *w) { w->selectBlockUp(); }, true, tr("Select Block Up"),
-            QKeySequence(tr("Ctrl+U")),
-            G_EDIT_BLOCKS, advancedEditMenu);
-    m_selectBlockDownAction = registerAction(SELECT_BLOCK_DOWN,
-            [this] (TextEditorWidget *w) { w->selectBlockDown(); }, true, tr("Select Block Down"),
-            QKeySequence(tr("Ctrl+Shift+Alt+U")),
-            G_EDIT_BLOCKS, advancedEditMenu);
+    // OPENMV-DIFF //
+    //m_gotoBlockStartAction = registerAction(GOTO_BLOCK_START,
+    //        [this] (TextEditorWidget *w) { w->gotoBlockStart(); }, true, tr("Go to Block Start"),
+    //        QKeySequence(tr("Ctrl+[")),
+    //        G_EDIT_BLOCKS, advancedEditMenu);
+    //m_gotoBlockEndAction = registerAction(GOTO_BLOCK_END,
+    //        [this] (TextEditorWidget *w) { w->gotoBlockEnd(); }, true, tr("Go to Block End"),
+    //        QKeySequence(tr("Ctrl+]")),
+    //        G_EDIT_BLOCKS, advancedEditMenu);
+    //m_selectBlockUpAction = registerAction(SELECT_BLOCK_UP,
+    //        [this] (TextEditorWidget *w) { w->selectBlockUp(); }, true, tr("Select Block Up"),
+    //        QKeySequence(tr("Ctrl+U")),
+    //        G_EDIT_BLOCKS, advancedEditMenu);
+    //m_selectBlockDownAction = registerAction(SELECT_BLOCK_DOWN,
+    //        [this] (TextEditorWidget *w) { w->selectBlockDown(); }, true, tr("Select Block Down"),
+    //        QKeySequence(tr("Ctrl+Shift+Alt+U")),
+    //        G_EDIT_BLOCKS, advancedEditMenu);
+    // OPENMV-DIFF //
 
     // register GOTO Actions
     registerAction(GOTO_LINE_START,

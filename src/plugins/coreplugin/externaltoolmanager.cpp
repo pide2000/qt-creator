@@ -84,8 +84,8 @@ ExternalToolManager::ExternalToolManager()
     // add the external tools menu
     ActionContainer *mexternaltools = ActionManager::createMenu(Id(Constants::M_TOOLS_EXTERNAL));
     mexternaltools->menu()->setTitle(ExternalToolManager::tr("&External"));
-    ActionContainer *mtools = ActionManager::actionContainer(Constants::M_TOOLS);
-    mtools->addMenu(mexternaltools, Constants::G_DEFAULT_THREE);
+    // OPENMV-DIFF // ActionContainer *mtools = ActionManager::actionContainer(Constants::M_TOOLS);
+    // OPENMV-DIFF // mtools->addMenu(mexternaltools, Constants::G_DEFAULT_THREE);
 
     QMap<QString, QMultiMap<int, ExternalTool*> > categoryPriorityMap;
     QMap<QString, ExternalTool *> tools;
