@@ -31,6 +31,42 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void OpenMVPlugin::extensionsInitialized()
 {
+    connect(Core::ActionManager::command(Core::Constants::NEW)->action(), &QAction::triggered, this, [] {
+        QString titlePattern = tr("Untitled $.py");
+        Core::IEditor *editor = Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
+        tr("# Untitled - By: %L1 - %L2\n"
+           "\n"
+           "import sensor\n"
+           "\n"
+           "sensor.reset()\n"
+           "sensor.set_pixformat(sensor.RGB565)\n"
+           "sensor.set_framesize(sensor.QVGA)\n"
+           "sensor.skip_frames()\n"
+           "\n"
+           "while(True):\n"
+           "    img = sensor.snapshot()\n").arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toLatin1());
+        qobject_cast<TextEditor::BaseTextEditor *>(editor)->editorWidget()->configureGenericHighlighter();
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    Core::ActionContainer *filesMenu = Core::ActionManager::actionContainer(Core::Constants::M_FILE);
+    m_examplesMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.Examples"));
+    filesMenu->addMenu(Core::ActionManager::actionContainer(Core::Constants::M_FILE_RECENTFILES), m_examplesMenu, Core::Constants::G_FILE_OPEN);
+    m_examplesMenu->menu()->setTitle(tr("&Examples"));
+    m_examplesMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    connect(filesMenu->menu(), &QMenu::aboutToShow, this, &OpenMVPlugin::aboutToShowExamples);
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    m_connectCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
+        tr("Connect"), this), Core::Id("OpenMV.Connect"));
+
+    m_disconnectCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
+        tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
+
     m_startCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
         tr("Start"), this), Core::Id("OpenMV.Start"));
@@ -66,6 +102,7 @@ void OpenMVPlugin::extensionsInitialized()
             actionBar0->insertAction(2,
                 Core::ActionManager::command(Core::Constants::SAVE)->action());
 
+            actionBar0->setProperty("no_separator", true);
             actionBar0->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
             ///////////////////////////////////////////////////////////////////
@@ -90,6 +127,7 @@ void OpenMVPlugin::extensionsInitialized()
             actionBar1->insertAction(4,
                 Core::ActionManager::command(Core::Constants::PASTE)->action());
 
+            actionBar1->setProperty("no_separator", false);
             actionBar1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
             ///////////////////////////////////////////////////////////////////
@@ -99,10 +137,89 @@ void OpenMVPlugin::extensionsInitialized()
 
             widget->insertCornerWidget(2, actionBar2);
 
-            actionBar2->insertAction(0, m_startCommand->action());
-            actionBar2->insertAction(1, m_stopCommand->action());
+            actionBar2->insertAction(0, m_connectCommand->action());
+            actionBar2->insertAction(1, m_disconnectCommand->action());
+            actionBar2->insertAction(2, m_startCommand->action());
+            actionBar2->insertAction(3, m_stopCommand->action());
 
+            actionBar2->setProperty("no_separator", false);
             actionBar2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
+            ///////////////////////////////////////////////////////////////////
+
+            Utils::StyledBar *styledBar0 = new Utils::StyledBar;
+            QHBoxLayout *styledBar0Layout = new QHBoxLayout;
+            styledBar0Layout->setMargin(0);
+            styledBar0Layout->setSpacing(0);
+            styledBar0Layout->addSpacing(5);
+            styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
+            styledBar0Layout->addSpacing(10);
+            styledBar0->setLayout(styledBar0Layout);
+
+            m_jpgCompress = new QToolButton;
+            m_jpgCompress->setText(tr("JPG"));
+            m_jpgCompress->setToolTip(tr("JPEG compress the Frame Buffer for higher performance."));
+            m_jpgCompress->setCheckable(true);
+            m_jpgCompress->setChecked(true); // inital value
+            styledBar0Layout->addWidget(m_jpgCompress);
+
+            m_disableFrameBuffer = new QToolButton;
+            m_disableFrameBuffer->setText(tr("Disable"));
+            m_disableFrameBuffer->setToolTip(tr("Disable the Frame Buffer for maximum performance."));
+            m_disableFrameBuffer->setCheckable(true);
+            m_disableFrameBuffer->setChecked(false); // inital value
+            styledBar0Layout->addWidget(m_disableFrameBuffer);
+
+            m_frameBuffer = new OpenMVFrameBuffer;
+            m_frameBuffer->setFrameShape(QFrame::NoFrame);
+
+            QWidget *tempWidget0 = new QWidget;
+            QVBoxLayout *tempLayout0 = new QVBoxLayout;
+            tempLayout0->setMargin(0);
+            tempLayout0->setSpacing(0);
+            tempLayout0->addWidget(styledBar0);
+            tempLayout0->addWidget(m_frameBuffer);
+            tempWidget0->setLayout(tempLayout0);
+
+            Utils::StyledBar *styledBar1 = new Utils::StyledBar;
+            QHBoxLayout *styledBar1Layout = new QHBoxLayout;
+            styledBar1Layout->setMargin(0);
+            styledBar1Layout->setSpacing(0);
+            styledBar1Layout->addSpacing(5);
+            styledBar1Layout->addWidget(new QLabel(tr("Histogram")));
+            styledBar1Layout->addSpacing(10);
+            styledBar1->setLayout(styledBar1Layout);
+
+            m_histogramChannel = new QComboBox;
+            m_histogramChannel->addItems(QStringList()
+            << tr("Red Channel")
+            << tr("Green Channel")
+            << tr("Blue Channel")
+            << tr("Grayscale Channel")
+            << tr("L Channel")
+            << tr("A Channel")
+            << tr("B Channel")
+            << tr("Y Channel")
+            << tr("U Channel")
+            << tr("V Channel"));
+            m_histogramChannel->setToolTip(tr("Frame Buffer Histogram color channel."));
+            styledBar1Layout->addWidget(m_histogramChannel);
+
+            m_histogram = new QGraphicsView;
+            m_histogram->setFrameShape(QFrame::NoFrame);
+
+            QWidget *tempWidget1 = new QWidget;
+            QVBoxLayout *tempLayout1 = new QVBoxLayout;
+            tempLayout1->setMargin(0);
+            tempLayout1->setSpacing(0);
+            tempLayout1->addWidget(styledBar1);
+            tempLayout1->addWidget(m_histogram);
+            tempWidget1->setLayout(tempLayout1);
+
+            m_hsplitter = widget->m_hsplitter;
+            m_vsplitter = widget->m_vsplitter;
+            m_vsplitter->insertWidget(0, tempWidget0);
+            m_vsplitter->insertWidget(1, tempWidget1);
         }
     }
 
@@ -145,8 +262,18 @@ void OpenMVPlugin::extensionsInitialized()
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-    Core::EditorManager::instance()->restoreState(
+    Core::EditorManager::restoreState(
         settings->value(QStringLiteral(EDITOR_MANAGER_STATE)).toByteArray());
+    m_hsplitter->restoreState(
+        settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
+    m_vsplitter->restoreState(
+        settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
+    m_jpgCompress->setChecked(
+        settings->value(QStringLiteral(JPG_COMPRESS_STATE)).toBool());
+    m_disableFrameBuffer->setChecked(
+        settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE)).toBool());
+    m_histogramChannel->setCurrentIndex(
+        settings->value(QStringLiteral(HISTOGRAM_CHANNEL_STATE)).toInt());
     settings->endGroup();
 
     connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested,
@@ -158,23 +285,72 @@ void OpenMVPlugin::saveSettingsRequested()
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
     settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
-        Core::EditorManager::instance()->saveState());
+        Core::EditorManager::saveState());
+    settings->setValue(QStringLiteral(HSPLITTER_STATE),
+        m_hsplitter->saveState());
+    settings->setValue(QStringLiteral(VSPLITTER_STATE),
+        m_vsplitter->saveState());
+    settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
+        m_jpgCompress->isChecked());
+    settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
+        m_disableFrameBuffer->isChecked());
+    settings->setValue(QStringLiteral(HISTOGRAM_CHANNEL_STATE),
+        m_histogramChannel->currentIndex());
     settings->endGroup();
+}
+
+QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object)
+{
+    QList<QAction *> actions;
+    QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+
+    while(it.hasNext())
+    {
+        QString filePath = it.next();
+
+        if(it.fileInfo().isDir())
+        {
+            QMenu *menu = new QMenu(it.fileName(), parent);
+            QList<QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu, object);
+            menu->addActions(menuActions);
+            menu->setDisabled(menuActions.isEmpty());
+            actions.append(menu->menuAction());
+        }
+        else
+        {
+            QAction *action = new QAction(it.fileName(), parent);
+            QObject::connect(action, &QAction::triggered, object, [filePath]
+            {
+                Core::EditorManager::openEditor(filePath);
+            });
+            actions.append(action);
+        }
+    }
+
+    return actions;
+}
+
+void OpenMVPlugin::aboutToShowExamples()
+{
+    m_examplesMenu->menu()->clear();
+    QList<QAction *> actions = aboutToShowExamplesRecursive(Core::ICore::resourcePath() + QStringLiteral("/examples"), m_examplesMenu->menu(), this);
+    m_examplesMenu->menu()->addActions(actions);
+    m_examplesMenu->menu()->setDisabled(actions.isEmpty());
 }
 
 void OpenMVPlugin::docsClicked()
 {
-    QDesktopServices::openUrl(QUrl(QStringLiteral("https://openmv.io/docs/")));
+    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/")));
 }
 
 void OpenMVPlugin::forumsClicked()
 {
-    QDesktopServices::openUrl(QUrl(QStringLiteral("https://openmv.io/forums/")));
+    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/forums/")));
 }
 
 void OpenMVPlugin::pinoutClicked()
 {
-    QDesktopServices::openUrl(QUrl(QStringLiteral("https://openmv.io/docs/_images/pinout.png")));
+    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/_images/pinout.png")));
 }
 
 void OpenMVPlugin::aboutClicked()

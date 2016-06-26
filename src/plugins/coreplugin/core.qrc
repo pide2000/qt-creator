@@ -13,6 +13,9 @@
         <file>images/fileopen.png</file>
         <file>images/filesave.png</file>
         <file>images/filesave@2x.png</file>
+        <!-- OPENMV-DIFF -->
+        <file>../openmv/images/filesave.png</file>
+        <!-- OPENMV-DIFF -->
         <file>images/logo/128/QtProject-qtcreator.png</file>
         <file>images/logo/32/QtProject-qtcreator.png</file>
         <file>images/inputfield.png</file>

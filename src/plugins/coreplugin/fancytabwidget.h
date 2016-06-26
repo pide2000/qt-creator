@@ -28,6 +28,7 @@
 
 //OPENMV-DIFF//
 #include "core_global.h"
+#include "minisplitter.h"
 //OPENMV-DIFF//
 
 #include <QIcon>
@@ -183,6 +184,11 @@ private:
     QStackedLayout *m_modesStack;
     QWidget *m_selectionWidget;
     QStatusBar *m_statusBar;
+    // OPENMV-DIFF //
+public:
+    MiniSplitter *m_hsplitter;
+    MiniSplitter *m_vsplitter;
+    // OPENMV-DIFF //
 };
 
 } // namespace Internal

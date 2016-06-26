@@ -274,8 +274,10 @@ void FancyActionBar::paintEvent(QPaintEvent *event)
         // left tab bar
         painter.fillRect(event->rect(), StyleHelper::baseColor());
         painter.setPen(creatorTheme()->color(Theme::FancyToolBarSeparatorColor));
-        painter.drawLine(borderRect.topLeft(), borderRect.topRight());
-    } else {
+        // OPENMV-DIFF // painter.drawLine(borderRect.topLeft(), borderRect.topRight());
+        if (!property("no_separator").toBool()) painter.drawLine(borderRect.topLeft(), borderRect.topRight());
+    // OPENMV-DIFF // } else {
+    } else if (!property("no_separator").toBool()) {
         painter.setPen(StyleHelper::sidebarShadow());
         painter.drawLine(borderRect.topLeft(), borderRect.topRight());
         painter.setPen(StyleHelper::sidebarHighlight());

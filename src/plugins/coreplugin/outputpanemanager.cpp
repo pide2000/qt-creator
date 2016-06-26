@@ -319,6 +319,9 @@ void OutputPaneManager::init()
                                   + m_titleLabel->contentsMargins().right());
     m_buttonsWidget->layout()->addWidget(m_manageButton);
     connect(m_manageButton, &QAbstractButton::clicked, this, &OutputPaneManager::popupMenu);
+    // OPENMV-DIFF //
+    m_manageButton->hide();
+    // OPENMV-DIFF //
 
     readSettings();
 }
@@ -673,7 +676,7 @@ void OutputPaneToggleButton::paintEvent(QPaintEvent*)
 
     const QFontMetrics fm = fontMetrics();
     const int baseLine = (height() - fm.height() + 1) / 2 + fm.ascent();
-    const int numberWidth = fm.width(m_number);
+    // OPENMV-DIFF // const int numberWidth = fm.width(m_number);
 
     QPainter p(this);
 
@@ -714,7 +717,7 @@ void OutputPaneToggleButton::paintEvent(QPaintEvent*)
 
     p.setFont(font());
     p.setPen(creatorTheme()->color(Theme::OutputPaneToggleButtonTextColorChecked));
-    p.drawText((numberAreaWidth() - numberWidth) / 2, baseLine, m_number);
+    // OPENMV-DIFF // p.drawText((numberAreaWidth() - numberWidth) / 2, baseLine, m_number);
     if (!isChecked())
         p.setPen(creatorTheme()->color(Theme::OutputPaneToggleButtonTextColorUnchecked));
     int leftPart = numberAreaWidth() + buttonBorderWidth;

@@ -413,8 +413,8 @@ public:
         if (!creatorTheme()->flag(Theme::DrawToolBarHighlights)) {
             QPainter p(this);
             p.setPen(StyleHelper::borderColor());
-            const QRectF innerRect = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-            p.drawLine(innerRect.bottomLeft(), innerRect.bottomRight());
+            // OPENMV-DIFF // const QRectF innerRect = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
+            // OPENMV-DIFF // p.drawLine(innerRect.bottomLeft(), innerRect.bottomRight());
         }
     }
 
@@ -444,7 +444,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     auto fancyButton = new FancyColorButton(this);
-    connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
+    // OPENMV-DIFF // connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
     layout->addWidget(fancyButton);
     selectionLayout->addWidget(bar);
 
@@ -471,13 +471,24 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(0);
     vlayout->setSpacing(0);
-    vlayout->addLayout(m_modesStack);
+    // OPENMV-DIFF // vlayout->addLayout(m_modesStack);
     vlayout->addWidget(m_statusBar);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(1);
     mainLayout->addWidget(m_selectionWidget);
+    // OPENMV-DIFF //
+    m_hsplitter = new MiniSplitter;
+    m_vsplitter = new MiniSplitter(Qt::Vertical);
+    QWidget *tempWidget = new QWidget;
+    tempWidget->setLayout(m_modesStack);
+    m_hsplitter->insertWidget(0, tempWidget);
+    m_hsplitter->insertWidget(1, m_vsplitter);
+    m_hsplitter->setStretchFactor(0, 1);
+    m_hsplitter->setStretchFactor(1, 0);
+    vlayout->insertWidget(0, m_hsplitter);
+    // OPENMV-DIFF //
     mainLayout->addLayout(vlayout);
     setLayout(mainLayout);
 

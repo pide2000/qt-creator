@@ -1,8 +1,10 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/openmv">
         <file>../../../../openmv-media/icons/openmv-icon/openmv.png</file>
         <file>../../../../openmv-media/splash/openmv-splash/splash-small.png</file>
         <file>../projectexplorer/images/debugger_start.png</file>
         <file>../debugger/images/debugger_stop_32.png</file>
+        <file>images/connect.png</file>
+        <file>images/disconnect.png</file>
     </qresource>
 </RCC>

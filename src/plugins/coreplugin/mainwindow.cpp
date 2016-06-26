@@ -516,10 +516,12 @@ void MainWindow::registerDefaultActions()
     cmd = ActionManager::registerAction(m_newAction, Constants::NEW);
     cmd->setDefaultKeySequence(QKeySequence::New);
     mfile->addAction(cmd, Constants::G_FILE_NEW);
-    connect(m_newAction, &QAction::triggered, this, [this]() {
-        ICore::showNewItemDialog(tr("New File or Project", "Title of dialog"),
-                                 IWizardFactory::allWizardFactories(), QString());
-    });
+    // OPENMV-DIFF //
+    //connect(m_newAction, &QAction::triggered, this, [this]() {
+    //    ICore::showNewItemDialog(tr("New File or Project", "Title of dialog"),
+    //                             IWizardFactory::allWizardFactories(), QString());
+    //});
+    // OPENMV-DIFF //
     connect(ICore::instance(), &ICore::newItemDialogRunningChanged, m_newAction, [this]() {
         m_newAction->setEnabled(!ICore::isNewItemDialogRunning());
     });
@@ -546,7 +548,8 @@ void MainWindow::registerDefaultActions()
     ac->setOnAllDisabledBehavior(ActionContainer::Show);
 
     // Save Action
-    icon = QIcon::fromTheme(QLatin1String("document-save"), Icons::SAVEFILE.icon());
+    // OPENMV-DIFF // icon = QIcon::fromTheme(QLatin1String("document-save"), Icons::SAVEFILE.icon());
+    icon = QIcon::fromTheme(QLatin1String("document-save"), Icons::SAVEFILE_OLD.icon());
     QAction *tmpaction = new QAction(icon, EditorManager::tr("&Save"), this);
     tmpaction->setEnabled(false);
     cmd = ActionManager::registerAction(tmpaction, Constants::SAVE);
@@ -568,8 +571,8 @@ void MainWindow::registerDefaultActions()
     // SaveAll Action
     m_saveAllAction = new QAction(tr("Save A&ll"), this);
     cmd = ActionManager::registerAction(m_saveAllAction, Constants::SAVEALL);
-    cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? QString() : tr("Ctrl+Shift+S")));
-    mfile->addAction(cmd, Constants::G_FILE_SAVE);
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(UseMacShortcuts ? QString() : tr("Ctrl+Shift+S")));
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_SAVE);
     connect(m_saveAllAction, &QAction::triggered, this, &MainWindow::saveAll);
 
     // Print Action

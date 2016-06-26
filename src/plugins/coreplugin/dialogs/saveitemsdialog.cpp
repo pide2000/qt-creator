@@ -63,6 +63,10 @@ SaveItemsDialog::SaveItemsDialog(QWidget *parent,
         QString fileName = document->filePath().toString();
         if (fileName.isEmpty()) {
             visibleName = document->fallbackSaveAsFileName();
+            // OPENMV-DIFF //
+            if (visibleName.isEmpty())
+                visibleName = document->displayName();
+            // OPENMV-DIFF //
         } else {
             QFileInfo info = QFileInfo(fileName);
             directory = info.absolutePath();

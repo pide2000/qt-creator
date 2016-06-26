@@ -48,7 +48,7 @@ MessageManager::MessageManager()
 MessageManager::~MessageManager()
 {
     if (m_messageOutputWindow) {
-        ExtensionSystem::PluginManager::removeObject(m_messageOutputWindow);
+        // OPENMV-DIFF // ExtensionSystem::PluginManager::removeObject(m_messageOutputWindow);
         delete m_messageOutputWindow;
     }
     m_instance = 0;
@@ -57,7 +57,7 @@ MessageManager::~MessageManager()
 void MessageManager::init()
 {
     m_messageOutputWindow = new Internal::MessageOutputWindow;
-    ExtensionSystem::PluginManager::addObject(m_messageOutputWindow);
+    // OPENMV-DIFF // ExtensionSystem::PluginManager::addObject(m_messageOutputWindow);
 }
 
 void MessageManager::showOutputPane()

@@ -29,7 +29,8 @@ STATIC_INSTALL_BASE = $$INSTALL_DATA_PATH
 #OPENMV-DIFF#
 DATA_DIRS = \
     themes \
-    styles
+    styles \
+    examples
 
 for(data_dir, DATA_DIRS) {
     files = $$files($$PWD/$$data_dir/*, true)

@@ -356,7 +356,8 @@ QString MimeDatabase::allFiltersString(QString *allFilesFilter)
     // Prepend all files filter
     filters.prepend(allFiles);
 
-    return filters.join(QLatin1String(";;"));
+    // OPENMV-DIFF // return filters.join(QLatin1String(";;"));
+    return allFiles;
 }
 
 QStringList MimeDatabase::allGlobPatterns()

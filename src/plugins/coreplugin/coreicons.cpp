@@ -36,6 +36,10 @@ const Icon OPENFILE(
         QLatin1String(":/core/images/fileopen.png"));
 const Icon SAVEFILE({
         {QLatin1String(":/core/images/filesave.png"), Theme::PanelTextColorMid}}, Icon::Tint);
+// OPENMV-DIFF //
+const Icon SAVEFILE_OLD(
+        QLatin1String(":/core/openmv/images/filesave.png"));
+// OPENMV-DIFF //
 const Icon SAVEFILE_TOOLBAR({
         {QLatin1String(":/core/images/filesave.png"), Theme::IconsBaseColor}});
 const Icon UNDO(

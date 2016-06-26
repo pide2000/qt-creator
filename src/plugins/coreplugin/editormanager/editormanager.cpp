@@ -270,7 +270,7 @@ void EditorManagerPrivate::init()
                                        Constants::REVERTTOSAVED, editManagerContext);
     cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDescription(tr("Revert File to Saved"));
-    mfile->addAction(cmd, Constants::G_FILE_SAVE);
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_SAVE);
     connect(m_revertToSavedAction, &QAction::triggered, m_instance, &EditorManager::revertToSaved);
 
     // Save Action
@@ -293,7 +293,8 @@ void EditorManagerPrivate::init()
     cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+W")));
     cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDescription(m_closeCurrentEditorAction->text());
-    mfile->addAction(cmd, Constants::G_FILE_CLOSE);
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_CLOSE);
+    mfile->addAction(cmd, Constants::G_FILE_SAVE);
     connect(m_closeCurrentEditorAction, &QAction::triggered,
             m_instance, &EditorManager::slotCloseCurrentEditorOrDocument);
 
@@ -309,21 +310,21 @@ void EditorManagerPrivate::init()
 
     // Close All Action
     cmd = ActionManager::registerAction(m_closeAllEditorsAction, Constants::CLOSEALL, editManagerContext, true);
-    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Shift+W")));
-    mfile->addAction(cmd, Constants::G_FILE_CLOSE);
+    // OPENMV-DIFF // cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Shift+W")));
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_CLOSE);
     connect(m_closeAllEditorsAction, &QAction::triggered,
             m_instance, []() { EditorManager::closeAllEditors(); });
 
     // Close All Others Action
     cmd = ActionManager::registerAction(m_closeOtherDocumentsAction, Constants::CLOSEOTHERS, editManagerContext, true);
-    mfile->addAction(cmd, Constants::G_FILE_CLOSE);
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_CLOSE);
     cmd->setAttribute(Command::CA_UpdateText);
     connect(m_closeOtherDocumentsAction, &QAction::triggered,
             m_instance, []() { EditorManager::closeOtherDocuments(); });
 
     // Close All Others Except Visible Action
     cmd = ActionManager::registerAction(m_closeAllEditorsExceptVisibleAction, Constants::CLOSEALLEXCEPTVISIBLE, editManagerContext, true);
-    mfile->addAction(cmd, Constants::G_FILE_CLOSE);
+    // OPENMV-DIFF // mfile->addAction(cmd, Constants::G_FILE_CLOSE);
     connect(m_closeAllEditorsExceptVisibleAction, &QAction::triggered,
             this, &EditorManagerPrivate::closeAllEditorsExceptVisible);
 
@@ -2199,10 +2200,10 @@ void EditorManager::addSaveAndCloseEditorActions(QMenu *contextMenu, DocumentMod
 
     contextMenu->addAction(d->m_saveCurrentEditorContextAction);
     contextMenu->addAction(d->m_saveAsCurrentEditorContextAction);
-    contextMenu->addAction(ActionManager::command(Constants::SAVEALL)->action());
-    contextMenu->addAction(d->m_revertToSavedCurrentEditorContextAction);
+    // OPENMV-DIFF // contextMenu->addAction(ActionManager::command(Constants::SAVEALL)->action());
+    // OPENMV-DIFF // contextMenu->addAction(d->m_revertToSavedCurrentEditorContextAction);
 
-    contextMenu->addSeparator();
+    // OPENMV-DIFF // contextMenu->addSeparator();
 
     d->m_closeCurrentEditorContextAction->setText(entry
                                                     ? tr("Close \"%1\"").arg(entry->displayName())
@@ -2216,9 +2217,9 @@ void EditorManager::addSaveAndCloseEditorActions(QMenu *contextMenu, DocumentMod
     d->m_closeAllEditorsExceptVisibleContextAction->setEnabled(
                 EditorManagerPrivate::visibleDocumentsCount() < DocumentModel::entries().count());
     contextMenu->addAction(d->m_closeCurrentEditorContextAction);
-    contextMenu->addAction(d->m_closeAllEditorsContextAction);
-    contextMenu->addAction(d->m_closeOtherDocumentsContextAction);
-    contextMenu->addAction(d->m_closeAllEditorsExceptVisibleContextAction);
+    // OPENMV-DIFF // contextMenu->addAction(d->m_closeAllEditorsContextAction);
+    // OPENMV-DIFF // contextMenu->addAction(d->m_closeOtherDocumentsContextAction);
+    // OPENMV-DIFF // contextMenu->addAction(d->m_closeAllEditorsExceptVisibleContextAction);
 }
 
 void EditorManager::addNativeDirAndOpenWithActions(QMenu *contextMenu, DocumentModel::Entry *entry)
@@ -2232,10 +2233,12 @@ void EditorManager::addNativeDirAndOpenWithActions(QMenu *contextMenu, DocumentM
     contextMenu->addAction(d->m_openGraphicalShellAction);
     contextMenu->addAction(d->m_openTerminalAction);
     contextMenu->addAction(d->m_findInDirectoryAction);
-    QMenu *openWith = contextMenu->addMenu(tr("Open With"));
-    openWith->setEnabled(enabled);
-    if (enabled)
-        populateOpenWithMenu(openWith, entry->fileName().toString());
+    // OPENMV-DIFF //
+    //QMenu *openWith = contextMenu->addMenu(tr("Open With"));
+    //openWith->setEnabled(enabled);
+    //if (enabled)
+    //    populateOpenWithMenu(openWith, entry->fileName().toString());
+    // OPENMV-DIFF //
 }
 
 void EditorManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
@@ -2671,7 +2674,8 @@ static QString makeTitleUnique(QString *titlePattern)
                     name = entry->displayName();
                 else
                     name = QFileInfo(name).completeBaseName();
-                docnames << name;
+                // OPENMV-DIFF // docnames << name;
+                docnames << entry->displayName();
             }
 
             do {

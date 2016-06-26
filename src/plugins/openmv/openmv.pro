@@ -1,4 +1,5 @@
 include(../../qtcreatorplugin.pri)
-HEADERS += openmvplugin.h
-SOURCES += openmvplugin.cpp
+QT += serialport
+HEADERS += openmvplugin.h openmvframebuffer.h
+SOURCES += openmvplugin.cpp openmvframebuffer.cpp
 RESOURCES += openmv.qrc

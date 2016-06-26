@@ -586,7 +586,7 @@ static void updateEditorInfoBar(TextEditorWidget *widget)
             ICore::showOptionsDialog(Constants::TEXT_EDITOR_HIGHLIGHTER_SETTINGS, widget);
         });
 
-        infoBar->addInfo(info);
+        // OPENMV-DIFF // infoBar->addInfo(info);
     }
 }
 
@@ -7530,7 +7530,13 @@ void TextEditorWidget::configureGenericHighlighter()
         d->m_isMissingSyntaxDefinition = true;
 
         QString definitionId;
-        setMimeTypeForHighlighter(highlighter, mimeType, textDocument()->filePath().toString(),
+        // OPENMV-DIFF //
+        //setMimeTypeForHighlighter(highlighter, mimeType, textDocument()->filePath().toString(),
+        //                         &definitionId);
+        // OPENMV-DIFF //
+        QString path = textDocument()->filePath().toString();
+        if (path.isEmpty()) path = textDocument()->displayName();
+        setMimeTypeForHighlighter(highlighter, mimeType, path,
                                   &definitionId);
 
         if (!definitionId.isEmpty()) {

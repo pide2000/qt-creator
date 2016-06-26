@@ -93,11 +93,11 @@ void Locator::initialize(CorePlugin *corePlugin, const QStringList &, QString *)
 
     m_locatorWidget = new LocatorWidget(this);
     m_locatorWidget->setEnabled(false);
-    StatusBarWidget *view = new StatusBarWidget;
-    view->setWidget(m_locatorWidget);
-    view->setContext(Context("LocatorWidget"));
-    view->setPosition(StatusBarWidget::First);
-    m_corePlugin->addAutoReleasedObject(view);
+    // OPENMV-DIFF // StatusBarWidget *view = new StatusBarWidget;
+    // OPENMV-DIFF // view->setWidget(m_locatorWidget);
+    // OPENMV-DIFF // view->setContext(Context("LocatorWidget"));
+    // OPENMV-DIFF // view->setPosition(StatusBarWidget::First);
+    // OPENMV-DIFF // m_corePlugin->addAutoReleasedObject(view);
 
     QAction *action = new QAction(m_locatorWidget->windowIcon(), m_locatorWidget->windowTitle(), this);
     Command *cmd = ActionManager::registerAction(action, Constants::LOCATE);
@@ -196,7 +196,7 @@ void Locator::loadSettings()
 void Locator::updateEditorManagerPlaceholderText()
 {
     Command *openCommand = ActionManager::command(Constants::OPEN);
-    Command *locateCommand = ActionManager::command(Constants::LOCATE);
+    // OPENMV-DIFF // Command *locateCommand = ActionManager::command(Constants::LOCATE);
     const QString placeholderText = tr("<html><body style=\"color:#909090; font-size:14px\">"
           "<div align='center'>"
           "<div style=\"font-size:20px\">Open a document</div>"
@@ -217,8 +217,9 @@ void Locator::updateEditorManagerPlaceholderText()
           "</div>"
           "</body></html>")
          .arg(openCommand->keySequence().toString(QKeySequence::NativeText))
-         .arg(locateCommand->keySequence().toString(QKeySequence::NativeText))
-         .arg(m_fileSystemFilter->shortcutString());
+         // OPENMV-DIFF // .arg(locateCommand->keySequence().toString(QKeySequence::NativeText))
+         // OPENMV-DIFF // .arg(m_fileSystemFilter->shortcutString());
+         ;
 
     QString classes;
     // not nice, but anyhow
@@ -237,7 +238,8 @@ void Locator::updateEditorManagerPlaceholderText()
         methods = tr("<div style=\"margin-left: 1em\">- type <code>%1&lt;space&gt;&lt;pattern&gt;</code>"
                      " to jump to a function definition</div>").arg(methodsFilter->shortcutString());
 
-    EditorManagerPrivate::setPlaceholderText(placeholderText.arg(classes, methods));
+    // OPENMV-DIFF // EditorManagerPrivate::setPlaceholderText(placeholderText.arg(classes, methods));
+    EditorManagerPrivate::setPlaceholderText(placeholderText);
 }
 
 void Locator::saveSettings()

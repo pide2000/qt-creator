@@ -285,7 +285,7 @@ ProgressManagerPrivate::~ProgressManagerPrivate()
     stopFadeOfSummaryProgress();
     qDeleteAll(m_taskList);
     m_taskList.clear();
-    ExtensionSystem::PluginManager::removeObject(m_statusBarWidgetContainer);
+    // OPENMV-DIFF // ExtensionSystem::PluginManager::removeObject(m_statusBarWidgetContainer);
     delete m_statusBarWidgetContainer;
     cleanup();
     m_instance = 0;
@@ -327,7 +327,7 @@ void ProgressManagerPrivate::init()
     layout->addWidget(toggleButton);
     m_statusBarWidgetContainer->setWidget(m_statusBarWidget);
     m_statusBarWidgetContainer->setPosition(StatusBarWidget::RightCorner);
-    ExtensionSystem::PluginManager::addObject(m_statusBarWidgetContainer);
+    // OPENMV-DIFF // ExtensionSystem::PluginManager::addObject(m_statusBarWidgetContainer);
     m_statusBarWidget->installEventFilter(this);
 
     QAction *toggleProgressView = new QAction(tr("Toggle Progress Details"), this);

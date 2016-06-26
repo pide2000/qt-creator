@@ -36,6 +36,9 @@ namespace Icons {
 CORE_EXPORT extern const Utils::Icon NEWFILE;
 CORE_EXPORT extern const Utils::Icon OPENFILE;
 CORE_EXPORT extern const Utils::Icon SAVEFILE;
+// OPENMV-DIFF //
+CORE_EXPORT extern const Utils::Icon SAVEFILE_OLD;
+// OPENMV-DIFF //
 CORE_EXPORT extern const Utils::Icon SAVEFILE_TOOLBAR;
 CORE_EXPORT extern const Utils::Icon UNDO;
 CORE_EXPORT extern const Utils::Icon REDO;

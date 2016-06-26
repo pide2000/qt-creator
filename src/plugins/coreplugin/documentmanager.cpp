@@ -577,6 +577,10 @@ static bool saveModifiedFilesHelper(const QList<IDocument *> &documents,
             QString name = document->filePath().toString();
             if (name.isEmpty())
                 name = document->fallbackSaveAsFileName();
+            // OPENMV-DIFF //
+            if (name.isEmpty())
+                name = document->displayName();
+            // OPENMV-DIFF //
 
             // There can be several IDocuments pointing to the same file
             // Prefer one that is not readonly
@@ -737,7 +741,18 @@ QString DocumentManager::getSaveAsFileName(const IDocument *document, const QStr
     QString fileName;
     if (absoluteFilePath.isEmpty()) {
         fileName = document->fallbackSaveAsFileName();
-        const QString defaultPath = document->fallbackSaveAsPath();
+        // OPENMV-DIFF // const QString defaultPath = document->fallbackSaveAsPath();
+        // OPENMV-DIFF //
+        QString defaultPath = document->fallbackSaveAsPath();
+        if (fileName.isEmpty())
+            fileName = document->displayName();
+        if (defaultPath.isEmpty()) {
+            if (EditorManager::currentDocument() && !EditorManager::currentDocument()->isTemporary())
+                defaultPath = EditorManager::currentDocument()->filePath().toString();
+            if (defaultPath.isEmpty() && useProjectsDirectory())
+                defaultPath = projectsDirectory();
+        }
+        // OPENMV-DIFF //
         if (!defaultPath.isEmpty())
             path = defaultPath;
     } else {

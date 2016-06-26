@@ -373,23 +373,23 @@ void TextEditorActionHandlerPrivate::createActions()
 
     // register "Edit" Menu Actions
     Core::ActionContainer *editMenu = Core::ActionManager::actionContainer(M_EDIT);
-    //OPENMV-DIFF// m_selectEncodingAction = registerAction(SELECT_ENCODING,
-    //OPENMV-DIFF//         [this] (TextEditorWidget *w) { w->selectEncoding(); }, false, tr("Select Encoding..."),
-    //OPENMV-DIFF//         QKeySequence(), G_EDIT_OTHER, editMenu);
+    // OPENMV-DIFF // m_selectEncodingAction = registerAction(SELECT_ENCODING,
+    // OPENMV-DIFF //         [this] (TextEditorWidget *w) { w->selectEncoding(); }, false, tr("Select Encoding..."),
+    // OPENMV-DIFF //         QKeySequence(), G_EDIT_OTHER, editMenu);
     m_circularPasteAction = registerAction(CIRCULAR_PASTE,
             [this] (TextEditorWidget *w) { w->circularPaste(); }, false, tr("Paste from Clipboard History"),
             QKeySequence(tr("Ctrl+Shift+V")), G_EDIT_COPYPASTE, editMenu);
 
     // register "Edit -> Advanced" Menu Actions
     Core::ActionContainer *advancedEditMenu = Core::ActionManager::actionContainer(M_EDIT_ADVANCED);
-    m_formatAction = registerAction(AUTO_INDENT_SELECTION,
-            [this] (TextEditorWidget *w) { w->format(); }, true, tr("Auto-&indent Selection"),
-            QKeySequence(tr("Ctrl+I")),
-            G_EDIT_FORMAT, advancedEditMenu);
-    m_rewrapParagraphAction = registerAction(REWRAP_PARAGRAPH,
-            [this] (TextEditorWidget *w) { w->rewrapParagraph(); }, true, tr("&Rewrap Paragraph"),
-            QKeySequence(Core::UseMacShortcuts ? tr("Meta+E, R") : tr("Ctrl+E, R")),
-            G_EDIT_FORMAT, advancedEditMenu);
+    // OPENMV-DIFF // m_formatAction = registerAction(AUTO_INDENT_SELECTION,
+    // OPENMV-DIFF //         [this] (TextEditorWidget *w) { w->format(); }, true, tr("Auto-&indent Selection"),
+    // OPENMV-DIFF //         QKeySequence(tr("Ctrl+I")),
+    // OPENMV-DIFF //         G_EDIT_FORMAT, advancedEditMenu);
+    // OPENMV-DIFF // m_rewrapParagraphAction = registerAction(REWRAP_PARAGRAPH,
+    // OPENMV-DIFF //         [this] (TextEditorWidget *w) { w->rewrapParagraph(); }, true, tr("&Rewrap Paragraph"),
+    // OPENMV-DIFF //         QKeySequence(Core::UseMacShortcuts ? tr("Meta+E, R") : tr("Ctrl+E, R")),
+    // OPENMV-DIFF //         G_EDIT_FORMAT, advancedEditMenu);
     m_visualizeWhitespaceAction = registerBoolAction(VISUALIZE_WHITESPACE,
             [this] (TextEditorWidget *widget, bool checked) {
                 if (widget) {
@@ -528,8 +528,8 @@ void TextEditorActionHandlerPrivate::createActions()
     // Collect all modifying actions so we can check for them inside a readonly file
     // and disable them
     m_modifyingActions << m_pasteAction;
-    m_modifyingActions << m_formatAction;
-    m_modifyingActions << m_rewrapParagraphAction;
+    // OPENMV-DIFF // m_modifyingActions << m_formatAction;
+    // OPENMV-DIFF // m_modifyingActions << m_rewrapParagraphAction;
     m_modifyingActions << m_cleanWhitespaceAction;
     m_modifyingActions << m_unCommentSelectionAction;
     m_modifyingActions << m_cutLineAction;
@@ -566,7 +566,7 @@ void TextEditorActionHandlerPrivate::updateActions()
     bool isWritable = !m_currentEditorWidget->isReadOnly();
     foreach (QAction *a, m_modifyingActions)
         a->setEnabled(isWritable);
-    m_formatAction->setEnabled((m_optionalActions & TextEditorActionHandler::Format) && isWritable);
+    // OPENMV-DIFF // m_formatAction->setEnabled((m_optionalActions & TextEditorActionHandler::Format) && isWritable);
     m_unCommentSelectionAction->setEnabled((m_optionalActions & TextEditorActionHandler::UnCommentSelection) && isWritable);
     m_visualizeWhitespaceAction->setChecked(m_currentEditorWidget->displaySettings().m_visualizeWhitespace);
     m_textWrappingAction->setChecked(m_currentEditorWidget->displaySettings().m_textWrapping);

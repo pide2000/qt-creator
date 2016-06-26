@@ -57,7 +57,7 @@ StatusBarManager::StatusBarManager(MainWindow *mainWnd)
 {
     QStatusBar *bar = m_mainWnd->statusBar();
     m_splitter = new NonResizingSplitter(bar);
-    bar->insertPermanentWidget(0, m_splitter, 10);
+    // OPENMV-DIFF // bar->insertPermanentWidget(0, m_splitter, 10);
     m_splitter->setChildrenCollapsible(false);
     // first
     QWidget *w = createWidget(m_splitter);
@@ -66,8 +66,9 @@ StatusBarManager::StatusBarManager(MainWindow *mainWnd)
     m_statusBarWidgets.append(w);
 
     QWidget *w2 = createWidget(m_splitter);
-    w2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-    m_splitter->addWidget(w2);
+    // OPENMV-DIFF // w2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    // OPENMV-DIFF // m_splitter->addWidget(w2);
+    bar->insertPermanentWidget(0, w2, 1);
     // second
     w = createWidget(w2);
     w2->layout()->addWidget(w);
