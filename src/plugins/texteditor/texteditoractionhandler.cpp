@@ -283,7 +283,7 @@ void TextEditorActionHandlerPrivate::createActions()
             Core::IEditor *editor = Core::EditorManager::currentEditor();
             if (editor) {
                 bool ok;
-                QString line = QInputDialog::getText(Core::ICore::mainWindow(), tr("Go to Line..."), tr("Line number..."), QLineEdit::Normal, QString::number(editor->currentLine()), &ok
+                QString line = QInputDialog::getText(Core::ICore::dialogParent(), tr("Go to Line..."), tr("Line number..."), QLineEdit::Normal, QString::number(editor->currentLine()), &ok
 #ifdef Q_OS_MAC
                 , Qt::WindowTitleHint | Qt::WindowSystemMenuHint,
 #else

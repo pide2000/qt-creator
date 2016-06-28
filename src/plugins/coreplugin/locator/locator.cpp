@@ -93,11 +93,11 @@ void Locator::initialize(CorePlugin *corePlugin, const QStringList &, QString *)
 
     m_locatorWidget = new LocatorWidget(this);
     m_locatorWidget->setEnabled(false);
-    // OPENMV-DIFF // StatusBarWidget *view = new StatusBarWidget;
-    // OPENMV-DIFF // view->setWidget(m_locatorWidget);
-    // OPENMV-DIFF // view->setContext(Context("LocatorWidget"));
-    // OPENMV-DIFF // view->setPosition(StatusBarWidget::First);
-    // OPENMV-DIFF // m_corePlugin->addAutoReleasedObject(view);
+    StatusBarWidget *view = new StatusBarWidget;
+    view->setWidget(m_locatorWidget);
+    view->setContext(Context("LocatorWidget"));
+    view->setPosition(StatusBarWidget::First);
+    m_corePlugin->addAutoReleasedObject(view);
 
     QAction *action = new QAction(m_locatorWidget->windowIcon(), m_locatorWidget->windowTitle(), this);
     Command *cmd = ActionManager::registerAction(action, Constants::LOCATE);

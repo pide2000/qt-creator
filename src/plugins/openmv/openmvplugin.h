@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <QtSerialPort>
 
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
@@ -24,6 +25,7 @@
 #include <utils/hostosinfo.h>
 #include <utils/styledbar.h>
 
+#include "openmvpluginio.h"
 #include "openmvframebuffer.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
@@ -40,6 +42,13 @@
 #define JPG_COMPRESS_STATE "JPGCompressState"
 #define DISABLE_FRAME_BUFFER_STATE "DisableFrameBufferState"
 #define HISTOGRAM_CHANNEL_STATE "HistogramChannelState"
+#define LAST_SERIAL_PORT_STATE "LastSerialPortState"
+
+#define OPENMVCAM_VENDOR_ID 0x1209
+#define OPENMVCAM_PRODUCT_ID 0xABD1
+
+#define OPENMVCAM_BAUD_RATE 12000000 // 12 Mbps
+#define OPENMVCAM_POLL_RATE 10 // 10 ms = 100 Hz
 
 namespace OpenMV {
 namespace Internal {
@@ -68,6 +77,13 @@ public slots:
     void pinoutClicked();
     void aboutClicked();
 
+    void connectClicked();
+    void disconnectClicked();
+    void startClicked();
+    void stopClicked();
+
+    void processEvents();
+
 private:
 
     Core::ActionContainer *m_examplesMenu;
@@ -91,6 +107,10 @@ private:
 
     QComboBox *m_histogramChannel;
     QGraphicsView *m_histogram;
+
+    OpenMVPluginIO *m_iodevice;
+    QTimer *m_timer;
+    QSerialPort *m_serialPort;
 };
 
 } // namespace Internal

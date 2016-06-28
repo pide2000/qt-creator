@@ -107,6 +107,15 @@ QWidget *GeneralSettings::widget()
                 this, &GeneralSettings::resetInterfaceColor);
         connect(m_page->resetWarningsButton, &QAbstractButton::clicked,
                 this, &GeneralSettings::resetWarnings);
+        // OPENMV-DIFF //
+        m_page->colorLabel->hide();
+        m_page->colorButton->hide();
+        m_page->horizontalLayout->removeItem(m_page->horizontalSpacer);
+        m_page->resetColorButton->hide();
+        m_page->themeLabel->hide();
+        m_page->themeChooser->hide();
+        m_page->resetWarningsButton->hide();
+        // OPENMV-DIFF //
     }
     return m_widget;
 }

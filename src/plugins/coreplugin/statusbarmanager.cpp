@@ -62,6 +62,9 @@ StatusBarManager::StatusBarManager(MainWindow *mainWnd)
     // first
     QWidget *w = createWidget(m_splitter);
     w->layout()->setContentsMargins(0, 0, 3, 0);
+    // OPENMV-DIFF //
+    w->hide();
+    // OPENMV-DIFF //
     m_splitter->addWidget(w);
     m_statusBarWidgets.append(w);
 

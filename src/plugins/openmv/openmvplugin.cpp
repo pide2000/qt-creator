@@ -6,8 +6,13 @@ namespace OpenMV {
 namespace Internal {
 
 OpenMVPlugin::OpenMVPlugin()
-{ 
+{
+    m_iodevice = new OpenMVPluginIO(this);
+    m_timer = new QTimer(this);
+    m_serialPort = NULL;
 
+    connect(m_timer, &QTimer::timeout, m_iodevice, &OpenMVPluginIO::processEvents);
+    m_timer->start(OPENMVCAM_POLL_RATE);
 }
 
 OpenMVPlugin::~OpenMVPlugin()
@@ -62,19 +67,26 @@ void OpenMVPlugin::extensionsInitialized()
     m_connectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
         tr("Connect"), this), Core::Id("OpenMV.Connect"));
+    connect(m_connectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::connectClicked);
 
     m_disconnectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
         tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
+    m_disconnectCommand->action()->setVisible(false);
+    connect(m_disconnectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::disconnectClicked);
 
     m_startCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
         tr("Start"), this), Core::Id("OpenMV.Start"));
     m_startCommand->setDefaultKeySequence(tr("Ctrl+R"));
+    m_startCommand->action()->setDisabled(true);
+    connect(m_startCommand->action(), &QAction::triggered, this, &OpenMVPlugin::startClicked);
 
     m_stopCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
         tr("Stop"), this), Core::Id("OpenMV.Stop"));
+    m_stopCommand->action()->setDisabled(true);
+    connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -364,6 +376,132 @@ void OpenMVPlugin::aboutClicked()
     "<p><b>Questions or Comments?</b></p>"
     "<p>Contact us at <a href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
     ).arg(QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG)).arg(QLatin1String(Core::Constants::OMV_IDE_YEAR)).arg(QLatin1String(Core::Constants::OMV_IDE_AUTHOR)));
+}
+
+void OpenMVPlugin::connectClicked()
+{
+    QStringList stringList;
+
+    foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
+    {
+        if(port.hasVendorIdentifier() && (port.vendorIdentifier() == OPENMVCAM_VENDOR_ID)
+        && port.hasProductIdentifier() && (port.productIdentifier() == OPENMVCAM_PRODUCT_ID))
+        {
+            stringList.append(port.portName());
+        }
+    }
+
+    QString selectedPort;
+
+    if(stringList.isEmpty())
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QApplication::applicationName(),
+            tr("No OpenMV Cams found"));
+    }
+    else if(stringList.size() == 1)
+    {
+        selectedPort = stringList.first();
+    }
+    else
+    {
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+        QString lastPortName = settings->value(QStringLiteral(LAST_SERIAL_PORT_STATE)).toString();
+
+        int index = 0;
+        if(!lastPortName.isEmpty())
+        {
+            int tmp = stringList.indexOf(lastPortName);
+            if(tmp != -1)
+            {
+                index = tmp;
+            }
+        }
+
+        bool ok;
+        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+            QApplication::applicationName(), tr("Please select a serial port"),
+            stringList, index, false, &ok,
+             Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+        if(ok)
+        {
+            selectedPort = temp;
+            settings->setValue(QStringLiteral(LAST_SERIAL_PORT_STATE), temp);
+        }
+
+        settings->endGroup();
+    }
+
+    if(!selectedPort.isEmpty())
+    {
+        m_serialPort = new QSerialPort(selectedPort, this);
+
+        if(!m_serialPort->open(QIODevice::ReadWrite))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QApplication::applicationName(),
+                tr("Open Failure: %L1").arg(m_serialPort->errorString()));
+
+            delete m_serialPort;
+            m_serialPort = NULL;
+            return;
+        }
+
+        if(!m_serialPort->setBaudRate(OPENMVCAM_BAUD_RATE))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QApplication::applicationName(),
+                tr("SetBaudRate Failure: %L1").arg(m_serialPort->errorString()));
+
+            delete m_serialPort;
+            m_serialPort = NULL;
+            return;
+        }
+
+        m_connectCommand->action()->setVisible(false);
+        m_disconnectCommand->action()->setVisible(true);
+        m_startCommand->action()->setEnabled(true);
+
+        connect(m_serialPort, static_cast<void(QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error), [=](QSerialPort::SerialPortError error)
+        {
+            Q_UNUSED(error);
+            disconnectClicked();
+        });
+    }
+}
+
+void OpenMVPlugin::disconnectClicked()
+{
+    m_connectCommand->action()->setVisible(true);
+    m_disconnectCommand->action()->setVisible(false);
+    m_startCommand->action()->setDisabled(true);
+    m_stopCommand->action()->setDisabled(true);
+
+    delete m_serialPort;
+    m_serialPort = NULL;
+}
+
+void OpenMVPlugin::startClicked()
+{
+    m_startCommand->action()->setDisabled(true);
+    m_stopCommand->action()->setEnabled(true);
+}
+
+void OpenMVPlugin::stopClicked()
+{
+    m_startCommand->action()->setEnabled(true);
+    m_stopCommand->action()->setDisabled(true);
+}
+
+void OpenMVPlugin::processEvents()
+{
+    if(m_serialPort)
+    {
+
+    }
 }
 
 } // namespace Internal
