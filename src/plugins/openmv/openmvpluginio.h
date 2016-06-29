@@ -49,12 +49,12 @@ public slots:
 
 signals:
 
-    void serialPortChanged(QSerialPort *oldPort, QSerialPort *newPort);
+    void shutdown();
 
     void printData(const QByteArray &data);
     void frameBufferData(const QPixmap &data);
 
-    void firmwareVersion(long, long, long);
+    void firmwareVersion(long major, long minor, long patch);
     void scriptRunning(long);
     void attribute(char);
 
@@ -69,7 +69,7 @@ private:
     QQueue<int> m_expectedHeaderQueue, m_expectedDataQueue;
 
     bool m_disablePrint, m_disableFrameBuffer, m_bootloaderMode;
-    long m_frameSizeW, m_frameSizeH, m_frameSizeBPP; // temp vars...
+    long m_frameSizeW, m_frameSizeH, m_frameSizeBPP, m_pingPong; // temp vars...
 };
 
 #endif // OPENMVPLUGINIO_H

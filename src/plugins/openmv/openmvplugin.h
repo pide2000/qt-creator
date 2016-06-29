@@ -14,6 +14,7 @@
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/id.h>
+#include <coreplugin/messagemanager.h>
 #include <coreplugin/minisplitter.h>
 
 #include <texteditor/texteditor.h>
@@ -26,10 +27,10 @@
 #include <utils/styledbar.h>
 
 #include "openmvpluginio.h"
-#include "openmvframebuffer.h"
+#include "openmvpluginfb.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
-#define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash/splash-small.png"
+#define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
 #define START_PATH ":/openmv/projectexplorer/images/debugger_start.png"
 #define STOP_PATH ":/openmv/debugger/images/debugger_stop_32.png"
 #define CONNECT_PATH ":/openmv/images/connect.png"
@@ -82,7 +83,7 @@ public slots:
     void startClicked();
     void stopClicked();
 
-    void processEvents();
+    void firmwareVersion(long major, long minor, long patch);
 
 private:
 
@@ -103,13 +104,15 @@ private:
 
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;
-    OpenMVFrameBuffer *m_frameBuffer;
+    OpenMVPluginFB *m_frameBuffer;
 
     QComboBox *m_histogramChannel;
     QGraphicsView *m_histogram;
 
+    QLabel *m_versionLabel;
+    int m_major, m_minor, m_patch;
+
     OpenMVPluginIO *m_iodevice;
-    QTimer *m_timer;
     QSerialPort *m_serialPort;
 };
 

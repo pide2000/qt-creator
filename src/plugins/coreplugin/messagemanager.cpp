@@ -48,7 +48,7 @@ MessageManager::MessageManager()
 MessageManager::~MessageManager()
 {
     if (m_messageOutputWindow) {
-        // OPENMV-DIFF // ExtensionSystem::PluginManager::removeObject(m_messageOutputWindow);
+        ExtensionSystem::PluginManager::removeObject(m_messageOutputWindow);
         delete m_messageOutputWindow;
     }
     m_instance = 0;
@@ -57,7 +57,7 @@ MessageManager::~MessageManager()
 void MessageManager::init()
 {
     m_messageOutputWindow = new Internal::MessageOutputWindow;
-    // OPENMV-DIFF // ExtensionSystem::PluginManager::addObject(m_messageOutputWindow);
+    ExtensionSystem::PluginManager::addObject(m_messageOutputWindow);
 }
 
 void MessageManager::showOutputPane()
@@ -86,3 +86,11 @@ void MessageManager::write(const QString &text, PrintToOutputPaneFlags flags)
     m_messageOutputWindow->append(text + QLatin1Char('\n'));
 }
 
+// OPENMV-DIFF //
+void MessageManager::printData(const QByteArray &data)
+{
+    if (!m_messageOutputWindow)
+        return;
+    m_messageOutputWindow->append(QString::fromLatin1(data));
+}
+// OPENMV-DIFF //

@@ -60,6 +60,9 @@ public:
 
 public slots:
     static void write(const QString &text, Core::MessageManager::PrintToOutputPaneFlags flags);
+    // OPENMV-DIFF //
+    static void printData(const QByteArray &data);
+    // OPENMV-DIFF //
 
 private:
     MessageManager();

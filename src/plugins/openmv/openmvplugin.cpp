@@ -8,11 +8,11 @@ namespace Internal {
 OpenMVPlugin::OpenMVPlugin()
 {
     m_iodevice = new OpenMVPluginIO(this);
-    m_timer = new QTimer(this);
     m_serialPort = NULL;
 
-    connect(m_timer, &QTimer::timeout, m_iodevice, &OpenMVPluginIO::processEvents);
-    m_timer->start(OPENMVCAM_POLL_RATE);
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, m_iodevice, &OpenMVPluginIO::processEvents);
+    timer->start(OPENMVCAM_POLL_RATE);
 }
 
 OpenMVPlugin::~OpenMVPlugin()
@@ -25,6 +25,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
 
+    QApplication::setApplicationDisplayName(tr("OpenMV IDE"));
     QApplication::setWindowIcon(QIcon(QStringLiteral(ICON_PATH)));
 
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
@@ -182,7 +183,7 @@ void OpenMVPlugin::extensionsInitialized()
             m_disableFrameBuffer->setChecked(false); // inital value
             styledBar0Layout->addWidget(m_disableFrameBuffer);
 
-            m_frameBuffer = new OpenMVFrameBuffer;
+            m_frameBuffer = new OpenMVPluginFB;
             m_frameBuffer->setFrameShape(QFrame::NoFrame);
 
             QWidget *tempWidget0 = new QWidget;
@@ -232,8 +233,35 @@ void OpenMVPlugin::extensionsInitialized()
             m_vsplitter = widget->m_vsplitter;
             m_vsplitter->insertWidget(0, tempWidget0);
             m_vsplitter->insertWidget(1, tempWidget1);
+            m_vsplitter->setStretchFactor(0, 0);
+            m_vsplitter->setStretchFactor(1, 1);
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    m_versionLabel = new QLabel(tr("Firmware Version: -.-.-"));
+    Core::ICore::statusBar()->insertPermanentWidget(2, m_versionLabel);
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
+            this, &OpenMVPlugin::firmwareVersion);
+
+    connect(m_jpgCompress, &QToolButton::clicked,
+            m_iodevice, &OpenMVPluginIO::jpegEnable);
+
+    connect(m_disableFrameBuffer, &QToolButton::clicked,
+            m_iodevice, &OpenMVPluginIO::disableFrameBuffer);
+
+    connect(m_iodevice, &OpenMVPluginIO::printData,
+            Core::MessageManager::instance(), &Core::MessageManager::printData);
+
+    connect(m_iodevice, &OpenMVPluginIO::frameBufferData,
+            m_frameBuffer, &OpenMVPluginFB::frameBufferData);
+
+    connect(m_iodevice, &OpenMVPluginIO::shutdown,
+            this, &OpenMVPlugin::disconnectClicked);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -396,7 +424,7 @@ void OpenMVPlugin::connectClicked()
     if(stringList.isEmpty())
     {
         QMessageBox::critical(Core::ICore::dialogParent(),
-            QApplication::applicationName(),
+            QApplication::applicationDisplayName(),
             tr("No OpenMV Cams found"));
     }
     else if(stringList.size() == 1)
@@ -421,7 +449,7 @@ void OpenMVPlugin::connectClicked()
 
         bool ok;
         QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
-            QApplication::applicationName(), tr("Please select a serial port"),
+            QApplication::applicationDisplayName(), tr("Please select a serial port"),
             stringList, index, false, &ok,
              Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
@@ -442,7 +470,7 @@ void OpenMVPlugin::connectClicked()
         if(!m_serialPort->open(QIODevice::ReadWrite))
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
-                QApplication::applicationName(),
+                QApplication::applicationDisplayName(),
                 tr("Open Failure: %L1").arg(m_serialPort->errorString()));
 
             delete m_serialPort;
@@ -453,7 +481,7 @@ void OpenMVPlugin::connectClicked()
         if(!m_serialPort->setBaudRate(OPENMVCAM_BAUD_RATE))
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
-                QApplication::applicationName(),
+                QApplication::applicationDisplayName(),
                 tr("SetBaudRate Failure: %L1").arg(m_serialPort->errorString()));
 
             delete m_serialPort;
@@ -465,43 +493,70 @@ void OpenMVPlugin::connectClicked()
         m_disconnectCommand->action()->setVisible(true);
         m_startCommand->action()->setEnabled(true);
 
-        connect(m_serialPort, static_cast<void(QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error), [=](QSerialPort::SerialPortError error)
-        {
-            Q_UNUSED(error);
-            disconnectClicked();
-        });
+        m_iodevice->setSerialPort(m_serialPort);
+        m_iodevice->getFirmwareVersion();
     }
 }
 
 void OpenMVPlugin::disconnectClicked()
 {
-    m_connectCommand->action()->setVisible(true);
-    m_disconnectCommand->action()->setVisible(false);
-    m_startCommand->action()->setDisabled(true);
-    m_stopCommand->action()->setDisabled(true);
+    if(m_serialPort)
+    {
+        m_iodevice->scriptStop();
+        m_iodevice->processEvents(); // flush serial port
+        QApplication::processEvents(); // flush serial port
 
-    delete m_serialPort;
-    m_serialPort = NULL;
+        delete m_serialPort;
+        m_serialPort = nullptr;
+
+        m_iodevice->setSerialPort(nullptr);
+
+        m_connectCommand->action()->setVisible(true);
+        m_disconnectCommand->action()->setVisible(false);
+        m_startCommand->action()->setDisabled(true);
+        m_stopCommand->action()->setDisabled(true);
+
+        m_versionLabel->setText(tr("Firmware Version: -.-.-"));
+    }
 }
 
 void OpenMVPlugin::startClicked()
 {
-    m_startCommand->action()->setDisabled(true);
-    m_stopCommand->action()->setEnabled(true);
+    if(Core::EditorManager::currentDocument())
+    {
+        m_startCommand->action()->setDisabled(true);
+        m_stopCommand->action()->setEnabled(true);
+
+        m_iodevice->scriptExec(Core::EditorManager::currentDocument()->contents());
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QApplication::applicationDisplayName(),
+            tr("Open a document first..."));
+    }
 }
 
 void OpenMVPlugin::stopClicked()
 {
+    m_iodevice->scriptStop();
+
     m_startCommand->action()->setEnabled(true);
     m_stopCommand->action()->setDisabled(true);
 }
 
-void OpenMVPlugin::processEvents()
+void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
 {
-    if(m_serialPort)
-    {
+    m_major = major;
+    m_minor = minor;
+    m_patch = patch;
 
-    }
+    m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major).arg(minor).arg(patch));
+
+    m_iodevice->scriptStop();
+    m_iodevice->jpegEnable(m_jpgCompress->isChecked());
+    m_iodevice->disableFrameBuffer(m_disableFrameBuffer->isChecked());
+    m_iodevice->disablePrint(false);
 }
 
 } // namespace Internal

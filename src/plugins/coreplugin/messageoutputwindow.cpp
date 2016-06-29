@@ -84,7 +84,8 @@ QWidget *MessageOutputWindow::outputWidget(QWidget *parent)
 
 QString MessageOutputWindow::displayName() const
 {
-    return tr("General Messages");
+    // OPENMV-DIFF // return tr("General Messages");
+    return tr("Serial Terminal");
 }
 
 void MessageOutputWindow::visibilityChanged(bool /*b*/)
@@ -98,7 +99,8 @@ void MessageOutputWindow::append(const QString &text)
 
 int MessageOutputWindow::priorityInStatusBar() const
 {
-    return -1;
+    // OPENMV-DIFF // return -1;
+    return 1;
 }
 
 bool MessageOutputWindow::canNext() const
