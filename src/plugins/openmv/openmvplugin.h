@@ -25,9 +25,11 @@
 #include <utils/environment.h>
 #include <utils/hostosinfo.h>
 #include <utils/styledbar.h>
+#include <utils/synchronousprocess.h>
 
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
+#include "histogram/openmvpluginhistogram.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
@@ -40,10 +42,15 @@
 #define EDITOR_MANAGER_STATE "EditorManagerState"
 #define HSPLITTER_STATE "HSplitterState"
 #define VSPLITTER_STATE "VSplitterState"
+#define ZOOM_STATE "ZoomState"
 #define JPG_COMPRESS_STATE "JPGCompressState"
 #define DISABLE_FRAME_BUFFER_STATE "DisableFrameBufferState"
-#define HISTOGRAM_CHANNEL_STATE "HistogramChannelState"
+#define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
 #define LAST_SERIAL_PORT_STATE "LastSerialPortState"
+
+#define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
+#define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
+#define LAST_SAVE_DESCIPTOR_PATH "LastSaveDescriptorPath"
 
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
@@ -73,17 +80,18 @@ public slots:
 
     void aboutToShowExamples();
 
-    void docsClicked();
-    void forumsClicked();
-    void pinoutClicked();
-    void aboutClicked();
-
     void connectClicked();
     void disconnectClicked();
     void startClicked();
     void stopClicked();
 
     void firmwareVersion(long major, long minor, long patch);
+
+    void errorFilter(const QByteArray &data);
+
+    void saveImage(const QPixmap &data);
+    void saveTemplate(const QRect &rect);
+    void saveDescriptor(const QRect &rect);
 
 private:
 
@@ -102,18 +110,24 @@ private:
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;
 
+    QToolButton *m_zoom;
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;
     OpenMVPluginFB *m_frameBuffer;
 
-    QComboBox *m_histogramChannel;
-    QGraphicsView *m_histogram;
+    QComboBox *m_histogramColorSpace;
+    OpenMVPluginHistogram *m_histogram;
 
+    int m_major;
+    int m_minor;
+    int m_patch;
     QLabel *m_versionLabel;
-    int m_major, m_minor, m_patch;
 
     OpenMVPluginIO *m_iodevice;
     QSerialPort *m_serialPort;
+
+    QRegularExpression m_errorFilterRegex;
+    QString m_errorFilterString;
 };
 
 } // namespace Internal

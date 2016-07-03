@@ -28,6 +28,10 @@
 
 #include <extensionsystem/pluginmanager.h>
 
+// OPENMV-DIFF //
+#include "outputwindow.h"
+// OPENMV-DIFF //
+
 using namespace Core;
 
 static MessageManager *m_instance = 0;
@@ -92,5 +96,12 @@ void MessageManager::printData(const QByteArray &data)
     if (!m_messageOutputWindow)
         return;
     m_messageOutputWindow->append(QString::fromLatin1(data));
+}
+
+void MessageManager::grayOutOldContent()
+{
+    if (!m_messageOutputWindow)
+        return;
+    m_messageOutputWindow->m_widget->grayOutOldContent();
 }
 // OPENMV-DIFF //

@@ -284,6 +284,12 @@ void OpenMVPluginIO::processEvents()
             {
                 qDebug() << "HolyShit";//QTimer::singleShot(0, this, &OpenMVPluginIO::shutdown);
             }
+
+            while(m_port->bytesToWrite())
+            {
+                m_port->flush();
+                qApp->processEvents();
+            }
         }
     }
 }
@@ -367,8 +373,9 @@ void OpenMVPluginIO::templateSave(long x, long y, long w, long h, const QByteArr
         serializeLong(buffer, y);
         serializeLong(buffer, w);
         serializeLong(buffer, h);
-        buffer.append(path);
-        m_commandQueue.enqueue(buffer);
+        qDebug() << x << y << w << h << path;
+        //m_commandQueue.enqueue(buffer);
+        //m_commandQueue.enqueue(path);
     }
 }
 
@@ -384,8 +391,9 @@ void OpenMVPluginIO::descriptorSave(short x, short y, short w, short h, const QB
         serializeWord(buffer, y);
         serializeWord(buffer, w);
         serializeWord(buffer, h);
-        buffer.append(path);
-        m_commandQueue.enqueue(buffer);
+        qDebug() << x << y << w << h << path;
+        //m_commandQueue.enqueue(buffer);
+        //m_commandQueue.enqueue(path);
     }
 }
 

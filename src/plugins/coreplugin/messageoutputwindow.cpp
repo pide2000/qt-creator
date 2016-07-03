@@ -49,6 +49,14 @@ MessageOutputWindow::MessageOutputWindow()
     Aggregation::Aggregate *agg = new Aggregation::Aggregate;
     agg->add(m_widget);
     agg->add(new BaseTextFind(m_widget));
+    // OPENMV-DIFF //
+    p = m_widget->palette();
+    p.setColor(QPalette::Base, QColor(QStringLiteral("#1E1E27")));
+    p.setColor(QPalette::Text, QColor(QStringLiteral("#FFFFFF")));
+    m_widget->setPalette(p);
+    m_widget->setMaxLineCount(100000);
+    m_widget->setWordWrapEnabled(false);
+    // OPENMV-DIFF //
 }
 
 MessageOutputWindow::~MessageOutputWindow()

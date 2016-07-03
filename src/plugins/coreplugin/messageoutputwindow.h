@@ -60,7 +60,7 @@ public:
     virtual void goToPrev();
     bool canNavigate() const;
 
-private:
+// OPENMV-DIFF // private:
     OutputWindow *m_widget;
 };
 

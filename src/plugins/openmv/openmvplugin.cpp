@@ -10,6 +10,12 @@ OpenMVPlugin::OpenMVPlugin()
     m_iodevice = new OpenMVPluginIO(this);
     m_serialPort = NULL;
 
+    m_errorFilterRegex = QRegularExpression(QStringLiteral(
+        "Traceback \\(most recent call last\\):\n"
+        "  File \"<stdin>\", line (\\d+)"),
+        QRegularExpression::MultilineOption);
+    m_errorFilterString = QString();
+
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, m_iodevice, &OpenMVPluginIO::processEvents);
     timer->start(OPENMVCAM_POLL_RATE);
@@ -164,28 +170,33 @@ void OpenMVPlugin::extensionsInitialized()
             QHBoxLayout *styledBar0Layout = new QHBoxLayout;
             styledBar0Layout->setMargin(0);
             styledBar0Layout->setSpacing(0);
-            styledBar0Layout->addSpacing(5);
+            styledBar0Layout->addSpacing(4);
             styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
-            styledBar0Layout->addSpacing(10);
+            styledBar0Layout->addSpacing(6);
             styledBar0->setLayout(styledBar0Layout);
+
+            m_zoom = new QToolButton;
+            m_zoom->setText(tr("Zoom"));
+            m_zoom->setToolTip(tr("Zoom to fit"));
+            m_zoom->setCheckable(true);
+            m_zoom->setChecked(false);
+            styledBar0Layout->addWidget(m_zoom);
 
             m_jpgCompress = new QToolButton;
             m_jpgCompress->setText(tr("JPG"));
-            m_jpgCompress->setToolTip(tr("JPEG compress the Frame Buffer for higher performance."));
+            m_jpgCompress->setToolTip(tr("JPEG compress the Frame Buffer for higher performance"));
             m_jpgCompress->setCheckable(true);
-            m_jpgCompress->setChecked(true); // inital value
+            m_jpgCompress->setChecked(true);
             styledBar0Layout->addWidget(m_jpgCompress);
 
             m_disableFrameBuffer = new QToolButton;
             m_disableFrameBuffer->setText(tr("Disable"));
-            m_disableFrameBuffer->setToolTip(tr("Disable the Frame Buffer for maximum performance."));
+            m_disableFrameBuffer->setToolTip(tr("Disable the Frame Buffer for maximum performance"));
             m_disableFrameBuffer->setCheckable(true);
-            m_disableFrameBuffer->setChecked(false); // inital value
+            m_disableFrameBuffer->setChecked(false);
             styledBar0Layout->addWidget(m_disableFrameBuffer);
 
             m_frameBuffer = new OpenMVPluginFB;
-            m_frameBuffer->setFrameShape(QFrame::NoFrame);
-
             QWidget *tempWidget0 = new QWidget;
             QVBoxLayout *tempLayout0 = new QVBoxLayout;
             tempLayout0->setMargin(0);
@@ -198,29 +209,23 @@ void OpenMVPlugin::extensionsInitialized()
             QHBoxLayout *styledBar1Layout = new QHBoxLayout;
             styledBar1Layout->setMargin(0);
             styledBar1Layout->setSpacing(0);
-            styledBar1Layout->addSpacing(5);
+            styledBar1Layout->addSpacing(4);
             styledBar1Layout->addWidget(new QLabel(tr("Histogram")));
-            styledBar1Layout->addSpacing(10);
+            styledBar1Layout->addSpacing(6);
             styledBar1->setLayout(styledBar1Layout);
 
-            m_histogramChannel = new QComboBox;
-            m_histogramChannel->addItems(QStringList()
-            << tr("Red Channel")
-            << tr("Green Channel")
-            << tr("Blue Channel")
-            << tr("Grayscale Channel")
-            << tr("L Channel")
-            << tr("A Channel")
-            << tr("B Channel")
-            << tr("Y Channel")
-            << tr("U Channel")
-            << tr("V Channel"));
-            m_histogramChannel->setToolTip(tr("Frame Buffer Histogram color channel."));
-            styledBar1Layout->addWidget(m_histogramChannel);
+            m_histogramColorSpace = new QComboBox;
+            m_histogramColorSpace->setProperty("hideborder", true);
+            m_histogramColorSpace->setProperty("drawleftborder", false);
+            m_histogramColorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
+            m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
+            m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
+            m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
+            m_histogramColorSpace->setCurrentIndex(RGB_COLOR_SPACE);
+            m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
+            styledBar1Layout->addWidget(m_histogramColorSpace);
 
-            m_histogram = new QGraphicsView;
-            m_histogram->setFrameShape(QFrame::NoFrame);
-
+            m_histogram = new OpenMVPluginHistogram;
             QWidget *tempWidget1 = new QWidget;
             QVBoxLayout *tempLayout1 = new QVBoxLayout;
             tempLayout1->setMargin(0);
@@ -254,14 +259,35 @@ void OpenMVPlugin::extensionsInitialized()
     connect(m_disableFrameBuffer, &QToolButton::clicked,
             m_iodevice, &OpenMVPluginIO::disableFrameBuffer);
 
+    connect(m_iodevice, &OpenMVPluginIO::shutdown,
+            this, &OpenMVPlugin::disconnectClicked);
+
     connect(m_iodevice, &OpenMVPluginIO::printData,
             Core::MessageManager::instance(), &Core::MessageManager::printData);
+
+    connect(m_iodevice, &OpenMVPluginIO::printData,
+            this, &OpenMVPlugin::errorFilter);
+
+    connect(m_zoom, &QToolButton::toggled,
+            m_frameBuffer, &OpenMVPluginFB::enableFitInView);
 
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData,
             m_frameBuffer, &OpenMVPluginFB::frameBufferData);
 
-    connect(m_iodevice, &OpenMVPluginIO::shutdown,
-            this, &OpenMVPlugin::disconnectClicked);
+    connect(m_frameBuffer, &OpenMVPluginFB::saveImage,
+            this, &OpenMVPlugin::saveImage);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate,
+            this, &OpenMVPlugin::saveTemplate);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor,
+            this, &OpenMVPlugin::saveDescriptor);
+
+    connect(m_histogramColorSpace, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate,
+            m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -273,14 +299,18 @@ void OpenMVPlugin::extensionsInitialized()
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
-    connect(docsCommand, &QAction::triggered, this, &OpenMVPlugin::docsClicked);
+    connect(docsCommand, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/")));
+    });
 
     QAction *forumsCommand = new QAction(
          tr("OpenMV &Forums"), this);
     m_forumsCommand = Core::ActionManager::registerAction(forumsCommand, Core::Id("OpenMV.Forums"));
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
-    connect(forumsCommand, &QAction::triggered, this, &OpenMVPlugin::forumsClicked);
+    connect(forumsCommand, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/forums/")));
+    });
 
     QAction *pinoutAction = new QAction(
          tr("About &OpenMV Cam..."), this);
@@ -288,7 +318,9 @@ void OpenMVPlugin::extensionsInitialized()
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
-    connect(pinoutAction, &QAction::triggered, this, &OpenMVPlugin::pinoutClicked);
+    connect(pinoutAction, &QAction::triggered, this, [] {
+        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/_images/pinout.png")));
+    });
 
     QAction *aboutAction = new QAction(helpIcon,
         Utils::HostOsInfo::isMacHost() ? tr("About &OpenMV IDE") : tr("About &OpenMV IDE..."), this);
@@ -296,7 +328,17 @@ void OpenMVPlugin::extensionsInitialized()
     m_aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
     helpMenu->addAction(m_aboutCommand, Core::Constants::G_HELP_ABOUT);
     aboutAction->setEnabled(true);
-    connect(aboutAction, &QAction::triggered, this, &OpenMVPlugin::aboutClicked);
+    connect(aboutAction, &QAction::triggered, this, [] {
+        QMessageBox::about(Core::ICore::dialogParent(), tr("About OpenMV IDE"), tr(
+        "<p><b>About OpenMV IDE %L1</b></p>"
+        "<p>By: Ibrahim Abdelkader & Kwabena W. Agyeman</p>"
+        "<p><b>GNU GENERAL PUBLIC LICENSE</b></p>"
+        "<p>Copyright (C) %L2 %L3</p>"
+        "<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href=\"http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT\">GNU General Public License</a> for more details.</p>"
+        "<p><b>Questions or Comments?</b></p>"
+        "<p>Contact us at <a href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
+        ).arg(QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG)).arg(QLatin1String(Core::Constants::OMV_IDE_YEAR)).arg(QLatin1String(Core::Constants::OMV_IDE_AUTHOR)));
+    });
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -308,12 +350,14 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
     m_vsplitter->restoreState(
         settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
+    m_zoom->setChecked(
+        settings->value(QStringLiteral(ZOOM_STATE), m_zoom->isChecked()).toBool());
     m_jpgCompress->setChecked(
-        settings->value(QStringLiteral(JPG_COMPRESS_STATE)).toBool());
+        settings->value(QStringLiteral(JPG_COMPRESS_STATE), m_jpgCompress->isChecked()).toBool());
     m_disableFrameBuffer->setChecked(
-        settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE)).toBool());
-    m_histogramChannel->setCurrentIndex(
-        settings->value(QStringLiteral(HISTOGRAM_CHANNEL_STATE)).toInt());
+        settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE), m_disableFrameBuffer->isChecked()).toBool());
+    m_histogramColorSpace->setCurrentIndex(
+        settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
     settings->endGroup();
 
     connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested,
@@ -330,16 +374,18 @@ void OpenMVPlugin::saveSettingsRequested()
         m_hsplitter->saveState());
     settings->setValue(QStringLiteral(VSPLITTER_STATE),
         m_vsplitter->saveState());
+    settings->setValue(QStringLiteral(ZOOM_STATE),
+        m_zoom->isChecked());
     settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
         m_jpgCompress->isChecked());
     settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
         m_disableFrameBuffer->isChecked());
-    settings->setValue(QStringLiteral(HISTOGRAM_CHANNEL_STATE),
-        m_histogramChannel->currentIndex());
+    settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
+        m_histogramColorSpace->currentIndex());
     settings->endGroup();
 }
 
-QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object)
+static QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object)
 {
     QList<QAction *> actions;
     QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -376,34 +422,6 @@ void OpenMVPlugin::aboutToShowExamples()
     QList<QAction *> actions = aboutToShowExamplesRecursive(Core::ICore::resourcePath() + QStringLiteral("/examples"), m_examplesMenu->menu(), this);
     m_examplesMenu->menu()->addActions(actions);
     m_examplesMenu->menu()->setDisabled(actions.isEmpty());
-}
-
-void OpenMVPlugin::docsClicked()
-{
-    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/")));
-}
-
-void OpenMVPlugin::forumsClicked()
-{
-    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/forums/")));
-}
-
-void OpenMVPlugin::pinoutClicked()
-{
-    QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/_images/pinout.png")));
-}
-
-void OpenMVPlugin::aboutClicked()
-{
-    QMessageBox::about(Core::ICore::mainWindow(), tr("About OpenMV IDE"), tr(
-    "<p><b>About OpenMV IDE %L1</b></p>"
-    "<p>By: Ibrahim Abdelkader & Kwabena W. Agyeman</p>"
-    "<p><b>GNU GENERAL PUBLIC LICENSE</b></p>"
-    "<p>Copyright (C) %L2 %L3</p>"
-    "<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href=\"http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT\">GNU General Public License</a> for more details.</p>"
-    "<p><b>Questions or Comments?</b></p>"
-    "<p>Contact us at <a href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
-    ).arg(QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG)).arg(QLatin1String(Core::Constants::OMV_IDE_YEAR)).arg(QLatin1String(Core::Constants::OMV_IDE_AUTHOR)));
 }
 
 void OpenMVPlugin::connectClicked()
@@ -451,7 +469,7 @@ void OpenMVPlugin::connectClicked()
         QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
             QApplication::applicationDisplayName(), tr("Please select a serial port"),
             stringList, index, false, &ok,
-             Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
         if(ok)
@@ -522,6 +540,8 @@ void OpenMVPlugin::disconnectClicked()
 
 void OpenMVPlugin::startClicked()
 {
+    Core::MessageManager::grayOutOldContent();
+
     if(Core::EditorManager::currentDocument())
     {
         m_startCommand->action()->setDisabled(true);
@@ -557,6 +577,115 @@ void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
     m_iodevice->jpegEnable(m_jpgCompress->isChecked());
     m_iodevice->disableFrameBuffer(m_disableFrameBuffer->isChecked());
     m_iodevice->disablePrint(false);
+}
+
+void OpenMVPlugin::errorFilter(const QByteArray &data)
+{
+    int errorFilterMaxSize = 1000;
+    m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromLatin1(data)));
+
+    QRegularExpressionMatch match;
+    int index = m_errorFilterString.indexOf(m_errorFilterRegex, 0, &match);
+
+    if(index != -1)
+    {
+        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
+
+        if(editor)
+        {
+            Core::EditorManager::addCurrentPositionToNavigationHistory();
+            editor->gotoLine(match.captured(1).toInt());
+
+            QTextCursor cursor = editor->textCursor();
+
+            if(cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor))
+            {
+                editor->editorWidget()->setBlockSelection(cursor);
+            }
+
+            Core::EditorManager::activateEditor(editor);
+        }
+
+        m_errorFilterString = m_errorFilterString.right(m_errorFilterString.size() - index - match.capturedLength(0));
+    }
+
+    if(m_errorFilterString.size() > errorFilterMaxSize)
+    {
+        m_errorFilterString = m_errorFilterString.right(errorFilterMaxSize);
+    }
+}
+
+void OpenMVPlugin::saveImage(const QPixmap &data)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    QString path =
+        QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Image"),
+            settings->value(QStringLiteral(LAST_SAVE_IMAGE_PATH), QDir::homePath()).toString(),
+            tr("Image Files (*.bmp *.jpg *.jpeg *.png *.ppm)"));
+
+    if(!path.isEmpty())
+    {
+        if(data.save(path))
+        {
+            settings->setValue(QStringLiteral(LAST_SAVE_IMAGE_PATH), path);
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Save Image"),
+                tr("Failed to save the image!"));
+        }
+    }
+
+    settings->endGroup();
+}
+
+void OpenMVPlugin::saveTemplate(const QRect &rect)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    bool ok = false;
+    QString path =
+        QInputDialog::getText(Core::ICore::dialogParent(), tr("Save Template"),
+            tr("File Path (on OpenMVCam)"), QLineEdit::Normal,
+            settings->value(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), QStringLiteral("/")).toString(),
+            &ok, Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+    if(ok)
+    {
+        path = QDir::cleanPath(QDir::fromNativeSeparators(path));
+        m_iodevice->templateSave(rect.x(), rect.y(), rect.width(), rect.height(), path.toLatin1());
+        settings->setValue(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), path);
+    }
+
+    settings->endGroup();
+}
+
+void OpenMVPlugin::saveDescriptor(const QRect &rect)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    bool ok = false;
+    QString path =
+        QInputDialog::getText(Core::ICore::dialogParent(), tr("Save Descriptor"),
+            tr("File Path (on OpenMVCam)"), QLineEdit::Normal,
+            settings->value(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), QStringLiteral("/")).toString(),
+            &ok, Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+    if(ok)
+    {
+        path = QDir::cleanPath(QDir::fromNativeSeparators(path));
+        m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(), path.toLatin1());
+        settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+    }
+
+    settings->endGroup();
 }
 
 } // namespace Internal
