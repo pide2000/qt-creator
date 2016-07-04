@@ -17,6 +17,8 @@ public slots:
 
     void enableFitInView(bool enable);
     void frameBufferData(const QPixmap &data);
+    void enableSaveTemplate(bool enable) { m_enableSaveTemplate = enable; }
+    void enableSaveDescriptor(bool enable) { m_enableSaveDescriptor = enable; }
 
 signals:
 
@@ -40,6 +42,8 @@ private:
 
     bool m_enableFitInView;
     QGraphicsPixmapItem *m_pixmap;
+    bool m_enableSaveTemplate;
+    bool m_enableSaveDescriptor;
 
     bool m_unlocked;
     QPoint m_origin;

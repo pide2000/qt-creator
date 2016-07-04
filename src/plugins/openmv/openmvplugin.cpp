@@ -11,9 +11,8 @@ OpenMVPlugin::OpenMVPlugin()
     m_serialPort = NULL;
 
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
-        "Traceback \\(most recent call last\\):\n"
-        "  File \"<stdin>\", line (\\d+)"),
-        QRegularExpression::MultilineOption);
+        "  File \"(.+?)\", line (\\d+).*?\n"
+        "(?!Exception: IDE interrupt)(.+?:.+?)\n"));
     m_errorFilterString = QString();
 
     QTimer *timer = new QTimer(this);
@@ -43,7 +42,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void OpenMVPlugin::extensionsInitialized()
 {
-    connect(Core::ActionManager::command(Core::Constants::NEW)->action(), &QAction::triggered, this, [] {
+    connect(Core::ActionManager::command(Core::Constants::NEW)->action(), &QAction::triggered, this, [this] {
         QString titlePattern = tr("Untitled $.py");
         Core::IEditor *editor = Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
         tr("# Untitled - By: %L1 - %L2\n"
@@ -245,8 +244,22 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
-    m_versionLabel = new QLabel(tr("Firmware Version: -.-.-"));
-    Core::ICore::statusBar()->insertPermanentWidget(2, m_versionLabel);
+    m_portLabel = new QLabel(tr("Serial Port:"));
+    m_portLabel->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(2, m_portLabel);
+
+    m_pathButton = new QToolButton;
+    m_pathButton->setText(tr("Drive:"));
+    m_pathButton->setToolTip(tr("Drive associated with the port"));
+    m_pathButton->setCheckable(false);
+    m_pathButton->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(3, m_pathButton);
+    connect(m_pathButton, &QToolButton::clicked,
+            this, [this] { setSerialPortPath(m_serialPort->portName()); });
+
+    m_versionLabel = new QLabel(tr("Firmware Version:"));
+    m_versionLabel->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(4, m_versionLabel);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -299,7 +312,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
-    connect(docsCommand, &QAction::triggered, this, [] {
+    connect(docsCommand, &QAction::triggered, this, [this] {
         QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/")));
     });
 
@@ -308,7 +321,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_forumsCommand = Core::ActionManager::registerAction(forumsCommand, Core::Id("OpenMV.Forums"));
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
-    connect(forumsCommand, &QAction::triggered, this, [] {
+    connect(forumsCommand, &QAction::triggered, this, [this] {
         QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/forums/")));
     });
 
@@ -318,7 +331,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
-    connect(pinoutAction, &QAction::triggered, this, [] {
+    connect(pinoutAction, &QAction::triggered, this, [this] {
         QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/_images/pinout.png")));
     });
 
@@ -328,7 +341,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
     helpMenu->addAction(m_aboutCommand, Core::Constants::G_HELP_ABOUT);
     aboutAction->setEnabled(true);
-    connect(aboutAction, &QAction::triggered, this, [] {
+    connect(aboutAction, &QAction::triggered, this, [this] {
         QMessageBox::about(Core::ICore::dialogParent(), tr("About OpenMV IDE"), tr(
         "<p><b>About OpenMV IDE %L1</b></p>"
         "<p>By: Ibrahim Abdelkader & Kwabena W. Agyeman</p>"
@@ -442,8 +455,8 @@ void OpenMVPlugin::connectClicked()
     if(stringList.isEmpty())
     {
         QMessageBox::critical(Core::ICore::dialogParent(),
-            QApplication::applicationDisplayName(),
-            tr("No OpenMV Cams found"));
+            tr("Connect"),
+            tr("No OpenMV Cams found!"));
     }
     else if(stringList.size() == 1)
     {
@@ -453,22 +466,12 @@ void OpenMVPlugin::connectClicked()
     {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-        QString lastPortName = settings->value(QStringLiteral(LAST_SERIAL_PORT_STATE)).toString();
-
-        int index = 0;
-        if(!lastPortName.isEmpty())
-        {
-            int tmp = stringList.indexOf(lastPortName);
-            if(tmp != -1)
-            {
-                index = tmp;
-            }
-        }
+        int index = stringList.indexOf(settings->value(QStringLiteral(LAST_SERIAL_PORT_STATE)).toString());
 
         bool ok;
         QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
-            QApplication::applicationDisplayName(), tr("Please select a serial port"),
-            stringList, index, false, &ok,
+            tr("Connect"), tr("Please select a serial port"),
+            stringList, (index != -1) ? index : 0, false, &ok,
             Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
@@ -511,6 +514,21 @@ void OpenMVPlugin::connectClicked()
         m_disconnectCommand->action()->setVisible(true);
         m_startCommand->action()->setEnabled(true);
 
+        QString portName = m_serialPort->portName();
+        QString portPath = getSerialPortPath(portName);
+
+        if(portPath.isEmpty())
+        {
+            setSerialPortPath(portName);
+        }
+
+        m_portLabel->setEnabled(true);
+        m_portLabel->setText(tr("Serial Port: %L1").arg(portName));
+        m_pathButton->setEnabled(true);
+        m_pathButton->setText(tr("Drive: %L1").arg(getSerialPortPath(portName)));
+        m_frameBuffer->enableSaveTemplate(true);
+        m_frameBuffer->enableSaveDescriptor(true);
+
         m_iodevice->setSerialPort(m_serialPort);
         m_iodevice->getFirmwareVersion();
     }
@@ -534,7 +552,14 @@ void OpenMVPlugin::disconnectClicked()
         m_startCommand->action()->setDisabled(true);
         m_stopCommand->action()->setDisabled(true);
 
-        m_versionLabel->setText(tr("Firmware Version: -.-.-"));
+        m_portLabel->setText(tr("Serial Port:"));
+        m_portLabel->setDisabled(true);
+        m_pathButton->setText(tr("Drive:"));
+        m_pathButton->setDisabled(true);
+        m_versionLabel->setText(tr("Firmware Version:"));
+        m_versionLabel->setDisabled(true);
+        m_frameBuffer->enableSaveTemplate(false);
+        m_frameBuffer->enableSaveDescriptor(false);
     }
 }
 
@@ -572,6 +597,7 @@ void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
     m_patch = patch;
 
     m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major).arg(minor).arg(patch));
+    m_versionLabel->setEnabled(true);
 
     m_iodevice->scriptStop();
     m_iodevice->jpegEnable(m_jpgCompress->isChecked());
@@ -589,12 +615,25 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
 
     if(index != -1)
     {
-        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
+        QString fileName = match.captured(1);
+        int lineNumber = match.captured(2).toInt();
+        QString errorMessage = match.captured(3);
+
+        TextEditor::BaseTextEditor *editor = Q_NULLPTR;
+
+        if(fileName == QStringLiteral("<stdin>"))
+        {
+            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
+        }
+        else
+        {
+            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QString(fileName).prepend(getSerialPortPath(m_serialPort->portName()))));
+        }
 
         if(editor)
         {
             Core::EditorManager::addCurrentPositionToNavigationHistory();
-            editor->gotoLine(match.captured(1).toInt());
+            editor->gotoLine(lineNumber);
 
             QTextCursor cursor = editor->textCursor();
 
@@ -605,6 +644,10 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
 
             Core::EditorManager::activateEditor(editor);
         }
+
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QString(),
+            errorMessage);
 
         m_errorFilterString = m_errorFilterString.right(m_errorFilterString.size() - index - match.capturedLength(0));
     }
@@ -644,22 +687,34 @@ void OpenMVPlugin::saveImage(const QPixmap &data)
 
 void OpenMVPlugin::saveTemplate(const QRect &rect)
 {
+    // Get the drive path first because it uses the settings too...
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath(m_serialPort->portName())));
+
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
-    bool ok = false;
     QString path =
-        QInputDialog::getText(Core::ICore::dialogParent(), tr("Save Template"),
-            tr("File Path (on OpenMVCam)"), QLineEdit::Normal,
-            settings->value(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), QStringLiteral("/")).toString(),
-            &ok, Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+        QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Template"),
+            settings->value(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), drivePath).toString(),
+            tr("Image Files (*.bmp *.jpg *.jpeg *.pgm *.ppm)"));
 
-    if(ok)
+    if(!path.isEmpty())
     {
         path = QDir::cleanPath(QDir::fromNativeSeparators(path));
-        m_iodevice->templateSave(rect.x(), rect.y(), rect.width(), rect.height(), path.toLatin1());
-        settings->setValue(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), path);
+
+        if((!path.startsWith(drivePath))
+        || (!QDir(QFileInfo(path).path()).exists()))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Save Template"),
+                tr("Please select a valid path on the OpenMV Cam!"));
+        }
+        else
+        {
+            m_iodevice->templateSave(rect.x(), rect.y(), rect.width(), rect.height(),
+                QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1());
+            settings->setValue(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), path);
+        }
     }
 
     settings->endGroup();
@@ -667,22 +722,92 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
 
 void OpenMVPlugin::saveDescriptor(const QRect &rect)
 {
+    // Get the drive path first because it uses the settings too...
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath(m_serialPort->portName())));
+
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
-    bool ok = false;
     QString path =
-        QInputDialog::getText(Core::ICore::dialogParent(), tr("Save Descriptor"),
-            tr("File Path (on OpenMVCam)"), QLineEdit::Normal,
-            settings->value(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), QStringLiteral("/")).toString(),
-            &ok, Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+        QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Descriptor"),
+            settings->value(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), drivePath).toString(),
+            tr("Image Files (*.lbp *.ff)"));
 
-    if(ok)
+    if(!path.isEmpty())
     {
         path = QDir::cleanPath(QDir::fromNativeSeparators(path));
-        m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(), path.toLatin1());
-        settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+
+        if((!path.startsWith(drivePath))
+        || (!QDir(QFileInfo(path).path()).exists()))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Save Descriptor"),
+                tr("Please select a valid path on the OpenMV Cam!"));
+        }
+        else
+        {
+            m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(),
+                QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1());
+            settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+        }
+    }
+
+    settings->endGroup();
+}
+
+QString OpenMVPlugin::getSerialPortPath(const QString &portName)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
+    QString path = settings->value(portName).toString();
+    settings->endGroup();
+    return path;
+}
+
+void OpenMVPlugin::setSerialPortPath(const QString &portName)
+{
+    QStringList drives;
+
+    foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
+    {
+        if(info.isValid()
+        && info.isReady()
+        && (!info.isRoot())
+        && (!info.isReadOnly())
+        && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("FAT"), Qt::CaseInsensitive)))
+        {
+            drives.append(info.rootPath());
+        }
+    }
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
+
+    if(drives.isEmpty())
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Select Drive"),
+            tr("No valid drives found!"));
+    }
+    else if(drives.size() == 1)
+    {
+        settings->setValue(portName, drives.first());
+    }
+    else
+    {
+        int index = drives.indexOf(settings->value(portName).toString());
+
+        bool ok;
+        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+            tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
+            drives, (index != -1) ? index : 0, false, &ok,
+            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+        if(ok)
+        {
+            settings->setValue(portName, temp);
+        }
     }
 
     settings->endGroup();

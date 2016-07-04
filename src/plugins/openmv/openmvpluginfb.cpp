@@ -20,6 +20,8 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
 
     m_enableFitInView = false;
     m_pixmap = Q_NULLPTR;
+    m_enableSaveTemplate = false;
+    m_enableSaveDescriptor = false;
     m_unlocked = false;
     m_origin = QPoint();
     m_band = new QRubberBand(QRubberBand::Rectangle, this);
@@ -109,7 +111,9 @@ void OpenMVPluginFB::contextMenuEvent(QContextMenuEvent *event)
         QAction *sImage = menu.addAction(cropped ? tr("Save Image selection to PC") : tr("Save Image to PC"));
         menu.addSeparator();
         QAction *sTemplate = menu.addAction(cropped ? tr("Save Template selection to Cam") : tr("Save Template to Cam"));
+        sTemplate->setVisible(m_enableSaveTemplate);
         QAction *sDescriptor = menu.addAction(cropped ? tr("Save Descriptor selection to Cam") : tr("Save Descriptor to Cam"));
+        sDescriptor->setVisible(m_enableSaveDescriptor);
 
         QAction *selected = menu.exec(event->globalPos());
 

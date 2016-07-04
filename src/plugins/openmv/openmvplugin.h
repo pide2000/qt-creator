@@ -47,10 +47,11 @@
 #define DISABLE_FRAME_BUFFER_STATE "DisableFrameBufferState"
 #define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
 #define LAST_SERIAL_PORT_STATE "LastSerialPortState"
-
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
 #define LAST_SAVE_DESCIPTOR_PATH "LastSaveDescriptorPath"
+
+#define SERIAL_PORT_SETTINGS_GROUP "OpenMVSerialPort"
 
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
@@ -95,6 +96,9 @@ public slots:
 
 private:
 
+    QString getSerialPortPath(const QString &portName);
+    void setSerialPortPath(const QString &portName);
+
     Core::ActionContainer *m_examplesMenu;
 
     Core::Command *m_connectCommand;
@@ -117,6 +121,9 @@ private:
 
     QComboBox *m_histogramColorSpace;
     OpenMVPluginHistogram *m_histogram;
+
+    QLabel *m_portLabel;
+    QToolButton *m_pathButton;
 
     int m_major;
     int m_minor;
