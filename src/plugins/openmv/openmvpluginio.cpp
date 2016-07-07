@@ -91,67 +91,76 @@ QByteArray byteSwap(QByteArray buffer, bool ok)
     return buffer;
 }
 
-OpenMVPluginIO::OpenMVPluginIO(QObject *parent) : QObject(parent)
-{
-    m_port = nullptr;
-    m_disablePrint = true;
-    m_disableFrameBuffer = true;
-    m_bootloaderMode = false;
-
-    m_frameSizeW = 0;
-    m_frameSizeH = 0;
-    m_frameSizeBPP = 0;
-    m_pingPong = true;
-}
-
-QSerialPort *OpenMVPluginIO::serialPort() const
-{
-    return m_port;
-}
-
-bool OpenMVPluginIO::getDisablePrint() const
-{
-    return m_disablePrint;
-}
-
-bool OpenMVPluginIO::getDisableFrameBuffer() const
-{
-    return m_disableFrameBuffer;
-}
-
-bool OpenMVPluginIO::getBootloaderMode() const
-{
-    return m_bootloaderMode;
-}
-
-void OpenMVPluginIO::setSerialPort(QSerialPort *port)
+OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : QObject(parent)
 {
     m_port = port;
-    m_disablePrint = true;
-    m_disableFrameBuffer = true;
-    m_bootloaderMode = false;
 
-    m_receivedBytes.clear();
-    m_commandQueue.clear();
-    m_expectedHeaderQueue.clear();
-    m_expectedDataQueue.clear();
+    connect(m_port, &OpenMVPluginSerialPort::readAll,
+            this, &OpenMVPluginIO::readAll);
 
-    m_frameSizeW = 0;
-    m_frameSizeH = 0;
-    m_frameSizeBPP = 0;
-    m_pingPong = true;
+    reset();
+
+    QTimer *timer = new QTimer(this);
+
+    connect(timer, &QTimer::timeout,
+            this, &OpenMVPluginIO::processEvents);
+
+    timer->start(1);
+}
+
+void OpenMVPluginIO::reset()
+{
+    m_commandQueue = QQueue<QByteArray>();
+    m_expectedHeaderQueue = QQueue<int>();
+    m_expectedDataQueue = QQueue<int>();
+    m_expectedNumber = int();
+    m_shutdown = false;
+    m_closed = false;
+    m_receivedBytes = QByteArray();
+    m_frameSizeW = int();
+    m_frameSizeH = int();
+    m_frameSizeBPP = int();
 }
 
 void OpenMVPluginIO::processEvents()
 {
-    if(m_port)
+    if(m_shutdown)
     {
-        m_receivedBytes.append(m_port->readAll());
+        if(!m_closed)
+        {
+            m_closed = true;
+            m_port->write(QByteArray());
+        }
+    }
+    else if((!m_commandQueue.isEmpty()) && (m_expectedNumber < 1))
+    {
+        m_port->write(m_commandQueue.dequeue());
+
+        m_expectedNumber += m_expectedHeaderQueue.head() != 0; // expect repsonse?
+
+        if(m_expectedHeaderQueue.head() == 0) // don't need since no response...
+        {
+            m_expectedHeaderQueue.dequeue();
+            m_expectedDataQueue.dequeue();
+        }
+    }
+}
+
+void OpenMVPluginIO::readAll(const QByteArray &data)
+{
+    if(data.isEmpty())
+    {
+        emit closeResponse();
+    }
+    else
+    {
+        m_receivedBytes.append(data);
 
         if((!m_expectedHeaderQueue.isEmpty())
         && (m_receivedBytes.size() >= m_expectedDataQueue.head()))
         {
             int receivedBytes = m_expectedDataQueue.dequeue();
+
             switch(m_expectedHeaderQueue.dequeue())
             {
                 case __USBDBG_FW_VERSION:
@@ -165,24 +174,28 @@ void OpenMVPluginIO::processEvents()
                 }
                 case __USBDBG_FRAME_SIZE:
                 {
-                    m_frameSizeW = deserializeLong(m_receivedBytes);
-                    m_frameSizeH = deserializeLong(m_receivedBytes);
-                    m_frameSizeBPP = deserializeLong(m_receivedBytes);
-                    if(m_frameSizeW && m_frameSizeH && m_frameSizeBPP)
+                    int w = deserializeLong(m_receivedBytes);
+                    int h = deserializeLong(m_receivedBytes);
+                    int bpp = deserializeLong(m_receivedBytes);
+
+                    if(w && h && bpp)
                     {
-                        int size = IS_JPG(m_frameSizeBPP)
-                            ? m_frameSizeBPP
-                            : (m_frameSizeW * m_frameSizeH * m_frameSizeBPP);
+                        int size = IS_JPG(bpp) ? bpp : (w * h * bpp);
 
                         QByteArray buffer;
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_FRAME_DUMP);
                         serializeLong(buffer, size);
-                        m_commandQueue.enqueue(buffer);
+                        m_commandQueue.push_front(buffer);
 
-                        m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_DUMP);
-                        m_expectedDataQueue.enqueue(size);
+                        m_expectedHeaderQueue.push_front(__USBDBG_FRAME_DUMP);
+                        m_expectedDataQueue.push_front(size);
+
+                        m_frameSizeW = w;
+                        m_frameSizeH = h;
+                        m_frameSizeBPP = bpp;
                     }
+
                     break;
                 }
                 case __USBDBG_FRAME_DUMP:
@@ -193,34 +206,37 @@ void OpenMVPluginIO::processEvents()
                         IS_RGB(m_frameSizeBPP)).data()), m_frameSizeW, m_frameSizeH, m_frameSizeW * m_frameSizeBPP,
                         IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : QImage::Format_Grayscale8)));
                     m_receivedBytes = m_receivedBytes.mid(receivedBytes);
+                    m_frameSizeW = int();
+                    m_frameSizeH = int();
+                    m_frameSizeBPP = int();
                     break;
                 }
                 case __USBDBG_SCRIPT_RUNNING:
                 {
-                    emit scriptRunning(
-                        deserializeLong(m_receivedBytes));
+                    emit scriptRunning(deserializeLong(m_receivedBytes));
                     break;
                 }
                 case __USBDBG_ATTR_READ:
                 {
-                    emit scriptRunning(
-                        deserializeByte(m_receivedBytes));
+                    emit attribute(deserializeByte(m_receivedBytes));
                     break;
                 }
                 case __USBDBG_TX_BUF_LEN:
                 {
                     int len = deserializeLong(m_receivedBytes);
+
                     if(len)
                     {
                         QByteArray buffer;
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_TX_BUF);
                         serializeLong(buffer, len);
-                        m_commandQueue.enqueue(buffer);
+                        m_commandQueue.push_front(buffer);
 
-                        m_expectedHeaderQueue.enqueue(__USBDBG_TX_BUF);
-                        m_expectedDataQueue.enqueue(len);
+                        m_expectedHeaderQueue.push_front(__USBDBG_TX_BUF);
+                        m_expectedDataQueue.push_front(len);
                     }
+
                     break;
                 }
                 case __USBDBG_TX_BUF:
@@ -231,72 +247,41 @@ void OpenMVPluginIO::processEvents()
                 }
                 case __BOOTLDR_START:
                 {
-                    emit gotBootloaderStart(
-                        deserializeLong(m_receivedBytes) == static_cast<long>(__BOOTLDR_START));
+                    emit gotBootloaderStart(deserializeLong(m_receivedBytes) == static_cast<long>(__BOOTLDR_START));
                     break;
                 }
             }
-        }
 
-        if((!m_bootloaderMode) && (!m_disableFrameBuffer) && (!m_pingPong)
-        && (!m_expectedHeaderQueue.contains(__USBDBG_FRAME_SIZE))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_FRAME_DUMP))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_TX_BUF_LEN))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_TX_BUF)))
-        // Only execute this command if its not already being executed...
-        {
-            QByteArray buffer;
-            serializeByte(buffer, __USBDBG_CMD);
-            serializeByte(buffer, __USBDBG_FRAME_SIZE);
-            serializeLong(buffer, FRAME_SIZE_RESPONSE_LEN);
-            m_commandQueue.enqueue(buffer);
-
-            m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_SIZE);
-            m_expectedDataQueue.enqueue(FRAME_SIZE_RESPONSE_LEN);
-
-            m_pingPong = !m_pingPong;
-        }
-
-        if((!m_bootloaderMode) && (!m_disablePrint) && m_pingPong
-        && (!m_expectedHeaderQueue.contains(__USBDBG_FRAME_SIZE))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_FRAME_DUMP))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_TX_BUF_LEN))
-        && (!m_expectedHeaderQueue.contains(__USBDBG_TX_BUF)))
-        // Only execute this command if its not already being executed...
-        {
-            QByteArray buffer;
-            serializeByte(buffer, __USBDBG_CMD);
-            serializeByte(buffer, __USBDBG_TX_BUF_LEN);
-            serializeLong(buffer, TX_BUF_LEN_RESPONSE_LEN);
-            m_commandQueue.enqueue(buffer);
-
-            m_expectedHeaderQueue.enqueue(__USBDBG_TX_BUF_LEN);
-            m_expectedDataQueue.enqueue(TX_BUF_LEN_RESPONSE_LEN);
-
-            m_pingPong = !m_pingPong;
-        }
-
-        if(!m_commandQueue.isEmpty())
-        {
-            QByteArray command = m_commandQueue.dequeue();
-
-            if(m_port->write(command) != command.size())
-            {
-                qDebug() << "HolyShit";//QTimer::singleShot(0, this, &OpenMVPluginIO::shutdown);
-            }
-
-            while(m_port->bytesToWrite())
-            {
-                m_port->flush();
-                qApp->processEvents();
-            }
+            m_expectedNumber -= 1;
         }
     }
 }
 
+bool OpenMVPluginIO::frameSizeDumpQueued() const
+{
+    return m_expectedHeaderQueue.contains(__USBDBG_FRAME_SIZE) ||
+           m_expectedHeaderQueue.contains(__USBDBG_FRAME_DUMP);
+}
+
+bool OpenMVPluginIO::getScriptRunningQueued() const
+{
+    return m_expectedHeaderQueue.contains(__USBDBG_SCRIPT_RUNNING);
+}
+
+bool OpenMVPluginIO::getAttributeQueued() const
+{
+    return m_expectedHeaderQueue.contains(__USBDBG_ATTR_READ);
+}
+
+bool OpenMVPluginIO::getTxBufferQueued() const
+{
+    return m_expectedHeaderQueue.contains(__USBDBG_TX_BUF_LEN) ||
+           m_expectedHeaderQueue.contains(__USBDBG_TX_BUF);
+}
+
 void OpenMVPluginIO::getFirmwareVersion()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
@@ -309,46 +294,74 @@ void OpenMVPluginIO::getFirmwareVersion()
     }
 }
 
+void OpenMVPluginIO::frameSizeDump()
+{
+    if(!m_shutdown)
+    {
+        QByteArray buffer;
+        serializeByte(buffer, __USBDBG_CMD);
+        serializeByte(buffer, __USBDBG_FRAME_SIZE);
+        serializeLong(buffer, FRAME_SIZE_RESPONSE_LEN);
+        m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_SIZE);
+        m_expectedDataQueue.enqueue(FRAME_SIZE_RESPONSE_LEN);
+    }
+}
+
 void OpenMVPluginIO::frameUpdate()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_FRAME_UPDATE);
         serializeLong(buffer, 0);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::scriptExec(const QByteArray &data)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_SCRIPT_EXEC);
         serializeLong(buffer, data.size());
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
+
         m_commandQueue.enqueue(data);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::scriptStop()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_SCRIPT_STOP);
         serializeLong(buffer, 0);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::getScriptRunning()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
@@ -363,57 +376,57 @@ void OpenMVPluginIO::getScriptRunning()
 
 void OpenMVPluginIO::templateSave(long x, long y, long w, long h, const QByteArray &path)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_TEMPLATE_SAVE);
         serializeLong(buffer, sizeof(x) + sizeof(y) + sizeof(w) + sizeof(h) + path.size());
+        m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
+
+        buffer = QByteArray();
         serializeLong(buffer, x);
         serializeLong(buffer, y);
         serializeLong(buffer, w);
         serializeLong(buffer, h);
-        qDebug() << x << y << w << h << path;
-        //m_commandQueue.enqueue(buffer);
-        //m_commandQueue.enqueue(path);
+        m_commandQueue.enqueue(buffer + path);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::descriptorSave(short x, short y, short w, short h, const QByteArray &path)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_DESCRIPTOR_SAVE);
         serializeLong(buffer, sizeof(x) + sizeof(y) + sizeof(w) + sizeof(h) + path.size());
-        serializeWord(buffer, x);
-        serializeWord(buffer, y);
-        serializeWord(buffer, w);
-        serializeWord(buffer, h);
-        qDebug() << x << y << w << h << path;
-        //m_commandQueue.enqueue(buffer);
-        //m_commandQueue.enqueue(path);
-    }
-}
-
-void OpenMVPluginIO::set_attr(short attribute, short value)
-{
-    if(m_port)
-    {
-        QByteArray buffer;
-        serializeByte(buffer, __USBDBG_CMD);
-        serializeByte(buffer, __USBDBG_ATTR_WRITE);
-        serializeLong(buffer, 0);
-        serializeWord(buffer, attribute);
-        serializeWord(buffer, value);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
+
+        buffer = QByteArray();
+        serializeLong(buffer, x);
+        serializeLong(buffer, y);
+        serializeLong(buffer, w);
+        serializeLong(buffer, h);
+        m_commandQueue.enqueue(buffer + path);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::getAttribute(short attribute)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
@@ -427,21 +440,41 @@ void OpenMVPluginIO::getAttribute(short attribute)
     }
 }
 
+void OpenMVPluginIO::setAttribute(short attribute, short value)
+{
+    if(!m_shutdown)
+    {
+        QByteArray buffer;
+        serializeByte(buffer, __USBDBG_CMD);
+        serializeByte(buffer, __USBDBG_ATTR_WRITE);
+        serializeLong(buffer, 0);
+        serializeWord(buffer, attribute);
+        serializeWord(buffer, value);
+        m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
+    }
+}
+
 void OpenMVPluginIO::sysReset()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
         serializeByte(buffer, __USBDBG_SYS_RESET);
         serializeLong(buffer, 0);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::jpegEnable(bool enabled)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeByte(buffer, __USBDBG_CMD);
@@ -449,36 +482,30 @@ void OpenMVPluginIO::jpegEnable(bool enabled)
         serializeLong(buffer, 0);
         serializeWord(buffer, enabled ? true : false);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
-void OpenMVPluginIO::disablePrint(bool enable)
+void OpenMVPluginIO::getTxBuffer()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
-        m_disablePrint = enable;
-    }
-}
+        QByteArray buffer;
+        serializeByte(buffer, __USBDBG_CMD);
+        serializeByte(buffer, __USBDBG_TX_BUF_LEN);
+        serializeLong(buffer, TX_BUF_LEN_RESPONSE_LEN);
+        m_commandQueue.enqueue(buffer);
 
-void OpenMVPluginIO::disableFrameBuffer(bool enable)
-{
-    if(m_port)
-    {
-        m_disableFrameBuffer = enable;
-    }
-}
-
-void OpenMVPluginIO::bootloaderMode(bool enable)
-{
-    if(m_port)
-    {
-        m_bootloaderMode = enable;
+        m_expectedHeaderQueue.enqueue(__USBDBG_TX_BUF_LEN);
+        m_expectedDataQueue.enqueue(TX_BUF_LEN_RESPONSE_LEN);
     }
 }
 
 void OpenMVPluginIO::bootloaderStart()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeLong(buffer, __BOOTLDR_START);
@@ -491,32 +518,48 @@ void OpenMVPluginIO::bootloaderStart()
 
 void OpenMVPluginIO::bootloaderReset()
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeLong(buffer, __BOOTLDR_RESET);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::flashErase(long sector)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeLong(buffer, __BOOTLDR_ERASE);
         serializeLong(buffer, sector);
         m_commandQueue.enqueue(buffer);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
     }
 }
 
 void OpenMVPluginIO::flashWrite(const QByteArray &data)
 {
-    if(m_port)
+    if(!m_shutdown)
     {
         QByteArray buffer;
         serializeLong(buffer, __BOOTLDR_WRITE);
-        buffer.append(data);
-        m_commandQueue.enqueue(buffer);
+        m_commandQueue.enqueue(buffer + data);
+
+        m_expectedHeaderQueue.enqueue(0);
+        m_expectedDataQueue.enqueue(0);
+    }
+}
+
+void OpenMVPluginIO::close()
+{
+    if(!m_shutdown)
+    {
+        m_shutdown = true;
     }
 }

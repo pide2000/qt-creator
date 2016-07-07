@@ -27,6 +27,7 @@
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
 
+#include "openmvpluginserialport.h"
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
 #include "histogram/openmvpluginhistogram.h"
@@ -56,9 +57,6 @@
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
 
-#define OPENMVCAM_BAUD_RATE 12000000 // 12 Mbps
-#define OPENMVCAM_POLL_RATE 10 // 10 ms = 100 Hz
-
 namespace OpenMV {
 namespace Internal {
 
@@ -77,17 +75,17 @@ public:
 
 public slots:
 
-    void saveSettingsRequested();
+    void connectClicked(); // 1
+    void connectClickedResult(const QString &errorMessage); // 2
+    void firmwareVersion(long major, long minor, long patch); // 3
+    void disconnectClicked(); // 4
+    void shutdown(const QString &errorMessage); // 5
+    void closeResponse(); // 6
 
-    void aboutToShowExamples();
-
-    void connectClicked();
-    void disconnectClicked();
     void startClicked();
     void stopClicked();
 
-    void firmwareVersion(long major, long minor, long patch);
-
+    void processEvents();
     void errorFilter(const QByteArray &data);
 
     void saveImage(const QPixmap &data);
@@ -96,8 +94,10 @@ public slots:
 
 private:
 
-    QString getSerialPortPath(const QString &portName);
-    void setSerialPortPath(const QString &portName);
+    QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object);
+
+    QString getSerialPortPath() const;
+    void setSerialPortPath();
 
     Core::ActionContainer *m_examplesMenu;
 
@@ -124,14 +124,18 @@ private:
 
     QLabel *m_portLabel;
     QToolButton *m_pathButton;
-
-    int m_major;
-    int m_minor;
-    int m_patch;
     QLabel *m_versionLabel;
+    QLabel *m_fpsLabel;
 
+    QString m_portName;
+    int m_major, m_minor, m_patch;
+
+    OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
-    QSerialPort *m_serialPort;
+    bool m_connected;
+    bool m_running;
+    QElapsedTimer m_timer;
+    qint64 m_timerLast;
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;

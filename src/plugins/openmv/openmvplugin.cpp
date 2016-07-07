@@ -7,8 +7,32 @@ namespace Internal {
 
 OpenMVPlugin::OpenMVPlugin()
 {
-    m_iodevice = new OpenMVPluginIO(this);
-    m_serialPort = NULL;
+    m_portName = QString();
+    m_major = int();
+    m_minor = int();
+    m_patch = int();
+
+    m_ioport = new OpenMVPluginSerialPort(this);
+
+    connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+            this, &OpenMVPlugin::connectClickedResult);
+
+    connect(m_ioport, &OpenMVPluginSerialPort::shutdown,
+            this, &OpenMVPlugin::shutdown);
+
+    m_iodevice = new OpenMVPluginIO(m_ioport, this);
+
+    connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
+            this, &OpenMVPlugin::firmwareVersion);
+
+    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+            this, &OpenMVPlugin::closeResponse);
+
+    m_connected = false;
+    m_running = false;
+    m_timer = QElapsedTimer();
+    m_timer.start();
+    m_timerLast = qint64();
 
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
         "  File \"(.+?)\", line (\\d+).*?\n"
@@ -16,8 +40,11 @@ OpenMVPlugin::OpenMVPlugin()
     m_errorFilterString = QString();
 
     QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, m_iodevice, &OpenMVPluginIO::processEvents);
-    timer->start(OPENMVCAM_POLL_RATE);
+
+    connect(timer, &QTimer::timeout,
+            this, &OpenMVPlugin::processEvents);
+
+    timer->start(1);
 }
 
 OpenMVPlugin::~OpenMVPlugin()
@@ -43,264 +70,46 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
 void OpenMVPlugin::extensionsInitialized()
 {
     connect(Core::ActionManager::command(Core::Constants::NEW)->action(), &QAction::triggered, this, [this] {
+        Core::EditorManager::cutForwardNavigationHistory();
+        Core::EditorManager::addCurrentPositionToNavigationHistory();
         QString titlePattern = tr("Untitled $.py");
-        Core::IEditor *editor = Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
-        tr("# Untitled - By: %L1 - %L2\n"
-           "\n"
-           "import sensor\n"
-           "\n"
-           "sensor.reset()\n"
-           "sensor.set_pixformat(sensor.RGB565)\n"
-           "sensor.set_framesize(sensor.QVGA)\n"
-           "sensor.skip_frames()\n"
-           "\n"
-           "while(True):\n"
-           "    img = sensor.snapshot()\n").arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toLatin1());
-        qobject_cast<TextEditor::BaseTextEditor *>(editor)->editorWidget()->configureGenericHighlighter();
+        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
+            tr("# Untitled - By: %L1 - %L2\n"
+               "\n"
+               "import sensor\n"
+               "\n"
+               "sensor.reset()\n"
+               "sensor.set_pixformat(sensor.RGB565)\n"
+               "sensor.set_framesize(sensor.QVGA)\n"
+               "sensor.skip_frames()\n"
+               "\n"
+               "while(True):\n"
+               "    img = sensor.snapshot()\n").
+            arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toLatin1()));
+        if(editor)
+        {
+            editor->editorWidget()->configureGenericHighlighter();
+            Core::EditorManager::activateEditor(editor);
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("New File"),
+                QObject::tr("Unable to open file!"));
+        }
     });
-
-    ///////////////////////////////////////////////////////////////////////////
 
     Core::ActionContainer *filesMenu = Core::ActionManager::actionContainer(Core::Constants::M_FILE);
     m_examplesMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.Examples"));
     filesMenu->addMenu(Core::ActionManager::actionContainer(Core::Constants::M_FILE_RECENTFILES), m_examplesMenu, Core::Constants::G_FILE_OPEN);
     m_examplesMenu->menu()->setTitle(tr("&Examples"));
     m_examplesMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
-    connect(filesMenu->menu(), &QMenu::aboutToShow, this, &OpenMVPlugin::aboutToShowExamples);
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    m_connectCommand =
-        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
-        tr("Connect"), this), Core::Id("OpenMV.Connect"));
-    connect(m_connectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::connectClicked);
-
-    m_disconnectCommand =
-        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
-        tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
-    m_disconnectCommand->action()->setVisible(false);
-    connect(m_disconnectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::disconnectClicked);
-
-    m_startCommand =
-        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
-        tr("Start"), this), Core::Id("OpenMV.Start"));
-    m_startCommand->setDefaultKeySequence(tr("Ctrl+R"));
-    m_startCommand->action()->setDisabled(true);
-    connect(m_startCommand->action(), &QAction::triggered, this, &OpenMVPlugin::startClicked);
-
-    m_stopCommand =
-        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
-        tr("Stop"), this), Core::Id("OpenMV.Stop"));
-    m_stopCommand->action()->setDisabled(true);
-    connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    QMainWindow *mainWindow =
-        qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
-
-    if(mainWindow)
-    {
-        Core::Internal::FancyTabWidget *widget =
-            qobject_cast<Core::Internal::FancyTabWidget *>(mainWindow->centralWidget());
-
-        if(widget)
-        {
-            Core::Internal::FancyActionBar *actionBar0 =
-                new Core::Internal::FancyActionBar(widget);
-
-            widget->insertCornerWidget(0, actionBar0);
-
-            actionBar0->insertAction(0,
-                Core::ActionManager::command(Core::Constants::NEW)->action());
-
-            actionBar0->insertAction(1,
-                Core::ActionManager::command(Core::Constants::OPEN)->action());
-
-            actionBar0->insertAction(2,
-                Core::ActionManager::command(Core::Constants::SAVE)->action());
-
-            actionBar0->setProperty("no_separator", true);
-            actionBar0->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-
-            ///////////////////////////////////////////////////////////////////
-
-            Core::Internal::FancyActionBar *actionBar1 =
-                new Core::Internal::FancyActionBar(widget);
-
-            widget->insertCornerWidget(1, actionBar1);
-
-            actionBar1->insertAction(0,
-                Core::ActionManager::command(Core::Constants::UNDO)->action());
-
-            actionBar1->insertAction(1,
-                Core::ActionManager::command(Core::Constants::REDO)->action());
-
-            actionBar1->insertAction(2,
-                Core::ActionManager::command(Core::Constants::CUT)->action());
-
-            actionBar1->insertAction(3,
-                Core::ActionManager::command(Core::Constants::COPY)->action());
-
-            actionBar1->insertAction(4,
-                Core::ActionManager::command(Core::Constants::PASTE)->action());
-
-            actionBar1->setProperty("no_separator", false);
-            actionBar1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
-            ///////////////////////////////////////////////////////////////////
-
-            Core::Internal::FancyActionBar *actionBar2 =
-                new Core::Internal::FancyActionBar(widget);
-
-            widget->insertCornerWidget(2, actionBar2);
-
-            actionBar2->insertAction(0, m_connectCommand->action());
-            actionBar2->insertAction(1, m_disconnectCommand->action());
-            actionBar2->insertAction(2, m_startCommand->action());
-            actionBar2->insertAction(3, m_stopCommand->action());
-
-            actionBar2->setProperty("no_separator", false);
-            actionBar2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-
-            ///////////////////////////////////////////////////////////////////
-
-            Utils::StyledBar *styledBar0 = new Utils::StyledBar;
-            QHBoxLayout *styledBar0Layout = new QHBoxLayout;
-            styledBar0Layout->setMargin(0);
-            styledBar0Layout->setSpacing(0);
-            styledBar0Layout->addSpacing(4);
-            styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
-            styledBar0Layout->addSpacing(6);
-            styledBar0->setLayout(styledBar0Layout);
-
-            m_zoom = new QToolButton;
-            m_zoom->setText(tr("Zoom"));
-            m_zoom->setToolTip(tr("Zoom to fit"));
-            m_zoom->setCheckable(true);
-            m_zoom->setChecked(false);
-            styledBar0Layout->addWidget(m_zoom);
-
-            m_jpgCompress = new QToolButton;
-            m_jpgCompress->setText(tr("JPG"));
-            m_jpgCompress->setToolTip(tr("JPEG compress the Frame Buffer for higher performance"));
-            m_jpgCompress->setCheckable(true);
-            m_jpgCompress->setChecked(true);
-            styledBar0Layout->addWidget(m_jpgCompress);
-
-            m_disableFrameBuffer = new QToolButton;
-            m_disableFrameBuffer->setText(tr("Disable"));
-            m_disableFrameBuffer->setToolTip(tr("Disable the Frame Buffer for maximum performance"));
-            m_disableFrameBuffer->setCheckable(true);
-            m_disableFrameBuffer->setChecked(false);
-            styledBar0Layout->addWidget(m_disableFrameBuffer);
-
-            m_frameBuffer = new OpenMVPluginFB;
-            QWidget *tempWidget0 = new QWidget;
-            QVBoxLayout *tempLayout0 = new QVBoxLayout;
-            tempLayout0->setMargin(0);
-            tempLayout0->setSpacing(0);
-            tempLayout0->addWidget(styledBar0);
-            tempLayout0->addWidget(m_frameBuffer);
-            tempWidget0->setLayout(tempLayout0);
-
-            Utils::StyledBar *styledBar1 = new Utils::StyledBar;
-            QHBoxLayout *styledBar1Layout = new QHBoxLayout;
-            styledBar1Layout->setMargin(0);
-            styledBar1Layout->setSpacing(0);
-            styledBar1Layout->addSpacing(4);
-            styledBar1Layout->addWidget(new QLabel(tr("Histogram")));
-            styledBar1Layout->addSpacing(6);
-            styledBar1->setLayout(styledBar1Layout);
-
-            m_histogramColorSpace = new QComboBox;
-            m_histogramColorSpace->setProperty("hideborder", true);
-            m_histogramColorSpace->setProperty("drawleftborder", false);
-            m_histogramColorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
-            m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
-            m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
-            m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
-            m_histogramColorSpace->setCurrentIndex(RGB_COLOR_SPACE);
-            m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
-            styledBar1Layout->addWidget(m_histogramColorSpace);
-
-            m_histogram = new OpenMVPluginHistogram;
-            QWidget *tempWidget1 = new QWidget;
-            QVBoxLayout *tempLayout1 = new QVBoxLayout;
-            tempLayout1->setMargin(0);
-            tempLayout1->setSpacing(0);
-            tempLayout1->addWidget(styledBar1);
-            tempLayout1->addWidget(m_histogram);
-            tempWidget1->setLayout(tempLayout1);
-
-            m_hsplitter = widget->m_hsplitter;
-            m_vsplitter = widget->m_vsplitter;
-            m_vsplitter->insertWidget(0, tempWidget0);
-            m_vsplitter->insertWidget(1, tempWidget1);
-            m_vsplitter->setStretchFactor(0, 0);
-            m_vsplitter->setStretchFactor(1, 1);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    m_portLabel = new QLabel(tr("Serial Port:"));
-    m_portLabel->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(2, m_portLabel);
-
-    m_pathButton = new QToolButton;
-    m_pathButton->setText(tr("Drive:"));
-    m_pathButton->setToolTip(tr("Drive associated with the port"));
-    m_pathButton->setCheckable(false);
-    m_pathButton->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(3, m_pathButton);
-    connect(m_pathButton, &QToolButton::clicked,
-            this, [this] { setSerialPortPath(m_serialPort->portName()); });
-
-    m_versionLabel = new QLabel(tr("Firmware Version:"));
-    m_versionLabel->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(4, m_versionLabel);
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
-            this, &OpenMVPlugin::firmwareVersion);
-
-    connect(m_jpgCompress, &QToolButton::clicked,
-            m_iodevice, &OpenMVPluginIO::jpegEnable);
-
-    connect(m_disableFrameBuffer, &QToolButton::clicked,
-            m_iodevice, &OpenMVPluginIO::disableFrameBuffer);
-
-    connect(m_iodevice, &OpenMVPluginIO::shutdown,
-            this, &OpenMVPlugin::disconnectClicked);
-
-    connect(m_iodevice, &OpenMVPluginIO::printData,
-            Core::MessageManager::instance(), &Core::MessageManager::printData);
-
-    connect(m_iodevice, &OpenMVPluginIO::printData,
-            this, &OpenMVPlugin::errorFilter);
-
-    connect(m_zoom, &QToolButton::toggled,
-            m_frameBuffer, &OpenMVPluginFB::enableFitInView);
-
-    connect(m_iodevice, &OpenMVPluginIO::frameBufferData,
-            m_frameBuffer, &OpenMVPluginFB::frameBufferData);
-
-    connect(m_frameBuffer, &OpenMVPluginFB::saveImage,
-            this, &OpenMVPlugin::saveImage);
-
-    connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate,
-            this, &OpenMVPlugin::saveTemplate);
-
-    connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor,
-            this, &OpenMVPlugin::saveDescriptor);
-
-    connect(m_histogramColorSpace, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
-
-    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate,
-            m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
+    connect(filesMenu->menu(), &QMenu::aboutToShow, this, [this] {
+        m_examplesMenu->menu()->clear();
+        QList<QAction *> actions = aboutToShowExamplesRecursive(Core::ICore::resourcePath() + QStringLiteral("/examples"), m_examplesMenu->menu(), this);
+        m_examplesMenu->menu()->addActions(actions);
+        m_examplesMenu->menu()->setDisabled(actions.isEmpty());
+    });
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -355,6 +164,208 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
+    m_connectCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
+        tr("Connect"), this), Core::Id("OpenMV.Connect"));
+    m_connectCommand->action()->setEnabled(true);
+    m_connectCommand->action()->setVisible(true);
+    connect(m_connectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::connectClicked);
+
+    m_disconnectCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
+        tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
+    m_disconnectCommand->action()->setEnabled(false);
+    m_disconnectCommand->action()->setVisible(false);
+    connect(m_disconnectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::disconnectClicked);
+
+    m_startCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
+        tr("Start"), this), Core::Id("OpenMV.Start"));
+    m_startCommand->setDefaultKeySequence(tr("Ctrl+R"));
+    m_startCommand->action()->setDisabled(true);
+    connect(m_startCommand->action(), &QAction::triggered, this, &OpenMVPlugin::startClicked);
+    connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, [this] (Core::IEditor *editor) {
+        if(m_connected)
+        {
+            m_startCommand->action()->setEnabled(editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false);
+        }
+    });
+
+    m_stopCommand =
+        Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
+        tr("Stop"), this), Core::Id("OpenMV.Stop"));
+    m_stopCommand->action()->setDisabled(true);
+    connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
+    connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (long running) {
+        m_running = running;
+        m_stopCommand->action()->setEnabled(running);
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    QMainWindow *mainWindow = q_check_ptr(qobject_cast<QMainWindow *>(Core::ICore::mainWindow()));
+    Core::Internal::FancyTabWidget *widget = q_check_ptr(qobject_cast<Core::Internal::FancyTabWidget *>(mainWindow->centralWidget()));
+
+    Core::Internal::FancyActionBar *actionBar0 = new Core::Internal::FancyActionBar(widget);
+    widget->insertCornerWidget(0, actionBar0);
+
+    actionBar0->insertAction(0, Core::ActionManager::command(Core::Constants::NEW)->action());
+    actionBar0->insertAction(1, Core::ActionManager::command(Core::Constants::OPEN)->action());
+    actionBar0->insertAction(2, Core::ActionManager::command(Core::Constants::SAVE)->action());
+
+    actionBar0->setProperty("no_separator", true);
+    actionBar0->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
+    Core::Internal::FancyActionBar *actionBar1 = new Core::Internal::FancyActionBar(widget);
+    widget->insertCornerWidget(1, actionBar1);
+
+    actionBar1->insertAction(0, Core::ActionManager::command(Core::Constants::UNDO)->action());
+    actionBar1->insertAction(1, Core::ActionManager::command(Core::Constants::REDO)->action());
+    actionBar1->insertAction(2, Core::ActionManager::command(Core::Constants::CUT)->action());
+    actionBar1->insertAction(3, Core::ActionManager::command(Core::Constants::COPY)->action());
+    actionBar1->insertAction(4, Core::ActionManager::command(Core::Constants::PASTE)->action());
+
+    actionBar1->setProperty("no_separator", false);
+    actionBar1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+
+    Core::Internal::FancyActionBar *actionBar2 = new Core::Internal::FancyActionBar(widget);
+    widget->insertCornerWidget(2, actionBar2);
+
+    actionBar2->insertAction(0, m_connectCommand->action());
+    actionBar2->insertAction(1, m_disconnectCommand->action());
+    actionBar2->insertAction(2, m_startCommand->action());
+    actionBar2->insertAction(3, m_stopCommand->action());
+
+    actionBar2->setProperty("no_separator", false);
+    actionBar2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    Utils::StyledBar *styledBar0 = new Utils::StyledBar;
+    QHBoxLayout *styledBar0Layout = new QHBoxLayout;
+    styledBar0Layout->setMargin(0);
+    styledBar0Layout->setSpacing(0);
+    styledBar0Layout->addSpacing(4);
+    styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
+    styledBar0Layout->addSpacing(6);
+    styledBar0->setLayout(styledBar0Layout);
+
+    m_zoom = new QToolButton;
+    m_zoom->setText(tr("Zoom"));
+    m_zoom->setToolTip(tr("Zoom to fit"));
+    m_zoom->setCheckable(true);
+    m_zoom->setChecked(false);
+    styledBar0Layout->addWidget(m_zoom);
+
+    m_jpgCompress = new QToolButton;
+    m_jpgCompress->setText(tr("JPG"));
+    m_jpgCompress->setToolTip(tr("JPEG compress the Frame Buffer for higher performance"));
+    m_jpgCompress->setCheckable(true);
+    m_jpgCompress->setChecked(true);
+    styledBar0Layout->addWidget(m_jpgCompress);
+    connect(m_jpgCompress, &QToolButton::clicked, this, [this] {
+        if(m_connected)
+        {
+            m_iodevice->jpegEnable(m_jpgCompress->isChecked());
+        }
+    });
+
+    m_disableFrameBuffer = new QToolButton;
+    m_disableFrameBuffer->setText(tr("Disable"));
+    m_disableFrameBuffer->setToolTip(tr("Disable the Frame Buffer for maximum performance"));
+    m_disableFrameBuffer->setCheckable(true);
+    m_disableFrameBuffer->setChecked(false);
+    styledBar0Layout->addWidget(m_disableFrameBuffer);
+
+    m_frameBuffer = new OpenMVPluginFB;
+    QWidget *tempWidget0 = new QWidget;
+    QVBoxLayout *tempLayout0 = new QVBoxLayout;
+    tempLayout0->setMargin(0);
+    tempLayout0->setSpacing(0);
+    tempLayout0->addWidget(styledBar0);
+    tempLayout0->addWidget(m_frameBuffer);
+    tempWidget0->setLayout(tempLayout0);
+    connect(m_zoom, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
+    connect(m_iodevice, &OpenMVPluginIO::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
+    connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, &OpenMVPlugin::saveImage);
+    connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate, this, &OpenMVPlugin::saveTemplate);
+    connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor, this, &OpenMVPlugin::saveDescriptor);
+
+    Utils::StyledBar *styledBar1 = new Utils::StyledBar;
+    QHBoxLayout *styledBar1Layout = new QHBoxLayout;
+    styledBar1Layout->setMargin(0);
+    styledBar1Layout->setSpacing(0);
+    styledBar1Layout->addSpacing(4);
+    styledBar1Layout->addWidget(new QLabel(tr("Histogram")));
+    styledBar1Layout->addSpacing(6);
+    styledBar1->setLayout(styledBar1Layout);
+
+    m_histogramColorSpace = new QComboBox;
+    m_histogramColorSpace->setProperty("hideborder", true);
+    m_histogramColorSpace->setProperty("drawleftborder", false);
+    m_histogramColorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
+    m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
+    m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
+    m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
+    m_histogramColorSpace->setCurrentIndex(RGB_COLOR_SPACE);
+    m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
+    styledBar1Layout->addWidget(m_histogramColorSpace);
+
+    m_histogram = new OpenMVPluginHistogram;
+    QWidget *tempWidget1 = new QWidget;
+    QVBoxLayout *tempLayout1 = new QVBoxLayout;
+    tempLayout1->setMargin(0);
+    tempLayout1->setSpacing(0);
+    tempLayout1->addWidget(styledBar1);
+    tempLayout1->addWidget(m_histogram);
+    tempWidget1->setLayout(tempLayout1);
+    connect(m_histogramColorSpace, QOverload<int>::of(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
+
+    m_hsplitter = widget->m_hsplitter;
+    m_vsplitter = widget->m_vsplitter;
+    m_vsplitter->insertWidget(0, tempWidget0);
+    m_vsplitter->insertWidget(1, tempWidget1);
+    m_vsplitter->setStretchFactor(0, 0);
+    m_vsplitter->setStretchFactor(1, 1);
+
+    connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
+    connect(m_iodevice, &OpenMVPluginIO::printData, this, &OpenMVPlugin::errorFilter);
+    connect(m_iodevice, &OpenMVPluginIO::frameBufferData, this, [this] {
+        qint64 elapsed = m_timer.elapsed();
+        qint64 diff = elapsed - m_timerLast;
+        m_timerLast = elapsed;
+        m_fpsLabel->setText(tr("FPS: %L1").arg(round(1000.0 / diff)));
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    m_portLabel = new QLabel(tr("Serial Port:"));
+    m_portLabel->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(2, m_portLabel);
+
+    m_pathButton = new QToolButton;
+    m_pathButton->setText(tr("Drive:"));
+    m_pathButton->setToolTip(tr("Drive associated with the port"));
+    m_pathButton->setCheckable(false);
+    m_pathButton->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(3, m_pathButton);
+    connect(m_pathButton, &QToolButton::clicked, this, [this] {
+        setSerialPortPath();
+        m_frameBuffer->enableSaveTemplate(!getSerialPortPath().isEmpty());
+        m_frameBuffer->enableSaveDescriptor(!getSerialPortPath().isEmpty());
+    });
+
+    m_versionLabel = new QLabel(tr("Firmware Version:"));
+    m_versionLabel->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(4, m_versionLabel);
+
+    m_fpsLabel = new QLabel(tr("FPS:"));
+    m_fpsLabel->setDisabled(true);
+    Core::ICore::statusBar()->insertPermanentWidget(5, m_fpsLabel);
+
+    ///////////////////////////////////////////////////////////////////////////
+
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
     Core::EditorManager::restoreState(
@@ -373,68 +384,25 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
     settings->endGroup();
 
-    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested,
-        this, &OpenMVPlugin::saveSettingsRequested);
-}
-
-void OpenMVPlugin::saveSettingsRequested()
-{
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-    settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
-        Core::EditorManager::saveState());
-    settings->setValue(QStringLiteral(HSPLITTER_STATE),
-        m_hsplitter->saveState());
-    settings->setValue(QStringLiteral(VSPLITTER_STATE),
-        m_vsplitter->saveState());
-    settings->setValue(QStringLiteral(ZOOM_STATE),
-        m_zoom->isChecked());
-    settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
-        m_jpgCompress->isChecked());
-    settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
-        m_disableFrameBuffer->isChecked());
-    settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
-        m_histogramColorSpace->currentIndex());
-    settings->endGroup();
-}
-
-static QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object)
-{
-    QList<QAction *> actions;
-    QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-
-    while(it.hasNext())
-    {
-        QString filePath = it.next();
-
-        if(it.fileInfo().isDir())
-        {
-            QMenu *menu = new QMenu(it.fileName(), parent);
-            QList<QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu, object);
-            menu->addActions(menuActions);
-            menu->setDisabled(menuActions.isEmpty());
-            actions.append(menu->menuAction());
-        }
-        else
-        {
-            QAction *action = new QAction(it.fileName(), parent);
-            QObject::connect(action, &QAction::triggered, object, [filePath]
-            {
-                Core::EditorManager::openEditor(filePath);
-            });
-            actions.append(action);
-        }
-    }
-
-    return actions;
-}
-
-void OpenMVPlugin::aboutToShowExamples()
-{
-    m_examplesMenu->menu()->clear();
-    QList<QAction *> actions = aboutToShowExamplesRecursive(Core::ICore::resourcePath() + QStringLiteral("/examples"), m_examplesMenu->menu(), this);
-    m_examplesMenu->menu()->addActions(actions);
-    m_examplesMenu->menu()->setDisabled(actions.isEmpty());
+    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this] {
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+        settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
+            Core::EditorManager::saveState());
+        settings->setValue(QStringLiteral(HSPLITTER_STATE),
+            m_hsplitter->saveState());
+        settings->setValue(QStringLiteral(VSPLITTER_STATE),
+            m_vsplitter->saveState());
+        settings->setValue(QStringLiteral(ZOOM_STATE),
+            m_zoom->isChecked());
+        settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
+            m_jpgCompress->isChecked());
+        settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
+            m_disableFrameBuffer->isChecked());
+        settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
+            m_histogramColorSpace->currentIndex());
+        settings->endGroup();
+    });
 }
 
 void OpenMVPlugin::connectClicked()
@@ -486,108 +454,24 @@ void OpenMVPlugin::connectClicked()
 
     if(!selectedPort.isEmpty())
     {
-        m_serialPort = new QSerialPort(selectedPort, this);
+        emit m_ioport->open(m_portName = selectedPort);
+    }
+}
 
-        if(!m_serialPort->open(QIODevice::ReadWrite))
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                QApplication::applicationDisplayName(),
-                tr("Open Failure: %L1").arg(m_serialPort->errorString()));
-
-            delete m_serialPort;
-            m_serialPort = NULL;
-            return;
-        }
-
-        if(!m_serialPort->setBaudRate(OPENMVCAM_BAUD_RATE))
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                QApplication::applicationDisplayName(),
-                tr("SetBaudRate Failure: %L1").arg(m_serialPort->errorString()));
-
-            delete m_serialPort;
-            m_serialPort = NULL;
-            return;
-        }
-
-        m_connectCommand->action()->setVisible(false);
-        m_disconnectCommand->action()->setVisible(true);
-        m_startCommand->action()->setEnabled(true);
-
-        QString portName = m_serialPort->portName();
-        QString portPath = getSerialPortPath(portName);
-
-        if(portPath.isEmpty())
-        {
-            setSerialPortPath(portName);
-        }
-
-        m_portLabel->setEnabled(true);
-        m_portLabel->setText(tr("Serial Port: %L1").arg(portName));
-        m_pathButton->setEnabled(true);
-        m_pathButton->setText(tr("Drive: %L1").arg(getSerialPortPath(portName)));
-        m_frameBuffer->enableSaveTemplate(true);
-        m_frameBuffer->enableSaveDescriptor(true);
-
-        m_iodevice->setSerialPort(m_serialPort);
+void OpenMVPlugin::connectClickedResult(const QString &errorMessage)
+{
+    if(errorMessage.isEmpty())
+    {
+        setSerialPortPath();
         m_iodevice->getFirmwareVersion();
-    }
-}
-
-void OpenMVPlugin::disconnectClicked()
-{
-    if(m_serialPort)
-    {
-        m_iodevice->scriptStop();
-        m_iodevice->processEvents(); // flush serial port
-        QApplication::processEvents(); // flush serial port
-
-        delete m_serialPort;
-        m_serialPort = nullptr;
-
-        m_iodevice->setSerialPort(nullptr);
-
-        m_connectCommand->action()->setVisible(true);
-        m_disconnectCommand->action()->setVisible(false);
-        m_startCommand->action()->setDisabled(true);
-        m_stopCommand->action()->setDisabled(true);
-
-        m_portLabel->setText(tr("Serial Port:"));
-        m_portLabel->setDisabled(true);
-        m_pathButton->setText(tr("Drive:"));
-        m_pathButton->setDisabled(true);
-        m_versionLabel->setText(tr("Firmware Version:"));
-        m_versionLabel->setDisabled(true);
-        m_frameBuffer->enableSaveTemplate(false);
-        m_frameBuffer->enableSaveDescriptor(false);
-    }
-}
-
-void OpenMVPlugin::startClicked()
-{
-    Core::MessageManager::grayOutOldContent();
-
-    if(Core::EditorManager::currentDocument())
-    {
-        m_startCommand->action()->setDisabled(true);
-        m_stopCommand->action()->setEnabled(true);
-
-        m_iodevice->scriptExec(Core::EditorManager::currentDocument()->contents());
     }
     else
     {
+        m_portName = QString();
         QMessageBox::critical(Core::ICore::dialogParent(),
-            QApplication::applicationDisplayName(),
-            tr("Open a document first..."));
+            tr("Connect"),
+            tr("Error: %L1").arg(errorMessage));
     }
-}
-
-void OpenMVPlugin::stopClicked()
-{
-    m_iodevice->scriptStop();
-
-    m_startCommand->action()->setEnabled(true);
-    m_stopCommand->action()->setDisabled(true);
 }
 
 void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
@@ -596,13 +480,151 @@ void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
     m_minor = minor;
     m_patch = patch;
 
-    m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major).arg(minor).arg(patch));
+    m_connected = true;
+    m_timerLast = m_timer.elapsed() - 2000;
+
+    m_connectCommand->action()->setEnabled(false);
+    m_connectCommand->action()->setVisible(false);
+    m_disconnectCommand->action()->setEnabled(true);
+    m_disconnectCommand->action()->setVisible(true);
+    m_startCommand->action()->setEnabled(Core::EditorManager::currentDocument());
+    m_stopCommand->action()->setEnabled(false);
+
+    m_jpgCompress->setEnabled(false);
+    m_disableFrameBuffer->setEnabled(false);
+    m_frameBuffer->enableSaveTemplate(!getSerialPortPath().isEmpty());
+    m_frameBuffer->enableSaveDescriptor(!getSerialPortPath().isEmpty());
+
+    m_portLabel->setEnabled(true);
+    m_portLabel->setText(tr("Serial Port: %L1").arg(m_portName));
+    m_pathButton->setEnabled(true);
+    m_pathButton->setText(tr("Drive: %L1").arg(getSerialPortPath()));
     m_versionLabel->setEnabled(true);
+    m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major).arg(minor).arg(patch));
+    m_fpsLabel->setEnabled(true);
+    m_fpsLabel->setText(tr("FPS: 0"));
 
     m_iodevice->scriptStop();
     m_iodevice->jpegEnable(m_jpgCompress->isChecked());
-    m_iodevice->disableFrameBuffer(m_disableFrameBuffer->isChecked());
-    m_iodevice->disablePrint(false);
+}
+
+void OpenMVPlugin::disconnectClicked()
+{
+    if(m_connected)
+    {
+        m_connected = false;
+        m_running = false;
+
+        m_iodevice->scriptStop();
+
+        QElapsedTimer timer;
+        timer.start();
+
+        while(m_iodevice->commandsInQueue() && (!timer.hasExpired(1000)))
+        {
+            QApplication::processEvents();
+        }
+
+        m_iodevice->close();
+    }
+}
+
+void OpenMVPlugin::shutdown(const QString &errorMessage)
+{
+    if(m_connected)
+    {
+        m_connected = false;
+        m_running = false;
+
+        m_iodevice->close();
+
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Disconnect"),
+            tr("Error: %L1").arg(errorMessage));
+    }
+}
+
+void OpenMVPlugin::closeResponse()
+{
+    m_portName = QString();
+    m_major = int();
+    m_minor = int();
+    m_patch = int();
+
+    m_iodevice->reset();
+    m_timerLast = qint64();
+    m_errorFilterString = QString();
+
+    m_connectCommand->action()->setEnabled(true);
+    m_connectCommand->action()->setVisible(true);
+    m_disconnectCommand->action()->setVisible(false);
+    m_disconnectCommand->action()->setEnabled(false);
+    m_startCommand->action()->setEnabled(false);
+    m_stopCommand->action()->setEnabled(false);
+
+    m_jpgCompress->setEnabled(true);
+    m_disableFrameBuffer->setEnabled(true);
+    m_frameBuffer->enableSaveTemplate(false);
+    m_frameBuffer->enableSaveDescriptor(false);
+
+    m_portLabel->setDisabled(true);
+    m_portLabel->setText(tr("Serial Port:"));
+    m_pathButton->setDisabled(true);
+    m_pathButton->setText(tr("Drive:"));
+    m_versionLabel->setDisabled(true);
+    m_versionLabel->setText(tr("Firmware Version:"));
+    m_fpsLabel->setDisabled(true);
+    m_fpsLabel->setText(tr("FPS:"));
+}
+
+void OpenMVPlugin::startClicked()
+{
+    Core::MessageManager::grayOutOldContent();
+
+    if(m_running)
+    {
+        m_iodevice->scriptStop();
+    }
+
+    m_iodevice->scriptExec(Core::EditorManager::currentDocument()->contents());
+
+    m_running = true;
+    m_stopCommand->action()->setEnabled(true);
+}
+
+void OpenMVPlugin::stopClicked()
+{
+    m_iodevice->scriptStop();
+
+    m_running = false;
+    m_stopCommand->action()->setEnabled(false);
+}
+
+void OpenMVPlugin::processEvents()
+{
+    if(m_connected)
+    {
+        if((!m_disableFrameBuffer->isChecked())
+        && (!m_iodevice->frameSizeDumpQueued()))
+        {
+            m_iodevice->frameSizeDump();
+        }
+
+        if(!m_iodevice->getScriptRunningQueued())
+        {
+            m_iodevice->getScriptRunning();
+        }
+
+        if(!m_iodevice->getTxBufferQueued())
+        {
+            m_iodevice->getTxBuffer();
+        }
+
+        if((m_timer.elapsed() - m_timerLast) >= 2000)
+        {
+            m_fpsLabel->setText(tr("FPS: 0"));
+        }
+    }
 }
 
 void OpenMVPlugin::errorFilter(const QByteArray &data)
@@ -619,15 +641,18 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
         int lineNumber = match.captured(2).toInt();
         QString errorMessage = match.captured(3);
 
+        Core::EditorManager::cutForwardNavigationHistory();
+        Core::EditorManager::addCurrentPositionToNavigationHistory();
+
         TextEditor::BaseTextEditor *editor = Q_NULLPTR;
 
         if(fileName == QStringLiteral("<stdin>"))
         {
             editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
         }
-        else
+        else if(!getSerialPortPath().isEmpty())
         {
-            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QString(fileName).prepend(getSerialPortPath(m_serialPort->portName()))));
+            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QDir::cleanPath(QDir::fromNativeSeparators(QString(fileName).prepend(getSerialPortPath())))));
         }
 
         if(editor)
@@ -649,7 +674,7 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
             QString(),
             errorMessage);
 
-        m_errorFilterString = m_errorFilterString.right(m_errorFilterString.size() - index - match.capturedLength(0));
+        m_errorFilterString = m_errorFilterString.mid(index + match.capturedLength(0));
     }
 
     if(m_errorFilterString.size() > errorFilterMaxSize)
@@ -678,7 +703,7 @@ void OpenMVPlugin::saveImage(const QPixmap &data)
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 tr("Save Image"),
-                tr("Failed to save the image!"));
+                tr("Failed to save the image file for an unknown reason!"));
         }
     }
 
@@ -688,7 +713,7 @@ void OpenMVPlugin::saveImage(const QPixmap &data)
 void OpenMVPlugin::saveTemplate(const QRect &rect)
 {
     // Get the drive path first because it uses the settings too...
-    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath(m_serialPort->portName())));
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -723,7 +748,7 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
 void OpenMVPlugin::saveDescriptor(const QRect &rect)
 {
     // Get the drive path first because it uses the settings too...
-    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath(m_serialPort->portName())));
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -755,16 +780,75 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
     settings->endGroup();
 }
 
-QString OpenMVPlugin::getSerialPortPath(const QString &portName)
+QList<QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object)
+{
+    QList<QAction *> actions;
+    QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+
+    while(it.hasNext())
+    {
+        QString filePath = it.next();
+
+        if(it.fileInfo().isDir())
+        {
+            QMenu *menu = new QMenu(it.fileName(), parent);
+            QList<QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu, object);
+            menu->addActions(menuActions);
+            menu->setDisabled(menuActions.isEmpty());
+            actions.append(menu->menuAction());
+        }
+        else
+        {
+            QAction *action = new QAction(it.fileName(), parent);
+            QObject::connect(action, &QAction::triggered, object, [filePath, this]
+            {
+                QFile file(filePath);
+
+                if(file.open(QIODevice::ReadOnly))
+                {
+                    Core::EditorManager::cutForwardNavigationHistory();
+                    Core::EditorManager::addCurrentPositionToNavigationHistory();
+
+                    QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral(" $.") + QFileInfo(filePath).completeSuffix();
+                    TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, file.readAll()));
+
+                    if(editor)
+                    {
+                        editor->editorWidget()->configureGenericHighlighter();
+                        Core::EditorManager::activateEditor(editor);
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Open Example"),
+                            tr("Unable to open the example file \"%L1\"!").arg(filePath));
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Open Example"),
+                        tr("Error: %L1").arg(file.errorString()));
+                }
+            });
+
+            actions.append(action);
+        }
+    }
+
+    return actions;
+}
+
+QString OpenMVPlugin::getSerialPortPath() const
 {
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
-    QString path = settings->value(portName).toString();
+    QString path = settings->value(m_portName).toString();
     settings->endGroup();
     return path;
 }
 
-void OpenMVPlugin::setSerialPortPath(const QString &portName)
+void OpenMVPlugin::setSerialPortPath()
 {
     QStringList drives;
 
@@ -787,15 +871,15 @@ void OpenMVPlugin::setSerialPortPath(const QString &portName)
     {
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Select Drive"),
-            tr("No valid drives found!"));
+            tr("No valid drives found to associate with your OpenMV Cam!"));
     }
     else if(drives.size() == 1)
     {
-        settings->setValue(portName, drives.first());
+        settings->setValue(m_portName, drives.first());
     }
     else
     {
-        int index = drives.indexOf(settings->value(portName).toString());
+        int index = drives.indexOf(settings->value(m_portName).toString());
 
         bool ok;
         QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
@@ -806,7 +890,7 @@ void OpenMVPlugin::setSerialPortPath(const QString &portName)
 
         if(ok)
         {
-            settings->setValue(portName, temp);
+            settings->setValue(m_portName, temp);
         }
     }
 

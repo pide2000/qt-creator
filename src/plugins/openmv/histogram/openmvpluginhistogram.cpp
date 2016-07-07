@@ -374,7 +374,7 @@ void OpenMVPluginHistogram::updatePlot(QCPGraph *graph, int channel)
     }
 }
 
-OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent), m_colorSpace(RGB_COLOR_SPACE), m_ui(new Ui::OpenMVPluginHistogram)
+OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent), m_colorSpace(RGB_COLOR_SPACE), m_pixmap(QPixmap()), m_ui(new Ui::OpenMVPluginHistogram)
 {
     m_ui->setupUi(this);
 

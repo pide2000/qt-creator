@@ -26,12 +26,14 @@ public:
     explicit OpenMVPluginHistogram(QWidget *parent = Q_NULLPTR);
     ~OpenMVPluginHistogram();
 
-    bool eventFilter(QObject *watched, QEvent *event);
-
 public slots:
 
     void colorSpaceChanged(int colorSpace);
     void pixmapUpdate(const QPixmap &data);
+
+protected:
+
+    bool eventFilter(QObject *watched, QEvent *event);
 
 private:
 

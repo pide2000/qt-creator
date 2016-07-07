@@ -1,11 +1,13 @@
 include(../../qtcreatorplugin.pri)
 QT += printsupport serialport
 HEADERS += openmvplugin.h \
+           openmvpluginserialport.h \
            openmvpluginio.h \
            openmvpluginfb.h \
            histogram/openmvpluginhistogram.h \
            qcustomplot/qcustomplot.h
 SOURCES += openmvplugin.cpp \
+           openmvpluginserialport.cpp \
            openmvpluginio.cpp \
            openmvpluginfb.cpp \
            histogram/openmvpluginhistogram.cpp \
