@@ -443,6 +443,8 @@ OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent),
 
     setAttribute(Qt::WA_StyledBackground);
     setStyleSheet(QStringLiteral("background-color:#1E1E27; color:#FFFFFF"));
+
+    colorSpaceChanged(m_colorSpace);
 }
 
 OpenMVPluginHistogram::~OpenMVPluginHistogram()

@@ -18,21 +18,11 @@ class OpenMVPluginIO : public QObject
 public:
 
     explicit OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent = Q_NULLPTR);
-    void reset();
-
-    // To shutdown this object close() must be called which will prevent any new
-    // commands from being executed (that are not already in the serial buffer
-    // queues). The close command will then be sent to the serial thread and
-    // will clear out the write and then read signal queues. Lastly, close
-    // will return as the close reponse signal after which you can reset
-    // (above) the object.
 
     bool frameSizeDumpQueued() const;
     bool getScriptRunningQueued() const;
     bool getAttributeQueued() const;
     bool getTxBufferQueued() const;
-
-    bool commandsInQueue() const { return !m_commandQueue.isEmpty(); }
 
 public slots:
 
@@ -59,6 +49,7 @@ public slots: // private
 
     void processEvents();
     void readAll(const QByteArray &data);
+    void timeout();
 
 signals:
 
@@ -73,13 +64,14 @@ signals:
 private:
 
     OpenMVPluginSerialPort *m_port;
-
+    QTimer *m_timer;
     QQueue<QByteArray> m_commandQueue;
-    QQueue<int> m_expectedHeaderQueue, m_expectedDataQueue;
-    int m_expectedNumber;
-    bool m_shutdown, m_closed;
+    QQueue<int> m_expectedHeaderQueue;
+    QQueue<int> m_expectedDataQueue;
     QByteArray m_receivedBytes;
-    long m_frameSizeW, m_frameSizeH, m_frameSizeBPP;
+    long m_frameSizeW;
+    long m_frameSizeH;
+    long m_frameSizeBPP;
 };
 
 #endif // OPENMVPLUGINIO_H

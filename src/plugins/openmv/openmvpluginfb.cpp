@@ -24,7 +24,9 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     m_enableSaveDescriptor = false;
     m_unlocked = false;
     m_origin = QPoint();
+
     m_band = new QRubberBand(QRubberBand::Rectangle, this);
+    m_band->setGeometry(QRect());
     m_band->hide();
 }
 

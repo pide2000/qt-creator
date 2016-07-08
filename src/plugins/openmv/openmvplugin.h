@@ -6,8 +6,8 @@
 #include <QtWidgets>
 #include <QtSerialPort>
 
-#include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
+#include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/fancyactionbar.h>
@@ -16,12 +16,9 @@
 #include <coreplugin/id.h>
 #include <coreplugin/messagemanager.h>
 #include <coreplugin/minisplitter.h>
-
 #include <texteditor/texteditor.h>
-
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
-
 #include <utils/environment.h>
 #include <utils/hostosinfo.h>
 #include <utils/styledbar.h>
@@ -82,8 +79,8 @@ public slots:
     void shutdown(const QString &errorMessage); // 5
     void closeResponse(); // 6
 
-    void startClicked();
-    void stopClicked();
+    void startClicked(); // 1
+    void startFinished(); // 2
 
     void processEvents();
     void errorFilter(const QByteArray &data);
@@ -127,16 +124,17 @@ private:
     QLabel *m_versionLabel;
     QLabel *m_fpsLabel;
 
-    QString m_portName;
-    int m_major, m_minor, m_patch;
-
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
+
+    bool m_operating;
     bool m_connected;
-    bool m_running;
+    QString m_portName;
+    int m_major;
+    int m_minor;
+    int m_patch;
     QElapsedTimer m_timer;
     qint64 m_timerLast;
-
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
 };
