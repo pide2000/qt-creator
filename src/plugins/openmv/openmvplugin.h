@@ -69,6 +69,7 @@ public:
 
     bool initialize(const QStringList &arguments, QString *errorMessage);
     void extensionsInitialized();
+    ExtensionSystem::IPlugin::ShutdownFlag aboutToShutdown();
 
 public slots:
 
@@ -79,9 +80,7 @@ public slots:
     void shutdown(const QString &errorMessage); // 5
     void closeResponse(); // 6
 
-    void startClicked(); // 1
-    void startFinished(); // 2
-
+    void startClicked();
     void processEvents();
     void errorFilter(const QByteArray &data);
 
@@ -92,7 +91,6 @@ public slots:
 private:
 
     QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object);
-
     QString getSerialPortPath() const;
     void setSerialPortPath();
 
@@ -127,7 +125,8 @@ private:
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
 
-    bool m_operating;
+    bool m_connecting;
+    bool m_disconnecting;
     bool m_connected;
     QString m_portName;
     int m_major;

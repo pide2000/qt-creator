@@ -23,13 +23,15 @@ OpenMVPlugin::OpenMVPlugin()
     connect(m_iodevice, &OpenMVPluginIO::closeResponse,
             this, &OpenMVPlugin::closeResponse);
 
-    m_operating = false;
+    m_connecting = false;
+    m_disconnecting = false;
     m_connected = false;
     m_portName = QString();
     m_major = int();
     m_minor = int();
     m_patch = int();
     m_timer = QElapsedTimer();
+    m_timer.start();
     m_timerLast = qint64();
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
         "  File \"(.+?)\", line (\\d+).*?\n"
@@ -92,14 +94,14 @@ void OpenMVPlugin::extensionsInitialized()
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("New File"),
-                QObject::tr("Unable to open file!"));
+                QObject::tr("Cannot open the new file!"));
         }
     });
 
     Core::ActionContainer *filesMenu = Core::ActionManager::actionContainer(Core::Constants::M_FILE);
     m_examplesMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.Examples"));
     filesMenu->addMenu(Core::ActionManager::actionContainer(Core::Constants::M_FILE_RECENTFILES), m_examplesMenu, Core::Constants::G_FILE_OPEN);
-    m_examplesMenu->menu()->setTitle(tr("&Examples"));
+    m_examplesMenu->menu()->setTitle(tr("Examples"));
     m_examplesMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
     connect(filesMenu->menu(), &QMenu::aboutToShow, this, [this] {
         m_examplesMenu->menu()->clear();
@@ -114,7 +116,7 @@ void OpenMVPlugin::extensionsInitialized()
     QIcon helpIcon = QIcon::fromTheme(QStringLiteral("help-about"));
 
     QAction *docsCommand = new QAction(
-         tr("OpenMV &Docs"), this);
+         tr("OpenMV Docs"), this);
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
@@ -123,7 +125,7 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     QAction *forumsCommand = new QAction(
-         tr("OpenMV &Forums"), this);
+         tr("OpenMV Forums"), this);
     m_forumsCommand = Core::ActionManager::registerAction(forumsCommand, Core::Id("OpenMV.Forums"));
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
@@ -132,7 +134,7 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     QAction *pinoutAction = new QAction(
-         tr("About &OpenMV Cam..."), this);
+         tr("About OpenMV Cam..."), this);
     pinoutAction->setMenuRole(QAction::ApplicationSpecificRole);
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
@@ -142,7 +144,7 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     QAction *aboutAction = new QAction(helpIcon,
-        Utils::HostOsInfo::isMacHost() ? tr("About &OpenMV IDE") : tr("About &OpenMV IDE..."), this);
+        Utils::HostOsInfo::isMacHost() ? tr("About OpenMV IDE") : tr("About OpenMV IDE..."), this);
     aboutAction->setMenuRole(QAction::AboutRole);
     m_aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
     helpMenu->addAction(m_aboutCommand, Core::Constants::G_HELP_ABOUT);
@@ -409,9 +411,50 @@ void OpenMVPlugin::extensionsInitialized()
     });
 }
 
+ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
+{
+    if(m_connecting)
+    {
+        // Re-route this... (If this was happening then close)
+        disconnect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                   this, &OpenMVPlugin::connectClickedResult);
+        connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                m_iodevice, &OpenMVPluginIO::close);
+
+        // Re-route this... (If this was happening then close)
+        disconnect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
+                   this, &OpenMVPlugin::firmwareVersion);
+        connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
+                m_iodevice, &OpenMVPluginIO::close);
+
+        connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                this, &OpenMVPlugin::asynchronousShutdownFinished);
+
+        return ExtensionSystem::IPlugin::AsynchronousShutdown;
+    }
+    else if(m_disconnecting)
+    {
+        connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                this, &OpenMVPlugin::asynchronousShutdownFinished);
+
+        return ExtensionSystem::IPlugin::AsynchronousShutdown;
+    }
+    else if(m_connected)
+    {
+        connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                this, &OpenMVPlugin::asynchronousShutdownFinished);
+
+        disconnectClicked();
+
+        return ExtensionSystem::IPlugin::AsynchronousShutdown;
+    }
+
+    return ExtensionSystem::IPlugin::SynchronousShutdown;
+}
+
 void OpenMVPlugin::connectClicked()
 {
-    if(!m_operating)
+    if(!m_connecting)
     {
         QStringList stringList;
 
@@ -462,7 +505,7 @@ void OpenMVPlugin::connectClicked()
         {
             emit m_ioport->open(selectedPort);
             m_portName = selectedPort;
-            m_operating = true;
+            m_connecting = true;
         }
     }
 }
@@ -477,7 +520,7 @@ void OpenMVPlugin::connectClickedResult(const QString &errorMessage)
     else
     {
         m_portName = QString();
-        m_operating = false;
+        m_connecting = false;
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Connect"),
             tr("Error: %L1").arg(errorMessage));
@@ -495,14 +538,12 @@ void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
     }
     else
     {
-        m_operating = false;
+        m_connecting = false;
         m_connected = true;
         m_major = major;
         m_minor = minor;
         m_patch = patch;
-        m_timer.start();
         m_timerLast = m_timer.elapsed() - 2000;
-        m_errorFilterString = QString();
 
         m_connectCommand->action()->setEnabled(false);
         m_connectCommand->action()->setVisible(false);
@@ -532,6 +573,7 @@ void OpenMVPlugin::disconnectClicked()
 {
     if(m_connected)
     {
+        m_disconnecting = true;
         m_connected = false;
 
         m_iodevice->scriptStop();
@@ -541,32 +583,39 @@ void OpenMVPlugin::disconnectClicked()
 
 void OpenMVPlugin::shutdown(const QString &errorMessage)
 {
-    if(m_operating)
+    if(m_connecting)
     {
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Connect"),
             tr("Error: %L1").arg(errorMessage));
     }
-    else
+    else if(m_disconnecting)
     {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Disconnect"),
+            tr("Error: %L1").arg(errorMessage));
+    }
+    else if(m_connected)
+    {
+        m_disconnecting = true;
         m_connected = false;
 
         m_iodevice->close();
 
         QMessageBox::critical(Core::ICore::dialogParent(),
-            tr("Disconnect"),
+            tr("Error"),
             tr("Error: %L1").arg(errorMessage));
     }
 }
 
 void OpenMVPlugin::closeResponse()
 {
-    m_operating = false;
+    m_connecting = false;
+    m_disconnecting = false;
     m_portName = QString();
     m_major = int();
     m_minor = int();
     m_patch = int();
-    m_timer.invalidate();
     m_timerLast = qint64();
     m_errorFilterString = QString();
 
@@ -588,6 +637,8 @@ void OpenMVPlugin::closeResponse()
     m_versionLabel->setText(tr("Firmware Version:"));
     m_fpsLabel->setDisabled(true);
     m_fpsLabel->setText(tr("FPS:"));
+
+    Core::MessageManager::grayOutOldContent();
 }
 
 void OpenMVPlugin::startClicked()
@@ -601,13 +652,13 @@ void OpenMVPlugin::startClicked()
             m_iodevice->scriptStop();
         }
 
-        m_iodevice->scriptExec(Core::EditorManager::currentDocument()->contents());
+        Core::IEditor *editor = Core::EditorManager::currentEditor();
+
+        if(editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false)
+        {
+            m_iodevice->scriptExec(editor->document()->contents());
+        }
     }
-}
-
-void OpenMVPlugin::startFinished()
-{
-
 }
 
 void OpenMVPlugin::processEvents()
@@ -816,7 +867,7 @@ QList<QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path,
         else
         {
             QAction *action = new QAction(it.fileName(), parent);
-            QObject::connect(action, &QAction::triggered, object, [filePath, this]
+            QObject::connect(action, &QAction::triggered, object, [object, filePath]
             {
                 QFile file(filePath);
 
@@ -837,7 +888,7 @@ QList<QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path,
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Open Example"),
-                            tr("Unable to open the example file \"%L1\"!").arg(filePath));
+                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
                     }
                 }
                 else
