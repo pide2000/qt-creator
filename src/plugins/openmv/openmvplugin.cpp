@@ -467,6 +467,11 @@ void OpenMVPlugin::connectClicked()
             }
         }
 
+        if(Utils::HostOsInfo::isMacHost())
+        {
+            stringList = stringList.filter(QStringLiteral("tty"), Qt::CaseInsensitive);
+        }
+
         QString selectedPort;
 
         if(stringList.isEmpty())
@@ -925,7 +930,7 @@ void OpenMVPlugin::setSerialPortPath()
         && info.isReady()
         && (!info.isRoot())
         && (!info.isReadOnly())
-        && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("FAT"), Qt::CaseInsensitive)))
+        && (QString::fromLatin1(info.fileSystemType()).contains(Utils::HostOsInfo::isMacHost() ? QStringLiteral("msdos") : QStringLiteral("FAT"), Qt::CaseInsensitive)))
         {
             drives.append(info.rootPath());
         }

@@ -19,10 +19,10 @@
 #define __USBDBG_TX_BUF_LEN         0x8E
 #define __USBDBG_TX_BUF             0x8F
 
-#define __BOOTLDR_START             0xABCD0001
-#define __BOOTLDR_RESET             0xABCD0002
-#define __BOOTLDR_ERASE             0xABCD0004
-#define __BOOTLDR_WRITE             0xABCD0008
+#define __BOOTLDR_START             static_cast<int>(0xABCD0001)
+#define __BOOTLDR_RESET             static_cast<int>(0xABCD0002)
+#define __BOOTLDR_ERASE             static_cast<int>(0xABCD0004)
+#define __BOOTLDR_WRITE             static_cast<int>(0xABCD0008)
 
 #define FW_VERSION_RESPONSE_LEN     12
 #define FRAME_SIZE_RESPONSE_LEN     12
@@ -58,13 +58,13 @@ static inline char deserializeByte(QByteArray &buffer) // LittleEndian
     return r;
 }
 
-static inline short deserializeWord(QByteArray &buffer) // LittleEndian
-{
-    short r;
-    memcpy(&r, buffer.data(), 2);
-    buffer = buffer.mid(2);
-    return r;
-}
+//static inline short deserializeWord(QByteArray &buffer) // LittleEndian
+//{
+//    short r;
+//    memcpy(&r, buffer.data(), 2);
+//    buffer = buffer.mid(2);
+//    return r;
+//}
 
 static inline long deserializeLong(QByteArray &buffer) // LittleEndian
 {
