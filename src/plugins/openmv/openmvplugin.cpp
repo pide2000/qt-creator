@@ -529,6 +529,13 @@ void OpenMVPlugin::connectClickedResult(const QString &errorMessage)
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Connect"),
             tr("Error: %L1").arg(errorMessage));
+
+        if(Utils::HostOsInfo::isLinuxHost() && errorMessage.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive))
+        {
+            QMessageBox::information(Core::ICore::dialogParent(),
+                tr("Connect"),
+                tr("Try doing\n\nsudo usermod -a -G dialout %L1\n\nin a terminal and then restart your computer.").arg(Utils::Environment::systemEnvironment().userName()));
+        }
     }
 }
 
@@ -892,15 +899,15 @@ QList<QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path,
                     else
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
-                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                            object->tr("Open Example"),
+                            object->tr("Cannot open the example file \"%L1\"!").arg(filePath));
                     }
                 }
                 else
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
-                        tr("Open Example"),
-                        tr("Error: %L1").arg(file.errorString()));
+                        object->tr("Open Example"),
+                        object->tr("Error: %L1").arg(file.errorString()));
                 }
             });
 

@@ -28,55 +28,57 @@ DISTFILES += dist/copyright_template.txt \
     $$files(scripts/*.sh) \
     $$files(scripts/*.pl)
 
-exists(src/shared/qbs/qbs.pro) {
-    # Make sure the qbs dll ends up alongside the Creator executable.
-    QBS_DLLDESTDIR = $${IDE_BUILD_TREE}/bin
-    cache(QBS_DLLDESTDIR)
-    QBS_DESTDIR = $${IDE_LIBRARY_PATH}
-    cache(QBS_DESTDIR)
-    QBSLIBDIR = $${IDE_LIBRARY_PATH}
-    cache(QBSLIBDIR)
-    QBS_INSTALL_PREFIX = $${QTC_PREFIX}
-    cache(QBS_INSTALL_PREFIX)
-    QBS_LIB_INSTALL_DIR = $$INSTALL_LIBRARY_PATH
-    cache(QBS_LIB_INSTALL_DIR)
-    QBS_RESOURCES_BUILD_DIR = $${IDE_DATA_PATH}/qbs
-    cache(QBS_RESOURCES_BUILD_DIR)
-    QBS_RESOURCES_INSTALL_DIR = $$INSTALL_DATA_PATH/qbs
-    cache(QBS_RESOURCES_INSTALL_DIR)
-    macx {
-        QBS_PLUGINS_BUILD_DIR = $${IDE_PLUGIN_PATH}
-        QBS_APPS_RPATH_DIR = @loader_path/../Frameworks
-    } else {
-        QBS_PLUGINS_BUILD_DIR = $$IDE_PLUGIN_PATH
-        QBS_APPS_RPATH_DIR = \$\$ORIGIN/../$$IDE_LIBRARY_BASENAME/qtcreator
-    }
-    cache(QBS_PLUGINS_BUILD_DIR)
-    cache(QBS_APPS_RPATH_DIR)
-    QBS_PLUGINS_INSTALL_DIR = $$INSTALL_PLUGIN_PATH
-    cache(QBS_PLUGINS_INSTALL_DIR)
-    QBS_LIBRARY_DIRNAME = $${IDE_LIBRARY_BASENAME}
-    cache(QBS_LIBRARY_DIRNAME)
-    QBS_APPS_DESTDIR = $${IDE_BIN_PATH}
-    cache(QBS_APPS_DESTDIR)
-    QBS_APPS_INSTALL_DIR = $$INSTALL_BIN_PATH
-    cache(QBS_APPS_INSTALL_DIR)
-    QBS_LIBEXEC_DESTDIR = $${IDE_LIBEXEC_PATH}
-    cache(QBS_LIBEXEC_DESTDIR)
-    QBS_LIBEXEC_INSTALL_DIR = $$INSTALL_LIBEXEC_PATH
-    cache(QBS_LIBEXEC_INSTALL_DIR)
-    QBS_RELATIVE_LIBEXEC_PATH = $$relative_path($$QBS_LIBEXEC_DESTDIR, $$QBS_APPS_DESTDIR)
-    isEmpty(QBS_RELATIVE_LIBEXEC_PATH):QBS_RELATIVE_LIBEXEC_PATH = .
-    cache(QBS_RELATIVE_LIBEXEC_PATH)
-    QBS_RELATIVE_PLUGINS_PATH = $$relative_path($$QBS_PLUGINS_BUILD_DIR, $$QBS_APPS_DESTDIR$$)
-    cache(QBS_RELATIVE_PLUGINS_PATH)
-    QBS_RELATIVE_SEARCH_PATH = $$relative_path($$QBS_RESOURCES_BUILD_DIR, $$QBS_APPS_DESTDIR)
-    cache(QBS_RELATIVE_SEARCH_PATH)
-    !qbs_no_dev_install {
-        QBS_CONFIG_ADDITION = qbs_no_dev_install qbs_enable_project_file_updates
-        cache(CONFIG, add, QBS_CONFIG_ADDITION)
-    }
-}
+#OPENMV-DIFF#
+#exists(src/shared/qbs/qbs.pro) {
+#    # Make sure the qbs dll ends up alongside the Creator executable.
+#    QBS_DLLDESTDIR = $${IDE_BUILD_TREE}/bin
+#    cache(QBS_DLLDESTDIR)
+#    QBS_DESTDIR = $${IDE_LIBRARY_PATH}
+#    cache(QBS_DESTDIR)
+#    QBSLIBDIR = $${IDE_LIBRARY_PATH}
+#    cache(QBSLIBDIR)
+#    QBS_INSTALL_PREFIX = $${QTC_PREFIX}
+#    cache(QBS_INSTALL_PREFIX)
+#    QBS_LIB_INSTALL_DIR = $$INSTALL_LIBRARY_PATH
+#    cache(QBS_LIB_INSTALL_DIR)
+#    QBS_RESOURCES_BUILD_DIR = $${IDE_DATA_PATH}/qbs
+#    cache(QBS_RESOURCES_BUILD_DIR)
+#    QBS_RESOURCES_INSTALL_DIR = $$INSTALL_DATA_PATH/qbs
+#    cache(QBS_RESOURCES_INSTALL_DIR)
+#    macx {
+#        QBS_PLUGINS_BUILD_DIR = $${IDE_PLUGIN_PATH}
+#        QBS_APPS_RPATH_DIR = @loader_path/../Frameworks
+#    } else {
+#        QBS_PLUGINS_BUILD_DIR = $$IDE_PLUGIN_PATH
+#        QBS_APPS_RPATH_DIR = \$\$ORIGIN/../$$IDE_LIBRARY_BASENAME/qtcreator
+#    }
+#    cache(QBS_PLUGINS_BUILD_DIR)
+#    cache(QBS_APPS_RPATH_DIR)
+#    QBS_PLUGINS_INSTALL_DIR = $$INSTALL_PLUGIN_PATH
+#    cache(QBS_PLUGINS_INSTALL_DIR)
+#    QBS_LIBRARY_DIRNAME = $${IDE_LIBRARY_BASENAME}
+#    cache(QBS_LIBRARY_DIRNAME)
+#    QBS_APPS_DESTDIR = $${IDE_BIN_PATH}
+#    cache(QBS_APPS_DESTDIR)
+#    QBS_APPS_INSTALL_DIR = $$INSTALL_BIN_PATH
+#    cache(QBS_APPS_INSTALL_DIR)
+#    QBS_LIBEXEC_DESTDIR = $${IDE_LIBEXEC_PATH}
+#    cache(QBS_LIBEXEC_DESTDIR)
+#    QBS_LIBEXEC_INSTALL_DIR = $$INSTALL_LIBEXEC_PATH
+#    cache(QBS_LIBEXEC_INSTALL_DIR)
+#    QBS_RELATIVE_LIBEXEC_PATH = $$relative_path($$QBS_LIBEXEC_DESTDIR, $$QBS_APPS_DESTDIR)
+#    isEmpty(QBS_RELATIVE_LIBEXEC_PATH):QBS_RELATIVE_LIBEXEC_PATH = .
+#    cache(QBS_RELATIVE_LIBEXEC_PATH)
+#    QBS_RELATIVE_PLUGINS_PATH = $$relative_path($$QBS_PLUGINS_BUILD_DIR, $$QBS_APPS_DESTDIR$$)
+#    cache(QBS_RELATIVE_PLUGINS_PATH)
+#    QBS_RELATIVE_SEARCH_PATH = $$relative_path($$QBS_RESOURCES_BUILD_DIR, $$QBS_APPS_DESTDIR)
+#    cache(QBS_RELATIVE_SEARCH_PATH)
+#    !qbs_no_dev_install {
+#        QBS_CONFIG_ADDITION = qbs_no_dev_install qbs_enable_project_file_updates
+#        cache(CONFIG, add, QBS_CONFIG_ADDITION)
+#    }
+#}
+#OPENMV-DIFF#
 
 contains(QT_ARCH, i386): ARCHITECTURE = x86
 else: ARCHITECTURE = $$QT_ARCH

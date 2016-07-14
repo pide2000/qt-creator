@@ -141,8 +141,11 @@ def copy_qt_libs(target_qt_prefix_path, qt_libs_dir, qt_plugin_dir, qt_import_di
 
     print "Copying plugins:", plugins
     for plugin in plugins:
-        # OPENMV-DIFF # target = os.path.join(target_qt_prefix_path, 'plugins', plugin)
-        target = os.path.join(target_qt_prefix_path, plugin)
+        target = os.path.join(target_qt_prefix_path, 'plugins', plugin)
+        #OPENMV-DIFF#
+        if common.is_windows_platform():
+            target = os.path.join(target_qt_prefix_path, plugin)
+        #OPENMV-DIFF#
         if (os.path.exists(target)):
             shutil.rmtree(target)
         pluginPath = os.path.join(qt_plugin_dir, plugin)
