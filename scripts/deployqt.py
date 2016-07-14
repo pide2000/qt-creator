@@ -317,6 +317,7 @@ def main():
         print "fixing rpaths..."
         common.fix_rpaths(install_dir, os.path.join(qt_deploy_prefix, 'lib'), qt_install_info, chrpath_bin)
         #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
+        add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
     #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
 
 if __name__ == "__main__":
