@@ -122,7 +122,9 @@ def fix_rpaths(path, qt_deploy_path, qt_install_info, chrpath=None):
         if len(rpath) <= 0:
             return
         # remove previous Qt RPATH
-        new_rpath = filter(lambda path: not path.startswith(qt_install_prefix) and not path.startswith(qt_install_libs),
+        #OPENMV-DIFF#
+        #new_rpath = filter(lambda path: not path.startswith(qt_install_prefix) and not path.startswith(qt_install_libs),
+        new_rpath = filter(lambda path: not path.startswith(qt_install_prefix) and not path.startswith(qt_install_libs) and not '______________________________PADDING______________________________' in path,
                            rpath)
 
         # check for Qt linking

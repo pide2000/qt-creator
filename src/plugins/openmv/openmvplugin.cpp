@@ -325,7 +325,7 @@ void OpenMVPlugin::extensionsInitialized()
     tempLayout1->addWidget(styledBar1);
     tempLayout1->addWidget(m_histogram);
     tempWidget1->setLayout(tempLayout1);
-    connect(m_histogramColorSpace, QOverload<int>::of(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+    connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
     connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
 
     m_hsplitter = widget->m_hsplitter;
@@ -467,6 +467,11 @@ void OpenMVPlugin::connectClicked()
             }
         }
 
+        if(Utils::HostOsInfo::isMacHost())
+        {
+            stringList = stringList.filter(QStringLiteral("tty"), Qt::CaseInsensitive);
+        }
+
         QString selectedPort;
 
         if(stringList.isEmpty())
@@ -524,6 +529,13 @@ void OpenMVPlugin::connectClickedResult(const QString &errorMessage)
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Connect"),
             tr("Error: %L1").arg(errorMessage));
+
+        if(Utils::HostOsInfo::isLinuxHost() && errorMessage.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive))
+        {
+            QMessageBox::information(Core::ICore::dialogParent(),
+                tr("Connect"),
+                tr("Try doing:\n\nsudo usermod -a -G dialout %L1\n\n...in a terminal and then restart your computer.").arg(Utils::Environment::systemEnvironment().userName()));
+        }
     }
 }
 
@@ -1051,15 +1063,15 @@ QList<QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path,
                     else
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
-                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                            object->tr("Open Example"),
+                            object->tr("Cannot open the example file \"%L1\"!").arg(filePath));
                     }
                 }
                 else
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
-                        tr("Open Example"),
-                        tr("Error: %L1").arg(file.errorString()));
+                        object->tr("Open Example"),
+                        object->tr("Error: %L1").arg(file.errorString()));
                 }
             });
 
@@ -1089,7 +1101,7 @@ void OpenMVPlugin::setSerialPortPath()
         && info.isReady()
         && (!info.isRoot())
         && (!info.isReadOnly())
-        && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("FAT"), Qt::CaseInsensitive)))
+        && (QString::fromLatin1(info.fileSystemType()).contains(Utils::HostOsInfo::isMacHost() ? QStringLiteral("msdos") : QStringLiteral("FAT"), Qt::CaseInsensitive)))
         {
             drives.append(info.rootPath());
         }

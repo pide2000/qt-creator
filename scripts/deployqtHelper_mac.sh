@@ -66,17 +66,21 @@ if [ ! -f "$1/Contents/Resources/qt.conf" ]; then
     cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/qt.conf" "$1/Contents/Resources/qt.conf" || exit 1
 fi
 
-# copy ios tools' qt.conf
-if [ ! -f "$1/Contents/Resources/ios/qt.conf" ]; then
-    echo "- Copying ios/qt.conf"
-    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/ios_qt.conf" "$1/Contents/Resources/ios/qt.conf" || exit 1
-fi
+# OPENMV-DIFF #
+## copy ios tools' qt.conf
+#if [ ! -f "$1/Contents/Resources/ios/qt.conf" ]; then
+#    echo "- Copying ios/qt.conf"
+#    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/ios_qt.conf" "$1/Contents/Resources/ios/qt.conf" || exit 1
+#fi
+# OPENMV-DIFF #
 
-# copy qml2puppet's qt.conf
-if [ ! -f "$1/Contents/Resources/qmldesigner/qt.conf" ]; then
-    echo "- Copying qmldesigner/qt.conf"
-    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/qmldesigner_qt.conf" "$1/Contents/Resources/qmldesigner/qt.conf" || exit 1
-fi
+# OPENMV-DIFF #
+## copy qml2puppet's qt.conf
+#if [ ! -f "$1/Contents/Resources/qmldesigner/qt.conf" ]; then
+#    echo "- Copying qmldesigner/qt.conf"
+#    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/qmldesigner_qt.conf" "$1/Contents/Resources/qmldesigner/qt.conf" || exit 1
+#fi
+# OPENMV-DIFF #
 
 # copy Qt translations
 # check for known existing translation to avoid copying multiple times
@@ -123,21 +127,25 @@ if [ ! -d "$1/Contents/Frameworks/QtCore.framework" ]; then
 
     echo "- Running macdeployqt ($(which macdeployqt))"
 
+    # OPENMV-DIFF #
+    #macdeployqt "$1" \
+    #    "-executable=$1/Contents/Resources/qtpromaker" \
+    #    "-executable=$1/Contents/Resources/sdktool" \
+    #    "-executable=$1/Contents/Resources/ios/iostool" \
+    #    "-executable=$1/Contents/Resources/ios/iossim" \
+    #    "-executable=$1/Contents/Resources/ios/iossim_1_8_2" \
+    #    "-executable=$1/Contents/Resources/buildoutputparser" \
+    #    "-executable=$1/Contents/Resources/cpaster" \
+    #    "-executable=$qbsapp" \
+    #    "-executable=$qbsapp-config" \
+    #    "-executable=$qbsapp-config-ui" \
+    #    "-executable=$qbsapp-qmltypes" \
+    #    "-executable=$qbsapp-setup-android" \
+    #    "-executable=$qbsapp-setup-qt" \
+    #    "-executable=$qbsapp-setup-toolchains" \
+    #    "$qml2puppetArgument" "$clangbackendArgument" || exit 1
+    # OPENMV-DIFF #
     macdeployqt "$1" \
-        "-executable=$1/Contents/Resources/qtpromaker" \
-        "-executable=$1/Contents/Resources/sdktool" \
-        "-executable=$1/Contents/Resources/ios/iostool" \
-        "-executable=$1/Contents/Resources/ios/iossim" \
-        "-executable=$1/Contents/Resources/ios/iossim_1_8_2" \
-        "-executable=$1/Contents/Resources/buildoutputparser" \
-        "-executable=$1/Contents/Resources/cpaster" \
-        "-executable=$qbsapp" \
-        "-executable=$qbsapp-config" \
-        "-executable=$qbsapp-config-ui" \
-        "-executable=$qbsapp-qmltypes" \
-        "-executable=$qbsapp-setup-android" \
-        "-executable=$qbsapp-setup-qt" \
-        "-executable=$qbsapp-setup-toolchains" \
         "$qml2puppetArgument" "$clangbackendArgument" || exit 1
 
 fi

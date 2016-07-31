@@ -141,8 +141,11 @@ def copy_qt_libs(target_qt_prefix_path, qt_libs_dir, qt_plugin_dir, qt_import_di
 
     print "Copying plugins:", plugins
     for plugin in plugins:
-        # OPENMV-DIFF # target = os.path.join(target_qt_prefix_path, 'plugins', plugin)
-        target = os.path.join(target_qt_prefix_path, plugin)
+        target = os.path.join(target_qt_prefix_path, 'plugins', plugin)
+        #OPENMV-DIFF#
+        if common.is_windows_platform():
+            target = os.path.join(target_qt_prefix_path, plugin)
+        #OPENMV-DIFF#
         if (os.path.exists(target)):
             shutil.rmtree(target)
         pluginPath = os.path.join(qt_plugin_dir, plugin)
@@ -314,6 +317,7 @@ def main():
         print "fixing rpaths..."
         common.fix_rpaths(install_dir, os.path.join(qt_deploy_prefix, 'lib'), qt_install_info, chrpath_bin)
         #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
+        add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
     #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
 
 if __name__ == "__main__":
