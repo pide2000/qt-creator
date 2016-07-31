@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MicroPython libraries &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython documentation contents" href="../openmvcam_contents.html"/>
+        <link rel="next" title="micropython – access and control MicroPython internals" href="micropython.html"/>
+        <link rel="prev" title="MicroPython tutorial" href="../openmvcam/tutorial/index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">MicroPython libraries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-standard-libraries">Python standard libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal"><span class="pre">gc</span></code> &#8211; control the garbage collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal"><span class="pre">math</span></code> &#8211; mathematical functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="os.html"><code class="docutils literal"><span class="pre">os</span></code> &#8211; basic &#8220;operating system&#8221; services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="select.html"><code class="docutils literal"><span class="pre">select</span></code> &#8211; wait for events on a set of streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="struct.html"><code class="docutils literal"><span class="pre">struct</span></code> &#8211; pack and unpack primitive data types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal"><span class="pre">sys</span></code> &#8211; system specific functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html"><code class="docutils literal"><span class="pre">utime</span></code> &#8211; time related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#python-micro-libraries">Python micro-libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usocket.html"><code class="docutils literal"><span class="pre">usocket</span></code> &#8211; socket module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">MicroPython libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-standard-libraries">Python standard libraries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gc.html"><code class="docutils literal"><span class="pre">gc</span></code> &#8211; control the garbage collector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="math.html"><code class="docutils literal"><span class="pre">math</span></code> &#8211; mathematical functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="os.html"><code class="docutils literal"><span class="pre">os</span></code> &#8211; basic &#8220;operating system&#8221; services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="select.html"><code class="docutils literal"><span class="pre">select</span></code> &#8211; wait for events on a set of streams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct.html"><code class="docutils literal"><span class="pre">struct</span></code> &#8211; pack and unpack primitive data types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sys.html"><code class="docutils literal"><span class="pre">sys</span></code> &#8211; system specific functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="time.html"><code class="docutils literal"><span class="pre">utime</span></code> &#8211; time related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#python-micro-libraries">Python micro-libraries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usocket.html"><code class="docutils literal"><span class="pre">usocket</span></code> &#8211; socket module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+    <li>MicroPython libraries</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="micropython-libraries">
+<h1>MicroPython libraries<a class="headerlink" href="#micropython-libraries" title="Permalink to this headline">¶</a></h1>
+<p>Functionality specific to the MicroPython implementation is available in
+the following library.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+</ul>
+</div>
+<div class="section" id="python-standard-libraries">
+<h2>Python standard libraries<a class="headerlink" href="#python-standard-libraries" title="Permalink to this headline">¶</a></h2>
+<p>The following standard Python libraries are built in to MicroPython.</p>
+<p>For additional libraries, please download them from the <a class="reference external" href="https://github.com/micropython/micropython-lib">micropython-lib repository</a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gc.html"><code class="docutils literal"><span class="pre">gc</span></code> &#8211; control the garbage collector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html"><code class="docutils literal"><span class="pre">math</span></code> &#8211; mathematical functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="os.html"><code class="docutils literal"><span class="pre">os</span></code> &#8211; basic &#8220;operating system&#8221; services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html"><code class="docutils literal"><span class="pre">select</span></code> &#8211; wait for events on a set of streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="struct.html"><code class="docutils literal"><span class="pre">struct</span></code> &#8211; pack and unpack primitive data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sys.html"><code class="docutils literal"><span class="pre">sys</span></code> &#8211; system specific functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html"><code class="docutils literal"><span class="pre">utime</span></code> &#8211; time related functions</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="python-micro-libraries">
+<h2>Python micro-libraries<a class="headerlink" href="#python-micro-libraries" title="Permalink to this headline">¶</a></h2>
+<p>The following standard Python libraries have been &#8220;micro-ified&#8221; to fit in with
+the philosophy of MicroPython.  They provide the core functionality of that
+module and are intended to be a drop-in replacement for the standard Python
+library.</p>
+<p>The modules are available by their u-name, and also by their non-u-name.  The
+non-u-name can be overridden by a file of that name in your package path.
+For example, <code class="docutils literal"><span class="pre">import</span> <span class="pre">json</span></code> will first search for a file <code class="docutils literal"><span class="pre">json.py</span></code> or
+directory <code class="docutils literal"><span class="pre">json</span></code> and load that package if it is found.  If nothing is found,
+it will fallback to loading the built-in <code class="docutils literal"><span class="pre">ujson</span></code> module.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usocket.html"><code class="docutils literal"><span class="pre">usocket</span></code> &#8211; socket module</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="libraries-specific-to-the-openmv-cam">
+<h2>Libraries specific to the OpenMV Cam<a class="headerlink" href="#libraries-specific-to-the-openmv-cam" title="Permalink to this headline">¶</a></h2>
+<p>The following libraries are specific to the OpenMV Cam.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#time-related-functions">Time related functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#reset-related-functions">Reset related functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#interrupt-related-functions">Interrupt related functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#power-related-functions">Power related functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#miscellaneous-functions">Miscellaneous functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyb.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="network.html#class-winc-wifi-shield-driver">class WINC &#8211; wifi shield driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.time.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.time.html#constructors">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.time.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.sensor.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.sensor.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.image.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.image.html#constructors">Constructors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.image.html#id1">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.image.html#methods">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.image.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l1"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.gif.html#constructors">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.gif.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l1"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.mjpeg.html#constructors">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="omv.mjpeg.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.lcd.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="omv.fir.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="micropython.html" class="btn btn-neutral float-right" title="micropython – access and control MicroPython internals" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../openmvcam/tutorial/index.html" class="btn btn-neutral" title="MicroPython tutorial" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

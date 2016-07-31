@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>network — network configuration &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="time — tracking elapsed time" href="omv.time.html"/>
+        <link rel="prev" title="class USB_VCP – USB virtual comm port" href="pyb.USB_VCP.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#class-winc-wifi-shield-driver">class WINC &#8211; wifi shield driver</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/network.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-network">
+<span id="network-network-configuration"></span><h1><a class="reference internal" href="#module-network" title="network: network configuration"><code class="xref py py-mod docutils literal"><span class="pre">network</span></code></a> &#8212; network configuration<a class="headerlink" href="#module-network" title="Permalink to this headline">¶</a></h1>
+<p>This module provides network drivers and routing configuration.  Network
+drivers for specific hardware are available within this module and are
+used to configure a hardware network interface.  Configured interfaces
+are then available for use via the <a class="reference external" href="http://docs.python.org/library/socket.html#module-socket" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">socket</span></code></a> module.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># configure a specific network interface</span>
+<span class="c"># see below for examples of specific drivers</span>
+<span class="kn">import</span> <span class="nn">network</span>
+<span class="n">nic</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">Driver</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">nic</span><span class="o">.</span><span class="n">ifconfig</span><span class="p">())</span>
+
+<span class="c"># now use socket as usual</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="s">&#39;micropython.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">b</span><span class="s">&#39;GET / HTTP/1.1</span><span class="se">\r\n</span><span class="s">Host: micropython.org</span><span class="se">\r\n\r\n</span><span class="s">&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="class-winc-wifi-shield-driver">
+<h2>class WINC &#8211; wifi shield driver<a class="headerlink" href="#class-winc-wifi-shield-driver" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">WINC</span></code> class is used for controlling the wifi shield.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We&#8217;ve still got to cleanup the API on this class some more. Expect
+changes in the future. However, we&#8217;ll try to keep everything backwards
+compatible.</p>
+</div>
+<p>There&#8217;s a lot of work to be done to build internet connectivity for IoT
+applications. Fork our repo and help out if you have any ideas!</p>
+</div></blockquote>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">network</span>
+
+<span class="n">wlan</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">WINC</span><span class="p">()</span>
+<span class="n">wlan</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;SSID&quot;</span><span class="p">,</span> <span class="s">&quot;KEY&quot;</span><span class="p">)</span>
+
+<span class="n">wlan</span><span class="o">.</span><span class="n">ifconfig</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="id9">
+<h3>Constructors<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="network.WINC">
+<em class="property">class </em><code class="descclassname">network.</code><code class="descname">WINC</code><a class="headerlink" href="#network.WINC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a winc driver object and connects to the wifi shield which uses
+I/O pins P0, P1, P2, P3, P6, P7, and P8.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id10">
+<h3>Methods<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="network.winc.connect">
+<code class="descclassname">winc.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>ssid</em>, <em>key</em>, <em>security=WPA_PSK</em><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a wifi network with ssid <code class="docutils literal"><span class="pre">ssid</span></code> using key <code class="docutils literal"><span class="pre">key</span></code> with
+security <code class="docutils literal"><span class="pre">security</span></code>.</p>
+<p>After connecting to the network use the <code class="docutils literal"><span class="pre">usocket</span></code> module to open TCP/UDP
+ports to send and receive data.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function takes a little while to return.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.disconnect">
+<code class="descclassname">winc.</code><code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the wifi network.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.isconnected">
+<code class="descclassname">winc.</code><code class="descname">isconnected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.isconnected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if connected to an access point and an IP address has been
+obtained.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.ifconfig">
+<code class="descclassname">winc.</code><code class="descname">ifconfig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.ifconfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple containing:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: RSSI - received signal strength indicator (int)</li>
+<li>[1]: Authorization Type (see constants)</li>
+<li>[2]: Set Service Identifier String (SSID)</li>
+<li>[3]: MAC Address String (XX:XX:XX:XX:XX:XX) (BSSID)</li>
+<li>[4]: IP Address String (XXX.XXX.XXX.XXX)</li>
+</ul>
+</div></blockquote>
+<p>While connected to the network.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.scan">
+<code class="descclassname">winc.</code><code class="descname">scan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of tuples containing:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: Channel Number (int)</li>
+<li>[1]: RSSI - received signal strength indicator (int)</li>
+<li>[2]: Authorization Type (see constants)</li>
+<li>[3]: MAC Address String (XX:XX:XX:XX:XX:XX) (BSSID)</li>
+<li>[4]: Set Service Identifier String (SSID)</li>
+</ul>
+</div></blockquote>
+<p>You don&#8217;t need to be connected to call this.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.rssi">
+<code class="descclassname">winc.</code><code class="descname">rssi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.rssi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the received signal strength indicator (int) of the currently
+connected network.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.fw_version">
+<code class="descclassname">winc.</code><code class="descname">fw_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.fw_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple containing the wifi shield firmware version number.</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: Firmware Major Version Number (int)</li>
+<li>[1]: Firmware Minor Version Number (int)</li>
+<li>[2]: Firmware Patch Version Number (int)</li>
+<li>[3]: Driver Major Version Number (int)</li>
+<li>[4]: Driver Minor Version Number (int)</li>
+<li>[5]: Driver Patch Version Number (int)</li>
+<li>[6]: Hardware Revision Number - Chip ID (int)</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.fw_dump">
+<code class="descclassname">winc.</code><code class="descname">fw_dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.fw_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the wifi shield firmware to a binary at &#8220;/firmware/fw_dump.bin&#8221;</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function is going to be reworked in the future so that you
+can pass it a file name.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.fw_update">
+<code class="descclassname">winc.</code><code class="descname">fw_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.fw_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Programs the wifi shield with binary image found at
+&#8220;/firmware/m2m_aio_3a0.bin&#8221;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function is going to be reworked in the future so that you
+can pass it a file name.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="id11">
+<h3>Constants<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="network.WINC.OPEN">
+<code class="descclassname">WINC.</code><code class="descname">OPEN</code><a class="headerlink" href="#network.WINC.OPEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>For connecting to an open wifi network.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Insecure.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="network.WINC.WEP">
+<code class="descclassname">WINC.</code><code class="descname">WEP</code><a class="headerlink" href="#network.WINC.WEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>For connecting to a WEP based password protected network.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Insecure.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="network.WINC.WPA_PSK">
+<code class="descclassname">WINC.</code><code class="descname">WPA_PSK</code><a class="headerlink" href="#network.WINC.WPA_PSK" title="Permalink to this definition">¶</a></dt>
+<dd><p>For connecting to a WPA/PSK based password protected network.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For networks that need a password for all users.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="network.WINC.802_1X">
+<code class="descclassname">WINC.</code><code class="descname">802_1X</code><a class="headerlink" href="#network.WINC.802_1X" title="Permalink to this definition">¶</a></dt>
+<dd><p>For connecting to a 802.1X based password protected network.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For networks that need a separate password per user.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="omv.time.html" class="btn btn-neutral float-right" title="time — tracking elapsed time" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pyb.USB_VCP.html" class="btn btn-neutral" title="class USB_VCP – USB virtual comm port" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

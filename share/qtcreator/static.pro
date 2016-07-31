@@ -30,7 +30,9 @@ STATIC_INSTALL_BASE = $$INSTALL_DATA_PATH
 DATA_DIRS = \
     themes \
     styles \
-    examples
+    examples \
+    firmware \
+    html
 
 for(data_dir, DATA_DIRS) {
     files = $$files($$PWD/$$data_dir/*, true)

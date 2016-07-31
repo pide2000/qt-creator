@@ -11,6 +11,12 @@
 #define ATTR_SATURATION     2
 #define ATTR_GAINCEILING    3
 
+#define FLASH_SECTOR_START      4
+#define FLASH_SECTOR_END        11
+
+#define FLASH_SECTOR_ALL_START  1
+#define FLASH_SECTOR_ALL_END    11
+
 class OpenMVPluginIO : public QObject
 {
     Q_OBJECT

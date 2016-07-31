@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>class UART – duplex serial communication bus &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="pyb — functions related to the board" href="pyb.html"/>
+        <link rel="next" title="class USB_VCP – USB virtual comm port" href="pyb.USB_VCP.html"/>
+        <link rel="prev" title="class Timer – control internal timers" href="pyb.Timer.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyb.html#time-related-functions">Time related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyb.html#reset-related-functions">Reset related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyb.html#interrupt-related-functions">Interrupt related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyb.html#power-related-functions">Power related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyb.html#miscellaneous-functions">Miscellaneous functions</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pyb.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+          <li><a href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a> &raquo;</li>
+      
+    <li>class UART &#8211; duplex serial communication bus</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/pyb.UART.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-uart-duplex-serial-communication-bus">
+<span id="pyb-uart"></span><h1>class UART &#8211; duplex serial communication bus<a class="headerlink" href="#class-uart-duplex-serial-communication-bus" title="Permalink to this headline">¶</a></h1>
+<p>UART implements the standard UART/USART duplex serial communications protocol.  At
+the physical level it consists of 2 lines: RX and TX.  The unit of communication
+is a character (not to be confused with a string character) which can be 8 or 9
+bits wide.</p>
+<p>UART objects can be created and initialised using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyb</span> <span class="kn">import</span> <span class="n">UART</span>
+
+<span class="n">uart</span> <span class="o">=</span> <span class="n">UART</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9600</span><span class="p">)</span>                         <span class="c"># init with given baudrate</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="mi">9600</span><span class="p">,</span> <span class="n">bits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">parity</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c"># init with given parameters</span>
+</pre></div>
+</div>
+<p>A UART object acts like a stream object and reading and writing is done
+using the standard stream methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">uart</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>       <span class="c"># read 10 characters, returns a bytes object</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">readall</span><span class="p">()</span>      <span class="c"># read all available characters</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>     <span class="c"># read a line</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>  <span class="c"># read and store into the given buffer</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;abc&#39;</span><span class="p">)</span>   <span class="c"># write the 3 characters</span>
+</pre></div>
+</div>
+<p>Individual characters can be read/written using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">uart</span><span class="o">.</span><span class="n">readchar</span><span class="p">()</span>     <span class="c"># read 1 character and returns it as an integer</span>
+<span class="n">uart</span><span class="o">.</span><span class="n">writechar</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>  <span class="c"># write 1 character</span>
+</pre></div>
+</div>
+<p>To check if there is anything to be read, use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">uart</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>               <span class="c"># returns True if any characters waiting</span>
+</pre></div>
+</div>
+<p><em>Note:</em> The stream functions <code class="docutils literal"><span class="pre">read</span></code>, <code class="docutils literal"><span class="pre">write</span></code>, etc. are new in MicroPython v1.3.4.
+Earlier versions use <code class="docutils literal"><span class="pre">uart.send</span></code> and <code class="docutils literal"><span class="pre">uart.recv</span></code>.</p>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyb.UART">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">UART</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a UART object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 1-6, or &#8216;XA&#8217;, &#8216;XB&#8217;, &#8216;YA&#8217;, or &#8216;YB&#8217;.
+With no additional parameters, the UART object is created but not
+initialised (it has the settings from the last initialisation of
+the bus, if any).  If extra arguments are given, the bus is initialised.
+See <code class="docutils literal"><span class="pre">init</span></code> for parameters of initialisation.</p>
+<p>The physical pins of the UART busses are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">UART(4)</span></code> is on <code class="docutils literal"><span class="pre">XA</span></code>: <code class="docutils literal"><span class="pre">(TX,</span> <span class="pre">RX)</span> <span class="pre">=</span> <span class="pre">(X1,</span> <span class="pre">X2)</span> <span class="pre">=</span> <span class="pre">(PA0,</span> <span class="pre">PA1)</span></code></li>
+<li><code class="docutils literal"><span class="pre">UART(1)</span></code> is on <code class="docutils literal"><span class="pre">XB</span></code>: <code class="docutils literal"><span class="pre">(TX,</span> <span class="pre">RX)</span> <span class="pre">=</span> <span class="pre">(X9,</span> <span class="pre">X10)</span> <span class="pre">=</span> <span class="pre">(PB6,</span> <span class="pre">PB7)</span></code></li>
+<li><code class="docutils literal"><span class="pre">UART(6)</span></code> is on <code class="docutils literal"><span class="pre">YA</span></code>: <code class="docutils literal"><span class="pre">(TX,</span> <span class="pre">RX)</span> <span class="pre">=</span> <span class="pre">(Y1,</span> <span class="pre">Y2)</span> <span class="pre">=</span> <span class="pre">(PC6,</span> <span class="pre">PC7)</span></code></li>
+<li><code class="docutils literal"><span class="pre">UART(3)</span></code> is on <code class="docutils literal"><span class="pre">YB</span></code>: <code class="docutils literal"><span class="pre">(TX,</span> <span class="pre">RX)</span> <span class="pre">=</span> <span class="pre">(Y9,</span> <span class="pre">Y10)</span> <span class="pre">=</span> <span class="pre">(PB10,</span> <span class="pre">PB11)</span></code></li>
+<li><code class="docutils literal"><span class="pre">UART(2)</span></code> is on: <code class="docutils literal"><span class="pre">(TX,</span> <span class="pre">RX)</span> <span class="pre">=</span> <span class="pre">(X3,</span> <span class="pre">X4)</span> <span class="pre">=</span> <span class="pre">(PA2,</span> <span class="pre">PA3)</span></code></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="uart.init">
+<code class="descclassname">uart.</code><code class="descname">init</code><span class="sig-paren">(</span><em>baudrate</em>, <em>bits=8</em>, <em>parity=None</em>, <em>stop=1</em>, <em>*</em>, <em>timeout=1000</em>, <em>flow=None</em>, <em>timeout_char=0</em>, <em>read_buf_len=64</em><span class="sig-paren">)</span><a class="headerlink" href="#uart.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise the UART bus with the given parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">baudrate</span></code> is the clock rate.</li>
+<li><code class="docutils literal"><span class="pre">bits</span></code> is the number of bits per character, 7, 8 or 9.</li>
+<li><code class="docutils literal"><span class="pre">parity</span></code> is the parity, <code class="docutils literal"><span class="pre">None</span></code>, 0 (even) or 1 (odd).</li>
+<li><code class="docutils literal"><span class="pre">stop</span></code> is the number of stop bits, 1 or 2.</li>
+<li><code class="docutils literal"><span class="pre">flow</span></code> sets the flow control type. Can be None, <code class="docutils literal"><span class="pre">UART.RTS</span></code>, <code class="docutils literal"><span class="pre">UART.CTS</span></code>
+or <code class="docutils literal"><span class="pre">UART.RTS</span> <span class="pre">|</span> <span class="pre">UART.CTS</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">timeout</span></code> is the timeout in milliseconds to wait for the first character.</li>
+<li><code class="docutils literal"><span class="pre">timeout_char</span></code> is the timeout in milliseconds to wait between characters.</li>
+<li><code class="docutils literal"><span class="pre">read_buf_len</span></code> is the character length of the read buffer (0 to disable).</li>
+</ul>
+</div></blockquote>
+<p>This method will raise an exception if the baudrate could not be set within
+5% of the desired value.  The minimum baudrate is dictated by the frequency
+of the bus that the UART is on; UART(1) and UART(6) are APB2, the rest are on
+APB1.  The default bus frequencies give a minimum baudrate of 1300 for
+UART(1) and UART(6) and 650 for the others.  Use <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-func docutils literal"><span class="pre">pyb.freq</span></code></a>
+to reduce the bus frequencies to get lower baudrates.</p>
+<p><em>Note:</em> with parity=None, only 8 and 9 bits are supported.  With parity enabled,
+only 7 and 8 bits are supported.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.deinit">
+<code class="descclassname">uart.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.deinit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn off the UART bus.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.any">
+<code class="descclassname">uart.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.any" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if any characters waiting, else <code class="docutils literal"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.read">
+<code class="descclassname">uart.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read characters.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is specified then read at most that many bytes.</p>
+<p><em>Note:</em> for 9 bit characters each character takes two bytes, <code class="docutils literal"><span class="pre">nbytes</span></code> must
+be even, and the number of characters is <code class="docutils literal"><span class="pre">nbytes/2</span></code>.</p>
+<p>Return value: a bytes object containing the bytes read in.  Returns <code class="docutils literal"><span class="pre">b''</span></code>
+on timeout.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.readall">
+<code class="descclassname">uart.</code><code class="descname">readall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.readall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read as much data as possible.</p>
+<p>Return value: a bytes object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.readchar">
+<code class="descclassname">uart.</code><code class="descname">readchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.readchar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive a single character on the bus.</p>
+<p>Return value: The character read, as an integer.  Returns -1 on timeout.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.readinto">
+<code class="descclassname">uart.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.readinto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read bytes into the <code class="docutils literal"><span class="pre">buf</span></code>.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is specified then read at most
+that many bytes.  Otherwise, read at most <code class="docutils literal"><span class="pre">len(buf)</span></code> bytes.</p>
+<p>Return value: number of bytes read and stored into <code class="docutils literal"><span class="pre">buf</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.readline">
+<code class="descclassname">uart.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.readline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a line, ending in a newline character.</p>
+<p>Return value: the line read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.write">
+<code class="descclassname">uart.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#uart.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the buffer of bytes to the bus.  If characters are 7 or 8 bits wide
+then each byte is one character.  If characters are 9 bits wide then two
+bytes are used for each character (little endian), and <code class="docutils literal"><span class="pre">buf</span></code> must contain
+an even number of bytes.</p>
+<p>Return value: number of bytes written.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.writechar">
+<code class="descclassname">uart.</code><code class="descname">writechar</code><span class="sig-paren">(</span><em>char</em><span class="sig-paren">)</span><a class="headerlink" href="#uart.writechar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a single character on the bus.  <code class="docutils literal"><span class="pre">char</span></code> is an integer to write.
+Return value: <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uart.sendbreak">
+<code class="descclassname">uart.</code><code class="descname">sendbreak</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#uart.sendbreak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a break condition on the bus.  This drives the bus low for a duration
+of 13 bits.
+Return value: <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="UART.RTS">
+<code class="descclassname">UART.</code><code class="descname">RTS</code><a class="headerlink" href="#UART.RTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="UART.CTS">
+<code class="descclassname">UART.</code><code class="descname">CTS</code><a class="headerlink" href="#UART.CTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>to select the flow control type</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pyb.USB_VCP.html" class="btn btn-neutral float-right" title="class USB_VCP – USB virtual comm port" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pyb.Timer.html" class="btn btn-neutral" title="class Timer – control internal timers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

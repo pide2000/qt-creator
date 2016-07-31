@@ -121,7 +121,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
     connect(docsCommand, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/")));
+        QDesktopServices::openUrl(QUrl(Core::ICore::resourcePath() + QStringLiteral("/html/index.html")));
     });
 
     QAction *forumsCommand = new QAction(
@@ -140,7 +140,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
     connect(pinoutAction, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/docs/_images/pinout.png")));
+        QDesktopServices::openUrl(QUrl(Core::ICore::resourcePath() + QStringLiteral("/html/_images/pinout.png")));
     });
 
     QAction *aboutAction = new QAction(helpIcon,
@@ -538,6 +538,170 @@ void OpenMVPlugin::firmwareVersion(long major, long minor, long patch)
     }
     else
     {
+        /*if((major < OPENMVCAM_TARGET_FIRMWARE_MAJOR)
+        || (minor < OPENMVCAM_TARGET_FIRMWARE_MINOR)
+        || (patch < OPENMVCAM_TARGET_FIRMWARE_PATCH))
+        {
+            if(QMessageBox::question(Core::ICore::dialogParent(),
+                tr("Connect"),
+                tr("OpenMV IDE must upgrade your OpenMV Cam's firmware to continue."),
+                QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+            == QMessageBox::Ok)
+            {
+                int answer = QMessageBox::question(Core::ICore::dialogParent(),
+                    tr("Connect"),
+                    tr("Erase internal file system?"),
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+
+                if(answer == QMessageBox::Cancel)
+                {
+                    m_iodevice->close();
+                    return;
+                }
+
+                int flash_start = (answer == QMessageBox::Yes) ? FLASH_SECTOR_ALL_START : FLASH_SECTOR_START;
+                int flash_end = (answer == QMessageBox::Yes) ? FLASH_SECTOR_ALL_END : FLASH_SECTOR_END;
+
+                // Send Reset /////////////////////////////////////////////////
+                {
+                    disconnect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                        this, &OpenMVPlugin::closeResponse);
+
+                    QEventLoop loop;
+
+                    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                            &loop, &QEventLoop::quit);
+
+                    m_iodevice->sysReset();
+                    m_iodevice->close();
+                    m_iodevice->processEvents();
+                    m_iodevice->processEvents();
+
+                    loop.exec(QEventLoop::ExcludeUserInputEvents);
+
+                    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                        this, &OpenMVPlugin::closeResponse);
+                }
+
+                // Reconnect //////////////////////////////////////////////////
+                {
+                    QProgressDialog dialog(tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                    dialog.setWindowModality(Qt::WindowModal);
+                    dialog.show();
+
+                    bool *ok = new bool(false);
+
+                    disconnect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                        this, &OpenMVPlugin::connectClickedResult);
+
+                    QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                        this, [this, ok] (const QString &errorMessage) {
+                        *ok = errorMessage.isEmpty();
+                    });
+
+                    forever
+                    {
+                        QEventLoop loop;
+
+                        connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                                &loop, &QEventLoop::quit);
+
+                        emit m_ioport->open(m_portName);
+
+                        loop.exec();
+
+                        if((*ok) || dialog.wasCanceled())
+                        {
+                            break;
+                        }
+                    }
+
+                    disconnect(conn);
+
+                    connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                        this, &OpenMVPlugin::connectClickedResult);
+
+                    if(!(*ok))
+                    {
+                        m_iodevice->close();
+                        delete ok;
+                        return;
+                    }
+
+                    delete ok;
+                }
+
+                // Start Bootloader ///////////////////////////////////////////
+                {
+                    bool *ok = new bool(false);
+
+                    QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
+                            this, [this, ok] (bool result) {
+                        *ok = result;
+                    });
+
+                    QEventLoop loop;
+
+                    connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
+                            &loop, &QEventLoop::quit);
+
+                    m_iodevice->bootloaderStart();
+                    m_iodevice->processEvents();
+
+                    loop.exec(QEventLoop::ExcludeUserInputEvents);
+
+                    disconnect(conn);
+
+                    if(!(*ok))
+                    {
+                        m_iodevice->close();
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Connect"),
+                            tr("Unable to connect to the bootloader!"));
+                        delete ok;
+                        return;
+                    }
+
+                    delete ok;
+                }
+
+                // Erase Flash ////////////////////////////////////////////////
+                {
+                    QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
+                        Qt::WindowTitleHint);
+
+                    dialog.setWindowModality(Qt::WindowModal);
+                    dialog.setCancelButton(Q_NULLPTR);
+                    dialog.show();
+
+                    for(int i = flash_start; i <= flash_end; i++)
+                    {
+                        QEventLoop loop;
+
+                        QTimer::singleShot(1000, &loop, &QEventLoop::quit);
+
+                        m_iodevice->flashErase(i);
+                        m_iodevice->processEvents();
+
+                        loop.exec();
+                    }
+                }
+
+                // Program Flash //////////////////////////////////////////////
+                {
+
+                }
+            }
+            else
+            {
+                m_iodevice->close();
+                return;
+            }
+        }*/
+
         m_connecting = false;
         m_connected = true;
         m_major = major;

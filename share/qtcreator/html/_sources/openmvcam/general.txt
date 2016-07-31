@@ -1,0 +1,32 @@
+General information about the openmv cam
+========================================
+
+Local filesystem and SD card
+----------------------------
+
+If you don't have an SD card installed then your OpenMV Cam will have its file
+system root directory set to the internal flash. If an SD card is installed
+instead then the root directory will be set to that. When the SD card is inserted
+the internal filesystem is not accessible.
+
+.. note:: File system support will be re-worked in the future to work like all
+          other pyboards. File system support works like this right now because
+          the base OpenMV code is rather old and we never got around to fixing
+          this issue.
+
+Boot modes
+----------
+
+Connect the BOOT0 pin to 3.3V/RST before plugging the OpenMV Cam into your
+computer to put your OpenMV Cam into DFU mode. In DFU mode you can use DFU
+programmer tools to un-brick your OpenMV Cam if you were editing the firmware
+yourself for a custom experience.
+
+Errors: flashing LEDs
+---------------------
+
+If you see the red LED flashing (and you didn't program it to do so) then your
+OpenMV Cam encountered an unrecoverable hardware error.
+
+If you see the red LED turn on randomly but not flash then that is just your
+computer accessing the OpenMV Cam's flash file system.

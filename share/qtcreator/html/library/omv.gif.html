@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gif — gif recording &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="mjpeg — mjpeg recording" href="omv.mjpeg.html"/>
+        <link rel="prev" title="image — machine vision" href="omv.image.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/omv.gif.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-gif">
+<span id="gif-gif-recording"></span><h1><a class="reference internal" href="#module-gif" title="gif: gif recording"><code class="xref py py-mod docutils literal"><span class="pre">gif</span></code></a> &#8212; gif recording<a class="headerlink" href="#module-gif" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">gif</span></code> module is used for gif recording.</p>
+</div>
+<div class="section" id="class-gif-gif-recorder">
+<h1>class Gif &#8211; Gif recorder<a class="headerlink" href="#class-gif-gif-recorder" title="Permalink to this headline">¶</a></h1>
+<p>You can use the gif module to record small video clips. Note that gif files save
+uncompressed image data. So, they are best for recording short video clips that
+you want to share. Use <code class="docutils literal"><span class="pre">gif</span></code> for long clips.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sensor</span><span class="o">,</span> <span class="nn">gif</span>
+
+<span class="c"># Setup camera.</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">set_pixformat</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">GRAYSCALE</span><span class="p">)</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">set_framesize</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">QQVGA</span><span class="p">)</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">skip_frames</span><span class="p">()</span>
+
+<span class="c"># Create the gif object.</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">gif</span><span class="o">.</span><span class="n">Gif</span><span class="p">(</span><span class="s">&quot;example.gif&quot;</span><span class="p">)</span>
+
+<span class="c"># Add frames.</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">snapshot</span><span class="p">())</span>
+
+<span class="c"># Finalize.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gif.gif.Gif">
+<em class="property">class </em><code class="descclassname">gif.</code><code class="descname">Gif</code><span class="sig-paren">(</span><em>filename</em>, <em>width=Auto</em>, <em>height=Auto</em>, <em>color=Auto</em>, <em>loop=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gif.gif.Gif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Gif object which you can add frames to. <code class="docutils literal"><span class="pre">filename</span></code> is the path to
+save the gif recording to.</p>
+<p><code class="docutils literal"><span class="pre">width</span></code> is automatically set equal to the image sensor horizontal resolution
+unless explicitly overridden.</p>
+<p><code class="docutils literal"><span class="pre">height</span></code> is automatically set equal to the image sensor vertical resolution
+unless explicitly overridden.</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is automatically set equal to the image sensor color mode
+unless explicitly overridden:</p>
+<blockquote>
+<div><ul class="simple">
+<li>False for color results in a grayscale 7-bit per pixel gif.</li>
+<li>True for color results in a rgb232 7-bit per pixel gif.</li>
+</ul>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">loop</span></code> when True results in the gif automatically looping on playback.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt>
+<code class="descname">gif.width():</code></dt>
+<dd><p>Returns the width (horizontal resolution) for the gif object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.height():</code></dt>
+<dd><p>Returns the height (vertical resolution) for the gif object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.format():</code></dt>
+<dd><p>Returns <code class="docutils literal"><span class="pre">sensor.RGB565</span></code> if color or <code class="docutils literal"><span class="pre">sensor.GRAYSCALE</span></code> if not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.size():</code></dt>
+<dd><p>Returns the file size of the gif so far. This value is updated after adding frames.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.loop():</code></dt>
+<dd><p>Returns if the gif object had loop set in it&#8217;s constructor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.add_frame(image, delay=10):</code></dt>
+<dd><p>Add an image to the gif recording. The image width, height, and color mode,
+must be equal to the same width, height, and color modes used in the constructor
+for the gif.</p>
+<p><code class="docutils literal"><span class="pre">delay</span></code> is the number of centi-seconds to wait before displaying this frame
+after the previous frame (if not the first frame).</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">gif.close():</code></dt>
+<dd><p>Finalizes the gif recording. This method must be called once the recording
+is complete to make the file viewable.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="omv.mjpeg.html" class="btn btn-neutral float-right" title="mjpeg — mjpeg recording" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="omv.image.html" class="btn btn-neutral" title="image — machine vision" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

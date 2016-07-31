@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The OpenMV Cam hardware &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../../index.html"/>
+        <link rel="up" title="MicroPython documentation contents" href="../../openmvcam_contents.html"/>
+        <link rel="next" title="MicroPython license information" href="../../license.html"/>
+        <link rel="prev" title="fir — therompile shield driver (fir == far infrared)" href="../../library/omv.fir.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+    <li>The OpenMV Cam hardware</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/openmvcam/hardware/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-openmv-cam-hardware">
+<span id="hardware-index"></span><h1>The OpenMV Cam hardware<a class="headerlink" href="#the-openmv-cam-hardware" title="Permalink to this headline">¶</a></h1>
+<p>For the openmv cam:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/openmv/openmv/blob/master/eagle/openmv2/openmv2.pdf">OpenMV Cam schematics</a></li>
+<li><a class="reference external" href="https://github.com/openmv/openmv/blob/master/imgs/drawing.png">OpenMV Cam imperial dimensions</a></li>
+</ul>
+<p>For the official shields:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://github.com/openmv/openmv/blob/master/eagle/openmv2/shields/lcd/lcd.pdf">LCD Shield schematics</a></li>
+<li><a class="reference external" href="http://github.com/openmv/openmv/blob/master/eagle/openmv2/shields/thermal/thermal.pdf">Thermopile Shield schematics</a></li>
+<li><a class="reference external" href="http://github.com/openmv/openmv/blob/master/eagle/openmv2/shields/proto/proto.pdf">Proto Shield schematics</a></li>
+<li><a class="reference external" href="http://github.com/openmv/openmv/blob/master/eagle/openmv2/shields/wifi/wifi.pdf">WiFi Shield schematics</a></li>
+<li><a class="reference external" href="http://github.com/openmv/openmv/blob/master/eagle/openmv2/shields/ble/ble.pdf">BLE Shield schematics</a></li>
+</ul>
+</div>
+<div class="section" id="datasheets-for-the-components-on-the-openmv-cam">
+<h1>Datasheets for the components on the OpenMV Cam<a class="headerlink" href="#datasheets-for-the-components-on-the-openmv-cam" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>The microcontroller: <a class="reference external" href="http://www.st.com/en/microcontrollers/stm32f427vg.html">STM32F427VG</a></li>
+<li>The camera: <a class="reference external" href="http://www.haoyuelectronics.com/Attachment/OV7725%20+%20AL422B(FIFO)%20Camera%20Module(V1.0)/OV7725%20datasheet(V1.2).pdf">Omnivision OV7725</a></li>
+<li>The LDO voltage regulator: <a class="reference external" href="http://pdf1.alldatasheet.com/datasheet-pdf/view/532036/ROHM/BD33IA5WEFJ.html">ROHM BD33IA</a></li>
+</ul>
+</div>
+<div class="section" id="datasheets-for-other-components">
+<h1>Datasheets for other components<a class="headerlink" href="#datasheets-for-other-components" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>The LCD display on the LCD shield: <a class="reference external" href="https://cdn-shop.adafruit.com/datasheets/ST7735R_V0.2.pdf">Sitronix ST7735R</a></li>
+<li>The thermal sensor on the thermopile shield: <a class="reference external" href="http://www.melexis.com/Infrared-Thermometer-Sensors/Infrared-Thermometer-Sensors/MLX90620-776.aspx">Melexis MLX90620</a></li>
+<li>The WiFi Soc on the WiFi shield: <a class="reference external" href="http://www.atmel.com/devices/ATWINC1500.aspx">Atmel WINC1500</a></li>
+<li>The BLE Soc on the BLE shield: <a class="reference external" href="https://zentri.ack.me/products/AMS002_Bobcat_LC">ACKme AMS002</a></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../license.html" class="btn btn-neutral float-right" title="MicroPython license information" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../library/omv.fir.html" class="btn btn-neutral" title="fir — therompile shield driver (fir == far infrared)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

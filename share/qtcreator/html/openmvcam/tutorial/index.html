@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MicroPython tutorial &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../../index.html"/>
+        <link rel="up" title="MicroPython documentation contents" href="../../openmvcam_contents.html"/>
+        <link rel="next" title="MicroPython libraries" href="../../library/index.html"/>
+        <link rel="prev" title="General information about the openmv cam" href="../general.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">MicroPython tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tutorials-requiring-extra-components">Tutorials requiring extra components</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tips-tricks-and-useful-things-to-know">Tips, tricks and useful things to know</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">MicroPython tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tutorials-requiring-extra-components">Tutorials requiring extra components</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tips-tricks-and-useful-things-to-know">Tips, tricks and useful things to know</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+    <li>MicroPython tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/openmvcam/tutorial/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="micropython-tutorial">
+<span id="tutorial-index"></span><h1>MicroPython tutorial<a class="headerlink" href="#micropython-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial is intended to get you started with your openmvcam.
+All you need is a openmvcam and a micro-USB cable to connect it to
+your PC.  If it is your first time, it is recommended to follow
+the tutorial through in the order below.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The tutorial is not available yet. It will be in the following weeks.
+For now... things to know:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>1: If your camera IC is dirty then you can clean it with a micro fiber cloth doused in isopropyl alcohol.</li>
+<li>2: You have to manually attach your lens to your OpenMV Cam and focus it yourself (it would cost a fortune for MacroFab to to this for us). Use the helloworld.py script in the IDE to help.</li>
+<li>3: For windows, see the setup guide link on the docs homepage.</li>
+<li>4: For Mac, we don&#8217;t have an IDE for you just yet, we&#8217;ll generate one after we finish the docs. Alternatively, you can install the development environment for Mac and just run the IDE yourself (because its a python script) if you can&#8217;t wait.</li>
+<li>5: For linux, just plug the camera into your computer and it should work.</li>
+<li>6: Be-gentle with the USB connector (it&#8217;s surface mount only).</li>
+<li>7: Select an area in the IDE&#8217;s frame buffer and then click copy color to get color tracking settings (starting point settings you&#8217;ll have to tweak them to make them work for everything).</li>
+<li>8: Have fun, and if you want to help us out fork our repo and sumbit PRs. You can add new features to the firmware if you think something is missing. You don&#8217;t have to wait on us.</li>
+<li>9: Ask questions on the forums. Save email for private stuff.</li>
+<li>10: Seriously, post questions on the forum, we&#8217;ll answer really quickly. Don&#8217;t be afraid of posting things on the forums. We want user feedback so we know what needs to be our focus.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<div class="section" id="tutorials-requiring-extra-components">
+<h2>Tutorials requiring extra components<a class="headerlink" href="#tutorials-requiring-extra-components" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="tips-tricks-and-useful-things-to-know">
+<h2>Tips, tricks and useful things to know<a class="headerlink" href="#tips-tricks-and-useful-things-to-know" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../library/index.html" class="btn btn-neutral float-right" title="MicroPython libraries" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../general.html" class="btn btn-neutral" title="General information about the openmv cam" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

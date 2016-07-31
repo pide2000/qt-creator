@@ -487,7 +487,6 @@ bool OpenMVPluginHistogram::eventFilter(QObject *watched, QEvent *event)
             else
             {
                 QToolTip::hideText();
-                event->ignore();
             }
 
             return true;
@@ -522,7 +521,6 @@ bool OpenMVPluginHistogram::eventFilter(QObject *watched, QEvent *event)
             else
             {
                 QWhatsThis::hideText();
-                event->ignore();
             }
 
             return true;

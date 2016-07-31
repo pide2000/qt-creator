@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ure – regular expressions &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="usocket – socket module" href="usocket.html"/>
+        <link rel="prev" title="ujson – JSON encoding and decoding" href="ujson.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">ure</span></code> &#8211; regular expressions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/ure.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ure">
+<span id="ure-regular-expressions"></span><h1><a class="reference internal" href="#module-ure" title="ure: regular expressions"><code class="xref py py-mod docutils literal"><span class="pre">ure</span></code></a> &#8211; regular expressions<a class="headerlink" href="#module-ure" title="Permalink to this headline">¶</a></h1>
+<p>This module implements regular expression operations. Regular expression
+syntax supported is a subset of CPython <code class="docutils literal"><span class="pre">re</span></code> module (and actually is
+a subset of POSIX extended regular expressions).</p>
+<p>Supported operators are:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">'.'</span></code></dt>
+<dd>Match any character.</dd>
+<dt><code class="docutils literal"><span class="pre">'[]'</span></code></dt>
+<dd>Match set of characters. Individual characters and ranges are supported.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">'^'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'$'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'?'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'*'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'+'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'??'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'*?'</span></code></p>
+<p><code class="docutils literal"><span class="pre">'+?'</span></code></p>
+<p>Counted repetitions (<code class="docutils literal"><span class="pre">{m,n}</span></code>), more advanced assertions, names groups,
+etc. are not supported.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ure.compile">
+<code class="descclassname">ure.</code><code class="descname">compile</code><span class="sig-paren">(</span><em>regex</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile regular expression, return <code class="docutils literal"><span class="pre">regex</span></code> object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ure.match">
+<code class="descclassname">ure.</code><code class="descname">match</code><span class="sig-paren">(</span><em>regex</em>, <em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match <code class="docutils literal"><span class="pre">regex</span></code> against <code class="docutils literal"><span class="pre">string</span></code>. Match always happens from starting
+position in a string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ure.search">
+<code class="descclassname">ure.</code><code class="descname">search</code><span class="sig-paren">(</span><em>regex</em>, <em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search <code class="docutils literal"><span class="pre">regex</span></code> in a <code class="docutils literal"><span class="pre">string</span></code>. Unlike <code class="docutils literal"><span class="pre">match</span></code>, this will search
+string for first position which matches regex (which still may be
+0 if regex is anchored).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ure.DEBUG">
+<code class="descclassname">ure.</code><code class="descname">DEBUG</code><a class="headerlink" href="#ure.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag value, display debug information about compiled expression.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="regex-objects">
+<h2>Regex objects<a class="headerlink" href="#regex-objects" title="Permalink to this headline">¶</a></h2>
+<p>Compiled regular expression. Instances of this class are created using
+<code class="docutils literal"><span class="pre">ure.compile()</span></code>.</p>
+<dl class="method">
+<dt id="ure.regex.match">
+<code class="descclassname">regex.</code><code class="descname">match</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.match" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ure.regex.search">
+<code class="descclassname">regex.</code><code class="descname">search</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ure.regex.split">
+<code class="descclassname">regex.</code><code class="descname">split</code><span class="sig-paren">(</span><em>string</em>, <em>max_split=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="match-objects">
+<h2>Match objects<a class="headerlink" href="#match-objects" title="Permalink to this headline">¶</a></h2>
+<p>Match objects as returned by <code class="docutils literal"><span class="pre">match()</span></code> and <code class="docutils literal"><span class="pre">search()</span></code> methods.</p>
+<dl class="method">
+<dt id="ure.match.group">
+<code class="descclassname">match.</code><code class="descname">group</code><span class="sig-paren">(</span><span class="optional">[</span><em>index</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only numeric groups are supported.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="usocket.html" class="btn btn-neutral float-right" title="usocket – socket module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ujson.html" class="btn btn-neutral" title="ujson – JSON encoding and decoding" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

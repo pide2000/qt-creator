@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>esp — functions related to the ESP8266 &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="class socket – network socket" href="esp.socket.html"/>
+        <link rel="prev" title="class USB_VCP – USB virtual comm port" href="pyb.USB_VCP.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">esp</span></code> &#8212; functions related to the ESP8266</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/esp.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-esp">
+<span id="esp-functions-related-to-the-esp8266"></span><h1><a class="reference internal" href="#module-esp" title="esp: functions related to the ESP8266"><code class="xref py py-mod docutils literal"><span class="pre">esp</span></code></a> &#8212; functions related to the ESP8266<a class="headerlink" href="#module-esp" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">esp</span></code> module contains specific functions related to the ESP8266 module.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="esp.scan">
+<code class="descclassname">esp.</code><code class="descname">scan</code><span class="sig-paren">(</span><em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate scanning for the available wireless networks.</p>
+<p>Once the scanning is complete, the provided callback function <code class="docutils literal"><span class="pre">cb</span></code> will
+be called once for each network found, and passed a tuple with information
+about that network.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.status">
+<code class="descclassname">esp.</code><code class="descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current status of the wireless connection.</p>
+<p>The possible statuses are defined as constants:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">STAT_IDLE</span></code> &#8211; no connection and no activity,</li>
+<li><code class="docutils literal"><span class="pre">STAT_CONNECTING</span></code> &#8211; connecting in progress,</li>
+<li><code class="docutils literal"><span class="pre">STAT_WRONG_PASSWORD</span></code> &#8211; failed due to incorrect password,</li>
+<li><code class="docutils literal"><span class="pre">STAT_NO_AP_FOUND</span></code> &#8211; failed because no access point replied,</li>
+<li><code class="docutils literal"><span class="pre">STAT_CONNECT_FAIL</span></code> &#8211; failed due to other problems,</li>
+<li><code class="docutils literal"><span class="pre">STAT_GOT_IP</span></code> &#8211; connection susccessful.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.getaddrinfo">
+<code class="descclassname">esp.</code><code class="descname">getaddrinfo</code><span class="sig-paren">(</span><em>(hostname</em>, <em>port</em>, <em>lambda)</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.getaddrinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate resolving of the given hostname.</p>
+<p>When the hostname is resolved, the provided <code class="docutils literal"><span class="pre">lambda</span></code> callback will be
+called with two arguments, first being the hostname being resolved,
+second a tuple with information about that hostname.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="esp.socket.html">class socket &#8211; network socket</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="esp.socket.html" class="btn btn-neutral float-right" title="class socket – network socket" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pyb.USB_VCP.html" class="btn btn-neutral" title="class USB_VCP – USB virtual comm port" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

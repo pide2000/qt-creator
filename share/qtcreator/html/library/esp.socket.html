@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>class socket – network socket &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="esp — functions related to the ESP8266" href="esp.html"/>
+        <link rel="next" title="network — network configuration" href="network.html"/>
+        <link rel="prev" title="esp — functions related to the ESP8266" href="esp.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+          <li><a href="esp.html"><code class="docutils literal"><span class="pre">esp</span></code> &#8212; functions related to the ESP8266</a> &raquo;</li>
+      
+    <li>class socket &#8211; network socket</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/esp.socket.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-socket-network-socket">
+<h1>class socket &#8211; network socket<a class="headerlink" href="#class-socket-network-socket" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">socket</span></code> is an object that represents a network socket. Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>socket = esp.socket()
+socket.onrecv(print)
+socket.connect((&#39;207.58.139.247&#39;, 80))
+socket.send(&#39;GET /testwifi/index.html HTTP/1.0\r\n\r\n&#39;)
+</pre></div>
+</div>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="esp.socket">
+<em class="property">class </em><code class="descclassname">esp.</code><code class="descname">socket</code><a class="headerlink" href="#esp.socket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and return a socket object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="tcp-methods">
+<h2>TCP Methods<a class="headerlink" href="#tcp-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="socket.connect">
+<code class="descclassname">socket.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>addr</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the adress and port specified in the <code class="docutils literal"><span class="pre">addr</span></code> tuple.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.close">
+<code class="descclassname">socket.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#socket.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.accept">
+<code class="descclassname">socket.</code><code class="descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#socket.accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept a single connection from the connection queue.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.listen">
+<code class="descclassname">socket.</code><code class="descname">listen</code><span class="sig-paren">(</span><em>backlog</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start listening for incoming connections.</p>
+<p>Note: Only one socket can be listening for connections at a time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.bind">
+<code class="descclassname">socket.</code><code class="descname">bind</code><span class="sig-paren">(</span><em>addr</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind the socket to the address and port specified by the <code class="docutils literal"><span class="pre">addr</span></code> tuple.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.send">
+<code class="descclassname">socket.</code><code class="descname">send</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the bytes from <code class="docutils literal"><span class="pre">buf</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.recv">
+<code class="descclassname">socket.</code><code class="descname">recv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#socket.recv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive and return bytes from the socket.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="udp-methods">
+<h2>UDP Methods<a class="headerlink" href="#udp-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="socket.sendto">
+<code class="descclassname">socket.</code><code class="descname">sendto</code><span class="sig-paren">(</span><em>data</em>, <em>addr</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.sendto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder for UDP support, not implemented yet.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket.recvfrom">
+<code class="descclassname">socket.</code><code class="descname">recvfrom</code><span class="sig-paren">(</span><em>addr</em><span class="sig-paren">)</span><a class="headerlink" href="#socket.recvfrom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder for UDP support, not implemented yet.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="callback-setter-methods">
+<h2>Callback Setter Methods<a class="headerlink" href="#callback-setter-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt>
+<code class="descname">onconnect(lambda)::</code></dt>
+<dd><p>When connection is established, call the callback <code class="docutils literal"><span class="pre">lambda</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">onrecv(lambda)::</code></dt>
+<dd><p>When data is received, call the callback <code class="docutils literal"><span class="pre">lambda</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">onsent(lamda)::</code></dt>
+<dd><p>What data is finished sending, call the callback <code class="docutils literal"><span class="pre">lambda</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">ondisconnect(lambda)::</code></dt>
+<dd><p>Call the callback <code class="docutils literal"><span class="pre">lambda</span></code> when the connection is closed.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="network.html" class="btn btn-neutral float-right" title="network — network configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="esp.html" class="btn btn-neutral" title="esp — functions related to the ESP8266" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,667 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sensor — camera sensor &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="image — machine vision" href="omv.image.html"/>
+        <link rel="prev" title="time — tracking elapsed time" href="omv.time.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/omv.sensor.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-sensor">
+<span id="sensor-camera-sensor"></span><h1><a class="reference internal" href="#module-sensor" title="sensor: camera sensor"><code class="xref py py-mod docutils literal"><span class="pre">sensor</span></code></a> &#8212; camera sensor<a class="headerlink" href="#module-sensor" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">sensor</span></code> module is used for taking pictures.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sensor</span>
+
+<span class="c"># Setup camera.</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">set_pixformat</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">RGB565</span><span class="p">)</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">set_framesize</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">QVGA</span><span class="p">)</span>
+<span class="n">sensor</span><span class="o">.</span><span class="n">skip_frames</span><span class="p">()</span>
+
+<span class="c"># Take pictures.</span>
+<span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">sensor</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sensor.reset">
+<code class="descclassname">sensor.</code><code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the camera sensor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.snapshot">
+<code class="descclassname">sensor.</code><code class="descname">snapshot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a picture using the camera and returns an <code class="docutils literal"><span class="pre">image</span></code> object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.skip_frames">
+<code class="descclassname">sensor.</code><code class="descname">skip_frames</code><span class="sig-paren">(</span><em>n=10</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.skip_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes <code class="docutils literal"><span class="pre">n</span></code> number of snapshots to let the camera image stabilize after
+changing camera settings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.get_fb">
+<code class="descclassname">sensor.</code><code class="descname">get_fb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.get_fb" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Get Frame Buffer) Returns the image object returned by a previous call of
+<code class="docutils literal"><span class="pre">sensor.snapshot()</span></code>. If <code class="docutils literal"><span class="pre">sensor.snapshot()</span></code> had not been called before
+then <code class="docutils literal"><span class="pre">None</span></code> is returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.get_id">
+<code class="descclassname">sensor.</code><code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the camera module ID.</p>
+<blockquote>
+<div><ul class="simple">
+<li>sensor.OV2640: Old sensor module.</li>
+<li>sensor.OV7725: New sensor module.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_pixformat">
+<code class="descclassname">sensor.</code><code class="descname">set_pixformat</code><span class="sig-paren">(</span><em>pixformat</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_pixformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the pixel format for the camera module.</p>
+<blockquote>
+<div><ul class="simple">
+<li>sensor.GRAYSCALE: 8-bits per pixel.</li>
+<li>sensor.RGB565: 16-bits per pixel.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_framerate">
+<code class="descclassname">sensor.</code><code class="descname">set_framerate</code><span class="sig-paren">(</span><em>rate</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_framerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the frame rate for the camera module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Deprecated... do not use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_framesize">
+<code class="descclassname">sensor.</code><code class="descname">set_framesize</code><span class="sig-paren">(</span><em>framesize</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_framesize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the frame size for the camera module.</p>
+<blockquote>
+<div><ul class="simple">
+<li>sensor.QQVGA: 160x120</li>
+<li>sensor.QQVGA2: 128x160 (for use with the lcd shield)</li>
+<li>sensor.QVGA: 320x120</li>
+<li>sensor.QQCIF: 88x72</li>
+<li>sensor.QCIF: 176x144</li>
+<li>sensor.CIF: 352x288</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_gainceiling">
+<code class="descclassname">sensor.</code><code class="descname">set_gainceiling</code><span class="sig-paren">(</span><em>gainceiling</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_gainceiling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera image gainceiling. 2, 4, 8, 16, 32, 64, or 128.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should never need to call this function. Don&#8217;t use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_contrast">
+<code class="descclassname">sensor.</code><code class="descname">set_contrast</code><span class="sig-paren">(</span><em>constrast</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_contrast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera image contrast. -3 to +3.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should never need to call this function. Don&#8217;t use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_brightness">
+<code class="descclassname">sensor.</code><code class="descname">set_brightness</code><span class="sig-paren">(</span><em>brightness</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_brightness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera image brightness. -3 to +3.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should never need to call this function. Don&#8217;t use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_saturation">
+<code class="descclassname">sensor.</code><code class="descname">set_saturation</code><span class="sig-paren">(</span><em>saturation</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_saturation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera image saturation. -3 to +3.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should never need to call this function. Don&#8217;t use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_quality">
+<code class="descclassname">sensor.</code><code class="descname">set_quality</code><span class="sig-paren">(</span><em>quality</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_quality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the camera image JPEG compression quality. 0 - 100.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only for the OV2640 camera.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_colorbar">
+<code class="descclassname">sensor.</code><code class="descname">set_colorbar</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_colorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns color bar mode on (True) or off (False). Defaults to off.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_whitebal">
+<code class="descclassname">sensor.</code><code class="descname">set_whitebal</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_whitebal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns white balance on (True) or off (False). Defaults to on.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to turn white balance off if you want to track colors.
+We&#8217;ll add the ability to save and restore white balance settings in the
+future so that you can set the camera to track using a known color profile.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_gain_ctrl">
+<code class="descclassname">sensor.</code><code class="descname">set_gain_ctrl</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_gain_ctrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns gain control on (True) or off (False). Defaults to on.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to turn white balance off if you want to track colors.
+We&#8217;ll add the ability to save and restore gain control settings in the
+future so that you can set the camera to track using a known color profile.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_exposure_cntrl">
+<code class="descclassname">sensor.</code><code class="descname">set_exposure_cntrl</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_exposure_cntrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns exposure control on (True) or off (False). Defaults to on.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_hmirror">
+<code class="descclassname">sensor.</code><code class="descname">set_hmirror</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_hmirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns horizontal mirror mode on (True) or off (False). Defaults to off.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_vflip">
+<code class="descclassname">sensor.</code><code class="descname">set_vflip</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_vflip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns vertical flip mode on (True) or off (False). Defaults to off.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_special_effect">
+<code class="descclassname">sensor.</code><code class="descname">set_special_effect</code><span class="sig-paren">(</span><em>effect</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_special_effect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a camera image special effect:</p>
+<blockquote>
+<div><ul class="simple">
+<li>sensor.NORMAL: Normal Image</li>
+<li>sensor.NEGATIVE: Negative Image</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Deprecated... do not use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.set_image_filter">
+<code class="descclassname">sensor.</code><code class="descname">set_image_filter</code><span class="sig-paren">(</span><em>filter</em>, <em>lower=Auto</em>, <em>upper=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.set_image_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a camera image filter.</p>
+<blockquote>
+<div><ul class="simple">
+<li>sensor.FILTER_BW: Black and white filter (thresholds set with <code class="docutils literal"><span class="pre">lower</span></code> and <code class="docutils literal"><span class="pre">upper</span></code>).</li>
+<li>sensor.FILTER_SKIN: Skin filter (doesn&#8217;t work that well).</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Deprecated... do not use.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.__write_reg">
+<code class="descclassname">sensor.</code><code class="descname">__write_reg</code><span class="sig-paren">(</span><em>address</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.__write_reg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write <code class="docutils literal"><span class="pre">value</span></code> to camera register at <code class="docutils literal"><span class="pre">address</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">See the camera data sheet for register info. Google the OV7725
+or OV2640 to get the data sheet.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.__read_reg">
+<code class="descclassname">sensor.</code><code class="descname">__read_reg</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.__read_reg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read camera register at <code class="docutils literal"><span class="pre">address</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">See the camera data sheet for register info. Google the OV7725
+or OV2640 to get the data sheet.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="sensor.sensor.GRAYSCALE">
+<code class="descclassname">sensor.</code><code class="descname">GRAYSCALE</code><a class="headerlink" href="#sensor.sensor.GRAYSCALE" title="Permalink to this definition">¶</a></dt>
+<dd><p>GRAYSCALE pixel format (Y from YUV422). Each pixel is 8-bits, 1-byte.</p>
+<p>All of our computer vision algorithms run faster on grayscale images than
+RGB565 images.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.RGB565">
+<code class="descclassname">sensor.</code><code class="descname">RGB565</code><a class="headerlink" href="#sensor.sensor.RGB565" title="Permalink to this definition">¶</a></dt>
+<dd><p>RGB565 pixel format. Each pixel is 16-bits, 2-bytes. 5-bits are used for red,
+6-bits are used for green, and 5-bits are used for blue.</p>
+<p>All of our computer vision algorithms run slower on RGB565 images than
+grayscale images.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.JPEG">
+<code class="descclassname">sensor.</code><code class="descname">JPEG</code><a class="headerlink" href="#sensor.sensor.JPEG" title="Permalink to this definition">¶</a></dt>
+<dd><p>JPEG mode. Only works for the OV2640 camera right now. In the future, we&#8217;ll
+support this mode for auto JPEG compression on all cameras...</p>
+<p>When the pixformat is set to JPEG mode for the OV2640 camera you can capture
+VGA/SVGA/SXGA/UXGA images.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.YUV422">
+<code class="descclassname">sensor.</code><code class="descname">YUV422</code><a class="headerlink" href="#sensor.sensor.YUV422" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated... do not use.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">sensor.OV9650:</code></dt>
+<dd><p><code class="docutils literal"><span class="pre">get_id()</span></code> returns this for the OV9650 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">sensor.OV2640:</code></dt>
+<dd><p><code class="docutils literal"><span class="pre">get_id()</span></code> returns this for the OV2640 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">sensor.OV7725:</code></dt>
+<dd><p><code class="docutils literal"><span class="pre">get_id()</span></code> returns this for the OV7725 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQVGA">
+<code class="descclassname">sensor.</code><code class="descname">QQVGA</code><a class="headerlink" href="#sensor.sensor.QQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>160x120 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQVGA2">
+<code class="descclassname">sensor.</code><code class="descname">QQVGA2</code><a class="headerlink" href="#sensor.sensor.QQVGA2" title="Permalink to this definition">¶</a></dt>
+<dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QVGA">
+<code class="descclassname">sensor.</code><code class="descname">QVGA</code><a class="headerlink" href="#sensor.sensor.QVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>320x120 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQCIF">
+<code class="descclassname">sensor.</code><code class="descname">QQCIF</code><a class="headerlink" href="#sensor.sensor.QQCIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>88x72 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QCIF">
+<code class="descclassname">sensor.</code><code class="descname">QCIF</code><a class="headerlink" href="#sensor.sensor.QCIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>176x144 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.CIF">
+<code class="descclassname">sensor.</code><code class="descname">CIF</code><a class="headerlink" href="#sensor.sensor.CIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>352x288 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.VGA">
+<code class="descclassname">sensor.</code><code class="descname">VGA</code><a class="headerlink" href="#sensor.sensor.VGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>640x480 resolution for the camera sensor. Can only be used in JPEG mode for
+the OV2640 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.SVGA">
+<code class="descclassname">sensor.</code><code class="descname">SVGA</code><a class="headerlink" href="#sensor.sensor.SVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>800x600 resolution for the camera sensor. Can only be used in JPEG mode for
+the OV2640 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.SXGA">
+<code class="descclassname">sensor.</code><code class="descname">SXGA</code><a class="headerlink" href="#sensor.sensor.SXGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>1280x1024 resolution for the camera sensor. Can only be used in JPEG mode for
+the OV2640 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.UXGA">
+<code class="descclassname">sensor.</code><code class="descname">UXGA</code><a class="headerlink" href="#sensor.sensor.UXGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>1600x1200 resolution for the camera sensor. Can only be used in JPEG mode for
+the OV2640 camera.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.NORMAL">
+<code class="descclassname">sensor.</code><code class="descname">NORMAL</code><a class="headerlink" href="#sensor.sensor.NORMAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the special effect filter to normal.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.NEGATIVE">
+<code class="descclassname">sensor.</code><code class="descname">NEGATIVE</code><a class="headerlink" href="#sensor.sensor.NEGATIVE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the special effect filter to negative.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.FILTER_BW">
+<code class="descclassname">sensor.</code><code class="descname">FILTER_BW</code><a class="headerlink" href="#sensor.sensor.FILTER_BW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the line filter to black and white mode.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.FILTER_SKIN">
+<code class="descclassname">sensor.</code><code class="descname">FILTER_SKIN</code><a class="headerlink" href="#sensor.sensor.FILTER_SKIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the line filter to skin mode.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="omv.image.html" class="btn btn-neutral float-right" title="image — machine vision" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="omv.time.html" class="btn btn-neutral" title="time — tracking elapsed time" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

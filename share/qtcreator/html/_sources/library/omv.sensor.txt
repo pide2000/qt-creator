@@ -1,0 +1,281 @@
+:mod:`sensor` --- camera sensor
+===============================
+
+.. module:: sensor
+   :synopsis: camera sensor
+
+The ``sensor`` module is used for taking pictures.
+
+Example usage::
+
+    import sensor
+
+    # Setup camera.
+    sensor.reset()
+    sensor.set_pixformat(sensor.RGB565)
+    sensor.set_framesize(sensor.QVGA)
+    sensor.skip_frames()
+
+    # Take pictures.
+    while(True):
+        sensor.snapshot()
+
+.. note: We've got a lot of... cleanup to do on this module still. Expect API
+   changes for this code. We'll try to keep old code working via aliases. However,
+   please avoid using anything that's marked as deprecated...
+
+   For cleanup, we plan to add getters in addition to the setters here, the ability
+   to restore camera settings, 90 degree rotation support, python line filter
+   callbacks, better camera support, etc. We ran out of time to implement all this
+   initially.
+
+Functions
+---------
+
+.. function:: reset()
+
+   Initializes the camera sensor.
+
+.. function:: snapshot()
+
+   Takes a picture using the camera and returns an ``image`` object.
+
+.. function:: skip_frames(n=10)
+
+   Takes ``n`` number of snapshots to let the camera image stabilize after
+   changing camera settings.
+
+   .. note: You need to call this function after changing camera settings.
+
+.. function:: get_fb()
+
+   (Get Frame Buffer) Returns the image object returned by a previous call of
+   ``sensor.snapshot()``. If ``sensor.snapshot()`` had not been called before
+   then ``None`` is returned.
+
+.. function:: get_id()
+
+   Returns the camera module ID.
+
+     - sensor.OV2640: Old sensor module.
+     - sensor.OV7725: New sensor module.
+
+.. function:: set_pixformat(pixformat)
+
+   Sets the pixel format for the camera module.
+
+     - sensor.GRAYSCALE: 8-bits per pixel.
+     - sensor.RGB565: 16-bits per pixel.
+
+.. function:: set_framerate(rate)
+
+   Sets the frame rate for the camera module.
+
+   .. note:: Deprecated... do not use.
+
+.. function:: set_framesize(framesize)
+
+   Sets the frame size for the camera module.
+
+     - sensor.QQVGA: 160x120
+     - sensor.QQVGA2: 128x160 (for use with the lcd shield)
+     - sensor.QVGA: 320x120
+     - sensor.QQCIF: 88x72
+     - sensor.QCIF: 176x144
+     - sensor.CIF: 352x288
+
+.. function:: set_gainceiling(gainceiling)
+
+   Set the camera image gainceiling. 2, 4, 8, 16, 32, 64, or 128.
+
+   .. note:: You should never need to call this function. Don't use.
+
+.. function:: set_contrast(constrast)
+
+   Set the camera image contrast. -3 to +3.
+
+   .. note:: You should never need to call this function. Don't use.
+
+.. function:: set_brightness(brightness)
+
+   Set the camera image brightness. -3 to +3.
+
+   .. note:: You should never need to call this function. Don't use.
+
+.. function:: set_saturation(saturation)
+
+   Set the camera image saturation. -3 to +3.
+
+   .. note:: You should never need to call this function. Don't use.
+
+.. function:: set_quality(quality)
+
+   Set the camera image JPEG compression quality. 0 - 100.
+
+   .. note:: Only for the OV2640 camera.
+
+.. function:: set_colorbar(enable)
+
+   Turns color bar mode on (True) or off (False). Defaults to off.
+
+.. function:: set_whitebal(enable)
+
+   Turns white balance on (True) or off (False). Defaults to on.
+
+   .. note:: You need to turn white balance off if you want to track colors.
+      We'll add the ability to save and restore white balance settings in the
+      future so that you can set the camera to track using a known color profile.
+
+.. function:: set_gain_ctrl(enable)
+
+   Turns gain control on (True) or off (False). Defaults to on.
+
+   .. note:: You need to turn white balance off if you want to track colors.
+      We'll add the ability to save and restore gain control settings in the
+      future so that you can set the camera to track using a known color profile.
+
+.. function:: set_exposure_cntrl(enable)
+
+   Turns exposure control on (True) or off (False). Defaults to on.
+
+.. function:: set_hmirror(enable)
+
+   Turns horizontal mirror mode on (True) or off (False). Defaults to off.
+
+.. function:: set_vflip(enable)
+
+   Turns vertical flip mode on (True) or off (False). Defaults to off.
+
+.. function:: set_special_effect(effect)
+
+   Sets a camera image special effect:
+
+     - sensor.NORMAL: Normal Image
+     - sensor.NEGATIVE: Negative Image
+
+   .. note:: Deprecated... do not use.
+
+.. function:: set_image_filter(filter, lower=Auto, upper=Auto)
+
+   Set a camera image filter.
+
+     - sensor.FILTER_BW: Black and white filter (thresholds set with ``lower`` and ``upper``).
+     - sensor.FILTER_SKIN: Skin filter (doesn't work that well).
+
+   .. note:: Deprecated... do not use.
+
+.. function:: __write_reg(address, value)
+
+   Write ``value`` to camera register at ``address``.
+
+   .. note:: See the camera data sheet for register info. Google the OV7725
+      or OV2640 to get the data sheet.
+
+.. function:: __read_reg(address)
+
+   Read camera register at ``address``.
+
+   .. note:: See the camera data sheet for register info. Google the OV7725
+      or OV2640 to get the data sheet.
+
+Constants
+---------
+
+.. data:: sensor.GRAYSCALE
+
+   GRAYSCALE pixel format (Y from YUV422). Each pixel is 8-bits, 1-byte.
+
+   All of our computer vision algorithms run faster on grayscale images than
+   RGB565 images.
+
+.. data:: sensor.RGB565
+
+   RGB565 pixel format. Each pixel is 16-bits, 2-bytes. 5-bits are used for red,
+   6-bits are used for green, and 5-bits are used for blue.
+
+   All of our computer vision algorithms run slower on RGB565 images than
+   grayscale images.
+
+.. data:: sensor.JPEG
+
+   JPEG mode. Only works for the OV2640 camera right now. In the future, we'll
+   support this mode for auto JPEG compression on all cameras...
+
+   When the pixformat is set to JPEG mode for the OV2640 camera you can capture
+   VGA/SVGA/SXGA/UXGA images.
+
+.. data:: sensor.YUV422
+
+   Deprecated... do not use.
+
+.. data:: sensor.OV9650:
+
+   ``get_id()`` returns this for the OV9650 camera.
+
+.. data:: sensor.OV2640:
+
+   ``get_id()`` returns this for the OV2640 camera.
+
+.. data:: sensor.OV7725:
+
+   ``get_id()`` returns this for the OV7725 camera.
+
+.. data:: sensor.QQVGA
+
+   160x120 resolution for the camera sensor.
+
+.. data:: sensor.QQVGA2
+
+   128x160 resolution for the camera sensor (for use with the lcd shield).
+
+.. data:: sensor.QVGA
+
+   320x120 resolution for the camera sensor.
+
+.. data:: sensor.QQCIF
+
+   88x72 resolution for the camera sensor.
+
+.. data:: sensor.QCIF
+
+   176x144 resolution for the camera sensor.
+
+.. data:: sensor.CIF
+
+   352x288 resolution for the camera sensor.
+
+.. data:: sensor.VGA
+
+   640x480 resolution for the camera sensor. Can only be used in JPEG mode for
+   the OV2640 camera.
+
+.. data:: sensor.SVGA
+
+   800x600 resolution for the camera sensor. Can only be used in JPEG mode for
+   the OV2640 camera.
+
+.. data:: sensor.SXGA
+
+   1280x1024 resolution for the camera sensor. Can only be used in JPEG mode for
+   the OV2640 camera.
+
+.. data:: sensor.UXGA
+
+   1600x1200 resolution for the camera sensor. Can only be used in JPEG mode for
+   the OV2640 camera.
+
+.. data:: sensor.NORMAL
+
+   Set the special effect filter to normal.
+
+.. data:: sensor.NEGATIVE
+
+   Set the special effect filter to negative.
+
+.. data:: sensor.FILTER_BW
+
+   Set the line filter to black and white mode.
+
+.. data:: sensor.FILTER_SKIN
+
+   Set the line filter to skin mode.

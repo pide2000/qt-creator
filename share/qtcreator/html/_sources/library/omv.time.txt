@@ -1,0 +1,55 @@
+:mod:`time` --- tracking elapsed time
+=====================================
+
+.. module:: time
+   :synopsis: tracking elapsed time
+
+The ``time`` module is used for tracking elapsed time.
+
+  .. note:: The time module is deprecated. In the future ``fps`` and ``avg``
+     will be implemented in the ``sensor`` module. All other
+     functionality in the module can be found in the ``pyb`` module.
+     Finally, the standard time module will replace this module.
+
+Functions
+---------
+
+.. function:: ticks()
+
+   Returns the elapsed milliseconds since power on.
+
+.. function:: sleep(ms)
+
+   Sleeps for ``ms`` number of milliseconds.
+
+Constructors
+------------
+
+.. class:: time.Clock()
+
+   Returns a clock object.
+
+Methods
+-------
+
+.. method:: clock.tick()
+
+   Starts tracking elapsed time.
+
+.. method:: clock.fps()
+
+   Stops tracking the elapsed time and returns the current FPS
+   (frames per second).
+
+   Always call ``tick`` first before calling this function.
+
+.. method:: clock.avg()
+
+   Stops tracking the elapsed time and returns the current average elapsed time
+   in milliseconds.
+
+   Always call ``tick`` first before calling this function.
+
+.. method:: clock.reset()
+
+   Resets the clock object.

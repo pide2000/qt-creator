@@ -1,0 +1,1110 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>image — machine vision &mdash; MicroPython 1.4.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/customstyle.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+        <link rel="up" title="MicroPython libraries" href="index.html"/>
+        <link rel="next" title="gif — gif recording" href="omv.gif.html"/>
+        <link rel="prev" title="sensor — camera sensor" href="omv.sensor.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+          
+
+          
+            
+            <img src="../_static/web-logo-sticky.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-image-image-object">class Image &#8211; Image object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-standard-libraries">Python standard libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-micro-libraries">Python micro-libraries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l4"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; therompile shield driver (fir == far infrared)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../openmvcam_index.html">MicroPython</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+      
+          <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/library/omv.image.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-image">
+<span id="image-machine-vision"></span><h1><a class="reference internal" href="#module-image" title="image: machine vision"><code class="xref py py-mod docutils literal"><span class="pre">image</span></code></a> &#8212; machine vision<a class="headerlink" href="#module-image" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">image</span></code> module is used for machine vision.</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="image.rgb_to_lab">
+<code class="descclassname">image.</code><code class="descname">rgb_to_lab</code><span class="sig-paren">(</span><em>(r</em>, <em>g</em>, <em>b)</em><span class="sig-paren">)</span><a class="headerlink" href="#image.rgb_to_lab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the LAB tuple for the RGB888 tuple.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">RGB888 means 8-bits (0-255) for red, green, and blue. For LAB, L
+goes from 0-100 and a/b go from -128 to 127.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.lab_to_rgb">
+<code class="descclassname">image.</code><code class="descname">lab_to_rgb</code><span class="sig-paren">(</span><em>(l</em>, <em>a</em>, <em>b)</em><span class="sig-paren">)</span><a class="headerlink" href="#image.lab_to_rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the RGB888 tuple for the LAB tuple.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">RGB888 means 8-bits (0-255) for red, green, and blue. For LAB, L
+goes from 0-100 and a/b go from -128 to 127.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.rgb_to_grayscale">
+<code class="descclassname">image.</code><code class="descname">rgb_to_grayscale</code><span class="sig-paren">(</span><em>(r</em>, <em>g</em>, <em>b)</em><span class="sig-paren">)</span><a class="headerlink" href="#image.rgb_to_grayscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the grayscale value for the RGB888 tuple.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">RGB888 means 8-bits (0-255) for red, green, and blue. The grayscale
+values goes between 0-255.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.grayscale_to_rgb">
+<code class="descclassname">image.</code><code class="descname">grayscale_to_rgb</code><span class="sig-paren">(</span><em>gs</em><span class="sig-paren">)</span><a class="headerlink" href="#image.grayscale_to_rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the RGB888 tuple for the grayscale value.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">RGB888 means 8-bits (0-255) for red, green, and blue. The grayscale
+values goes between 0-255.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.load_decriptor">
+<code class="descclassname">image.</code><code class="descname">load_decriptor</code><span class="sig-paren">(</span><em>type</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#image.load_decriptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a descriptor object saved by your OpenMV Cam or the OpenMV IDE into
+memory and returns a descriptor object.</p>
+<p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to load which can be either <code class="docutils literal"><span class="pre">image.LBP</span></code> or
+<code class="docutils literal"><span class="pre">image.FREAK</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">path</span></code> is the path to the descriptor file.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function needs to be reworked for usability. You shouldn&#8217;t
+have to pass the descriptor type to load one. The descriptor file
+format needs to be updated to support this...</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.save_descriptor">
+<code class="descclassname">image.</code><code class="descname">save_descriptor</code><span class="sig-paren">(</span><em>type</em>, <em>path</em>, <em>descriptor</em><span class="sig-paren">)</span><a class="headerlink" href="#image.save_descriptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the descriptor object <code class="docutils literal"><span class="pre">descriptor</span></code> to disk.</p>
+<p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to save which can be either <code class="docutils literal"><span class="pre">image.LBP</span></code> or
+<code class="docutils literal"><span class="pre">image.FREAK</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">path</span></code> is the path to the descriptor file.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function needs to be reworked for usability. You shouldn&#8217;t
+have to pass the descriptor type to save one. The descriptor file
+format needs to be updated to support this...</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="image.match_descriptor">
+<code class="descclassname">image.</code><code class="descname">match_descriptor</code><span class="sig-paren">(</span><em>type</em>, <em>descritor0</em>, <em>descriptor1</em>, <em>threshold=60</em><span class="sig-paren">)</span><a class="headerlink" href="#image.match_descriptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For LBP descriptors this function returns an integer representing the difference
+between the two descriptors. As of right now, this is rather... hard to use...</p>
+<p>For FREAK descriptors this function returns the center matching area between
+the two sets of keypoints. Threshold (0-100) controls the matching rate where
+a higher threshold results in less false positives but less matches.</p>
+<p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to save which can be either <code class="docutils literal"><span class="pre">image.LBP</span></code> or
+<code class="docutils literal"><span class="pre">image.FREAK</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Like the other descriptor functions this function needs to be reworked
+to auto detect descriptors and additionally should return bounding
+boxes around matching areas along with the centroid. Anyway, there
+wasn&#8217;t time to rework this for the initial release so this is what
+we have for right now.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="class-haarcascade-feature-descriptor">
+<h1>class HaarCascade &#8211; Feature Descriptor<a class="headerlink" href="#class-haarcascade-feature-descriptor" title="Permalink to this headline">¶</a></h1>
+<p>The Haar Cascade feature descriptor is used for the <code class="docutils literal"><span class="pre">image.find_features()</span></code>
+method. It doesn&#8217;t have any methods itself for you to call.</p>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image.image.HaarCascade">
+<em class="property">class </em><code class="descclassname">image.</code><code class="descname">HaarCascade</code><span class="sig-paren">(</span><em>path</em>, <em>stages=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.HaarCascade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a Haar Cascade into memory from a Haar Cascade binary file formatted for
+your OpenMV Cam. If you pass &#8220;frontalface&#8221; instead of a path then this constructor
+will load the built-in frontal face Haar Cascade into memory. Additionally, you
+can also pass &#8220;eye&#8221; to load a Haar Cascade for eyes into memory. Finally, this
+method returns the loaded Haar Cascade object for use with <code class="docutils literal"><span class="pre">image.find_features()</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">stages</span></code> defaults to the number of stages in the Haar Cascade. However, you
+can specify a lower number of stages to speed up processing the feature detector
+at the cost of a higher rate of false positives.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can make your own Haar Cascades to use with your OpenMV Cam.
+First, Google for &#8220;&lt;thing&gt; Haar Cascade&#8221; to see if someone already
+made an OpenCV Haar Cascade for an object you want to detect. If not...
+then you&#8217;ll have to generate your own (which is a lot of work). If
+so, then see the <code class="docutils literal"><span class="pre">openmv-cascade.py</span></code> script for converting OpenCV
+Haar Cascades into a format your OpenMV Cam can read.</p>
+</div>
+<p>Q: What is a Haar Cascade?
+A: A Haar Cascade is a series of contrast checks that are used to determine
+if an object is present in the image. The contrast checks are split of into
+stages where a stage is only run if previous stages have already passed. The
+contrast checks are simple things like checking if the center vertical of the
+image is lighter than the edges. Large area checks are performed first in the
+earlier stages followed by more numerous and smaller area checks in later
+stages.</p>
+<p>Q: How are Haar Cascades made?
+A: Haar Cascades are made by training the generator algorithm against positive
+and negative labeled images. For example, you&#8217;d train the generator algorithm
+against hundreds of pictures with cats in them that have been labeled as images
+with cats and against hundreds of images with not cat like things labeled differently.
+The generator algorithm will then produce a Haar Cascade that detects cats.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="class-image-image-object">
+<h1>class Image &#8211; Image object<a class="headerlink" href="#class-image-image-object" title="Permalink to this headline">¶</a></h1>
+<p>The image object is the basic object for machine vision operations.</p>
+<div class="section" id="id1">
+<h2>Constructors<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="image.image.Image">
+<em class="property">class </em><code class="descclassname">image.</code><code class="descname">Image</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new image object from a file at <code class="docutils literal"><span class="pre">path</span></code>.</p>
+<p>Supports bmp/pgm/ppm/jpg/jpeg image files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This constructor is supposed to be used for loading image to do
+template matching. Due to memory constraints you should only load
+images that are small in size. For example, under 80x60.</p>
+</div>
+<p>Images support &#8220;[]&#8221; notation. Do <code class="docutils literal"><span class="pre">image[index]</span> <span class="pre">=</span> <span class="pre">8/16-bit</span> <span class="pre">value</span></code> to assign
+an image pixel or <code class="docutils literal"><span class="pre">image[index]</span></code> to get an image pixel which will be either
+an 8-bit value for grayscale images of a 16-bit RGB565 value for RGB images.</p>
+<p>For JPEG images the &#8220;[]&#8221; allows you to access the compressed JPEG image blob as a byte-array.</p>
+<p>Images also support read buffer operations. You can pass images to all sorts
+of MicroPython functions like as if the image were a byte-array object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="image.image.copy">
+<code class="descclassname">image.</code><code class="descname">copy</code><span class="sig-paren">(</span><em>roi=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a copy of the image object.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h). If not specified,
+it is equal to the image rectangle.</p>
+<p>roi is not applicable when copying jpeg images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You will run out of memory trying to make copies of images unless
+you keep the copy image sizes tiny. For example, under 80x60.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.save">
+<code class="descclassname">image.</code><code class="descname">save</code><span class="sig-paren">(</span><em>path</em>, <em>roi=Auto</em>, <em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a copy of the image to the filesystem at <code class="docutils literal"><span class="pre">path</span></code>.</p>
+<p>Supports bmp/pgm/ppm/jpg/jpeg image files.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h). If not specified,
+it is equal to the image rectangle.</p>
+<p>roi is not applicable when saving jpeg images.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the jpeg compression quality to use to save the image to jpeg
+format if the image is not already compressed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You cannot save jpeg compressed image to an uncompressed format.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.compress">
+<code class="descclassname">image.</code><code class="descname">compress</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>JPEG compresses a non-compressed image in place.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100). Note that adjusting this value
+does not improve quality by much since we&#8217;re already employing a few quality
+reduction tricks to make JPEG compression faster. On future OpenMV Cam&#8217;s you&#8217;ll
+be able to control the image quality more easily.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should use this function to compress images before hand that
+you want to save to disk or add to an mjpeg. If the image object
+points to the frame buffer then this function can use the additional
+frame buffer space to compress the image at a higher quality. Finally,
+after the frame buffer is compressed it does not have to be compressed
+again to be streamed to the IDE (speeding things up).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.compressed">
+<code class="descclassname">image.</code><code class="descname">compressed</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JPEG compressed image - the original image is untouched.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100). Note that adjusting this value
+does not improve quality by much since we&#8217;re already employing a few quality
+reduction tricks to make JPEG compression faster. On future OpenMV Cam&#8217;s you&#8217;ll
+be able to control the image quality more easily.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.width">
+<code class="descclassname">image.</code><code class="descname">width</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image width in pixels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.height">
+<code class="descclassname">image.</code><code class="descname">height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image height in pixels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.format">
+<code class="descclassname">image.</code><code class="descname">format</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal"><span class="pre">sensor.GRAYSCALE</span></code> for grayscale images, <code class="docutils literal"><span class="pre">sensor.RGB565</span></code> for RGB
+images and <code class="docutils literal"><span class="pre">sensor.JPEG</span></code> for JPEG images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.size">
+<code class="descclassname">image.</code><code class="descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image size in bytes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.get_pixel">
+<code class="descclassname">image.</code><code class="descname">get_pixel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.get_pixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>For grayscale images: Returns the pixel value at location (x, y).
+For RGB images: Returns the pixel tuple (r, g, b) at location (x, y).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.set_pixel">
+<code class="descclassname">image.</code><code class="descname">set_pixel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pixel</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.set_pixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>For grayscale images: Sets the pixel at location (x, y) to the value <code class="docutils literal"><span class="pre">pixel</span></code>.
+For RGB images: Sets the pixel at location (x, y) to the tuple (r, g, b) <code class="docutils literal"><span class="pre">pixel</span></code>.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_line">
+<code class="descclassname">image.</code><code class="descname">draw_line</code><span class="sig-paren">(</span><em>(x0</em>, <em>y0</em>, <em>x1</em>, <em>y1)</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a line from (x0, y0) to (x1, y1).</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_rectangle">
+<code class="descclassname">image.</code><code class="descname">draw_rectangle</code><span class="sig-paren">(</span><em>(x</em>, <em>y</em>, <em>w</em>, <em>h)</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an unfilled rectangle from (x, y) to (x+w, y+h).</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_circle">
+<code class="descclassname">image.</code><code class="descname">draw_circle</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>radius</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an unfilled circle at (x, y) with integer radius <code class="docutils literal"><span class="pre">radius</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_string">
+<code class="descclassname">image.</code><code class="descname">draw_string</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>text</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws 8x10 text starting at (x, y) using text <code class="docutils literal"><span class="pre">text</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">\n</span></code>, <code class="docutils literal"><span class="pre">\r</span></code>, and <code class="docutils literal"><span class="pre">\r\n</span></code> line endings move the cursor to the next line.</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_cross">
+<code class="descclassname">image.</code><code class="descname">draw_cross</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>size=5</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a cross at (x, y) whose sides are <code class="docutils literal"><span class="pre">size</span></code> long.</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.draw_keypoints">
+<code class="descclassname">image.</code><code class="descname">draw_keypoints</code><span class="sig-paren">(</span><em>keypoints</em>, <em>size=10</em>, <em>color=White</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.draw_keypoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal"><span class="pre">keypoints</span></code> is a keypoints object then this method draws a number of
+circles with diameter <code class="docutils literal"><span class="pre">size</span></code> for each keypoint in <code class="docutils literal"><span class="pre">keypoints</span></code>.</p>
+<p>If <code class="docutils literal"><span class="pre">keypoints</span></code> a list of tuples [(x, y, angle), (x, y, angle), ...] then
+this method draws a number of circles with diameter <code class="docutils literal"><span class="pre">size</span></code> and angle lines
+with length <code class="docutils literal"><span class="pre">size</span></code> for each tuple in the list of tuples <code class="docutils literal"><span class="pre">keypoints</span></code>.</p>
+<p>Angle is a floating point number in radians.</p>
+<p><code class="docutils literal"><span class="pre">color</span></code> is a value (0-255) for grayscale images and a RGB888 tuple
+(r, g, b) for RGB images.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.binary">
+<code class="descclassname">image.</code><code class="descname">binary</code><span class="sig-paren">(</span><em>thresholds</em>, <em>invert=False</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>For grayscale images <code class="docutils literal"><span class="pre">thresholds</span></code> is a list of (lower, upper) grayscale
+pixel thresholds to segment the image by. Segmentation converts all pixels
+within the thresholds to 1 (white) and all pixels outside to 0 (black).</p>
+<p>For RGB images <code class="docutils literal"><span class="pre">thresholds</span></code> is a list of (l_lo, l_hi, a_lo, a_hi, b_lo, b_hi)
+LAB pixel thresholds to segment the image by. Segmentation converts all pixels
+within the thresholds to 1 (white) and all pixels outside to 0 (black).</p>
+<p>Lo/Hi thresholds being swapped is automatically handled.</p>
+<p><code class="docutils literal"><span class="pre">invert</span></code> inverts the outcome of the segmentation operation.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.invert">
+<code class="descclassname">image.</code><code class="descname">invert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverts the binary image 0 (black) pixels go to 1 (white) and 1 (white)
+pixels go to 0 (black).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.and">
+<code class="descclassname">image.</code><code class="descname">and</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.and" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically ANDs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use this function to mask out parts of an image you don&#8217;t
+want processed for things like frame differencing. For example,
+you can create a mask image on your computer, save it as a BMP
+file, and then use that file with this method. You&#8217;d set all areas
+you&#8217;d like to mask to black and all unmasked areas to white.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.nand">
+<code class="descclassname">image.</code><code class="descname">nand</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.nand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically NANDs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.or">
+<code class="descclassname">image.</code><code class="descname">or</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically ORs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use this function to mask out parts of an image you don&#8217;t
+want processed for things like frame differencing. For example,
+you can create a mask image on your computer, save it as a BMP
+file, and then use that file with this method. You&#8217;d set all areas
+you&#8217;d like to mask to white and all unmasked areas to black.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.nor">
+<code class="descclassname">image.</code><code class="descname">nor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.nor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically NORs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.xor">
+<code class="descclassname">image.</code><code class="descname">xor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically XORs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.xnor">
+<code class="descclassname">image.</code><code class="descname">xnor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.xnor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically XNORs this image with another image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.erode">
+<code class="descclassname">image.</code><code class="descname">erode</code><span class="sig-paren">(</span><em>size</em>, <em>threshold=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.erode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes pixels from the edges of segmented areas.</p>
+<p>This method works by convolving a kernel of ((size*2)+1)x((size*2)+1) pixels
+across the image and zeroing the center pixel of the kernel if the sum of
+the neighbor pixels set is not greater than <code class="docutils literal"><span class="pre">threshold</span></code>.</p>
+<p>This method works like the standard erode method if threshold is not set. If
+<code class="docutils literal"><span class="pre">threshold</span></code> is set then you can specify erode to only erode pixels that
+have, for example, less than 2 pixels set around them with a threshold of 2.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is designed to work on binary images.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.dilate">
+<code class="descclassname">image.</code><code class="descname">dilate</code><span class="sig-paren">(</span><em>size</em>, <em>threshold=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.dilate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds pixels from the edges of segmented areas.</p>
+<p>This method works by convolving a kernel of ((size*2)+1)x((size*2)+1) pixels
+across the image and setting the center pixel of the kernel if the sum of
+the neighbor pixels set is greater than <code class="docutils literal"><span class="pre">threshold</span></code>.</p>
+<p>This method works like the standard dilate method if threshold is not set. If
+<code class="docutils literal"><span class="pre">threshold</span></code> is set then you can specify dilate to only dilate pixels that
+have, for example, more than 2 pixels set around them with a threshold of 2.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is designed to work on binary images.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.negate">
+<code class="descclassname">image.</code><code class="descname">negate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.negate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Numerically inverts pixel values for each color channel. E.g. (255-pixel).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.difference">
+<code class="descclassname">image.</code><code class="descname">difference</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts another image from this image. E.g. for each color channel each
+pixel is replaced with ABS(this.pixel-image.pixel).</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function is used for frame differencing which you can then use
+to do motion detection. You can then mask the resulting image using
+AND/OR before running statistics functions on the image.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.replace">
+<code class="descclassname">image.</code><code class="descname">replace</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace this image with <code class="docutils literal"><span class="pre">image</span></code> (this is much faster than blend for this).</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.blend">
+<code class="descclassname">image.</code><code class="descname">blend</code><span class="sig-paren">(</span><em>image</em>, <em>alpha=128</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.blend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blends another image <code class="docutils literal"><span class="pre">image</span></code> into this image.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p><code class="docutils literal"><span class="pre">alpha</span></code> controls the transparency. 256 for an opaque overlay. 0 for none.</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.morph">
+<code class="descclassname">image.</code><code class="descname">morph</code><span class="sig-paren">(</span><em>size</em>, <em>kernel</em>, <em>mul=Auto</em>, <em>add=0</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.morph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convolves the image by a filter kernel.</p>
+<p><code class="docutils literal"><span class="pre">size</span></code> controls the size of the kernel which must be
+((size*2)+1)x((size*2)+1) pixels big.</p>
+<p><code class="docutils literal"><span class="pre">kernel</span></code> is the kernel to convolve the image by. It can either be a tuple
+or a list of [-128:127] values.</p>
+<p><code class="docutils literal"><span class="pre">mul</span></code> is number to multiply the convolution pixel result by. When not set
+it defaults to a value that will prevent scaling in the convolution output.</p>
+<p><code class="docutils literal"><span class="pre">add</span></code> is a value to add to each convolution pixel result.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">mul</span></code> basically allows you to do a global contrast adjustment and
+<code class="docutils literal"><span class="pre">add</span></code> allows you to do a global brightness adjustment.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.statistics">
+<code class="descclassname">image.</code><code class="descname">statistics</code><span class="sig-paren">(</span><em>roi=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes basic color channel statistics for the image and returns a tuple
+containing the stats:</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h). If not specified,
+it is equal to the image rectangle.</p>
+<p>For grayscale images:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: Grayscale Mean</li>
+<li>[1]: Grayscale Median (50% value)</li>
+<li>[2]: Grayscale Mode</li>
+<li>[3]: Grayscale Standard Deviation</li>
+<li>[4]: Grayscale Minimum</li>
+<li>[5]: Grayscale Maximum</li>
+<li>[6]: Grayscale Lower Quartile (25% value)</li>
+<li>[7]: Grayscale Upper Quartile (75% value)</li>
+</ul>
+</div></blockquote>
+<p>For rgb images:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: L Mean</li>
+<li>[1]: L Median (50% value)</li>
+<li>[2]: L Mode</li>
+<li>[3]: L Standard Deviation</li>
+<li>[4]: L Minimum</li>
+<li>[5]: L Maximum</li>
+<li>[6]: L Lower Quartile (25% value)</li>
+<li>[7]: L Upper Quartile (75% value)</li>
+<li>[8]: A Mean</li>
+<li>[9]: A Median (50% value)</li>
+<li>[10]: A Mode</li>
+<li>[11]: A Standard Deviation</li>
+<li>[12]: A Minimum</li>
+<li>[13]: A Maximum</li>
+<li>[14]: A Lower Quartile (25% value)</li>
+<li>[15]: A Upper Quartile (75% value)</li>
+<li>[16]: B Mean</li>
+<li>[17]: B Median (50% value)</li>
+<li>[18]: B Mode</li>
+<li>[19]: B Standard Deviation</li>
+<li>[20]: B Minimum</li>
+<li>[21]: B Maximum</li>
+<li>[22]: B Lower Quartile (25% value)</li>
+<li>[23]: B Upper Quartile (75% value)</li>
+</ul>
+</div></blockquote>
+<p>In the future we&#8217;ll make this method return an object instead of a tuple...</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is your basic work horse for quickly determining what&#8217;s
+going on in the image. For example, if you need to determine motion
+after frame differencing you can use this method to see if the pixels
+in the image aren&#8217;t close to zero (which they should be for no motion).
+You can also use this method for automatically updating binary/find_blobs
+threshold settings.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.midpoint">
+<code class="descclassname">image.</code><code class="descname">midpoint</code><span class="sig-paren">(</span><em>size</em>, <em>bias=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the midpoint filter on the image.</p>
+<p><code class="docutils literal"><span class="pre">size</span></code> is the kernel size. Use 1 (3x3 kernel), 2 (5x5 kernel), or higher.</p>
+<p><code class="docutils literal"><span class="pre">bias</span></code> controls the min/max mixing. 0 for min filtering only, 1.0 for max
+filtering only.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By using the <code class="docutils literal"><span class="pre">bias</span></code> you can min/max filter the image.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.mean">
+<code class="descclassname">image.</code><code class="descname">mean</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard mean blurring filter (faster than using morph for this).</p>
+<p><code class="docutils literal"><span class="pre">size</span></code> is the kernel size. Use 1 (3x3 kernel), 2 (5x5 kernel), or higher.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.median">
+<code class="descclassname">image.</code><code class="descname">median</code><span class="sig-paren">(</span><em>size</em>, <em>percentile=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#image.median" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the median filter on the image. The median filter is the best filter for
+smoothing surfaces while preserving edges... but, it&#8217;s slow...</p>
+<p><code class="docutils literal"><span class="pre">size</span></code> is the kernel size. Use 1 (3x3 kernel) or 2 (5x5 kernel).</p>
+<p><code class="docutils literal"><span class="pre">percentile</span></code> control the percentile of the value used in the kernel. By
+default each pixel is replace with the 50th percentile (center) of it&#8217;s
+neighbors. You can set this to 0 for a min filter, 0.25 for a lower quartile
+filter, 0.75 for an upper quartile filter, and 1.0 for a max filter.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.mode">
+<code class="descclassname">image.</code><code class="descname">mode</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the mode filter on the image by replacing each pixel with the mode of
+their neighbors. This method works great on grayscale images. However, on
+RGB images it creates a lot of artifacts on edges because of the non-linear
+nature of the operation.</p>
+<p><code class="docutils literal"><span class="pre">size</span></code> is the kernel size. Use 1 (3x3 kernel) or 2 (5x5 kernel).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.histeq">
+<code class="descclassname">image.</code><code class="descname">histeq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.histeq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the histogram equalization algorithm on the image. Histogram
+equalization normalizes the contrast and brightness in the image.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_blobs">
+<code class="descclassname">image.</code><code class="descname">find_blobs</code><span class="sig-paren">(</span><em>thresholds</em>, <em>invert=False</em>, <em>roi=Auto</em>, <em>feature_filter=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_blobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all &#8220;blobs&#8221; (connected pixel regions that pass a threshold test) in the
+image and returns a list of them along with basic features about each one.</p>
+<p>Each blob returned is a tuple with the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: x position of bounding rectangle</li>
+<li>[1]: y position of bounding rectangle</li>
+<li>[2]: width of bounding rectangle</li>
+<li>[3]: height of bounding rectangle</li>
+<li>[4]: number of pixels that passed the threshold test in the blob</li>
+<li>[5]: x position center of mass</li>
+<li>[6]: y position center of mass</li>
+<li>[7]: angle of rotation in radians (is float - others are ints)</li>
+<li>[8]: count of blobs that make of this blob (see <code class="docutils literal"><span class="pre">find_markers()</span></code>)</li>
+<li>[9]: 1 &lt;&lt; (index of threshold tuple used to find this blob) - this is the color code which lets you know what threshold tuple produced this blob.</li>
+</ul>
+</div></blockquote>
+<p>This method returns a list of the above tuples. If no blobs are found the
+returned list is empty.</p>
+<p>For grayscale images <code class="docutils literal"><span class="pre">thresholds</span></code> is a list of (lower, upper) grayscale
+pixel thresholds to threshold the image by.</p>
+<p>For RGB images <code class="docutils literal"><span class="pre">thresholds</span></code> is a list of (l_lo, l_hi, a_lo, a_hi, b_lo, b_hi)
+LAB pixel thresholds to threshold the image by.</p>
+<p>Lo/Hi thresholds being swapped is automatically handled.</p>
+<p><code class="docutils literal"><span class="pre">invert</span></code> inverts the threshold boundaries.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h). If not specified,
+it is equal to the image rectangle.</p>
+<p><code class="docutils literal"><span class="pre">feature_filter</span></code> is a python function which is passed the image object and
+the blob object and should return True (to keep the blob) or False (to throw
+away the blob). If no <code class="docutils literal"><span class="pre">feature_filter</span></code> is specified this method will
+automatically filter out blobs less than 1/1000th of the image pixels.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Yes, you can call image methods on the image object passed to
+the <code class="docutils literal"><span class="pre">feature_filter</span></code> function. However, your OpenMV Cam does not
+have an infinite amount of memory so don&#8217;t abuse the feature...</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_markers">
+<code class="descclassname">image.</code><code class="descname">find_markers</code><span class="sig-paren">(</span><em>blobs</em>, <em>margin=2</em>, <em>feature_filter=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>After using <code class="docutils literal"><span class="pre">find_blobs</span></code> to find all blobs in an image you can use this
+method to merge blobs that overlap by <code class="docutils literal"><span class="pre">margin</span></code> pixels. This method then
+returns the new list of merged blobs.</p>
+<p>Merged blob tuples have the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[0]: x position of bounding rectangle (surrounds merged blobs)</li>
+<li>[1]: y position of bounding rectangle (surrounds merged blobs)</li>
+<li>[2]: width of bounding rectangle (surrounds merged blobs)</li>
+<li>[3]: height of bounding rectangle (surrounds merged blobs)</li>
+<li>[4]: number of pixels that passed the threshold test for all blobs merged</li>
+<li>[5]: x position center of mass of merged blobs</li>
+<li>[6]: y position center of mass of merged blobs</li>
+<li>[7]: angle of rotation in radians of merged blobs (is float - others are ints)</li>
+<li>[8]: count of blobs that make of this blob</li>
+<li>[9]: logical OR of all the color codes of merged blobs</li>
+</ul>
+</div></blockquote>
+<p>This method is called find_markers because it can find color markers in the
+image which are objects painted with two slightly interlocked colors.</p>
+<p><code class="docutils literal"><span class="pre">margin</span></code> specifies how many pixels to grow the blob rectangles by before
+the intersection test between two blobs to check if they overlap.</p>
+<p><code class="docutils literal"><span class="pre">feature_filter</span></code> is a python function which is passed the image object and
+the merged blob object and should return True (to keep the blob) or False (to
+throw away the blob). If no <code class="docutils literal"><span class="pre">feature_filter</span></code> is specified this method will
+not filter out any blobs.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Yes, you can call image methods on the image object passed to
+the <code class="docutils literal"><span class="pre">feature_filter</span></code> function. However, your OpenMV Cam does not
+have an infinite amount of memory so don&#8217;t abuse the feature...</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_features">
+<code class="descclassname">image.</code><code class="descname">find_features</code><span class="sig-paren">(</span><em>cascade</em>, <em>threshold=0.5</em>, <em>scale=1.5</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method searches the image for all areas that match the passed in Haar
+Cascade and returns a list of bounding box rectangles around those features.
+Returns an empty list if no features are found.</p>
+<p><code class="docutils literal"><span class="pre">cascade</span></code> is a Haar Cascade object. See <code class="docutils literal"><span class="pre">image.HaarCascade()</span></code> for more
+details.</p>
+<p><code class="docutils literal"><span class="pre">threshold</span></code> is a threshold (0.0-1.0) where a smaller value increase the
+detection rate while raising the false positive rate. Conversely, a higher
+value decreases the detection rate while lowering the false positive rate.</p>
+<p><code class="docutils literal"><span class="pre">scale</span></code> is a scale factor which changes the size of features that can be
+detected. A scale smaller than 1.0 detects smaller objects while a scale
+greater than 1.0 will detect larger objects.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_eye">
+<code class="descclassname">image.</code><code class="descname">find_eye</code><span class="sig-paren">(</span><em>(x</em>, <em>y</em>, <em>w</em>, <em>h)</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_eye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for the pupil in a region-of-interest around an eye. Returns a tuple
+with the (x, y) location of the pupil in the image. Returns (0,0) if no pupils
+are found.</p>
+<p>To use this function first use <code class="docutils literal"><span class="pre">image.find_features</span></code> with the frontalface
+HaarCascade to find someone&#8217;s face. Then use <code class="docutils literal"><span class="pre">image.find_features</span></code> with the
+eye HaarCascade to find the eyes on the face. Finally, call this method on
+each eye roi returned by <code class="docutils literal"><span class="pre">image.find_features</span></code> to get the pupil coordinates.</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_template">
+<code class="descclassname">image.</code><code class="descname">find_template</code><span class="sig-paren">(</span><em>template</em>, <em>threshold</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to find the first location in the image where template matches using
+Normalized Cross Correlation. Returns a bounding box tuple (x, y, w, h) for
+the matching location.</p>
+<p><code class="docutils literal"><span class="pre">template</span></code> is a small image object that is matched against this image object.</p>
+<p><code class="docutils literal"><span class="pre">threshold</span></code> is floating point number (0.0-1.0) where a higher threshold prevents
+false positives while lowering the detection rate while a lower threshold does
+the opposite.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method needs to be reworked and will change in future
+OpenMV Cams. It&#8217;s not powerful/usable right now. We ran out of
+time to rework this method before release.</p>
+</div>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_lbp">
+<code class="descclassname">image.</code><code class="descname">find_lbp</code><span class="sig-paren">(</span><em>(x</em>, <em>y</em>, <em>w</em>, <em>h)</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_lbp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts a local binary patterns descriptor from the region-of-interest
+tuple. You can use then use the descriptor matching functions to match
+the LBP descriptor against a known descriptor.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">LBP descriptors suck right now compared to FAST/FREAK descriptors.
+We will be re-working support for them to make them much better.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_keypoints">
+<code class="descclassname">image.</code><code class="descname">find_keypoints</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>threshold=32</em>, <em>normalized=False</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_keypoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts FAST/FREAK keypoints from the region-of-interest tuple. You can use
+then use the descriptor matching functions to match the FAST/FREAK descriptor
+against a known descriptor.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h). If not specified,
+it is equal to the image rectangle.</p>
+<p><code class="docutils literal"><span class="pre">threshold</span></code> is a number between (unbounded) which control how many keypoints
+to extract. A larger threshold results in more keypoints being extracted from
+the region-of-interest. More keypoints == more memory == you run out of RAM.</p>
+<p><code class="docutils literal"><span class="pre">normalized</span></code> if True makes the keypoints not rotation invariant.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method also needs some more re-working. It&#8217;s usable right now...
+but, can sometimes use up all the RAM out of nowhere causing the script
+to crash if the scene becomes too complex (lots of edges)... Of course,
+this method is still cool because it can learn descriptors for generic
+objects on the fly.</p>
+</div>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="image.image.LBP">
+<code class="descclassname">image.</code><code class="descname">LBP</code><a class="headerlink" href="#image.image.LBP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Switch for descriptor function to use LBP code.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.FREAK">
+<code class="descclassname">image.</code><code class="descname">FREAK</code><a class="headerlink" href="#image.image.FREAK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Switch for descriptor function to use FREAK code.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="omv.gif.html" class="btn btn-neutral float-right" title="gif — gif recording" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="omv.sensor.html" class="btn btn-neutral" title="sensor — camera sensor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Damien P. George.
+      Last updated on 02 Jul 2016.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.4.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

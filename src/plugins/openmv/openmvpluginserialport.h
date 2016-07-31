@@ -2,7 +2,7 @@
 #define OPENMVPLUGINSERIALPORT_H
 
 #include <QtCore>
-#include <QSerialPort>
+#include <QtSerialPort>
 
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
@@ -20,9 +20,10 @@ public slots:
     void open(const QString &portName);
     void write(const QByteArray &data);
 
-private slots: // private
+public slots: // private
 
     void processEvents();
+    void checkPort(const QStringList &portNames);
 
 signals:
 
@@ -33,6 +34,27 @@ signals:
 private:
 
     QSerialPort *m_port;
+};
+
+class OpenMVPluginSerialPort_private_scanner : public QObject
+{
+    Q_OBJECT
+
+public:
+
+    explicit OpenMVPluginSerialPort_private_scanner(QObject *parent = Q_NULLPTR);
+
+public slots: // private
+
+    void scan();
+
+signals:
+
+    void availablePorts(const QStringList &portNames);
+
+private:
+
+    QTimer *m_timer;
 };
 
 class OpenMVPluginSerialPort : public QObject

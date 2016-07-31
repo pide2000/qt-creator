@@ -1,0 +1,111 @@
+:mod:`fir` --- therompile shield driver (fir == far infrared)
+=============================================================
+
+.. module:: fir
+   :synopsis: therompile shield driver (fir == far infrared)
+
+The ``fir`` module is used for controlling the therompile shield.
+
+Example usage::
+
+    import sensor, fir
+
+    # Setup camera.
+    sensor.reset()
+    sensor.set_pixformat(sensor.RGB565)
+    sensor.set_framesize(sensor.QVGA)
+    sensor.skip_frames()
+    fir.init()
+
+    # Show image.
+    while(True):
+        img = sensor.snapshot()
+        ta, ir, to_min, to_max = fir.read_ir()
+        fir.draw_ir(image, ir)
+        print("ambient temperature: %0.2f" % ta)
+        print("min temperature seen: %0.2f" % to_min)
+        print("max temperature seen: %0.2f" % to_max)
+
+Functions
+---------
+
+.. function:: init(type=1)
+
+   Initializes an attached thermopile shield using I/O pins P4 and P5.
+
+   ``type`` indicates the type of thermopile shield (for future use possibly):
+
+     - 0: None
+     - 1: thermopile shield
+
+.. function:: deinit()
+
+   Deinitializes the thermopile shield freeing up I/O pins.
+
+.. function:: width()
+
+   Returns the width (horizontal resolution) of the thermopile shield.
+
+     - thermopile shield: 16 pixels.
+
+.. function:: height()
+
+   Returns the height (vertical resolution) of the thermopile shield.
+
+     - thermopile shield: 4 pixels.
+
+.. function:: type():
+
+   Returns the type of the thermopile shield (for future use possibly):
+
+     - 0: None
+     - 1: thermopile Shield
+
+.. function:: read_ta():
+
+   Returns the ambient temperature (i.e. sensor temperature).
+
+      Example::
+
+       ta = fir.read_ta()
+
+   The value returned is a float that represents the temperature in Celsius.
+
+.. function:: read_ir():
+
+   Returns a tuple containing the ambient temperature (i.e. sensor temperature),
+   the temperature array (width x height), the minimum temperature seen, and
+   the maximum temperature seen.
+
+   Example::
+
+       ta, ir, to_min, to_max = fir.read_ir()
+
+   The values returned are floats that represent the temperature in Celsius.
+
+.. function:: draw_ta(image, ta, alpha=128, scale=[-17.7778, 37.7778]):
+
+   Draws the ambient temperature on the image using a rainbow table color
+   conversion.
+
+   ``alpha`` controls the transparency. 256 for an opaque overlay. 0 for none.
+
+   ``scale`` controls the rainbow table color conversion. The first number is
+   the minimum temperature cutoff and the second number is the max. Values
+   closer to the min are blue and values closer to the max are red.
+
+.. function:: draw_ta(image, ir, alpha=128, scale=[auto, auto]):
+
+   Draws the temperature array on the image using a rainbow table color
+   conversion.
+
+   ``alpha`` controls the transparency. 256 for an opaque overlay. 0 for none.
+
+   ``scale`` controls the rainbow table color conversion. The first number is
+   the minimum temperature cutoff and the second number is the max. Values
+   closer to the min are blue and values closer to the max are red.
+
+   The minimum and maximum values in the temperature array are used to scale
+   the output image automatically unless explicitly overridden.
+
+     .. note:: For best results look at really cold or hot objects.
