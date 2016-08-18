@@ -237,21 +237,33 @@
 		</dict>
 	</array>
 	<key>NSHumanReadableCopyright</key>
-	<!--OPENMV-DIFF<string>(C) 2016 The Qt Company Ltd</string>-->
-	<string>(C) 2016 OpenMV LLC</string>
+	<!--OPENMV-DIFF-->
+	<!--<string>(C) 2016 The Qt Company Ltd</string>-->
+	<!--OPENMV-DIFF-->
+	<string>(C) 2016 OpenMV, LLC</string>
+	<!--OPENMV-DIFF-->
 	<key>CFBundleIconFile</key>
-	<!--OPENMV-DIFF<string>qtcreator</string>-->
+	<!--OPENMV-DIFF-->
+	<!--<string>qtcreator</string>-->
+	<!--OPENMV-DIFF-->
 	<string>openmv</string>
+	<!--OPENMV-DIFF-->
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
-	<!--OPENMV-DIFF<string>Qt Creator</string>-->
+	<!--OPENMV-DIFF-->
+	<!--<string>Qt Creator</string>-->
+	<!--OPENMV-DIFF-->
 	<string>OpenMV IDE</string>
+	<!--OPENMV-DIFF-->
 	<key>CFBundleIdentifier</key>
-	<!--OPENMV-DIFF<string>org.qt-project.qtcreator</string>-->
+	<!--OPENMV-DIFF-->
+	<!--<string>org.qt-project.qtcreator</string>-->
+	<!--OPENMV-DIFF-->
 	<string>org.openmv.openmvide</string>
+	<!--OPENMV-DIFF-->
 	<key>CFBundleVersion</key>
 	<string>@FULL_VERSION@</string>
 	<key>CFBundleShortVersionString</key>

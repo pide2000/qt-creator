@@ -85,43 +85,6 @@ void OpenMVPluginSerialPort_private::processEvents()
     }
 }
 
-void OpenMVPluginSerialPort_private::checkPort(const QStringList &portNames)
-{
-    if(m_port && (!portNames.contains(m_port->portName())))
-    {
-        emit shutdown(tr("Port Closed!"));
-        delete m_port;
-        m_port = Q_NULLPTR;
-    }
-}
-
-OpenMVPluginSerialPort_private_scanner::OpenMVPluginSerialPort_private_scanner(QObject *parent) : QObject(parent)
-{
-    m_timer = Q_NULLPTR;
-}
-
-void OpenMVPluginSerialPort_private_scanner::scan()
-{
-    if(!m_timer)
-    {
-        m_timer = new QTimer(this);
-
-        connect(m_timer, &QTimer::timeout,
-                this, &OpenMVPluginSerialPort_private_scanner::scan);
-
-        m_timer->start(1000);
-    }
-
-    QStringList list;
-
-    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
-    {
-        list.append(info.portName());
-    }
-
-    emit availablePorts(list);
-}
-
 OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent)
 {
     QThread *thread = new QThread;
@@ -152,26 +115,5 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
     connect(thread, &QThread::finished,
             thread, &QThread::deleteLater);
 
-    QThread *thread_scanner = new QThread;
-    OpenMVPluginSerialPort_private_scanner* port_scanner = new OpenMVPluginSerialPort_private_scanner;
-    port_scanner->moveToThread(thread_scanner);
-
-    connect(thread_scanner, &QThread::started,
-            port_scanner, &OpenMVPluginSerialPort_private_scanner::scan);
-
-    connect(port_scanner, &OpenMVPluginSerialPort_private_scanner::availablePorts,
-            port, &OpenMVPluginSerialPort_private::checkPort);
-
-    connect(this, &OpenMVPluginSerialPort::destroyed,
-            port_scanner, &OpenMVPluginSerialPort_private_scanner::deleteLater);
-
-    connect(port_scanner, &OpenMVPluginSerialPort_private_scanner::destroyed,
-            thread_scanner, &QThread::quit);
-
-    connect(thread_scanner, &QThread::finished,
-            thread_scanner, &QThread::deleteLater);
-
     thread->start();
-
-    thread_scanner->start();
 }

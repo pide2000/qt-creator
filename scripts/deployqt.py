@@ -72,13 +72,19 @@ def is_debug(fpath):
     # bootstrap exception
     if coredebug.search(fpath):
         return True
-    #OPENMV-DIFF# output = subprocess.check_output(['dumpbin', '/imports', fpath])
+    #OPENMV-DIFF#
+    #output = subprocess.check_output(['dumpbin', '/imports', fpath])
+    #OPENMV-DIFF#
     output = subprocess.check_output(['objdump', '-x', fpath])
+    #OPENMV-DIFF#
     return coredebug.search(output) != None
 
 def is_debug_build(install_dir):
-    #OPENMV-DIFF# return is_debug(os.path.join(install_dir, 'bin', 'qtcreator.exe'))
+    #OPENMV-DIFF#
+    #return is_debug(os.path.join(install_dir, 'bin', 'qtcreator.exe'))
+    #OPENMV-DIFF#
     return is_debug(os.path.join(install_dir, 'bin', 'openmvide.exe'))
+    #OPENMV-DIFF#
 
 def op_failed(details = None):
     if details != None:
@@ -142,10 +148,6 @@ def copy_qt_libs(target_qt_prefix_path, qt_libs_dir, qt_plugin_dir, qt_import_di
     print "Copying plugins:", plugins
     for plugin in plugins:
         target = os.path.join(target_qt_prefix_path, 'plugins', plugin)
-        #OPENMV-DIFF#
-        if common.is_windows_platform():
-            target = os.path.join(target_qt_prefix_path, plugin)
-        #OPENMV-DIFF#
         if (os.path.exists(target)):
             shutil.rmtree(target)
         pluginPath = os.path.join(qt_plugin_dir, plugin)
@@ -180,8 +182,10 @@ def add_qt_conf(target_path, qt_prefix_path):
     f.write('Prefix={0}\n'.format(prefix_path))
     f.write('Libraries={0}\n'.format('lib' if common.is_linux_platform() else '.'))
     f.write('Plugins=plugins\n')
-    f.write('Imports=imports\n')
-    f.write('Qml2Imports=qml\n')
+    #OPENMV-DIFF#
+    #f.write('Imports=imports\n')
+    #f.write('Qml2Imports=qml\n')
+    #OPENMV-DIFF#
     f.close()
 
 def copy_translations(install_dir, qt_tr_dir):
@@ -293,12 +297,18 @@ def main():
     QT_INSTALL_BINS = qt_install_info['QT_INSTALL_BINS']
     QT_INSTALL_PLUGINS = qt_install_info['QT_INSTALL_PLUGINS']
     QT_INSTALL_IMPORTS = qt_install_info['QT_INSTALL_IMPORTS']
-    #OPENMV-DIFF# QT_INSTALL_QML = qt_install_info['QT_INSTALL_QML']
+    #OPENMV-DIFF#
+    #QT_INSTALL_QML = qt_install_info['QT_INSTALL_QML']
+    #OPENMV-DIFF#
     QT_INSTALL_QML = ""
+    #OPENMV-DIFF#
     QT_INSTALL_TRANSLATIONS = qt_install_info['QT_INSTALL_TRANSLATIONS']
 
-    #OPENMV-DIFF# plugins = ['accessible', 'codecs', 'designer', 'iconengines', 'imageformats', 'platformthemes', 'platforminputcontexts', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
-    plugins = ['iconengines', 'imageformats', 'platforms', 'printsupport']
+    #OPENMV-DIFF#
+    #plugins = ['accessible', 'codecs', 'designer', 'iconengines', 'imageformats', 'platformthemes', 'platforminputcontexts', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
+    #OPENMV-DIFF#
+    plugins = ['iconengines', 'imageformats', 'platforms', 'printsupport', 'sqldrivers']
+    #OPENMV-DIFF#
     imports = ['Qt', 'QtWebKit']
 
     if common.is_windows_platform():
@@ -316,9 +326,10 @@ def main():
     if not common.is_windows_platform():
         print "fixing rpaths..."
         common.fix_rpaths(install_dir, os.path.join(qt_deploy_prefix, 'lib'), qt_install_info, chrpath_bin)
-        #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
-        add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
-    #OPENMV-DIFF# add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
+        #OPENMV-DIFF#
+        #add_qt_conf(os.path.join(install_dir, 'libexec', 'qtcreator'), qt_deploy_prefix) # e.g. for qml2puppet
+        #OPENMV-DIFF#
+    add_qt_conf(os.path.join(install_dir, 'bin'), qt_deploy_prefix)
 
 if __name__ == "__main__":
     if common.is_mac_platform():

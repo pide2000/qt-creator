@@ -2,9 +2,10 @@
     <qresource prefix="/openmv">
         <file>../../../../openmv-media/icons/openmv-icon/openmv.png</file>
         <file>../../../../openmv-media/splash/openmv-splash-slate/splash-small.png</file>
-        <file>../projectexplorer/images/debugger_start.png</file>
-        <file>../debugger/images/debugger_stop_32.png</file>
         <file>images/connect.png</file>
         <file>images/disconnect.png</file>
+        <file>../projectexplorer/images/run.png</file>
+        <file>images/application-exit.png</file>
+        <file>images/filesave.png</file>
     </qresource>
 </RCC>

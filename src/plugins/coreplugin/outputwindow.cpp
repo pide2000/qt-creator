@@ -395,6 +395,8 @@ void OutputWindow::scrollToBottom()
 void OutputWindow::grayOutOldContent()
 {
     // OPENMV-DIFF //
+    if(document()->isEmpty()) return;
+    d->enforceNewline = true;
     const bool atBottom = isScrollbarAtBottom();
     // OPENMV-DIFF //
     if (!d->cursor.atEnd())

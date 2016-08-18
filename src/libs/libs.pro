@@ -23,6 +23,7 @@ SUBDIRS   = \
     aggregation \
     extensionsystem \
     utils
+#OPENMV-DIFF#
 
 for(l, SUBDIRS) {
     QTC_LIB_DEPENDS =

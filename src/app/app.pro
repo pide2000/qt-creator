@@ -44,6 +44,7 @@ win32 {
     #}
     #OPENMV-DIFF#
     ICON = ../../../openmv-media/icons/openmv-icon/openmv.icns
+    #OPENMV-DIFF#
     QMAKE_INFO_PLIST = Info.plist
 } else {
     target.path  = $$INSTALL_BIN_PATH

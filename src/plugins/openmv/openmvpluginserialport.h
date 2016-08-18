@@ -23,7 +23,6 @@ public slots:
 public slots: // private
 
     void processEvents();
-    void checkPort(const QStringList &portNames);
 
 signals:
 
@@ -34,27 +33,6 @@ signals:
 private:
 
     QSerialPort *m_port;
-};
-
-class OpenMVPluginSerialPort_private_scanner : public QObject
-{
-    Q_OBJECT
-
-public:
-
-    explicit OpenMVPluginSerialPort_private_scanner(QObject *parent = Q_NULLPTR);
-
-public slots: // private
-
-    void scan();
-
-signals:
-
-    void availablePorts(const QStringList &portNames);
-
-private:
-
-    QTimer *m_timer;
 };
 
 class OpenMVPluginSerialPort : public QObject

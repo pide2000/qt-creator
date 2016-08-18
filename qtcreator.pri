@@ -80,8 +80,11 @@ isEmpty(IDE_BUILD_TREE) {
 
 IDE_APP_PATH = $$IDE_BUILD_TREE/bin
 osx {
-    #OPENMV-DIFF# IDE_APP_TARGET   = "Qt Creator"
+    #OPENMV-DIFF#
+    #IDE_APP_TARGET   = "Qt Creator"
+    #OPENMV-DIFF#
     IDE_APP_TARGET   = "OpenMV IDE"
+    #OPENMV-DIFF#
 
     IDE_APP_BUNDLE = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app
 
@@ -100,8 +103,11 @@ osx {
     LINK_PLUGIN_PATH  = $$IDE_APP_BUNDLE/Contents/PlugIns
 } else {
     contains(TEMPLATE, vc.*):vcproj = 1
-    #OPENMV-DIFF# IDE_APP_TARGET   = qtcreator
+    #OPENMV-DIFF#
+    #IDE_APP_TARGET   = qtcreator
+    #OPENMV-DIFF#
     IDE_APP_TARGET   = openmvide
+    #OPENMV-DIFF#
 
     # target output path if not set manually
     isEmpty(IDE_OUTPUT_PATH): IDE_OUTPUT_PATH = $$IDE_BUILD_TREE

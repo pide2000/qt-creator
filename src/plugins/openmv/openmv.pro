@@ -1,5 +1,5 @@
 include(../../qtcreatorplugin.pri)
-QT += printsupport serialport
+QT += network printsupport serialport
 HEADERS += openmvplugin.h \
            openmvpluginserialport.h \
            openmvpluginio.h \

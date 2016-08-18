@@ -43,9 +43,9 @@ namespace Constants {
 #define IDE_VERSION_MINOR $$replace(QTCREATOR_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
 #define IDE_VERSION_RELEASE $$replace(QTCREATOR_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
 //OPENMV-DIFF//
-#define OMV_IDE_VERSION_MAJOR $$replace(OMV_IDE_VERSION, "^(\\d+)\\.\\d+\\.\\d+(-.*)?$", \\1)
-#define OMV_IDE_VERSION_MINOR $$replace(OMV_IDE_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
-#define OMV_IDE_VERSION_RELEASE $$replace(OMV_IDE_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
+#define OMV_IDE_VERSION_MAJOR $$replace(OPENMVIDE_VERSION, "^(\\d+)\\.\\d+\\.\\d+(-.*)?$", \\1)
+#define OMV_IDE_VERSION_MINOR $$replace(OPENMVIDE_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
+#define OMV_IDE_VERSION_RELEASE $$replace(OPENMVIDE_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
 //OPENMV-DIFF//
 
 const char * const IDE_VERSION_LONG      = IDE_VERSION_STR;
@@ -53,7 +53,7 @@ const char * const IDE_AUTHOR            = \"The Qt Company Ltd\";
 const char * const IDE_YEAR              = \"2016\";
 //OPENMV-DIFF//
 const char * const OMV_IDE_VERSION_LONG  = OMV_IDE_VERSION_STR;
-const char * const OMV_IDE_AUTHOR        = \"OpenMV LLC\";
+const char * const OMV_IDE_AUTHOR        = \"OpenMV, LLC\";
 const char * const OMV_IDE_YEAR          = \"2016\";
 //OPENMV-DIFF//
 
@@ -73,15 +73,21 @@ const char * const IDE_REVISION_STR      = \"\";
 #ifdef IDE_SETTINGSVARIANT
 const char * const IDE_SETTINGSVARIANT_STR      = STRINGIFY(IDE_SETTINGSVARIANT);
 #else
-//OPENMV-DIFF// const char * const IDE_SETTINGSVARIANT_STR      = \"QtProject\";
+//OPENMV-DIFF//
+//const char * const IDE_SETTINGSVARIANT_STR      = \"QtProject\";
+//OPENMV-DIFF//
 const char * const IDE_SETTINGSVARIANT_STR      = \"OpenMV\";
+//OPENMV-DIFF//
 #endif
 
 #ifdef IDE_COPY_SETTINGS_FROM_VARIANT
 const char * const IDE_COPY_SETTINGS_FROM_VARIANT_STR = STRINGIFY(IDE_COPY_SETTINGS_FROM_VARIANT);
 #else
-//OPENMV-DIFF// const char * const IDE_COPY_SETTINGS_FROM_VARIANT_STR = \"Nokia\";
+//OPENMV-DIFF//
+//const char * const IDE_COPY_SETTINGS_FROM_VARIANT_STR = \"Nokia\";
+//OPENMV-DIFF//
 const char * const IDE_COPY_SETTINGS_FROM_VARIANT_STR = \"OpenMV\";
+//OPENMV-DIFF//
 #endif
 
 

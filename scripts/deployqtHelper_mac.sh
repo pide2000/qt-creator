@@ -147,5 +147,6 @@ if [ ! -d "$1/Contents/Frameworks/QtCore.framework" ]; then
     # OPENMV-DIFF #
     macdeployqt "$1" \
         "$qml2puppetArgument" "$clangbackendArgument" || exit 1
+    # OPENMV-DIFF #
 
 fi

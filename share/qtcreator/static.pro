@@ -33,6 +33,7 @@ DATA_DIRS = \
     examples \
     firmware \
     html
+#OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {
     files = $$files($$PWD/$$data_dir/*, true)

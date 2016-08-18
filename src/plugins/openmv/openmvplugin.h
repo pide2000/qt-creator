@@ -3,8 +3,9 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QtWidgets>
+#include <QtNetwork>
 #include <QtSerialPort>
+#include <QtWidgets>
 
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -31,10 +32,10 @@
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
-#define START_PATH ":/openmv/projectexplorer/images/debugger_start.png"
-#define STOP_PATH ":/openmv/debugger/images/debugger_stop_32.png"
 #define CONNECT_PATH ":/openmv/images/connect.png"
 #define DISCONNECT_PATH ":/openmv/images/disconnect.png"
+#define START_PATH ":/openmv/projectexplorer/images/run.png"
+#define STOP_PATH ":/openmv/images/application-exit.png"
 
 #define SETTINGS_GROUP "OpenMV"
 #define EDITOR_MANAGER_STATE "EditorManagerState"
@@ -54,10 +55,6 @@
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
 
-#define OPENMVCAM_TARGET_FIRMWARE_MAJOR 1
-#define OPENMVCAM_TARGET_FIRMWARE_MINOR 6
-#define OPENMVCAM_TARGET_FIRMWARE_PATCH 0
-
 namespace OpenMV {
 namespace Internal {
 
@@ -68,23 +65,18 @@ class OpenMVPlugin : public ExtensionSystem::IPlugin
 
 public:
 
-    OpenMVPlugin();
-    ~OpenMVPlugin();
-
+    explicit OpenMVPlugin();
     bool initialize(const QStringList &arguments, QString *errorMessage);
     void extensionsInitialized();
     ExtensionSystem::IPlugin::ShutdownFlag aboutToShutdown();
 
-public slots:
+public slots: // private
 
-    void connectClicked(); // 1
-    void connectClickedResult(const QString &errorMessage); // 2
-    void firmwareVersion(long major, long minor, long patch); // 3
-    void disconnectClicked(); // 4
-    void shutdown(const QString &errorMessage); // 5
-    void closeResponse(); // 6
-
+    void connectClicked();
+    void disconnectClicked();
     void startClicked();
+    void stopClicked();
+
     void processEvents();
     void errorFilter(const QByteArray &data);
 
@@ -94,11 +86,9 @@ public slots:
 
 private:
 
-    QList<QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, QObject *object);
-    QString getSerialPortPath() const;
+    QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
+    QString getSerialPortPath();
     void setSerialPortPath();
-
-    Core::ActionContainer *m_examplesMenu;
 
     Core::Command *m_connectCommand;
     Core::Command *m_disconnectCommand;
@@ -129,15 +119,12 @@ private:
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
 
-    bool m_connecting;
-    bool m_disconnecting;
+    bool m_working;
     bool m_connected;
+    bool m_running;
     QString m_portName;
-    int m_major;
-    int m_minor;
-    int m_patch;
     QElapsedTimer m_timer;
-    qint64 m_timerLast;
+    QQueue<qint64> m_queue;
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
 };

@@ -4,17 +4,16 @@
 #define __USBDBG_FW_VERSION         0x80
 #define __USBDBG_FRAME_SIZE         0x81
 #define __USBDBG_FRAME_DUMP         0x82
-#define __USBDBG_FRAME_UPDATE       0x04
+#define __USBDBG_ARCH_STR           0x83
 #define __USBDBG_SCRIPT_EXEC        0x05
 #define __USBDBG_SCRIPT_STOP        0x06
-#define __USBDBG_SCRIPT_SAVE        0x07 // ???
 #define __USBDBG_SCRIPT_RUNNING     0x87
 #define __USBDBG_TEMPLATE_SAVE      0x08
 #define __USBDBG_DESCRIPTOR_SAVE    0x09
 #define __USBDBG_ATTR_READ          0x8A
 #define __USBDBG_ATTR_WRITE         0x0B
 #define __USBDBG_SYS_RESET          0x0C
-#define __USBDBG_SYS_BOOT           0x0D // ???
+#define __USBDBG_FB_ENABLE          0x0D
 #define __USBDBG_JPEG_ENABLE        0x0E
 #define __USBDBG_TX_BUF_LEN         0x8E
 #define __USBDBG_TX_BUF             0x8F
@@ -25,6 +24,7 @@
 #define __BOOTLDR_WRITE             static_cast<int>(0xABCD0008)
 
 #define FW_VERSION_RESPONSE_LEN     12
+#define ARCH_STR_RESPONSE_LEN       64
 #define FRAME_SIZE_RESPONSE_LEN     12
 #define SCRIPT_RUNNING_RESPONSE_LEN 4
 #define ATTR_READ_RESPONSE_LEN      1
@@ -34,6 +34,8 @@
 
 #define IS_JPG(bpp)                 ((bpp) >= 3)
 #define IS_RGB(bpp)                 ((bpp) == 2)
+#define IS_GS(bpp)                  ((bpp) == 1)
+#define IS_BINARY(bpp)              ((bpp) == 0)
 
 static inline void serializeByte(QByteArray &buffer, char value) // LittleEndian
 {
@@ -152,6 +154,8 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
             if(m_receivedBytes.size() >= m_expectedDataQueue.head())
             {
+                m_timer->stop();
+
                 int receivedBytes = m_expectedDataQueue.dequeue();
 
                 switch(m_expectedHeaderQueue.dequeue())
@@ -165,6 +169,12 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         emit firmwareVersion(major, minor, patch);
                         break;
                     }
+                    case __USBDBG_ARCH_STR:
+                    {
+                        emit archString(QString::fromLatin1(m_receivedBytes.left(receivedBytes)));
+                        m_receivedBytes = m_receivedBytes.mid(receivedBytes);
+                        break;
+                    }
                     case __USBDBG_FRAME_SIZE:
                     {
                         int w = deserializeLong(m_receivedBytes);
@@ -173,7 +183,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
                         if(w && h && bpp)
                         {
-                            int size = IS_JPG(bpp) ? bpp : (w * h * bpp);
+                            int size = IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (((w+7)/8) * h));
 
                             QByteArray buffer;
                             serializeByte(buffer, __USBDBG_CMD);
@@ -193,11 +203,17 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                     }
                     case __USBDBG_FRAME_DUMP:
                     {
-                        emit frameBufferData(QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
+                        QPixmap pixmap = QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
                         ? QImage::fromData(m_receivedBytes.left(receivedBytes), "JPG")
                         : QImage(reinterpret_cast<uchar *>(byteSwap(m_receivedBytes.left(receivedBytes),
-                            IS_RGB(m_frameSizeBPP)).data()), m_frameSizeW, m_frameSizeH, m_frameSizeW * m_frameSizeBPP,
-                            IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : QImage::Format_Grayscale8)));
+                            IS_RGB(m_frameSizeBPP)).data()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW+7)/8) : (m_frameSizeW * m_frameSizeBPP),
+                            IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : (IS_GS(m_frameSizeBPP) ? QImage::Format_Grayscale8 : QImage::Format_MonoLSB)));
+
+                        if(!pixmap.isNull())
+                        {
+                            emit frameBufferData(pixmap);
+                        }
+
                         m_receivedBytes = m_receivedBytes.mid(receivedBytes);
                         m_frameSizeW = int();
                         m_frameSizeH = int();
@@ -245,8 +261,6 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                     }
                 }
 
-                m_timer->stop();
-
                 m_receivedBytes.clear();
             }
         }
@@ -260,6 +274,11 @@ void OpenMVPluginIO::timeout()
         case __USBDBG_FW_VERSION:
         {
             emit firmwareVersion(0, 0, 0);
+            break;
+        }
+        case __USBDBG_ARCH_STR:
+        {
+            emit archString(QString());
             break;
         }
         case __USBDBG_FRAME_SIZE:
@@ -336,6 +355,18 @@ void OpenMVPluginIO::getFirmwareVersion()
     m_expectedDataQueue.enqueue(FW_VERSION_RESPONSE_LEN);
 }
 
+void OpenMVPluginIO::getArchString()
+{
+    QByteArray buffer;
+    serializeByte(buffer, __USBDBG_CMD);
+    serializeByte(buffer, __USBDBG_ARCH_STR);
+    serializeLong(buffer, ARCH_STR_RESPONSE_LEN);
+    m_commandQueue.enqueue(buffer);
+
+    m_expectedHeaderQueue.enqueue(__USBDBG_ARCH_STR);
+    m_expectedDataQueue.enqueue(ARCH_STR_RESPONSE_LEN);
+}
+
 void OpenMVPluginIO::frameSizeDump()
 {
     QByteArray buffer;
@@ -346,18 +377,6 @@ void OpenMVPluginIO::frameSizeDump()
 
     m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_SIZE);
     m_expectedDataQueue.enqueue(FRAME_SIZE_RESPONSE_LEN);
-}
-
-void OpenMVPluginIO::frameUpdate()
-{
-    QByteArray buffer;
-    serializeByte(buffer, __USBDBG_CMD);
-    serializeByte(buffer, __USBDBG_FRAME_UPDATE);
-    serializeLong(buffer, 0);
-    m_commandQueue.enqueue(buffer);
-
-    m_expectedHeaderQueue.enqueue(0);
-    m_expectedDataQueue.enqueue(0);
 }
 
 void OpenMVPluginIO::scriptExec(const QByteArray &data)
@@ -484,17 +503,32 @@ void OpenMVPluginIO::sysReset()
     m_expectedDataQueue.enqueue(0);
 }
 
-void OpenMVPluginIO::jpegEnable(bool enabled)
+void OpenMVPluginIO::fbEnable(bool enabled)
 {
     QByteArray buffer;
     serializeByte(buffer, __USBDBG_CMD);
-    serializeByte(buffer, __USBDBG_JPEG_ENABLE);
+    serializeByte(buffer, __USBDBG_FB_ENABLE);
     serializeLong(buffer, 0);
     serializeWord(buffer, enabled ? true : false);
     m_commandQueue.enqueue(buffer);
 
     m_expectedHeaderQueue.enqueue(0);
     m_expectedDataQueue.enqueue(0);
+}
+
+void OpenMVPluginIO::jpegEnable(bool enabled)
+{
+    Q_UNUSED(enabled)
+
+//  QByteArray buffer;
+//  serializeByte(buffer, __USBDBG_CMD);
+//  serializeByte(buffer, __USBDBG_JPEG_ENABLE);
+//  serializeLong(buffer, 0);
+//  serializeWord(buffer, enabled ? true : false);
+//  m_commandQueue.enqueue(buffer);
+
+//  m_expectedHeaderQueue.enqueue(0);
+//  m_expectedDataQueue.enqueue(0);
 }
 
 void OpenMVPluginIO::getTxBuffer()

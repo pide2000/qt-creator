@@ -42,5 +42,4 @@ fi
 # Add OpenMV IDE library path
 LD_LIBRARY_PATH=$libdir:$libdir/qtcreator$qtlibpath${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
-#OPENMV-DIFF# exec "$bindir/qtcreator" ${1+"$@"}
 exec "$bindir/openmvide" ${1+"$@"}

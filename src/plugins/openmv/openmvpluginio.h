@@ -34,7 +34,7 @@ public slots:
 
     void getFirmwareVersion();
     void frameSizeDump();
-    void frameUpdate();
+    void getArchString();
     void scriptExec(const QByteArray &data);
     void scriptStop();
     void getScriptRunning();
@@ -43,7 +43,8 @@ public slots:
     void setAttribute(short attribute, short value);
     void getAttribute(short attribute);
     void sysReset();
-    void jpegEnable(bool enable);
+    void fbEnable(bool enable);
+    void jpegEnable(bool enabled);
     void getTxBuffer();
     void bootloaderStart();
     void bootloaderReset();
@@ -60,6 +61,7 @@ public slots: // private
 signals:
 
     void firmwareVersion(long major, long minor, long patch);
+    void archString(const QString &arch);
     void frameBufferData(const QPixmap &data);
     void scriptRunning(long);
     void attribute(char);

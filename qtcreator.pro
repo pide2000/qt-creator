@@ -89,18 +89,30 @@ else:linux-*: PLATFORM = "linux-$${ARCHITECTURE}"
 else: PLATFORM = "unknown"
 
 BASENAME = $$(INSTALL_BASENAME)
-#OPENMV-DIFF# isEmpty(BASENAME): BASENAME = qt-creator-$${PLATFORM}$(INSTALL_EDITION)-$${QTCREATOR_VERSION}$(INSTALL_POSTFIX)
+#OPENMV-DIFF#
+#isEmpty(BASENAME): BASENAME = qt-creator-$${PLATFORM}$(INSTALL_EDITION)-$${QTCREATOR_VERSION}$(INSTALL_POSTFIX)
+#OPENMV-DIFF#
 isEmpty(BASENAME): BASENAME = openmv-ide-$${PLATFORM}$(INSTALL_EDITION)-$${OPENMVIDE_VERSION}$(INSTALL_POSTFIX)
+#OPENMV-DIFF#
 
-#OPENMV-DIFF# macx:INSTALLER_NAME = "qt-creator-$${QTCREATOR_VERSION}"
+#OPENMV-DIFF#
+#macx:INSTALLER_NAME = "qt-creator-$${QTCREATOR_VERSION}"
+#OPENMV-DIFF#
 macx:INSTALLER_NAME = "openmv-ide-$${OPENMVIDE_VERSION}"
+#OPENMV-DIFF#
 else:INSTALLER_NAME = "$${BASENAME}"
 
 macx {
-    #OPENMV-DIFF# APPBUNDLE = "$$OUT_PWD/bin/Qt Creator.app"
+    #OPENMV-DIFF#
+    #APPBUNDLE = "$$OUT_PWD/bin/Qt Creator.app"
+    #OPENMV-DIFF#
     APPBUNDLE = "$$OUT_PWD/bin/OpenMV IDE.app"
-    #OPENMV-DIFF# BINDIST_SOURCE = "$$OUT_PWD/bin/Qt Creator.app"
+    #OPENMV-DIFF#
+    #OPENMV-DIFF#
+    #BINDIST_SOURCE = "$$OUT_PWD/bin/Qt Creator.app"
+    #OPENMV-DIFF#
     BINDIST_SOURCE = "$$OUT_PWD/bin/OpenMV IDE.app"
+    #OPENMV-DIFF#
     BINDIST_INSTALLER_SOURCE = $$BINDIST_SOURCE
     deployqt.commands = $$PWD/scripts/deployqtHelper_mac.sh \"$${APPBUNDLE}\" \"$$[QT_INSTALL_TRANSLATIONS]\" \"$$[QT_INSTALL_PLUGINS]\" \"$$[QT_INSTALL_IMPORTS]\" \"$$[QT_INSTALL_QML]\"
     codesign.commands = codesign --deep -s \"$(SIGNING_IDENTITY)\" $(SIGNING_FLAGS) \"$${APPBUNDLE}\"
@@ -126,16 +138,21 @@ isEmpty(INSTALLER_ARCHIVE_FROM_ENV) {
     INSTALLER_ARCHIVE = $$OUT_PWD/$$(INSTALLER_ARCHIVE)
 }
 
-#OPENMV-DIFF# #bindist.depends = deployqt
-bindist.depends = deployqt
-#OPENMV-DIFF# bindist.commands = 7z a -mx9 $$OUT_PWD/$${BASENAME}.7z \"$$BINDIST_SOURCE\"
-bindist.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_SOURCE\" && 7z a -mx9 $$OUT_PWD/$${BASENAME}.7z \"$$BINDIST_SOURCE\"
-#OPENMV-DIFF# #bindist_installer.depends = deployqt
+#bindist.depends = deployqt
+bindist.commands = 7z a -mx9 $$OUT_PWD/$${BASENAME}.7z \"$$BINDIST_SOURCE\"
+#OPENMV-DIFF#
+#bindist_installer.depends = deployqt
+#OPENMV-DIFF#
 bindist_installer.depends = deployqt
-#OPENMV-DIFF# bindist_installer.commands = 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_INSTALLER_SOURCE\"
+#OPENMV-DIFF#
+#OPENMV-DIFF#
+#bindist_installer.commands = 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_INSTALLER_SOURCE\"
+#OPENMV-DIFF#
 bindist_installer.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_INSTALLER_SOURCE\" && 7z a -mx9 $${INSTALLER_ARCHIVE} \"$$BINDIST_INSTALLER_SOURCE\"
+#OPENMV-DIFF#
 installer.depends = bindist_installer
-#OPENMV-DIFF# installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${QTCREATOR_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME"
+#OPENMV-DIFF#
+#installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${QTCREATOR_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME"
 #OPENMV-DIFF#
 macx {
     installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${OPENMVIDE_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME" && python -u $$PWD/scripts/sign.py \"$${INSTALLER_NAME}.app\"
@@ -148,8 +165,7 @@ macx {
 
 macx {
     codesign_installer.commands = codesign -s \"$(SIGNING_IDENTITY)\" $(SIGNING_FLAGS) \"$${INSTALLER_NAME}.app\"
-    #OPENMV-DIFF# dmg_installer.commands = hdiutil create -srcfolder "$${INSTALLER_NAME}.app" -volname \"Qt Creator\" -format UDBZ "$${BASENAME}-installer.dmg" -ov -scrub -size 1g -verbose
-    dmg_installer.commands = hdiutil create -srcfolder "$${INSTALLER_NAME}.app" -volname \"OpenMV IDE\" -format UDBZ "$${BASENAME}-installer.dmg" -ov -scrub -size 1g -verbose
+    dmg_installer.commands = hdiutil create -srcfolder "$${INSTALLER_NAME}.app" -volname \"Qt Creator\" -format UDBZ "$${BASENAME}-installer.dmg" -ov -scrub -size 1g -verbose
     QMAKE_EXTRA_TARGETS += codesign_installer dmg_installer
 }
 

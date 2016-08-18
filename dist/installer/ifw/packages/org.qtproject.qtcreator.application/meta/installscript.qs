@@ -26,7 +26,9 @@
 // constructor
 function Component()
 {
-    //OPENMV-DIFF// component.loaded.connect(this, Component.prototype.loaded);
+    //OPENMV-DIFF//
+    //component.loaded.connect(this, Component.prototype.loaded);
+    //OPENMV-DIFF//
     installer.installationFinished.connect(this, Component.prototype.installationFinishedPageIsShown);
     installer.finishButtonClicked.connect(this, Component.prototype.installationFinished);
     installer.setDefaultPageVisible(QInstaller.ComponentSelection, false);
@@ -48,8 +50,11 @@ Component.prototype.createOperationsForArchive = function(archive)
     if (systemInfo.productType !== "osx" || archive.indexOf('qtcreator.7z') !== -1)
         component.addOperation("Extract", archive, "@TargetDir@");
     else
-        //OPENMV-DIFF// component.addOperation("Extract", archive, "@TargetDir@/Qt Creator.app/Contents");
+        //OPENMV-DIFF//
+        //component.addOperation("Extract", archive, "@TargetDir@/Qt Creator.app/Contents");
+        //OPENMV-DIFF//
         component.addOperation("Extract", archive, "@TargetDir@/OpenMV IDE.app/Contents");
+        //OPENMV-DIFF//
 }
 
 Component.prototype.beginInstallation = function()
@@ -57,16 +62,25 @@ Component.prototype.beginInstallation = function()
     component.qtCreatorBinaryPath = installer.value("TargetDir");
 
     if (installer.value("os") == "win") {
-        //OPENMV-DIFF// component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "\\bin\\qtcreator.exe";
+        //OPENMV-DIFF//
+        //component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "\\bin\\qtcreator.exe";
+        //OPENMV-DIFF//
         component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "\\bin\\openmvide.exe";
+        //OPENMV-DIFF//
         component.qtCreatorBinaryPath = component.qtCreatorBinaryPath.replace(/\//g, "\\");
     }
     else if (installer.value("os") == "x11")
-        //OPENMV-DIFF// component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/bin/qtcreator";
+        //OPENMV-DIFF//
+        //component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/bin/qtcreator";
+        //OPENMV-DIFF//
         component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/bin/openmvide";
+        //OPENMV-DIFF//
     else if (installer.value("os") == "mac")
-        //OPENMV-DIFF// component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/Qt Creator.app/Contents/MacOS/Qt Creator";
+        //OPENMV-DIFF//
+        //component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/Qt Creator.app/Contents/MacOS/Qt Creator";
+        //OPENMV-DIFF//
         component.qtCreatorBinaryPath = component.qtCreatorBinaryPath + "/OpenMV IDE.app/Contents/MacOS/OpenMV IDE";
+        //OPENMV-DIFF//
 
     if ( installer.value("os") === "win" )
         component.setStopProcessForUpdateRequest(component.qtCreatorBinaryPath, true);
@@ -174,7 +188,9 @@ Component.prototype.createOperations = function()
         //}
         //OPENMV-DIFF//
 
-        //OPENMV-DIFF// registerWindowsFileTypeExtensions();
+        //OPENMV-DIFF//
+        //registerWindowsFileTypeExtensions();
+        //OPENMV-DIFF//
 
         //OPENMV-DIFF//
         //if (component.userInterface("AssociateCommonFiletypesForm").AssociateCommonFiletypesCheckBox
@@ -187,10 +203,16 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "InstallIcons", "@TargetDir@/share/icons" );
         component.addOperation( "CreateDesktopEntry",
-                                //OPENMV-DIFF// "QtProject-qtcreator.desktop",
+                                //OPENMV-DIFF//
+                                //"QtProject-qtcreator.desktop",
+                                //OPENMV-DIFF//
                                 "OpenMV-openmvide.desktop",
-                                //OPENMV-DIFF// "Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=Qt Creator\nGenericName=The IDE of choice for Qt development.\nGenericName[de]=Die IDE der Wahl zur Qt Entwicklung\nIcon=QtProject-qtcreator\nTerminal=false\nCategories=Development;IDE;Qt;\nMimeType=text/x-c++src;text/x-c++hdr;text/x-xsrc;application/x-designer;application/vnd.nokia.qt.qmakeprofile;application/vnd.nokia.xml.qt.resource;text/x-qml;text/x-qt.qml;text/x-qt.qbs;"
+                                //OPENMV-DIFF//
+                                //OPENMV-DIFF//
+                                //"Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=Qt Creator\nGenericName=The IDE of choice for Qt development.\nGenericName[de]=Die IDE der Wahl zur Qt Entwicklung\nIcon=QtProject-qtcreator\nTerminal=false\nCategories=Development;IDE;Qt;\nMimeType=text/x-c++src;text/x-c++hdr;text/x-xsrc;application/x-designer;application/vnd.nokia.qt.qmakeprofile;application/vnd.nokia.xml.qt.resource;text/x-qml;text/x-qt.qml;text/x-qt.qbs;"
+                                //OPENMV-DIFF//
                                 "Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=OpenMV IDE\nGenericName=The IDE of choice for OpenMV Cam Development.\nGenericName[de]=Die IDE der Wahl zur OpenMV Cam Entwicklung\nIcon=OpenMV-openmvide\nTerminal=false\nCategories=Development;IDE;"
+                                //OPENMV-DIFF//
                                 );
     }
 }

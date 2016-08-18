@@ -46,5 +46,5 @@ SUBDIRS += \
     libs \
     app \
     plugins \
-    tools \
     share/3rdparty/data.pro
+#OPENMV-DIFF#

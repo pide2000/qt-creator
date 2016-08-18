@@ -2,7 +2,7 @@
 
 # by: Kwabena W. Agyeman - kwagyeman@openmv.io
 
-import argparse, fnmatch, os, subprocess, sys
+import argparse, fnmatch, os, sys
 
 def try_which(program):
     if os.path.dirname(program):
@@ -45,8 +45,10 @@ identity = getIdentity()
 def signFile(file):
     if sys.platform.startswith("win"):
         if kSignCMDAvailable and PFXFile and PFXPass:
-            if not subprocess.call(["kSignCMD",
-            "/f", PFXFile, "/p", PFXPass, file.replace("/", "\\")]):
+            if not os.system("kSignCMD" + \
+            " /f " + PFXFile.replace("/", "\\") + \
+            " /p " + PFXPass + \
+            " " + file.replace("/", "\\")):
                 print "Success"
             else:
                 print "Failure"
@@ -55,8 +57,8 @@ def signFile(file):
         return
     elif sys.platform == "darwin":
         if codsignAvailable and identity:
-            if not subprocess.call(["codesign",
-            "-s", identity, file]):
+            if not os.system("codesign" + \
+            " -s " + identity + " " + file):
                 print "Success"
             else:
                 print "Failure"
