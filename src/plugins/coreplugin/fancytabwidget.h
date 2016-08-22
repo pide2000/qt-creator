@@ -46,8 +46,11 @@ QT_END_NAMESPACE
 namespace Core {
 namespace Internal {
 
-//OPENMV-DIFF// class FancyTab : public QObject
+//OPENMV-DIFF//
+//class FancyTab : public QObject
+//OPENMV-DIFF//
 class CORE_EXPORT FancyTab : public QObject
+//OPENMV-DIFF//
 {
     Q_OBJECT
 
@@ -74,8 +77,11 @@ private:
     float m_fader;
 };
 
-//OPENMV-DIFF// class FancyTabBar : public QWidget
+//OPENMV-DIFF//
+//class FancyTabBar : public QWidget
+//OPENMV-DIFF//
 class CORE_EXPORT FancyTabBar : public QWidget
+//OPENMV-DIFF//
 {
     Q_OBJECT
 
@@ -141,8 +147,11 @@ private:
 
 };
 
-//OPENMV-DIFF// class FancyTabWidget : public QWidget
+//OPENMV-DIFF//
+//class FancyTabWidget : public QWidget
+//OPENMV-DIFF//
 class CORE_EXPORT FancyTabWidget : public QWidget
+//OPENMV-DIFF//
 {
     Q_OBJECT
 
@@ -184,11 +193,11 @@ private:
     QStackedLayout *m_modesStack;
     QWidget *m_selectionWidget;
     QStatusBar *m_statusBar;
-    // OPENMV-DIFF //
+//OPENMV-DIFF//
 public:
     MiniSplitter *m_hsplitter;
     MiniSplitter *m_vsplitter;
-    // OPENMV-DIFF //
+//OPENMV-DIFF//
 };
 
 } // namespace Internal

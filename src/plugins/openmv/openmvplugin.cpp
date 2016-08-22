@@ -90,8 +90,22 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
+    Core::ActionContainer *toolsMenu = Core::ActionManager::actionContainer(Core::Constants::M_TOOLS);
     Core::ActionContainer *helpMenu = Core::ActionManager::actionContainer(Core::Constants::M_HELP);
-    QIcon helpIcon = QIcon::fromTheme(QStringLiteral("help-about"));
+
+    QAction *saveCommand = new QAction(
+         tr("Save script to OpenMV Cam"), this);
+    m_saveCommand = Core::ActionManager::registerAction(saveCommand, Core::Id("OpenMV.Save"));
+    toolsMenu->addAction(m_saveCommand);
+    saveCommand->setEnabled(false);
+    connect(saveCommand, &QAction::triggered, this, &OpenMVPlugin::saveScript);
+
+    QAction *resetCommand = new QAction(
+         tr("Reset OpenMV Cam"), this);
+    m_resetCommand = Core::ActionManager::registerAction(resetCommand, Core::Id("OpenMV.Reset"));
+    toolsMenu->addAction(m_resetCommand);
+    resetCommand->setEnabled(false);
+    connect(resetCommand, &QAction::triggered, this, &OpenMVPlugin::resetClicked);
 
     QAction *docsCommand = new QAction(
          tr("OpenMV Docs"), this);
@@ -121,7 +135,7 @@ void OpenMVPlugin::extensionsInitialized()
         QDesktopServices::openUrl(QUrl(Core::ICore::resourcePath() + QStringLiteral("/html/_images/pinout.png")));
     });
 
-    QAction *aboutAction = new QAction(helpIcon,
+    QAction *aboutAction = new QAction(QIcon::fromTheme(QStringLiteral("help-about")),
         Utils::HostOsInfo::isMacHost() ? tr("About OpenMV IDE") : tr("About OpenMV IDE..."), this);
     aboutAction->setMenuRole(QAction::AboutRole);
     m_aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
@@ -165,6 +179,7 @@ void OpenMVPlugin::extensionsInitialized()
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, [this] (Core::IEditor *editor) {
         if(m_connected)
         {
+            m_saveCommand->action()->setEnabled((!getSerialPortPath().isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!m_running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!m_running);
             m_stopCommand->action()->setEnabled(m_running);
@@ -183,6 +198,7 @@ void OpenMVPlugin::extensionsInitialized()
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
+            m_saveCommand->action()->setEnabled((!getSerialPortPath().isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!running);
             m_stopCommand->action()->setEnabled(running);
@@ -256,9 +272,18 @@ void OpenMVPlugin::extensionsInitialized()
     m_jpgCompress->setVisible(false);
     styledBar0Layout->addWidget(m_jpgCompress);
     connect(m_jpgCompress, &QToolButton::clicked, this, [this] {
-        if((!m_working) && m_connected)
+        if(m_connected)
         {
-            m_iodevice->jpegEnable(m_jpgCompress->isChecked());
+            if(!m_working)
+            {
+                m_iodevice->jpegEnable(m_jpgCompress->isChecked());
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("JPG"),
+                    tr("Busy... please wait..."));
+            }
         }
     });
 
@@ -269,9 +294,18 @@ void OpenMVPlugin::extensionsInitialized()
     m_disableFrameBuffer->setChecked(false);
     styledBar0Layout->addWidget(m_disableFrameBuffer);
     connect(m_disableFrameBuffer, &QToolButton::clicked, this, [this] {
-        if((!m_working) && m_connected)
+        if(m_connected)
         {
-            m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
+            if(!m_working)
+            {
+                m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Disable"),
+                    tr("Busy... please wait..."));
+            }
         }
     });
 
@@ -359,26 +393,26 @@ void OpenMVPlugin::extensionsInitialized()
 
     m_portLabel = new QLabel(tr("Serial Port:"));
     m_portLabel->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(2, m_portLabel);
+    Core::ICore::statusBar()->addPermanentWidget(m_portLabel);
 
     m_pathButton = new QToolButton;
     m_pathButton->setText(tr("Drive:"));
     m_pathButton->setToolTip(tr("Drive associated with the port"));
     m_pathButton->setCheckable(false);
     m_pathButton->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(3, m_pathButton);
+    Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
     connect(m_pathButton, &QToolButton::clicked, this, [this] {
         setSerialPortPath();
     });
 
     m_versionLabel = new QLabel(tr("Firmware Version:"));
     m_versionLabel->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(4, m_versionLabel);
+    Core::ICore::statusBar()->addPermanentWidget(m_versionLabel);
 
     m_fpsLabel = new QLabel(tr("FPS:"));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
     m_fpsLabel->setDisabled(true);
-    Core::ICore::statusBar()->insertPermanentWidget(5, m_fpsLabel);
+    Core::ICore::statusBar()->addPermanentWidget(m_fpsLabel);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -452,7 +486,7 @@ void OpenMVPlugin::extensionsInitialized()
         QNetworkAccessManager *manager = new QNetworkAccessManager(this);
         connect(manager, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *reply) {
             QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(reply->readAll()));
-            if((OMV_IDE_VERSION_MAJOR < match.captured(1).toInt()) || (OMV_IDE_VERSION_MINOR < match.captured(2).toInt()) || (OMV_IDE_VERSION_RELEASE < match.captured(3).toInt()))
+            if((reply->error() == QNetworkReply::NoError) && ((OMV_IDE_VERSION_MAJOR < match.captured(1).toInt()) || (OMV_IDE_VERSION_MINOR < match.captured(2).toInt()) || (OMV_IDE_VERSION_RELEASE < match.captured(3).toInt())))
             {
                 QMessageBox::information(Core::ICore::dialogParent(),
                     tr("Update Available"),
@@ -460,7 +494,11 @@ void OpenMVPlugin::extensionsInitialized()
             }
             reply->deleteLater();
         });
-        manager->get(QNetworkRequest(QUrl(QStringLiteral("http://openmv.io/upload/version.txt"))));
+        QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(QStringLiteral("http://openmv.io/upload/openmv-ide-version.txt"))));
+        if(reply)
+        {
+            connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+        }
     });
 }
 
@@ -512,7 +550,7 @@ do { \
 
 void OpenMVPlugin::connectClicked()
 {
-    if((!m_working) && (!m_connected))
+    if(!m_working)
     {
         m_working = true;
 
@@ -560,7 +598,7 @@ void OpenMVPlugin::connectClicked()
                 if(QMessageBox::question(Core::ICore::dialogParent(),
                     tr("Connect"),
                     tr("Do you have an OpenMV Cam attached and is it bricked?"),
-                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
                 == QMessageBox::Yes)
                 {
                     bool ok;
@@ -749,7 +787,7 @@ void OpenMVPlugin::connectClicked()
                 if(QMessageBox::question(Core::ICore::dialogParent(),
                     tr("Connect"),
                     tr("Try to connect again?"),
-                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
                 == QMessageBox::Yes)
                 {
                     CLOSE_RECONNECT_END();
@@ -767,7 +805,7 @@ void OpenMVPlugin::connectClicked()
         {
             QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)\\s+(\\d+)\\.(\\d+)\\.(\\d+)\\s+(\\S+)")).match(QString::fromLatin1(file.readAll()));
 
-            if(forceBootloader || (major2 < match.captured(1).toInt()) || (minor2 < match.captured(2).toInt()) || (patch2 < match.captured(3).toInt()))
+            if(forceBootloader || ((file.error() == QFile::NoError) && ((major2 < match.captured(1).toInt()) || (minor2 < match.captured(2).toInt()) || (patch2 < match.captured(3).toInt()))))
             {
                 QString path = forceBootloader ? forceFirmwarePath : QString();
 
@@ -909,16 +947,22 @@ void OpenMVPlugin::connectClicked()
                                     stringList2 = stringList2.filter(QStringLiteral("cu"), Qt::CaseInsensitive);
                                 }
 
-                                int index = stringList2.indexOf(selectedPort);
+                                if(!stringList2.isEmpty())
+                                {
+                                    QEventLoop loop;
 
-                                QEventLoop loop;
+                                    connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
 
-                                connect(m_ioport, &OpenMVPluginSerialPort::openResult,
-                                        &loop, &QEventLoop::quit);
+                                    emit m_ioport->open(stringList2.contains(selectedPort) ? selectedPort : stringList2.first());
 
-                                emit m_ioport->open((index != -1) ? selectedPort : (stringList2.isEmpty() ? QString() : stringList2.first()));
+                                    loop.exec();
+                                }
+                                else
+                                {
+                                    QApplication::processEvents();
 
-                                loop.exec();
+                                    errorMessage2 = tr("No OpenMV Cams found!");
+                                }
 
                                 if(errorMessage2.isEmpty() || dialog.wasCanceled())
                                 {
@@ -1081,12 +1125,10 @@ void OpenMVPlugin::connectClicked()
 
         m_connected = true;
         m_portName = selectedPort;
-        m_timer.invalidate();
-        m_queue.clear();
-        m_errorFilterString = QString();
 
         setSerialPortPath();
 
+        m_resetCommand->action()->setEnabled(true);
         m_connectCommand->action()->setEnabled(false);
         m_connectCommand->action()->setVisible(false);
         m_disconnectCommand->action()->setEnabled(true);
@@ -1109,11 +1151,17 @@ void OpenMVPlugin::connectClicked()
 
         CONNECT_END();
     }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Connect"),
+            tr("Busy... please wait..."));
+    }
 }
 
-void OpenMVPlugin::disconnectClicked()
+void OpenMVPlugin::disconnectClicked(bool reset)
 {
-    if((!m_working) && m_connected)
+    if(!m_working)
     {
         m_working = true;
 
@@ -1130,6 +1178,12 @@ void OpenMVPlugin::disconnectClicked()
                     &loop, &QEventLoop::quit);
 
             m_iodevice->scriptStop();
+
+            if(reset)
+            {
+                m_iodevice->sysReset();
+            }
+
             m_iodevice->close();
 
             loop.exec();
@@ -1143,6 +1197,8 @@ void OpenMVPlugin::disconnectClicked()
         m_queue.clear();
         m_errorFilterString = QString();
 
+        m_saveCommand->action()->setEnabled(false);
+        m_resetCommand->action()->setEnabled(false);
         m_connectCommand->action()->setEnabled(true);
         m_connectCommand->action()->setVisible(true);
         m_disconnectCommand->action()->setVisible(false);
@@ -1168,11 +1224,17 @@ void OpenMVPlugin::disconnectClicked()
 
         m_working = false;
     }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Disconnect"),
+            tr("Busy... please wait..."));
+    }
 }
 
 void OpenMVPlugin::startClicked()
 {
-    if((!m_working) && m_connected)
+    if(!m_working)
     {
         m_working = true;
 
@@ -1215,70 +1277,26 @@ void OpenMVPlugin::startClicked()
 
         ///////////////////////////////////////////////////////////////////////
 
-        Core::IEditor *editor = Core::EditorManager::currentEditor();
+        m_iodevice->scriptExec(Core::EditorManager::currentEditor()->document()->contents());
 
-        if(!editor)
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Start"),
-                tr("No Editor!"));
-        }
-        else if(!editor->document())
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Start"),
-                tr("No Document!"));
-        }
-        else if(editor->document()->contents().isEmpty())
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Start"),
-                tr("No Contents!"));
-        }
-//        else if(!getSerialPortPath().isEmpty())
-//        {
-//            QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
-
-//            QFile file(drivePath + QStringLiteral("main.py"));
-
-//            if(file.open(QIODevice::WriteOnly))
-//            {
-//                if(file.write(editor->document()->contents()) == editor->document()->contents().size())
-//                {
-//                    m_iodevice->scriptExec(editor->document()->contents());
-//                    m_timer.start();
-//                    m_queue.clear();
-//                }
-//                else
-//                {
-//                    QMessageBox::critical(Core::ICore::dialogParent(),
-//                        tr("Start"),
-//                        tr("Error: %L1").arg(file.errorString()));
-//                }
-//            }
-//            else
-//            {
-//                QMessageBox::critical(Core::ICore::dialogParent(),
-//                    tr("Start"),
-//                    tr("Error: %L1").arg(file.errorString()));
-//            }
-//        }
-        else
-        {
-            m_iodevice->scriptExec(editor->document()->contents());
-            m_timer.start();
-            m_queue.clear();
-        }
+        m_timer.start();
+        m_queue.clear();
 
         ///////////////////////////////////////////////////////////////////////
 
         m_working = false;
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Start"),
+            tr("Busy... please wait..."));
     }
 }
 
 void OpenMVPlugin::stopClicked()
 {
-    if((!m_working) && m_connected)
+    if(!m_working)
     {
         m_working = true;
 
@@ -1323,14 +1341,24 @@ void OpenMVPlugin::stopClicked()
 
         m_working = false;
     }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Stop"),
+            tr("Busy... please wait..."));
+    }
+}
+
+void OpenMVPlugin::resetClicked()
+{
+    disconnectClicked(true);
 }
 
 void OpenMVPlugin::processEvents()
 {
     if((!m_working) && m_connected)
     {
-        if((!m_disableFrameBuffer->isChecked())
-        && (!m_iodevice->frameSizeDumpQueued()))
+        if((!m_disableFrameBuffer->isChecked()) && (!m_iodevice->frameSizeDumpQueued()))
         {
             m_iodevice->frameSizeDump();
         }
@@ -1408,6 +1436,58 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
     }
 }
 
+void OpenMVPlugin::saveScript()
+{
+    if(!m_working)
+    {
+        int answer = QMessageBox::question(Core::ICore::dialogParent(),
+            tr("Save Script"),
+            tr("Strip comments?"),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+
+        if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
+        {
+            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath())) + QStringLiteral("main.py"));
+
+            if(file.open(QIODevice::WriteOnly))
+            {
+                QByteArray contents = Core::EditorManager::currentEditor()->document()->contents();
+
+                if(answer == QMessageBox::Yes)
+                {
+                    QString bytes = QString::fromLatin1(contents);
+
+                    bytes.remove(QRegularExpression(QStringLiteral("^\\s*?\n"), QRegularExpression::MultilineOption));
+                    bytes.remove(QRegularExpression(QStringLiteral("^\\s*#.*?\n"), QRegularExpression::MultilineOption));
+                    bytes.remove(QRegularExpression(QStringLiteral("\\s*#.*?$"), QRegularExpression::MultilineOption));
+                    bytes.replace(QStringLiteral("    "), QStringLiteral("\t"));
+
+                    contents = bytes.toLatin1();
+                }
+
+                if(file.write(contents) != contents.size())
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Save Script"),
+                        tr("Error: %L1").arg(file.errorString()));
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Save Script"),
+                    tr("Error: %L1").arg(file.errorString()));
+            }
+        }
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Save Script"),
+            tr("Busy... please wait..."));
+    }
+}
+
 void OpenMVPlugin::saveImage(const QPixmap &data)
 {
     QSettings *settings = ExtensionSystem::PluginManager::settings();
@@ -1437,7 +1517,7 @@ void OpenMVPlugin::saveImage(const QPixmap &data)
 
 void OpenMVPlugin::saveTemplate(const QRect &rect)
 {
-    if((!m_working) && m_connected)
+    if(!m_working)
     {
         // Get the drive path first because it uses the settings too...
         QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
@@ -1471,11 +1551,17 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
 
         settings->endGroup();
     }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Save Template"),
+            tr("Busy... please wait..."));
+    }
 }
 
 void OpenMVPlugin::saveDescriptor(const QRect &rect)
 {
-    if((!m_working) && m_connected)
+    if(!m_working)
     {
         // Get the drive path first because it uses the settings too...
         QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
@@ -1508,6 +1594,12 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
         }
 
         settings->endGroup();
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Save Descriptor"),
+            tr("Busy... please wait..."));
     }
 }
 
@@ -1633,6 +1725,8 @@ void OpenMVPlugin::setSerialPortPath()
 
     m_pathButton->setText((!path.isEmpty()) ? tr("Drive: %L1").arg(path) : tr("Drive:"));
 
+    Core::IEditor *editor = Core::EditorManager::currentEditor();
+    m_saveCommand->action()->setEnabled((!path.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
     m_frameBuffer->enableSaveTemplate(!path.isEmpty());
     m_frameBuffer->enableSaveDescriptor(!path.isEmpty());
 }

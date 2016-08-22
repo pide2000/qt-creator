@@ -270,7 +270,7 @@ void TextEditorActionHandlerPrivate::createActions()
             [this] (TextEditorWidget *w) { w->paste(); }, true);
     m_selectAllAction = registerAction(SELECTALL,
             [this] (TextEditorWidget *w) { w->selectAll(); }, true);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     //m_gotoAction = registerAction(GOTO, [this] (TextEditorWidget *) {
     //        QString locatorString = TextEditorPlugin::lineNumberFilter()->shortcutString();
     //        locatorString += QLatin1Char(' ');
@@ -278,12 +278,12 @@ void TextEditorActionHandlerPrivate::createActions()
     //        locatorString += TextEditorActionHandler::tr("<line>:<column>");
     //        Core::LocatorManager::show(locatorString, selectionStart, locatorString.size() - selectionStart);
     //    });
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     m_gotoAction = registerAction(GOTO, [this] (TextEditorWidget *) {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
             if (editor) {
                 bool ok;
-                QString line = QInputDialog::getText(Core::ICore::dialogParent(), tr("Go to Line..."), tr("Line number..."), QLineEdit::Normal, QString::number(editor->currentLine()), &ok
+                QString line = QInputDialog::getText(Core::ICore::dialogParent(), QString(), tr("Go to line number..."), QLineEdit::Normal, QString::number(editor->currentLine()), &ok
 #ifdef Q_OS_MAC
                 , Qt::WindowTitleHint | Qt::WindowSystemMenuHint,
 #else
@@ -300,6 +300,7 @@ void TextEditorActionHandlerPrivate::createActions()
                 }
             }
         });
+    //OPENMV-DIFF//
     m_printAction = registerAction(PRINT,
             [this] (TextEditorWidget *widget) { widget->print(Core::ICore::printer()); });
     m_deleteLineAction = registerAction(DELETE_LINE,

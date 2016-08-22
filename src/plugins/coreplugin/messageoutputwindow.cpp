@@ -49,14 +49,14 @@ MessageOutputWindow::MessageOutputWindow()
     Aggregation::Aggregate *agg = new Aggregation::Aggregate;
     agg->add(m_widget);
     agg->add(new BaseTextFind(m_widget));
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     p = m_widget->palette();
     p.setColor(QPalette::Base, QColor(QStringLiteral("#1E1E27")));
     p.setColor(QPalette::Text, QColor(QStringLiteral("#FFFFFF")));
     m_widget->setPalette(p);
     m_widget->setMaxLineCount(100000);
     m_widget->setWordWrapEnabled(false);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
 }
 
 MessageOutputWindow::~MessageOutputWindow()
@@ -92,7 +92,9 @@ QWidget *MessageOutputWindow::outputWidget(QWidget *parent)
 
 QString MessageOutputWindow::displayName() const
 {
-    // OPENMV-DIFF // return tr("General Messages");
+    //OPENMV-DIFF//
+    //return tr("General Messages");
+    //OPENMV-DIFF//
     return tr("Serial Terminal");
 }
 
@@ -107,7 +109,9 @@ void MessageOutputWindow::append(const QString &text)
 
 int MessageOutputWindow::priorityInStatusBar() const
 {
-    // OPENMV-DIFF // return -1;
+    //OPENMV-DIFF//
+    //return -1;
+    //OPENMV-DIFF//
     return 1;
 }
 

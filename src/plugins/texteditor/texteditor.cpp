@@ -7598,8 +7598,10 @@ bool TextEditorWidget::isMissingSyntaxDefinition() const
 // The remnants of PlainTextEditor.
 void TextEditorWidget::setupGenericHighlighter()
 {
-    setMarksVisible(true);
-    setLineSeparatorsAllowed(true);
+    //OPENMV-DIFF//
+    //setMarksVisible(true);
+    //setLineSeparatorsAllowed(true);
+    //OPENMV-DIFF//
 
     connect(textDocument(), &IDocument::filePathChanged,
             d, &TextEditorWidgetPrivate::reconfigure);

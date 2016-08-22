@@ -28,9 +28,9 @@
 
 #include <extensionsystem/pluginmanager.h>
 
-// OPENMV-DIFF //
+//OPENMV-DIFF//
 #include "outputwindow.h"
-// OPENMV-DIFF //
+//OPENMV-DIFF//
 
 using namespace Core;
 
@@ -90,18 +90,29 @@ void MessageManager::write(const QString &text, PrintToOutputPaneFlags flags)
     m_messageOutputWindow->append(text + QLatin1Char('\n'));
 }
 
-// OPENMV-DIFF //
+//OPENMV-DIFF//
 void MessageManager::printData(const QByteArray &data)
 {
     if (!m_messageOutputWindow)
         return;
     m_messageOutputWindow->append(QString::fromLatin1(data));
 }
-
 void MessageManager::grayOutOldContent()
 {
     if (!m_messageOutputWindow)
         return;
     m_messageOutputWindow->m_widget->grayOutOldContent();
 }
-// OPENMV-DIFF //
+void MessageManager::popup()
+{
+    if (!m_messageOutputWindow)
+        return;
+    m_messageOutputWindow->popup(IOutputPane::NoModeSwitch);
+}
+void MessageManager::flash()
+{
+    if (!m_messageOutputWindow)
+        return;
+    m_messageOutputWindow->flash();
+}
+//OPENMV-DIFF//

@@ -349,23 +349,23 @@ void OutputWindow::appendMessage(const QString &output, OutputFormat format)
 void OutputWindow::appendText(const QString &textIn, const QTextCharFormat &format)
 {
     const QString text = SynchronousProcess::normalizeNewlines(textIn);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     //if (d->maxLineCount > 0 && document()->blockCount() >= d->maxLineCount)
     //    return;
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     const bool atBottom = isScrollbarAtBottom();
     if (!d->cursor.atEnd())
         d->cursor.movePosition(QTextCursor::End);
     d->cursor.beginEditBlock();
     d->cursor.insertText(doNewlineEnforcement(text), format);
 
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     //if (d->maxLineCount > 0 && document()->blockCount() >= d->maxLineCount) {
     //    QTextCharFormat tmp;
     //    tmp.setFontWeight(QFont::Bold);
     //    d->cursor.insertText(doNewlineEnforcement(tr("Additional output omitted") + QLatin1Char('\n')), tmp);
     //}
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
 
     d->cursor.endEditBlock();
     if (atBottom)
@@ -394,11 +394,12 @@ void OutputWindow::scrollToBottom()
 
 void OutputWindow::grayOutOldContent()
 {
-    // OPENMV-DIFF //
-    if(document()->isEmpty()) return;
+    //OPENMV-DIFF//
+    if(document()->isEmpty())
+        return;
     d->enforceNewline = true;
     const bool atBottom = isScrollbarAtBottom();
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     if (!d->cursor.atEnd())
         d->cursor.movePosition(QTextCursor::End);
     QTextCharFormat endFormat = d->cursor.charFormat();
@@ -418,10 +419,10 @@ void OutputWindow::grayOutOldContent()
     d->cursor.movePosition(QTextCursor::End);
     d->cursor.setCharFormat(endFormat);
     d->cursor.insertBlock(QTextBlockFormat());
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     if (atBottom)
         scrollToBottom();
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
 }
 
 void OutputWindow::enableUndoRedo()

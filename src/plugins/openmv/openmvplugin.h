@@ -73,13 +73,15 @@ public:
 public slots: // private
 
     void connectClicked();
-    void disconnectClicked();
+    void disconnectClicked(bool reset = false);
     void startClicked();
     void stopClicked();
+    void resetClicked();
 
     void processEvents();
     void errorFilter(const QByteArray &data);
 
+    void saveScript();
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
@@ -90,15 +92,17 @@ private:
     QString getSerialPortPath();
     void setSerialPortPath();
 
-    Core::Command *m_connectCommand;
-    Core::Command *m_disconnectCommand;
-    Core::Command *m_startCommand;
-    Core::Command *m_stopCommand;
-
+    Core::Command *m_saveCommand;
+    Core::Command *m_resetCommand;
     Core::Command *m_docsCommand;
     Core::Command *m_forumsCommand;
     Core::Command *m_pinoutCommand;
     Core::Command *m_aboutCommand;
+
+    Core::Command *m_connectCommand;
+    Core::Command *m_disconnectCommand;
+    Core::Command *m_startCommand;
+    Core::Command *m_stopCommand;
 
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;

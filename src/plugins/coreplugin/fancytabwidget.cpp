@@ -413,8 +413,10 @@ public:
         if (!creatorTheme()->flag(Theme::DrawToolBarHighlights)) {
             QPainter p(this);
             p.setPen(StyleHelper::borderColor());
-            // OPENMV-DIFF // const QRectF innerRect = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-            // OPENMV-DIFF // p.drawLine(innerRect.bottomLeft(), innerRect.bottomRight());
+            //OPENMV-DIFF//
+            //const QRectF innerRect = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
+            //p.drawLine(innerRect.bottomLeft(), innerRect.bottomRight());
+            //OPENMV-DIFF//
         }
     }
 
@@ -430,9 +432,9 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     : QWidget(parent)
 {
     m_tabBar = new FancyTabBar(this);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     m_tabBar->hide();
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
 
     m_selectionWidget = new QWidget(this);
     QVBoxLayout *selectionLayout = new QVBoxLayout;
@@ -444,7 +446,9 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     layout->setMargin(0);
     layout->setSpacing(0);
     auto fancyButton = new FancyColorButton(this);
-    // OPENMV-DIFF // connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
+    //OPENMV-DIFF//
+    //connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
+    //OPENMV-DIFF//
     layout->addWidget(fancyButton);
     selectionLayout->addWidget(bar);
 
@@ -459,7 +463,9 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     QVBoxLayout *cornerWidgetLayout = new QVBoxLayout;
     cornerWidgetLayout->setSpacing(0);
     cornerWidgetLayout->setMargin(0);
-    // OPENMV-DIFF // cornerWidgetLayout->addStretch();
+    //OPENMV-DIFF//
+    //cornerWidgetLayout->addStretch();
+    //OPENMV-DIFF//
     m_cornerWidgetContainer->setLayout(cornerWidgetLayout);
 
     selectionLayout->addWidget(m_cornerWidgetContainer, 0);
@@ -471,14 +477,16 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(0);
     vlayout->setSpacing(0);
-    // OPENMV-DIFF // vlayout->addLayout(m_modesStack);
+    //OPENMV-DIFF//
+    //vlayout->addLayout(m_modesStack);
+    //OPENMV-DIFF//
     vlayout->addWidget(m_statusBar);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(1);
     mainLayout->addWidget(m_selectionWidget);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     m_hsplitter = new MiniSplitter;
     m_vsplitter = new MiniSplitter(Qt::Vertical);
     QWidget *tempWidget = new QWidget;
@@ -488,11 +496,33 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     m_hsplitter->setStretchFactor(0, 1);
     m_hsplitter->setStretchFactor(1, 0);
     vlayout->insertWidget(0, m_hsplitter);
-    // OPENMV-DIFF //
+    //OPENMV-DIFF//
     mainLayout->addLayout(vlayout);
     setLayout(mainLayout);
 
     connect(m_tabBar, &FancyTabBar::currentChanged, this, &FancyTabWidget::showWidget);
+    //OPENMV-DIFF//
+    setStyleSheet(QStringLiteral("QAbstractScrollArea::corner{background-color:#404244;}"
+    "QScrollBar:vertical{margin-top:17px;margin-right:0px;margin-bottom:17px;margin-left:0px;background-color:#404244;}"
+    "QScrollBar::sub-line:vertical{subcontrol-origin:margin;subcontrol-position:top;height:17px;background-color:#404244;}"
+    "QScrollBar::add-line:vertical{subcontrol-origin:margin;subcontrol-position:bottom;height:17px;background-color:#404244;}"
+    "QScrollBar::up-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowup.png);}"
+    "QScrollBar::down-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowdown.png);}"
+    "QScrollBar::sub-page:vertical{margin-left:1px;margin-right:1px;background-color:#2E2E2E;}"
+    "QScrollBar::add-page:vertical{margin-left:1px;margin-right:1px;background-color:#2E2E2E;}"
+    "QScrollBar::handle:vertical{margin-left:1px;margin-right:1px;min-height:20px;background-color:#404244;}"
+    "QScrollBar:horizontal{margin-top:0px;margin-right:17px;margin-bottom:0px;margin-left:17px;background-color:#404244;}"
+    "QScrollBar::sub-line:horizontal{subcontrol-origin:margin;subcontrol-position:left;width:17px;background-color:#404244;}"
+    "QScrollBar::add-line:horizontal{subcontrol-origin:margin;subcontrol-position:right;width:17px;background-color:#404244;}"
+    "QScrollBar::left-arrow:horizontal{margin-top:1px;margin-bottom:1px;border-image:url(:/core/images/scroll-arrowleft.png);}"
+    "QScrollBar::right-arrow:horizontal{margin-top:1px;margin-bottom:1px;border-image:url(:/core/images/scroll-arrowright.png);}"
+    "QScrollBar::sub-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#2E2E2E;}"
+    "QScrollBar::add-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#2E2E2E;}"
+    "QScrollBar::handle:horizontal{margin-top:1px;margin-bottom:1px;min-width:20px;background-color:#404244;}"
+    "QScrollBar::up-arrow:hover,QScrollBar::right-arrow:hover,QScrollBar::down-arrow:hover,QScrollBar::left-arrow:hover,QScrollBar::handle:hover{background-color:#595b5d;}"
+    "QScrollBar::up-arrow:pressed,QScrollBar::right-arrow:pressed,QScrollBar::down-arrow:pressed,QScrollBar::left-arrow:pressed,QScrollBar::handle:pressed{background-color:#262829;}"
+    ));
+    //OPENMV-DIFF//
 }
 
 void FancyTabWidget::setSelectionWidgetVisible(bool visible)
