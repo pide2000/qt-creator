@@ -402,7 +402,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_pathButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
     connect(m_pathButton, &QToolButton::clicked, this, [this] {
-        setSerialPortPath();
+        setSerialPortPath(true);
     });
 
     m_versionLabel = new QLabel(tr("Firmware Version:"));
@@ -1671,7 +1671,7 @@ QString OpenMVPlugin::getSerialPortPath()
     return path;
 }
 
-void OpenMVPlugin::setSerialPortPath()
+void OpenMVPlugin::setSerialPortPath(bool dialog)
 {
     QStringList drives;
 
@@ -1702,6 +1702,13 @@ void OpenMVPlugin::setSerialPortPath()
     {
         path = drives.first();
         settings->setValue(m_portName, path);
+
+        if(dialog)
+        {
+            QMessageBox::information(Core::ICore::dialogParent(),
+                tr("Select Drive"),
+                tr("\"%L1\" is the best drive for your OpenMV Cam").arg(path));
+        }
     }
     else
     {
@@ -1727,6 +1734,7 @@ void OpenMVPlugin::setSerialPortPath()
 
     Core::IEditor *editor = Core::EditorManager::currentEditor();
     m_saveCommand->action()->setEnabled((!path.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+
     m_frameBuffer->enableSaveTemplate(!path.isEmpty());
     m_frameBuffer->enableSaveDescriptor(!path.isEmpty());
 }

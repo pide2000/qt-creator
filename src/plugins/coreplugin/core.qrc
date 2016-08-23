@@ -79,13 +79,9 @@
         <file>images/arrowup@2x.png</file>
         <!-- OPENMV-DIFF -->
         <file>images/scroll-arrowup.png</file>
-        <file>images/scroll-arrowup@2x.png</file>
         <file>images/scroll-arrowright.png</file>
-        <file>images/scroll-arrowright@2x.png</file>
         <file>images/scroll-arrowdown.png</file>
-        <file>images/scroll-arrowdown@2x.png</file>
         <file>images/scroll-arrowleft.png</file>
-        <file>images/scroll-arrowleft@2x.png</file>
         <!-- OPENMV-DIFF -->
         <file>images/category_locator.png</file>
         <file>images/filtericon.png</file>

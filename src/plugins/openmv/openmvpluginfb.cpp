@@ -5,8 +5,8 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameStyle(QFrame::NoFrame);
-    setMinimumWidth(320);
-    setMinimumHeight(240);
+    setMinimumWidth(160);
+    setMinimumHeight(120);
     setBackgroundBrush(QColor(30, 30, 39));
     setScene(new QGraphicsScene(this));
 

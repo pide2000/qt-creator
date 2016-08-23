@@ -508,20 +508,20 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     "QScrollBar::add-line:vertical{subcontrol-origin:margin;subcontrol-position:bottom;height:17px;background-color:#404244;}"
     "QScrollBar::up-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowup.png);}"
     "QScrollBar::down-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowdown.png);}"
-    "QScrollBar::sub-page:vertical{margin-left:1px;margin-right:1px;background-color:#2E2E2E;}"
-    "QScrollBar::add-page:vertical{margin-left:1px;margin-right:1px;background-color:#2E2E2E;}"
-    "QScrollBar::handle:vertical{margin-left:1px;margin-right:1px;min-height:20px;background-color:#404244;}"
+    "QScrollBar::sub-page:vertical{margin-left:1px;margin-right:1px;background-color:#404244;}"
+    "QScrollBar::add-page:vertical{margin-left:1px;margin-right:1px;background-color:#404244;}"
+    "QScrollBar::handle:vertical{margin-left:1px;margin-right:1px;min-height:20px;background-color:#2E2E2E;}"
     "QScrollBar:horizontal{margin-top:0px;margin-right:17px;margin-bottom:0px;margin-left:17px;background-color:#404244;}"
     "QScrollBar::sub-line:horizontal{subcontrol-origin:margin;subcontrol-position:left;width:17px;background-color:#404244;}"
     "QScrollBar::add-line:horizontal{subcontrol-origin:margin;subcontrol-position:right;width:17px;background-color:#404244;}"
     "QScrollBar::left-arrow:horizontal{margin-top:1px;margin-bottom:1px;border-image:url(:/core/images/scroll-arrowleft.png);}"
     "QScrollBar::right-arrow:horizontal{margin-top:1px;margin-bottom:1px;border-image:url(:/core/images/scroll-arrowright.png);}"
-    "QScrollBar::sub-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#2E2E2E;}"
-    "QScrollBar::add-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#2E2E2E;}"
-    "QScrollBar::handle:horizontal{margin-top:1px;margin-bottom:1px;min-width:20px;background-color:#404244;}"
+    "QScrollBar::sub-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#404244;}"
+    "QScrollBar::add-page:horizontal{margin-top:1px;margin-bottom:1px;background-color:#404244;}"
+    "QScrollBar::handle:horizontal{margin-top:1px;margin-bottom:1px;min-width:20px;background-color:#2E2E2E;}"
     "QScrollBar::up-arrow:hover,QScrollBar::right-arrow:hover,QScrollBar::down-arrow:hover,QScrollBar::left-arrow:hover,QScrollBar::handle:hover{background-color:#595b5d;}"
     "QScrollBar::up-arrow:pressed,QScrollBar::right-arrow:pressed,QScrollBar::down-arrow:pressed,QScrollBar::left-arrow:pressed,QScrollBar::handle:pressed{background-color:#262829;}"
-    ));
+    "QPlainTextEdit{background-color:#1E1E27}"));
     //OPENMV-DIFF//
 }
 

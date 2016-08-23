@@ -90,7 +90,7 @@ private:
 
     QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
     QString getSerialPortPath();
-    void setSerialPortPath();
+    void setSerialPortPath(bool dialog = false);
 
     Core::Command *m_saveCommand;
     Core::Command *m_resetCommand;

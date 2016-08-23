@@ -56,6 +56,8 @@ MessageOutputWindow::MessageOutputWindow()
     m_widget->setPalette(p);
     m_widget->setMaxLineCount(100000);
     m_widget->setWordWrapEnabled(false);
+    m_widget->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_widget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     //OPENMV-DIFF//
 }
 
