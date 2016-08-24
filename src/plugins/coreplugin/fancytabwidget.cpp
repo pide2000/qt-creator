@@ -521,7 +521,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     "QScrollBar::handle:horizontal{margin-top:1px;margin-bottom:1px;min-width:20px;background-color:#2E2E2E;}"
     "QScrollBar::up-arrow:hover,QScrollBar::right-arrow:hover,QScrollBar::down-arrow:hover,QScrollBar::left-arrow:hover,QScrollBar::handle:hover{background-color:#595b5d;}"
     "QScrollBar::up-arrow:pressed,QScrollBar::right-arrow:pressed,QScrollBar::down-arrow:pressed,QScrollBar::left-arrow:pressed,QScrollBar::handle:pressed{background-color:#262829;}"
-    "QPlainTextEdit{background-color:#1E1E27}"));
+    "QPlainTextEdit{background-color:#1E1E27;}"));
     //OPENMV-DIFF//
 }
 

@@ -35,8 +35,13 @@
   <style name="ParenthesesMismatch" background="#404040"/>
   <style name="Preprocessor" foreground="#409090"/>
   <style name="RemovedLine" foreground="#ff0000"/>
-  <style name="SearchResult" foreground="#000000" background="#ffef0b"/>
-  <style name="SearchScope" foreground="#000000" background="#f8fafc"/>
+  <!--OPENMV-DIFF-->
+  <!--<style name="SearchResult" foreground="#000000" background="#ffef0b"/>-->
+  <!--<style name="SearchScope" foreground="#000000" background="#f8fafc"/>-->
+  <!--OPENMV-DIFF-->
+  <style name="SearchResult" foreground="#4e4e57" background="#5e5e67"/>
+  <style name="SearchScope" foreground="#2e2e37" background="#3e3e47"/>
+  <!--OPENMV-DIFF-->
   <style name="Selection" foreground="#ffffff" background="#4e4e8f"/>
   <style name="Static" foreground="#cb6ecb"/>
   <style name="String" foreground="#ffcd8b" background="#404040"/>

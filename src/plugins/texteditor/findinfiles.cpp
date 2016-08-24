@@ -174,7 +174,11 @@ void FindInFiles::writeSettings(QSettings *settings)
 void FindInFiles::readSettings(QSettings *settings)
 {
     settings->beginGroup(QLatin1String("FindInFiles"));
-    readCommonSettings(settings, QLatin1String("*.cpp,*.h"));
+    //OPENMV-DIFF//
+    //readCommonSettings(settings, QLatin1String("*.cpp,*.h"));
+    //OPENMV-DIFF//
+    readCommonSettings(settings, QLatin1String("*.py"));
+    //OPENMV-DIFF//
     settings->endGroup();
 }
 

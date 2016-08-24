@@ -309,6 +309,10 @@ FindToolBar::FindToolBar(FindPlugin *plugin, CurrentDocumentFind *currentDocumen
     m_findStepTimer.setSingleShot(true);
     connect(&m_findIncrementalTimer, &QTimer::timeout, this, &FindToolBar::invokeFindIncremental);
     connect(&m_findStepTimer, &QTimer::timeout, this, &FindToolBar::invokeFindStep);
+    //OPENMV-DIFF//
+    setStyleSheet(QStringLiteral("QToolButton,QLabel{color:white;}"));
+    m_ui.close->setToolTip(tr("Close"));
+    //OPENMV-DIFF//
 }
 
 FindToolBar::~FindToolBar()

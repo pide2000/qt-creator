@@ -647,10 +647,6 @@ TextEditorWidget::TextEditorWidget(QWidget *parent)
 void TextEditorWidget::setTextDocument(const QSharedPointer<TextDocument> &doc)
 {
     d->ctor(doc);
-    //OPENMV-DIFF//
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    //OPENMV-DIFF//
 }
 
 void TextEditorWidgetPrivate::setupScrollBar()
