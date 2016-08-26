@@ -77,7 +77,6 @@ public slots: // private
     void startClicked();
     void stopClicked();
     void resetClicked();
-
     void processEvents();
     void errorFilter(const QByteArray &data);
 
@@ -85,6 +84,11 @@ public slots: // private
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
+
+signals:
+
+    void workingDone();
+    void disconnectDone();
 
 private:
 

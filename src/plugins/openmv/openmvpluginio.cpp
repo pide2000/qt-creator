@@ -181,7 +181,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         int h = deserializeLong(m_receivedBytes);
                         int bpp = deserializeLong(m_receivedBytes);
 
-                        if(w && h && bpp)
+                        if(w && h)
                         {
                             int size = IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (((w+7)/8) * h));
 

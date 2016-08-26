@@ -35,7 +35,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage)
 
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
-    connect(Core::ICore::instance(), &Core::ICore::coreOpened, splashScreen, &QSplashScreen::close);
+    connect(Core::ICore::instance(), &Core::ICore::coreOpened, splashScreen, &QSplashScreen::deleteLater);
     splashScreen->show();
 
     return true;
@@ -167,7 +167,7 @@ void OpenMVPlugin::extensionsInitialized()
         tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
     m_disconnectCommand->action()->setEnabled(false);
     m_disconnectCommand->action()->setVisible(false);
-    connect(m_disconnectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::disconnectClicked);
+    connect(m_disconnectCommand->action(), &QAction::triggered, this, [this] {disconnectClicked();});
 
     m_startCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
@@ -504,19 +504,40 @@ void OpenMVPlugin::extensionsInitialized()
 
 ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
 {
-    while(m_working)
+    if(!m_connected)
     {
-        QApplication::processEvents();
+        if(!m_working)
+        {
+            return ExtensionSystem::IPlugin::SynchronousShutdown;
+        }
+        else
+        {
+            connect(this, &OpenMVPlugin::workingDone, this, [this] {disconnectClicked();});
+            connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
+            return ExtensionSystem::IPlugin::AsynchronousShutdown;
+        }
     }
-
-    disconnectClicked();
-
-    return ExtensionSystem::IPlugin::SynchronousShutdown;
+    else
+    {
+        if(!m_working)
+        {
+            connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
+            QTimer::singleShot(0, this, [this] {disconnectClicked();});
+            return ExtensionSystem::IPlugin::AsynchronousShutdown;
+        }
+        else
+        {
+            connect(this, &OpenMVPlugin::workingDone, this, [this] {disconnectClicked();});
+            connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
+            return ExtensionSystem::IPlugin::AsynchronousShutdown;
+        }
+    }
 }
 
 #define CONNECT_END() \
 do { \
     m_working = false; \
+    QTimer::singleShot(0, this, OpenMVPlugin::workingDone); \
     return; \
 } while(0)
 
@@ -534,6 +555,7 @@ do { \
     m_iodevice->close(); \
     loop.exec(); \
     m_working = false; \
+    QTimer::singleShot(0, this, OpenMVPlugin::workingDone); \
     return; \
 } while(0)
 
@@ -611,7 +633,6 @@ void OpenMVPlugin::connectClicked()
                     if(ok)
                     {
                         forceFirmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
-
                         forceFlashFSErase = QMessageBox::question(Core::ICore::dialogParent(),
                             tr("Connect"),
                             tr("Erase internal file system?"),
@@ -650,6 +671,15 @@ void OpenMVPlugin::connectClicked()
                                 if(!stringList.isEmpty())
                                 {
                                     break;
+                                }
+
+                                // Wait 100 ms ////////////////////////////////
+                                {
+                                    QEventLoop eventLoop;
+
+                                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+
+                                    eventLoop.exec();
                                 }
                             }
 
@@ -710,6 +740,9 @@ void OpenMVPlugin::connectClicked()
 
             forever
             {
+                // Always set this each loop...
+                errorMessage2 = tr("Application force quit!");
+
                 QEventLoop loop;
 
                 connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
@@ -724,6 +757,15 @@ void OpenMVPlugin::connectClicked()
                 }
 
                 dialog.show();
+
+                // Wait 100 ms ////////////////////////////////////////////////
+                {
+                    QEventLoop eventLoop;
+
+                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+
+                    eventLoop.exec();
+                }
             }
 
             disconnect(conn);
@@ -921,6 +963,15 @@ void OpenMVPlugin::connectClicked()
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
                             dialog.show();
 
+                            // Wait 100 ms ////////////////////////////////////
+                            {
+                                QEventLoop eventLoop;
+
+                                QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+
+                                eventLoop.exec();
+                            }
+
                             QString errorMessage2 = QString();
                             QString *errorMessage2Ptr = &errorMessage2;
 
@@ -931,6 +982,9 @@ void OpenMVPlugin::connectClicked()
 
                             forever
                             {
+                                // Always set this each loop...
+                                errorMessage2 = tr("Application force quit!");
+
                                 QStringList stringList2;
 
                                 foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
@@ -967,6 +1021,15 @@ void OpenMVPlugin::connectClicked()
                                 if(errorMessage2.isEmpty() || dialog.wasCanceled())
                                 {
                                     break;
+                                }
+
+                                // Wait 100 ms ////////////////////////////////
+                                {
+                                    QEventLoop eventLoop;
+
+                                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+
+                                    eventLoop.exec();
                                 }
                             }
 
@@ -1161,75 +1224,80 @@ void OpenMVPlugin::connectClicked()
 
 void OpenMVPlugin::disconnectClicked(bool reset)
 {
-    if(!m_working)
+    if(m_connected)
     {
-        m_working = true;
-
-        while(m_iodevice->frameSizeDumpQueued() && m_iodevice->getScriptRunningQueued() && m_iodevice->getTxBufferQueued())
+        if(!m_working)
         {
-            QApplication::processEvents();
-        }
+            m_working = true;
 
-        // Closing ////////////////////////////////////////////////////////////
-        {
-            QEventLoop loop;
-
-            connect(m_iodevice, &OpenMVPluginIO::closeResponse,
-                    &loop, &QEventLoop::quit);
-
-            m_iodevice->scriptStop();
-
-            if(reset)
+            while(m_iodevice->frameSizeDumpQueued() && m_iodevice->getScriptRunningQueued() && m_iodevice->getTxBufferQueued())
             {
-                m_iodevice->sysReset();
+                QApplication::processEvents();
             }
 
-            m_iodevice->close();
+            // Closing ////////////////////////////////////////////////////////
+            {
+                QEventLoop loop;
 
-            loop.exec();
+                connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                        &loop, &QEventLoop::quit);
+
+                m_iodevice->scriptStop();
+
+                if(reset)
+                {
+                    m_iodevice->sysReset();
+                }
+
+                m_iodevice->close();
+
+                loop.exec();
+            }
+
+            ///////////////////////////////////////////////////////////////////
+
+            m_connected = false;
+            m_portName = QString();
+            m_timer.invalidate();
+            m_queue.clear();
+            m_errorFilterString = QString();
+
+            m_saveCommand->action()->setEnabled(false);
+            m_resetCommand->action()->setEnabled(false);
+            m_connectCommand->action()->setEnabled(true);
+            m_connectCommand->action()->setVisible(true);
+            m_disconnectCommand->action()->setVisible(false);
+            m_disconnectCommand->action()->setEnabled(false);
+            m_startCommand->action()->setEnabled(false);
+            m_startCommand->action()->setVisible(true);
+            m_stopCommand->action()->setEnabled(false);
+            m_stopCommand->action()->setVisible(false);
+
+            m_portLabel->setDisabled(true);
+            m_portLabel->setText(tr("Serial Port:"));
+            m_pathButton->setDisabled(true);
+            m_pathButton->setText(tr("Drive:"));
+            m_versionLabel->setDisabled(true);
+            m_versionLabel->setText(tr("Firmware Version:"));
+            m_fpsLabel->setDisabled(true);
+            m_fpsLabel->setText(tr("FPS:"));
+
+            m_frameBuffer->enableSaveTemplate(false);
+            m_frameBuffer->enableSaveDescriptor(false);
+
+            ///////////////////////////////////////////////////////////////////
+
+            m_working = false;
         }
-
-        ///////////////////////////////////////////////////////////////////////
-
-        m_connected = false;
-        m_portName = QString();
-        m_timer.invalidate();
-        m_queue.clear();
-        m_errorFilterString = QString();
-
-        m_saveCommand->action()->setEnabled(false);
-        m_resetCommand->action()->setEnabled(false);
-        m_connectCommand->action()->setEnabled(true);
-        m_connectCommand->action()->setVisible(true);
-        m_disconnectCommand->action()->setVisible(false);
-        m_disconnectCommand->action()->setEnabled(false);
-        m_startCommand->action()->setEnabled(false);
-        m_startCommand->action()->setVisible(true);
-        m_stopCommand->action()->setEnabled(false);
-        m_stopCommand->action()->setVisible(false);
-
-        m_portLabel->setDisabled(true);
-        m_portLabel->setText(tr("Serial Port:"));
-        m_pathButton->setDisabled(true);
-        m_pathButton->setText(tr("Drive:"));
-        m_versionLabel->setDisabled(true);
-        m_versionLabel->setText(tr("Firmware Version:"));
-        m_fpsLabel->setDisabled(true);
-        m_fpsLabel->setText(tr("FPS:"));
-
-        m_frameBuffer->enableSaveTemplate(false);
-        m_frameBuffer->enableSaveDescriptor(false);
-
-        ///////////////////////////////////////////////////////////////////////
-
-        m_working = false;
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                reset ? tr("Reset") : tr("Disconnect"),
+                tr("Busy... please wait..."));
+        }
     }
-    else
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-            tr("Disconnect"),
-            tr("Busy... please wait..."));
-    }
+
+    QTimer::singleShot(0, this, &OpenMVPlugin::workingDone);
 }
 
 void OpenMVPlugin::startClicked()
@@ -1285,6 +1353,8 @@ void OpenMVPlugin::startClicked()
         ///////////////////////////////////////////////////////////////////////
 
         m_working = false;
+
+        QTimer::singleShot(0, this, &OpenMVPlugin::workingDone);
     }
     else
     {
@@ -1340,6 +1410,8 @@ void OpenMVPlugin::stopClicked()
         ///////////////////////////////////////////////////////////////////////
 
         m_working = false;
+
+        QTimer::singleShot(0, this, &OpenMVPlugin::workingDone);
     }
     else
     {
@@ -1687,7 +1759,7 @@ void OpenMVPlugin::setSerialPortPath(bool dialog)
         }
     }
 
-    QString path = QString();
+    QString path;
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
