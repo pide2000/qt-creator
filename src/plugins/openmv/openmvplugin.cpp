@@ -537,7 +537,7 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
 #define CONNECT_END() \
 do { \
     m_working = false; \
-    QTimer::singleShot(0, this, OpenMVPlugin::workingDone); \
+    QTimer::singleShot(0, this, &OpenMVPlugin::workingDone); \
     return; \
 } while(0)
 
@@ -555,7 +555,7 @@ do { \
     m_iodevice->close(); \
     loop.exec(); \
     m_working = false; \
-    QTimer::singleShot(0, this, OpenMVPlugin::workingDone); \
+    QTimer::singleShot(0, this, &OpenMVPlugin::workingDone); \
     return; \
 } while(0)
 
