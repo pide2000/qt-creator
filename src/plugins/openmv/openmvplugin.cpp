@@ -1297,7 +1297,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
         }
     }
 
-    QTimer::singleShot(0, this, &OpenMVPlugin::workingDone);
+    QTimer::singleShot(0, this, &OpenMVPlugin::disconnectDone);
 }
 
 void OpenMVPlugin::startClicked()
