@@ -6,6 +6,9 @@
 
 #include "openmvpluginserialport.h"
 
+#define USBDBG_COMMAND_SPACING  1 // in ms
+#define USBDBG_COMMAND_TIMEOUT  100 // in ms
+
 #define ATTR_CONTRAST       0
 #define ATTR_BRIGHTNESS     1
 #define ATTR_SATURATION     2
@@ -13,7 +16,6 @@
 
 #define FLASH_SECTOR_START      4
 #define FLASH_SECTOR_END        11
-
 #define FLASH_SECTOR_ALL_START  1
 #define FLASH_SECTOR_ALL_END    11
 
@@ -73,6 +75,8 @@ private:
 
     OpenMVPluginSerialPort *m_port;
     QTimer *m_timer;
+    QElapsedTimer m_spacer;
+    int m_processingResponse;
     QQueue<QByteArray> m_commandQueue;
     QQueue<int> m_expectedHeaderQueue;
     QQueue<int> m_expectedDataQueue;

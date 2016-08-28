@@ -10,6 +10,10 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_ioport = new OpenMVPluginSerialPort(this);
     m_iodevice = new OpenMVPluginIO(m_ioport, this);
 
+    m_frameSizeDumpTimer.start();
+    m_getScriptRunningTimer.start();
+    m_getTxBufferTimer.start();
+
     m_working = false;
     m_connected = false;
     m_running = false;
@@ -35,7 +39,10 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage)
 
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
-    connect(Core::ICore::instance(), &Core::ICore::coreOpened, splashScreen, &QSplashScreen::deleteLater);
+
+    connect(Core::ICore::instance(), &Core::ICore::coreOpened,
+            splashScreen, &QSplashScreen::deleteLater);
+
     splashScreen->show();
 
     return true;
@@ -105,7 +112,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_resetCommand = Core::ActionManager::registerAction(resetCommand, Core::Id("OpenMV.Reset"));
     toolsMenu->addAction(m_resetCommand);
     resetCommand->setEnabled(false);
-    connect(resetCommand, &QAction::triggered, this, &OpenMVPlugin::resetClicked);
+    connect(resetCommand, &QAction::triggered, this, [this] {disconnectClicked(true);});
 
     QAction *docsCommand = new QAction(
          tr("OpenMV Docs"), this);
@@ -368,7 +375,7 @@ void OpenMVPlugin::extensionsInitialized()
         {
             m_queue.push_back(m_timer.restart());
 
-            if(m_queue.size() > 10)
+            if(m_queue.size() > FPS_AVERAGE_BUFFER_DEPTH)
             {
                 m_queue.pop_front();
             }
@@ -1156,6 +1163,15 @@ void OpenMVPlugin::connectClicked()
                                 tr("Connect"),
                                 tr("Done with upgrading your OpenMV Cam firmware!\n\nPlease wait for your OpenMV Cam to reconnect to your computer before continuing."));
 
+                            // Wait 100 ms ////////////////////////////////////
+                            {
+                                QEventLoop eventLoop;
+
+                                QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+
+                                eventLoop.exec();
+                            }
+
                             RECONNECT_END();
                         }
                     }
@@ -1180,8 +1196,10 @@ void OpenMVPlugin::connectClicked()
         }
 
         m_iodevice->scriptStop();
-        m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
+
         m_iodevice->jpegEnable(m_jpgCompress->isChecked());
+        m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
+
         Core::MessageManager::grayOutOldContent();
 
         ///////////////////////////////////////////////////////////////////////
@@ -1237,12 +1255,12 @@ void OpenMVPlugin::disconnectClicked(bool reset)
 
             // Closing ////////////////////////////////////////////////////////
             {
+                m_iodevice->scriptStop();
+
                 QEventLoop loop;
 
                 connect(m_iodevice, &OpenMVPluginIO::closeResponse,
                         &loop, &QEventLoop::quit);
-
-                m_iodevice->scriptStop();
 
                 if(reset)
                 {
@@ -1333,9 +1351,6 @@ void OpenMVPlugin::startClicked()
             if(running2)
             {
                 m_iodevice->scriptStop();
-                m_iodevice->getScriptRunning();
-
-                loop.exec();
 
                 Core::MessageManager::grayOutOldContent();
             }
@@ -1397,9 +1412,6 @@ void OpenMVPlugin::stopClicked()
             if(running2)
             {
                 m_iodevice->scriptStop();
-                m_iodevice->getScriptRunning();
-
-                loop.exec();
 
                 Core::MessageManager::grayOutOldContent();
             }
@@ -1421,27 +1433,25 @@ void OpenMVPlugin::stopClicked()
     }
 }
 
-void OpenMVPlugin::resetClicked()
-{
-    disconnectClicked(true);
-}
-
 void OpenMVPlugin::processEvents()
 {
     if((!m_working) && m_connected)
     {
-        if((!m_disableFrameBuffer->isChecked()) && (!m_iodevice->frameSizeDumpQueued()))
+        if((!m_disableFrameBuffer->isChecked()) && (!m_iodevice->frameSizeDumpQueued()) && m_frameSizeDumpTimer.hasExpired(FRAME_SIZE_DUMP_SPACING))
         {
+            m_frameSizeDumpTimer.restart();
             m_iodevice->frameSizeDump();
         }
 
-        if(!m_iodevice->getScriptRunningQueued())
+        if((!m_iodevice->getScriptRunningQueued()) && m_getScriptRunningTimer.hasExpired(GET_SCRIPT_RUNNING_SPACING))
         {
+            m_getScriptRunningTimer.restart();
             m_iodevice->getScriptRunning();
         }
 
-        if(!m_iodevice->getTxBufferQueued())
+        if((!m_iodevice->getTxBufferQueued()) && m_getTxBufferTimer.hasExpired(GET_TX_BUFFER_SPACING))
         {
+            m_getTxBufferTimer.restart();
             m_iodevice->getTxBuffer();
         }
 
@@ -1454,7 +1464,6 @@ void OpenMVPlugin::processEvents()
 
 void OpenMVPlugin::errorFilter(const QByteArray &data)
 {
-    int errorFilterMaxSize = 1000;
     m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromLatin1(data)));
 
     QRegularExpressionMatch match;
@@ -1502,10 +1511,7 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
         m_errorFilterString = m_errorFilterString.mid(index + match.capturedLength(0));
     }
 
-    if(m_errorFilterString.size() > errorFilterMaxSize)
-    {
-        m_errorFilterString = m_errorFilterString.right(errorFilterMaxSize);
-    }
+    m_errorFilterString = m_errorFilterString.right(ERROR_FILTER_MAX_SIZE);
 }
 
 void OpenMVPlugin::saveScript()
@@ -1695,7 +1701,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
         else
         {
             QAction *action = new QAction(it.fileName(), parent);
-            QObject::connect(action, &QAction::triggered, this, [this, filePath]
+            connect(action, &QAction::triggered, this, [this, filePath]
             {
                 QFile file(filePath);
 

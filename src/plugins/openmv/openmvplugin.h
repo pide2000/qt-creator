@@ -55,6 +55,13 @@
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
 
+#define FRAME_SIZE_DUMP_SPACING     10 // in ms
+#define GET_SCRIPT_RUNNING_SPACING  100 // in ms
+#define GET_TX_BUFFER_SPACING       10 // in ms
+
+#define FPS_AVERAGE_BUFFER_DEPTH    10 // in samples
+#define ERROR_FILTER_MAX_SIZE       1000 // in chars
+
 namespace OpenMV {
 namespace Internal {
 
@@ -76,7 +83,6 @@ public slots: // private
     void disconnectClicked(bool reset = false);
     void startClicked();
     void stopClicked();
-    void resetClicked();
     void processEvents();
     void errorFilter(const QByteArray &data);
 
@@ -126,6 +132,10 @@ private:
 
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
+
+    QElapsedTimer m_frameSizeDumpTimer;
+    QElapsedTimer m_getScriptRunningTimer;
+    QElapsedTimer m_getTxBufferTimer;
 
     bool m_working;
     bool m_connected;

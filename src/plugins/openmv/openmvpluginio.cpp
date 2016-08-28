@@ -106,6 +106,8 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
     connect(m_timer, &QTimer::timeout,
             this, &OpenMVPluginIO::timeout);
 
+    m_spacer.start();
+    m_processingResponse = int();
     m_commandQueue = QQueue<QByteArray>();
     m_expectedHeaderQueue = QQueue<int>();
     m_expectedDataQueue = QQueue<int>();
@@ -124,13 +126,15 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
 
 void OpenMVPluginIO::processEvents()
 {
-    if((!m_commandQueue.isEmpty()) && (!m_timer->isActive()))
+    if(m_spacer.hasExpired(USBDBG_COMMAND_SPACING) && (!m_processingResponse) && (!m_commandQueue.isEmpty()))
     {
+        m_spacer.restart();
         m_port->write(m_commandQueue.dequeue());
 
         if(m_expectedHeaderQueue.head())
         {
-            m_timer->start(1000);
+            m_timer->start(USBDBG_COMMAND_TIMEOUT);
+            m_processingResponse = m_expectedHeaderQueue.head();
         }
         else
         {
@@ -262,6 +266,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                 }
 
                 m_receivedBytes.clear();
+                m_processingResponse = int();
             }
         }
     }
@@ -319,28 +324,35 @@ void OpenMVPluginIO::timeout()
     m_frameSizeW = int();
     m_frameSizeH = int();
     m_frameSizeBPP = int();
+    m_processingResponse = int();
 }
 
 bool OpenMVPluginIO::frameSizeDumpQueued() const
 {
     return m_expectedHeaderQueue.contains(__USBDBG_FRAME_SIZE) ||
-           m_expectedHeaderQueue.contains(__USBDBG_FRAME_DUMP);
+           m_expectedHeaderQueue.contains(__USBDBG_FRAME_DUMP) ||
+           (m_processingResponse == __USBDBG_FRAME_SIZE) ||
+           (m_processingResponse == __USBDBG_FRAME_DUMP);
 }
 
 bool OpenMVPluginIO::getScriptRunningQueued() const
 {
-    return m_expectedHeaderQueue.contains(__USBDBG_SCRIPT_RUNNING);
+    return m_expectedHeaderQueue.contains(__USBDBG_SCRIPT_RUNNING) ||
+           (m_processingResponse == __USBDBG_SCRIPT_RUNNING);
 }
 
 bool OpenMVPluginIO::getAttributeQueued() const
 {
-    return m_expectedHeaderQueue.contains(__USBDBG_ATTR_READ);
+    return m_expectedHeaderQueue.contains(__USBDBG_ATTR_READ) ||
+           (m_processingResponse == __USBDBG_ATTR_READ);
 }
 
 bool OpenMVPluginIO::getTxBufferQueued() const
 {
     return m_expectedHeaderQueue.contains(__USBDBG_TX_BUF_LEN) ||
-           m_expectedHeaderQueue.contains(__USBDBG_TX_BUF);
+           m_expectedHeaderQueue.contains(__USBDBG_TX_BUF) ||
+           (m_processingResponse == __USBDBG_TX_BUF_LEN) ||
+           (m_processingResponse == __USBDBG_TX_BUF);
 }
 
 void OpenMVPluginIO::getFirmwareVersion()
