@@ -40,17 +40,17 @@ public slots:
     void scriptExec(const QByteArray &data);
     void scriptStop();
     void getScriptRunning();
-    void templateSave(long x, long y, long w, long h, const QByteArray &path);
-    void descriptorSave(short x, short y, short w, short h, const QByteArray &path);
-    void setAttribute(short attribute, short value);
-    void getAttribute(short attribute);
+    void templateSave(int x, int y, int w, int h, const QByteArray &path);
+    void descriptorSave(int x, int y, int w, int h, const QByteArray &path);
+    void setAttribute(int attribute, int value);
+    void getAttribute(int attribute);
     void sysReset();
     void fbEnable(bool enable);
     void jpegEnable(bool enabled);
     void getTxBuffer();
     void bootloaderStart();
     void bootloaderReset();
-    void flashErase(long sector);
+    void flashErase(int sector);
     void flashWrite(const QByteArray &data);
     void close();
 
@@ -62,7 +62,7 @@ public slots: // private
 
 signals:
 
-    void firmwareVersion(long major, long minor, long patch);
+    void firmwareVersion(int major, int minor, int patch);
     void archString(const QString &arch);
     void frameBufferData(const QPixmap &data);
     void scriptRunning(long);
@@ -81,9 +81,9 @@ private:
     QQueue<int> m_expectedHeaderQueue;
     QQueue<int> m_expectedDataQueue;
     QByteArray m_receivedBytes;
-    long m_frameSizeW;
-    long m_frameSizeH;
-    long m_frameSizeBPP;
+    int m_frameSizeW;
+    int m_frameSizeH;
+    int m_frameSizeBPP;
 };
 
 #endif // OPENMVPLUGINIO_H

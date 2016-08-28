@@ -201,7 +201,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_stopCommand->action()->setEnabled(false);
     m_stopCommand->action()->setVisible(false);
     connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
-    connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (long running) {
+    connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (int running) {
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
@@ -416,7 +416,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_versionLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_versionLabel);
 
-    m_fpsLabel = new QLabel(tr("FPS:"));
+    m_fpsLabel = new QLabel(tr("FPS:      "));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
     m_fpsLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_fpsLabel);
@@ -488,6 +488,10 @@ void OpenMVPlugin::extensionsInitialized()
     }
 
     ///////////////////////////////////////////////////////////////////////////
+
+    // http://stackoverflow.com/questions/26361145/qsslsocket-error-when-ssl-is-not-used
+
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.network.ssl.warning=false"));
 
     connect(Core::ICore::instance(), &Core::ICore::coreOpened, this, [this] {
         QNetworkAccessManager *manager = new QNetworkAccessManager(this);
@@ -796,18 +800,18 @@ void OpenMVPlugin::connectClicked()
 
         // Get Version ////////////////////////////////////////////////////////
 
-        long major2 = long();
-        long minor2 = long();
-        long patch2 = long();
+        int major2 = int();
+        int minor2 = int();
+        int patch2 = int();
 
         if(!forceBootloader)
         {
-            long *major2Ptr = &major2;
-            long *minor2Ptr = &minor2;
-            long *patch2Ptr = &patch2;
+            int *major2Ptr = &major2;
+            int *minor2Ptr = &minor2;
+            int *patch2Ptr = &patch2;
 
             QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
-                this, [this, major2Ptr, minor2Ptr, patch2Ptr] (long major, long minor, long patch) {
+                this, [this, major2Ptr, minor2Ptr, patch2Ptr] (int major, int minor, int patch) {
                 *major2Ptr = major;
                 *minor2Ptr = minor;
                 *patch2Ptr = patch;
@@ -1226,7 +1230,7 @@ void OpenMVPlugin::connectClicked()
         m_versionLabel->setEnabled(true);
         m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
         m_fpsLabel->setEnabled(true);
-        m_fpsLabel->setText(tr("FPS: 0"));
+        m_fpsLabel->setText(tr("FPS: 0    "));
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -1298,7 +1302,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_versionLabel->setDisabled(true);
             m_versionLabel->setText(tr("Firmware Version:"));
             m_fpsLabel->setDisabled(true);
-            m_fpsLabel->setText(tr("FPS:"));
+            m_fpsLabel->setText(tr("FPS:      "));
 
             m_frameBuffer->enableSaveTemplate(false);
             m_frameBuffer->enableSaveDescriptor(false);
@@ -1331,11 +1335,11 @@ void OpenMVPlugin::startClicked()
 
         // Stopping ///////////////////////////////////////////////////////////
         {
-            long running2 = long();
-            long *running2Ptr = &running2;
+            int running2 = int();
+            int *running2Ptr = &running2;
 
             QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::scriptRunning,
-                this, [this, running2Ptr] (long running) {
+                this, [this, running2Ptr] (int running) {
                 *running2Ptr = running;
             });
 
@@ -1392,11 +1396,11 @@ void OpenMVPlugin::stopClicked()
 
         // Stopping ///////////////////////////////////////////////////////////
         {
-            long running2 = long();
-            long *running2Ptr = &running2;
+            int running2 = int();
+            int *running2Ptr = &running2;
 
             QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::scriptRunning,
-                this, [this, running2Ptr] (long running) {
+                this, [this, running2Ptr] (int running) {
                 *running2Ptr = running;
             });
 
@@ -1457,7 +1461,7 @@ void OpenMVPlugin::processEvents()
 
         if(m_timer.isValid() && m_timer.hasExpired(2000))
         {
-            m_fpsLabel->setText(tr("FPS: 0"));
+            m_fpsLabel->setText(tr("FPS: 0    "));
         }
     }
 }
@@ -1785,7 +1789,7 @@ void OpenMVPlugin::setSerialPortPath(bool dialog)
         {
             QMessageBox::information(Core::ICore::dialogParent(),
                 tr("Select Drive"),
-                tr("\"%L1\" is the best drive for your OpenMV Cam").arg(path));
+                tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive").arg(path));
         }
     }
     else
