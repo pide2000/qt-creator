@@ -29,6 +29,7 @@ signals:
     void openResult(const QString &errorMessage);
     void readAll(const QByteArray &data);
     void shutdown(const QString &errorMessage);
+    void packetSent();
 
 private:
 
@@ -60,6 +61,7 @@ signals:
     void readAll(const QByteArray &data);
 
     void shutdown(const QString &errorMessage);
+    void packetSent();
 };
 
 #endif // OPENMVPLUGINSERIALPORT_H

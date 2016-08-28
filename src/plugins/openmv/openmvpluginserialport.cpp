@@ -73,6 +73,10 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data)
             m_port = Q_NULLPTR;
         }
     }
+
+    // Used to sync with gui thread bootloader...
+
+    emit packetSent();
 }
 
 void OpenMVPluginSerialPort_private::processEvents()
@@ -89,6 +93,7 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 {
     QThread *thread = new QThread;
     OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
+
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,
@@ -105,6 +110,9 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 
     connect(port, &OpenMVPluginSerialPort_private::shutdown,
             this, &OpenMVPluginSerialPort::shutdown);
+
+    connect(port, &OpenMVPluginSerialPort_private::packetSent,
+            this, &OpenMVPluginSerialPort::packetSent);
 
     connect(this, &OpenMVPluginSerialPort::destroyed,
             port, &OpenMVPluginSerialPort_private::deleteLater);

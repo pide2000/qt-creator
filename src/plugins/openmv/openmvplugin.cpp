@@ -644,6 +644,7 @@ void OpenMVPlugin::connectClicked()
                     if(ok)
                     {
                         forceFirmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+
                         forceFlashFSErase = QMessageBox::question(Core::ICore::dialogParent(),
                             tr("Connect"),
                             tr("Erase internal file system?"),
@@ -684,11 +685,11 @@ void OpenMVPlugin::connectClicked()
                                     break;
                                 }
 
-                                // Wait 100 ms ////////////////////////////////
+                                // Wait 10 ms /////////////////////////////////
                                 {
                                     QEventLoop eventLoop;
 
-                                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+                                    QTimer::singleShot(10, &eventLoop, &QEventLoop::quit);
 
                                     eventLoop.exec();
                                 }
@@ -754,13 +755,16 @@ void OpenMVPlugin::connectClicked()
                 // Always set this each loop...
                 errorMessage2 = tr("Application force quit!");
 
-                QEventLoop loop;
+                // Open Port //////////////////////////////////////////////////
+                {
+                    QEventLoop loop;
 
-                connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
+                    connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
 
-                emit m_ioport->open(selectedPort);
+                    emit m_ioport->open(selectedPort);
 
-                loop.exec();
+                    loop.exec();
+                }
 
                 if(errorMessage2.isEmpty() || dialog.wasCanceled() || (Utils::HostOsInfo::isLinuxHost() && errorMessage2.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive)))
                 {
@@ -769,11 +773,11 @@ void OpenMVPlugin::connectClicked()
 
                 dialog.show();
 
-                // Wait 100 ms ////////////////////////////////////////////////
+                // Wait 10 ms /////////////////////////////////////////////////
                 {
                     QEventLoop eventLoop;
 
-                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+                    QTimer::singleShot(10, &eventLoop, &QEventLoop::quit);
 
                     eventLoop.exec();
                 }
@@ -878,13 +882,16 @@ void OpenMVPlugin::connectClicked()
                             *arch2Ptr = arch;
                         });
 
-                        QEventLoop loop;
+                        // Get Arch ///////////////////////////////////////////
+                        {
+                            QEventLoop loop;
 
-                        connect(m_iodevice, &OpenMVPluginIO::archString, &loop, &QEventLoop::quit);
+                            connect(m_iodevice, &OpenMVPluginIO::archString, &loop, &QEventLoop::quit);
 
-                        m_iodevice->getArchString();
+                            m_iodevice->getArchString();
 
-                        loop.exec();
+                            loop.exec();
+                        }
 
                         disconnect(conn);
 
@@ -1034,11 +1041,11 @@ void OpenMVPlugin::connectClicked()
                                     break;
                                 }
 
-                                // Wait 100 ms ////////////////////////////////
+                                // Wait 10 ms /////////////////////////////////
                                 {
                                     QEventLoop eventLoop;
 
-                                    QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+                                    QTimer::singleShot(10, &eventLoop, &QEventLoop::quit);
 
                                     eventLoop.exec();
                                 }
@@ -1098,7 +1105,7 @@ void OpenMVPlugin::connectClicked()
                             {
                                 QEventLoop loop;
 
-                                QTimer::singleShot(1000, &loop, &QEventLoop::quit);
+                                QTimer::singleShot(1500, &loop, &QEventLoop::quit);
 
                                 m_iodevice->flashErase(i);
 
@@ -1130,7 +1137,7 @@ void OpenMVPlugin::connectClicked()
                             {
                                 QEventLoop loop;
 
-                                QTimer::singleShot(1, &loop, &QEventLoop::quit);
+                                QTimer::singleShot(5, &loop, &QEventLoop::quit);
 
                                 m_iodevice->flashWrite(dataChunks.at(i));
 
@@ -1166,15 +1173,6 @@ void OpenMVPlugin::connectClicked()
                             QMessageBox::information(Core::ICore::dialogParent(),
                                 tr("Connect"),
                                 tr("Done with upgrading your OpenMV Cam firmware!\n\nPlease wait for your OpenMV Cam to reconnect to your computer before continuing."));
-
-                            // Wait 100 ms ////////////////////////////////////
-                            {
-                                QEventLoop eventLoop;
-
-                                QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
-
-                                eventLoop.exec();
-                            }
 
                             RECONNECT_END();
                         }
@@ -1259,12 +1257,12 @@ void OpenMVPlugin::disconnectClicked(bool reset)
 
             // Closing ////////////////////////////////////////////////////////
             {
-                m_iodevice->scriptStop();
-
                 QEventLoop loop;
 
                 connect(m_iodevice, &OpenMVPluginIO::closeResponse,
                         &loop, &QEventLoop::quit);
+
+                m_iodevice->scriptStop();
 
                 if(reset)
                 {
