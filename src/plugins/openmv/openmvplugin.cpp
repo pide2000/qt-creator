@@ -655,6 +655,7 @@ void OpenMVPlugin::connectClicked()
                             QProgressDialog dialog(tr("Disconnect your OpenMV Cam and then reconnect it..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
                                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            dialog.setWindowModality(Qt::ApplicationModal);
                             dialog.show();
 
                             forever
@@ -749,6 +750,7 @@ void OpenMVPlugin::connectClicked()
             QProgressDialog dialog(tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+            dialog.setWindowModality(Qt::ApplicationModal);
 
             forever
             {
@@ -930,9 +932,9 @@ void OpenMVPlugin::connectClicked()
                         QByteArray rawData = firmware.readAll();
                         QList<QByteArray> dataChunks;
 
-                        for(int i = 0; i < rawData.size(); i += 60)
+                        for(int i = 0; i < rawData.size(); i += 56)
                         {
-                            dataChunks.append(rawData.mid(i, qMin(60, rawData.size() - i)));
+                            dataChunks.append(rawData.mid(i, qMin(56, rawData.size() - i)));
                         }
 
                         if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
@@ -979,13 +981,14 @@ void OpenMVPlugin::connectClicked()
                             QProgressDialog dialog(tr("Reconnecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
                                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            dialog.setWindowModality(Qt::ApplicationModal);
                             dialog.show();
 
-                            // Wait 100 ms ////////////////////////////////////
+                            // Wait 10 ms /////////////////////////////////////
                             {
                                 QEventLoop eventLoop;
 
-                                QTimer::singleShot(100, &eventLoop, &QEventLoop::quit);
+                                QTimer::singleShot(10, &eventLoop, &QEventLoop::quit);
 
                                 eventLoop.exec();
                             }
@@ -1088,7 +1091,7 @@ void OpenMVPlugin::connectClicked()
                             {
                                 QMessageBox::critical(Core::ICore::dialogParent(),
                                     tr("Connect"),
-                                    tr("Unable to connect to the bootloader!"));
+                                    tr("Unable to connect to the bootloader!\n\nThis fails sometimes - please try again a few times before giving up."));
 
                                 CLOSE_CONNECT_END();
                             }
@@ -1099,6 +1102,7 @@ void OpenMVPlugin::connectClicked()
                             QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
                                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            dialog.setWindowModality(Qt::ApplicationModal);
                             dialog.show();
 
                             for(int i = flash_start; i <= flash_end; i++)
@@ -1131,6 +1135,7 @@ void OpenMVPlugin::connectClicked()
                             QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, dataChunks.size() - 1, Core::ICore::dialogParent(),
                                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            dialog.setWindowModality(Qt::ApplicationModal);
                             dialog.show();
 
                             for(int i = 0; i < dataChunks.size(); i++)
@@ -1160,6 +1165,13 @@ void OpenMVPlugin::connectClicked()
 
                         // Reset Bootloader ///////////////////////////////////
                         {
+                            QProgressDialog dialog(tr("Cam is busy..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            dialog.setWindowModality(Qt::ApplicationModal);
+                            dialog.setCancelButton(Q_NULLPTR);
+                            dialog.show();
+
                             QEventLoop loop;
 
                             connect(m_iodevice, &OpenMVPluginIO::closeResponse,
@@ -1169,6 +1181,8 @@ void OpenMVPlugin::connectClicked()
                             m_iodevice->close();
 
                             loop.exec();
+
+                            dialog.close();
 
                             QMessageBox::information(Core::ICore::dialogParent(),
                                 tr("Connect"),

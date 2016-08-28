@@ -7,7 +7,7 @@
 #include "openmvpluginserialport.h"
 
 #define USBDBG_COMMAND_SPACING  1 // in ms
-#define USBDBG_COMMAND_TIMEOUT  100 // in ms
+#define USBDBG_COMMAND_TIMEOUT  500 // in ms
 
 #define ATTR_CONTRAST       0
 #define ATTR_BRIGHTNESS     1
