@@ -785,6 +785,10 @@ void OpenMVPlugin::connectClicked()
                 }
             }
 
+            // Close the dialog for any errors on linux...
+
+            dialog.close();
+
             disconnect(conn);
 
             if(!errorMessage2.isEmpty())

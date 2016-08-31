@@ -32,7 +32,8 @@ DATA_DIRS = \
     styles \
     examples \
     firmware \
-    html
+    html \
+    drivers
 #OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {

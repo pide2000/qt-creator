@@ -1,0 +1,2 @@
+*.inf text eol=crlf
+*.cat binary
