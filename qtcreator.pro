@@ -141,7 +141,7 @@ isEmpty(INSTALLER_ARCHIVE_FROM_ENV) {
 #bindist.depends = deployqt
 bindist.commands = 7z a -mx9 $$OUT_PWD/$${BASENAME}.7z \"$$BINDIST_SOURCE\"
 #OPENMV-DIFF#
-#bindist_installer.depends = deployqt
+##bindist_installer.depends = deployqt
 #OPENMV-DIFF#
 bindist_installer.depends = deployqt
 #OPENMV-DIFF#
@@ -158,8 +158,10 @@ macx {
     installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${OPENMVIDE_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME" && python -u $$PWD/scripts/sign.py \"$${INSTALLER_NAME}.app\"
 } else:win32 {
     installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${OPENMVIDE_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME" && python -u $$PWD/scripts/sign.py \"$${INSTALLER_NAME}.exe\"
-} else {
+} else:linux-*: {
     installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${OPENMVIDE_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME" && python -u $$PWD/scripts/sign.py \"$${INSTALLER_NAME}.run\"
+} else {
+    installer.commands = python -u $$PWD/scripts/packageIfw.py -i \"$(IFW_PATH)\" -v $${OPENMVIDE_VERSION} -a \"$${INSTALLER_ARCHIVE}\" "$$INSTALLER_NAME"
 }
 #OPENMV-DIFF#
 

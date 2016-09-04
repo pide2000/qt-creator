@@ -14,6 +14,6 @@
     ],
     \"Category\" : \"Qt Creator\",
     \"Description\" : \"OpenMV Plugin\",
-    \"Url\" : \"https://openmv.io\",
+    \"Url\" : \"http://openmv.io\",
     $$dependencyList
 }

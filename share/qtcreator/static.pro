@@ -28,12 +28,12 @@ STATIC_INSTALL_BASE = $$INSTALL_DATA_PATH
 #macx: DATA_DIRS += scripts
 #OPENMV-DIFF#
 DATA_DIRS = \
-    themes \
-    styles \
+    drivers \
     examples \
     firmware \
     html \
-    drivers
+    styles \
+    themes
 #OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {

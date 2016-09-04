@@ -175,9 +175,16 @@ Component.prototype.createOperations = function()
     {
         component.addOperation( "CreateShortcut",
                                 component.qtCreatorBinaryPath,
-                                //OPENMV-DIFF// "@StartMenuDir@/Qt Creator " + installer.value("ProductVersion") + ".lnk",
+                                //OPENMV-DIFF//
+                                //"@StartMenuDir@/Qt Creator " + installer.value("ProductVersion") + ".lnk",
+                                //OPENMV-DIFF//
                                 "@StartMenuDir@/OpenMV IDE " + installer.value("ProductVersion") + ".lnk",
+                                //OPENMV-DIFF//
                                 "workingDirectory=@homeDir@" );
+        //OPENMV-DIFF//
+        component.addElevatedOperation("Execute", "{0}", "@TargetDir@\\share\\qtcreator\\drivers\\openmv\\openmv.cmd");
+        component.addElevatedOperation("Execute", "{0}", "@TargetDir@\\share\\qtcreator\\drivers\\pybcdc\\pybcdc.cmd");
+        //OPENMV-DIFF//
 
         //OPENMV-DIFF//
         // only install c runtime if it is needed, no minor version check of the c runtime till we need it

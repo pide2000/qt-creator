@@ -1,2 +1,4 @@
-*.inf text eol=crlf
+*.bat binary
 *.cat binary
+*.cmd binary
+*.inf binary
