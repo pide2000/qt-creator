@@ -178,12 +178,20 @@ Component.prototype.createOperations = function()
                                 //OPENMV-DIFF//
                                 //"@StartMenuDir@/Qt Creator " + installer.value("ProductVersion") + ".lnk",
                                 //OPENMV-DIFF//
-                                "@StartMenuDir@/OpenMV IDE " + installer.value("ProductVersion") + ".lnk",
+                                "@StartMenuDir@/OpenMV IDE.lnk",
                                 //OPENMV-DIFF//
                                 "workingDirectory=@homeDir@" );
         //OPENMV-DIFF//
-        component.addElevatedOperation("Execute", "{0}", "@TargetDir@\\share\\qtcreator\\drivers\\openmv\\openmv.cmd");
-        component.addElevatedOperation("Execute", "{0}", "@TargetDir@\\share\\qtcreator\\drivers\\pybcdc\\pybcdc.cmd");
+        //component.addOperation( "CreateShortcut",
+        //                        component.qtCreatorBinaryPath,
+        //                        "@DesktopDir@/OpenMV IDE.lnk",
+        //                        "workingDirectory=@homeDir@" );
+        component.addOperation( "CreateShortcut",
+                                "@TargetDir@/OpenMVIDEUninst.exe",
+                                "@StartMenuDir@/Uninstall.lnk",
+                                "workingDirectory=@homeDir@" );
+        component.addElevatedOperation("Execute", "{0}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\openmv\\openmv.cmd");
+        component.addElevatedOperation("Execute", "{0}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\pybcdc\\pybcdc.cmd");
         //OPENMV-DIFF//
 
         //OPENMV-DIFF//

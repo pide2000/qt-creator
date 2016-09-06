@@ -9,10 +9,13 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 {
     if(m_port)
     {
+        QThread::msleep(2);
         delete m_port;
     }
 
+    QThread::msleep(2);
     m_port = new QSerialPort(portName, this);
+    QThread::msleep(2);
 
     connect(m_port, &QSerialPort::readyRead,
             this, &OpenMVPluginSerialPort_private::processEvents);
@@ -22,8 +25,11 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     {
         // Try again with a fresh serial port.
 
+        QThread::msleep(2);
         delete m_port;
+        QThread::msleep(2);
         m_port = new QSerialPort(portName, this);
+        QThread::msleep(2);
 
         connect(m_port, &QSerialPort::readyRead,
                 this, &OpenMVPluginSerialPort_private::processEvents);
@@ -31,6 +37,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
         if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
         || (!m_port->open(QIODevice::ReadWrite)))
         {
+            QThread::msleep(2);
             emit openResult(m_port->errorString());
             delete m_port;
             m_port = Q_NULLPTR;
@@ -39,6 +46,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 
     if(m_port)
     {
+        QThread::msleep(2);
         emit openResult(QString());
 
         QTimer *timer = new QTimer(m_port);
@@ -54,29 +62,28 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data)
 {
     if(data.isEmpty())
     {
+        QThread::msleep(2);
         emit readAll(QByteArray());
 
         if(m_port)
         {
+            QThread::msleep(2);
             delete m_port;
             m_port = Q_NULLPTR;
         }
     }
     else if(m_port)
     {
+        QThread::msleep(2);
         m_port->clearError();
 
         if((m_port->write(data) != data.size()) || (!m_port->flush()))
         {
-            emit shutdown(m_port->errorString());
+            QThread::msleep(2);
             delete m_port;
             m_port = Q_NULLPTR;
         }
     }
-
-    // Used to sync with gui thread bootloader...
-
-    emit packetSent();
 }
 
 void OpenMVPluginSerialPort_private::processEvents()
@@ -93,7 +100,6 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 {
     QThread *thread = new QThread;
     OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
-
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,
@@ -107,12 +113,6 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 
     connect(port, &OpenMVPluginSerialPort_private::readAll,
             this, &OpenMVPluginSerialPort::readAll);
-
-    connect(port, &OpenMVPluginSerialPort_private::shutdown,
-            this, &OpenMVPluginSerialPort::shutdown);
-
-    connect(port, &OpenMVPluginSerialPort_private::packetSent,
-            this, &OpenMVPluginSerialPort::packetSent);
 
     connect(this, &OpenMVPluginSerialPort::destroyed,
             port, &OpenMVPluginSerialPort_private::deleteLater);

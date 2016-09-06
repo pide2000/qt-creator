@@ -108,6 +108,7 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
 
     m_spacer.start();
     m_processingResponse = int();
+    m_retryCounter = int();
     m_commandQueue = QQueue<QByteArray>();
     m_expectedHeaderQueue = QQueue<int>();
     m_expectedDataQueue = QQueue<int>();
@@ -129,15 +130,17 @@ void OpenMVPluginIO::processEvents()
     if(m_spacer.hasExpired(USBDBG_COMMAND_SPACING) && (!m_processingResponse) && (!m_commandQueue.isEmpty()))
     {
         m_spacer.restart();
-        m_port->write(m_commandQueue.dequeue());
+        m_port->write(m_commandQueue.head());
 
         if(m_expectedHeaderQueue.head())
         {
             m_timer->start(USBDBG_COMMAND_TIMEOUT);
             m_processingResponse = m_expectedHeaderQueue.head();
+            m_retryCounter = USBDBG_COMMAND_RETRY;
         }
         else
         {
+            m_commandQueue.dequeue();
             m_expectedHeaderQueue.dequeue();
             m_expectedDataQueue.dequeue();
         }
@@ -158,6 +161,8 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
             if(m_receivedBytes.size() >= m_expectedDataQueue.head())
             {
+                m_commandQueue.dequeue();
+
                 m_timer->stop();
 
                 int receivedBytes = m_expectedDataQueue.dequeue();
@@ -267,6 +272,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
                 m_receivedBytes.clear();
                 m_processingResponse = int();
+                m_retryCounter = int();
             }
         }
     }
@@ -274,6 +280,16 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
 void OpenMVPluginIO::timeout()
 {
+    if(m_retryCounter)
+    {
+        m_spacer.restart();
+        m_port->write(m_commandQueue.head());
+        m_timer->start(USBDBG_COMMAND_TIMEOUT);
+        m_receivedBytes.clear();
+        m_retryCounter--;
+        return;
+    }
+
     switch(m_expectedHeaderQueue.dequeue())
     {
         case __USBDBG_FW_VERSION:
@@ -319,12 +335,14 @@ void OpenMVPluginIO::timeout()
         }
     }
 
+    m_commandQueue.dequeue();
     m_expectedDataQueue.dequeue();
     m_receivedBytes.clear();
     m_frameSizeW = int();
     m_frameSizeH = int();
     m_frameSizeBPP = int();
     m_processingResponse = int();
+    m_retryCounter = int();
 }
 
 bool OpenMVPluginIO::frameSizeDumpQueued() const

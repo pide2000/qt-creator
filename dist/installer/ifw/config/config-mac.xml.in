@@ -26,5 +26,6 @@
     <MaintenanceToolName>Uninstall OpenMV IDE</MaintenanceToolName>
     <TargetDir>@homeDir@/Applications/OpenMV IDE</TargetDir>
     <AllowSpaceInPath>true</AllowSpaceInPath>
+    <ControlScript>controlscript.qs</ControlScript>
 </Installer>
 <!--OPENMV-DIFF-->

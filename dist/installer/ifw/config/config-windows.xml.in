@@ -26,5 +26,6 @@
     <MaintenanceToolName>OpenMVIDEUninst</MaintenanceToolName>
     <TargetDir>@ApplicationsDir@/OpenMV IDE</TargetDir>
     <StartMenuDir>OpenMV IDE</StartMenuDir>
+    <ControlScript>controlscript.qs</ControlScript>
 </Installer>
 <!--OPENMV-DIFF-->

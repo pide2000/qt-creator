@@ -28,8 +28,6 @@ signals:
 
     void openResult(const QString &errorMessage);
     void readAll(const QByteArray &data);
-    void shutdown(const QString &errorMessage);
-    void packetSent();
 
 private:
 
@@ -51,17 +49,13 @@ signals:
     // 1: Create object on startup and destroy object on shutdown.
     // 2: Call open and receive the result from open result.
     // 3: Send with write and receive with read.
-    // 4: Shutdown emitted on error when the port needs to close.
-    // 5: Call write with null and receive read with null to close.
+    // 4: Call write with null and receive read with null to close.
 
     void open(const QString &portName);
     void openResult(const QString &errorMessage);
 
     void write(const QByteArray &data);
     void readAll(const QByteArray &data);
-
-    void shutdown(const QString &errorMessage);
-    void packetSent();
 };
 
 #endif // OPENMVPLUGINSERIALPORT_H

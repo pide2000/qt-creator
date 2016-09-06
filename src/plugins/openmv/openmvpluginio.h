@@ -6,8 +6,9 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_SPACING  1 // in ms
-#define USBDBG_COMMAND_TIMEOUT  500 // in ms
+#define USBDBG_COMMAND_SPACING  2 // in ms
+#define USBDBG_COMMAND_TIMEOUT  200 // in ms
+#define USBDBG_COMMAND_RETRY    5
 
 #define ATTR_CONTRAST       0
 #define ATTR_BRIGHTNESS     1
@@ -77,6 +78,7 @@ private:
     QTimer *m_timer;
     QElapsedTimer m_spacer;
     int m_processingResponse;
+    int m_retryCounter;
     QQueue<QByteArray> m_commandQueue;
     QQueue<int> m_expectedHeaderQueue;
     QQueue<int> m_expectedDataQueue;

@@ -120,7 +120,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
     connect(docsCommand, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(Core::ICore::resourcePath() + QStringLiteral("/html/index.html")));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(Core::ICore::resourcePath() + QStringLiteral("/html/index.html")));
     });
 
     QAction *forumsCommand = new QAction(
@@ -139,7 +139,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
     connect(pinoutAction, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(Core::ICore::resourcePath() + QStringLiteral("/html/_images/pinout.png")));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(Core::ICore::resourcePath() + QStringLiteral("/html/_images/pinout.png")));
     });
 
     QAction *aboutAction = new QAction(QIcon::fromTheme(QStringLiteral("help-about")),
@@ -408,6 +408,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_pathButton->setCheckable(false);
     m_pathButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
+    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
     connect(m_pathButton, &QToolButton::clicked, this, [this] {
         setSerialPortPath(true);
     });
@@ -416,10 +417,11 @@ void OpenMVPlugin::extensionsInitialized()
     m_versionLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_versionLabel);
 
-    m_fpsLabel = new QLabel(tr("FPS:      "));
+    m_fpsLabel = new QLabel(tr("FPS:"));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
     m_fpsLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_fpsLabel);
+    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -1246,7 +1248,7 @@ void OpenMVPlugin::connectClicked()
         m_versionLabel->setEnabled(true);
         m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
         m_fpsLabel->setEnabled(true);
-        m_fpsLabel->setText(tr("FPS: 0    "));
+        m_fpsLabel->setText(tr("FPS: 0"));
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -1318,7 +1320,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_versionLabel->setDisabled(true);
             m_versionLabel->setText(tr("Firmware Version:"));
             m_fpsLabel->setDisabled(true);
-            m_fpsLabel->setText(tr("FPS:      "));
+            m_fpsLabel->setText(tr("FPS:"));
 
             m_frameBuffer->enableSaveTemplate(false);
             m_frameBuffer->enableSaveDescriptor(false);
@@ -1477,7 +1479,7 @@ void OpenMVPlugin::processEvents()
 
         if(m_timer.isValid() && m_timer.hasExpired(2000))
         {
-            m_fpsLabel->setText(tr("FPS: 0    "));
+            m_fpsLabel->setText(tr("FPS: 0"));
         }
     }
 }

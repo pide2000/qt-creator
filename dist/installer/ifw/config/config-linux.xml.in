@@ -26,5 +26,6 @@
     <MaintenanceToolName>OpenMVIDEUninstaller</MaintenanceToolName>
     <TargetDir>@homeDir@/openmvide</TargetDir>
     <AdminTargetDir>/opt/openmvide</AdminTargetDir>
+    <ControlScript>controlscript.qs</ControlScript>
 </Installer>
 <!--OPENMV-DIFF-->
