@@ -101,7 +101,7 @@ void OpenMVPlugin::extensionsInitialized()
     Core::ActionContainer *helpMenu = Core::ActionManager::actionContainer(Core::Constants::M_HELP);
 
     QAction *saveCommand = new QAction(
-         tr("Save script to OpenMV Cam"), this);
+         tr("Save open script to OpenMV Cam"), this);
     m_saveCommand = Core::ActionManager::registerAction(saveCommand, Core::Id("OpenMV.Save"));
     toolsMenu->addAction(m_saveCommand);
     saveCommand->setEnabled(false);
@@ -133,7 +133,7 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     QAction *pinoutAction = new QAction(
-         tr("About OpenMV Cam..."), this);
+         Utils::HostOsInfo::isMacHost() ? tr("About OpenMV Cam") : tr("About OpenMV Cam..."), this);
     pinoutAction->setMenuRole(QAction::ApplicationSpecificRole);
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
@@ -201,7 +201,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_stopCommand->action()->setEnabled(false);
     m_stopCommand->action()->setVisible(false);
     connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
-    connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (int running) {
+    connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (bool running) {
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
@@ -210,7 +210,7 @@ void OpenMVPlugin::extensionsInitialized()
             m_startCommand->action()->setVisible(!running);
             m_stopCommand->action()->setEnabled(running);
             m_stopCommand->action()->setVisible(running);
-            m_running = bool(running);
+            m_running = running;
         }
     });
 
@@ -932,9 +932,9 @@ void OpenMVPlugin::connectClicked()
                         QByteArray rawData = firmware.readAll();
                         QList<QByteArray> dataChunks;
 
-                        for(int i = 0; i < rawData.size(); i += 60)
+                        for(int i = 0; i < rawData.size(); i += FLASH_WRITE_CHUNK_SIZE)
                         {
-                            dataChunks.append(rawData.mid(i, qMin(60, rawData.size() - i)));
+                            dataChunks.append(rawData.mid(i, qMin(FLASH_WRITE_CHUNK_SIZE, rawData.size() - i)));
                         }
 
                         if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
@@ -1356,11 +1356,11 @@ void OpenMVPlugin::startClicked()
 
         // Stopping ///////////////////////////////////////////////////////////
         {
-            int running2 = int();
-            int *running2Ptr = &running2;
+            bool running2 = bool();
+            bool *running2Ptr = &running2;
 
             QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::scriptRunning,
-                this, [this, running2Ptr] (int running) {
+                this, [this, running2Ptr] (bool running) {
                 *running2Ptr = running;
             });
 
@@ -1415,11 +1415,11 @@ void OpenMVPlugin::stopClicked()
 
         // Stopping ///////////////////////////////////////////////////////////
         {
-            int running2 = int();
-            int *running2Ptr = &running2;
+            bool running2 = bool();
+            bool *running2Ptr = &running2;
 
             QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::scriptRunning,
-                this, [this, running2Ptr] (int running) {
+                this, [this, running2Ptr] (bool running) {
                 *running2Ptr = running;
             });
 

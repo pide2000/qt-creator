@@ -70,8 +70,8 @@ signals:
     void firmwareVersion(int major, int minor, int patch);
     void archString(const QString &arch);
     void frameBufferData(const QPixmap &data);
-    void scriptRunning(long);
-    void attribute(char);
+    void scriptRunning(bool);
+    void attribute(int);
     void printData(const QByteArray &data);
     void gotBootloaderStart(bool);
     void closeResponse();

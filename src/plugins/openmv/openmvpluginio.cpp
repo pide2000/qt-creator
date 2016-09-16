@@ -341,7 +341,7 @@ void OpenMVPluginIO::timeout()
             }
             case __USBDBG_SCRIPT_RUNNING:
             {
-                emit scriptRunning(int());
+                emit scriptRunning(bool());
                 break;
             }
             case __USBDBG_ATTR_READ:
