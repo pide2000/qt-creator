@@ -348,10 +348,19 @@ void OutputWindow::appendMessage(const QString &output, OutputFormat format)
 // TODO rename
 void OutputWindow::appendText(const QString &textIn, const QTextCharFormat &format)
 {
-    const QString text = SynchronousProcess::normalizeNewlines(textIn);
     //OPENMV-DIFF//
+    //const QString text = SynchronousProcess::normalizeNewlines(textIn);
     //if (d->maxLineCount > 0 && document()->blockCount() >= d->maxLineCount)
     //    return;
+    //OPENMV-DIFF//
+    QString text = SynchronousProcess::normalizeNewlines(textIn);
+    int index = text.indexOf(QStringLiteral("Traceback (most recent call last):\n"));
+    if(index != -1)
+    {
+        appendText(text.left(index));
+        grayOutOldContent();
+        text = text.mid(index);
+    }
     //OPENMV-DIFF//
     const bool atBottom = isScrollbarAtBottom();
     if (!d->cursor.atEnd())

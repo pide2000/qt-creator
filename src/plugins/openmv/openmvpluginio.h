@@ -6,7 +6,6 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_SPACING  2 // in ms
 #define USBDBG_COMMAND_TIMEOUT  200 // in ms
 #define USBDBG_COMMAND_RETRY    5
 
@@ -15,10 +14,15 @@
 #define ATTR_SATURATION     2
 #define ATTR_GAINCEILING    3
 
+#define TEMPLATE_SAVE_PATH_MAX_LEN      55
+#define DESCRIPTOR_SAVE_PATH_MAX_LEN    55
+
 #define FLASH_SECTOR_START      4
 #define FLASH_SECTOR_END        11
 #define FLASH_SECTOR_ALL_START  1
 #define FLASH_SECTOR_ALL_END    11
+
+#define FLASH_WRITE_CHUNK_SIZE  60
 
 class OpenMVPluginIO : public QObject
 {
@@ -76,7 +80,6 @@ private:
 
     OpenMVPluginSerialPort *m_port;
     QTimer *m_timer;
-    QElapsedTimer m_spacer;
     int m_processingResponse;
     int m_retryCounter;
     QQueue<QByteArray> m_commandQueue;
@@ -86,6 +89,7 @@ private:
     int m_frameSizeW;
     int m_frameSizeH;
     int m_frameSizeBPP;
+    QByteArray m_lineBuffer;
 };
 
 #endif // OPENMVPLUGINIO_H

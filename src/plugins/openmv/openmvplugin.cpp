@@ -14,12 +14,15 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_getScriptRunningTimer.start();
     m_getTxBufferTimer.start();
 
+    m_timer.start();
+    m_queue = QQueue<qint64>();
+
     m_working = false;
     m_connected = false;
     m_running = false;
     m_portName = QString();
-    m_timer = QElapsedTimer();
-    m_queue = QQueue<qint64>();
+    m_portPath = QString();
+
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
         "  File \"(.+?)\", line (\\d+).*?\n"
         "(?!Exception: IDE interrupt)(.+?:.+?)\n"));
@@ -39,10 +42,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage)
 
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
-
-    connect(Core::ICore::instance(), &Core::ICore::coreOpened,
-            splashScreen, &QSplashScreen::deleteLater);
-
+    connect(Core::ICore::instance(), &Core::ICore::coreOpened, splashScreen, &QSplashScreen::deleteLater);
     splashScreen->show();
 
     return true;
@@ -79,7 +79,7 @@ void OpenMVPlugin::extensionsInitialized()
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("New File"),
-                QObject::tr("Cannot open the new file!"));
+                QObject::tr("Can't open the new file!"));
         }
     });
 
@@ -129,7 +129,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
     connect(forumsCommand, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("http://openmv.io/forums/")));
+        QDesktopServices::openUrl(QUrl(QStringLiteral("http://www.openmv.io/forums/")));
     });
 
     QAction *pinoutAction = new QAction(
@@ -186,7 +186,7 @@ void OpenMVPlugin::extensionsInitialized()
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, [this] (Core::IEditor *editor) {
         if(m_connected)
         {
-            m_saveCommand->action()->setEnabled((!getSerialPortPath().isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+            m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!m_running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!m_running);
             m_stopCommand->action()->setEnabled(m_running);
@@ -205,7 +205,7 @@ void OpenMVPlugin::extensionsInitialized()
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
-            m_saveCommand->action()->setEnabled((!getSerialPortPath().isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+            m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!running);
             m_stopCommand->action()->setEnabled(running);
@@ -371,29 +371,23 @@ void OpenMVPlugin::extensionsInitialized()
     connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
     connect(m_iodevice, &OpenMVPluginIO::printData, this, &OpenMVPlugin::errorFilter);
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData, this, [this] {
-        if(m_timer.isValid())
+        m_queue.push_back(m_timer.restart());
+
+        if(m_queue.size() > FPS_AVERAGE_BUFFER_DEPTH)
         {
-            m_queue.push_back(m_timer.restart());
-
-            if(m_queue.size() > FPS_AVERAGE_BUFFER_DEPTH)
-            {
-                m_queue.pop_front();
-            }
-
-            qint64 average = 0;
-
-            for(int i = 0; i < m_queue.size(); i++)
-            {
-                average += m_queue.at(i);
-            }
-
-            average /= m_queue.size();
-
-            if(average)
-            {
-                m_fpsLabel->setText(tr("FPS: %L1").arg(1000.0 / average, 5, 'f', 1));
-            }
+            m_queue.pop_front();
         }
+
+        qint64 average = 0;
+
+        for(int i = 0; i < m_queue.size(); i++)
+        {
+            average += m_queue.at(i);
+        }
+
+        average /= m_queue.size();
+
+        m_fpsLabel->setText(tr("FPS: %L1").arg(average ? (1000 / double(average)) : 0, 5, 'f', 1));
     });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -409,9 +403,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_pathButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
-    connect(m_pathButton, &QToolButton::clicked, this, [this] {
-        setSerialPortPath(true);
-    });
+    connect(m_pathButton, &QToolButton::clicked, this, &OpenMVPlugin::setPortPath);
 
     m_versionLabel = new QLabel(tr("Firmware Version:"));
     m_versionLabel->setDisabled(true);
@@ -492,7 +484,6 @@ void OpenMVPlugin::extensionsInitialized()
     ///////////////////////////////////////////////////////////////////////////
 
     // http://stackoverflow.com/questions/26361145/qsslsocket-error-when-ssl-is-not-used
-
     QLoggingCategory::setFilterRules(QStringLiteral("qt.network.ssl.warning=false"));
 
     connect(Core::ICore::instance(), &Core::ICore::coreOpened, this, [this] {
@@ -503,11 +494,11 @@ void OpenMVPlugin::extensionsInitialized()
             {
                 QMessageBox::information(Core::ICore::dialogParent(),
                     tr("Update Available"),
-                    tr("A new version of OpenMV IDE is available for <a href=\"http://openmv.io/download\">download</a>."));
+                    tr("A new version of OpenMV IDE is available for <a href=\"http://www.openmv.io/download\">download</a>."));
             }
             reply->deleteLater();
         });
-        QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(QStringLiteral("http://openmv.io/upload/openmv-ide-version.txt"))));
+        QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-version.txt"))));
         if(reply)
         {
             connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
@@ -763,7 +754,8 @@ void OpenMVPlugin::connectClicked()
                 {
                     QEventLoop loop;
 
-                    connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
+                    connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                            &loop, &QEventLoop::quit);
 
                     emit m_ioport->open(selectedPort);
 
@@ -831,7 +823,8 @@ void OpenMVPlugin::connectClicked()
 
             QEventLoop loop;
 
-            connect(m_iodevice, &OpenMVPluginIO::firmwareVersion, &loop, &QEventLoop::quit);
+            connect(m_iodevice, &OpenMVPluginIO::firmwareVersion,
+                    &loop, &QEventLoop::quit);
 
             m_iodevice->getFirmwareVersion();
 
@@ -894,7 +887,8 @@ void OpenMVPlugin::connectClicked()
                         {
                             QEventLoop loop;
 
-                            connect(m_iodevice, &OpenMVPluginIO::archString, &loop, &QEventLoop::quit);
+                            connect(m_iodevice, &OpenMVPluginIO::archString,
+                                    &loop, &QEventLoop::quit);
 
                             m_iodevice->getArchString();
 
@@ -938,9 +932,9 @@ void OpenMVPlugin::connectClicked()
                         QByteArray rawData = firmware.readAll();
                         QList<QByteArray> dataChunks;
 
-                        for(int i = 0; i < rawData.size(); i += 56)
+                        for(int i = 0; i < rawData.size(); i += 60)
                         {
-                            dataChunks.append(rawData.mid(i, qMin(56, rawData.size() - i)));
+                            dataChunks.append(rawData.mid(i, qMin(60, rawData.size() - i)));
                         }
 
                         if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
@@ -1032,7 +1026,8 @@ void OpenMVPlugin::connectClicked()
                                 {
                                     QEventLoop loop;
 
-                                    connect(m_ioport, &OpenMVPluginSerialPort::openResult, &loop, &QEventLoop::quit);
+                                    connect(m_ioport, &OpenMVPluginSerialPort::openResult,
+                                            &loop, &QEventLoop::quit);
 
                                     emit m_ioport->open(stringList2.contains(selectedPort) ? selectedPort : stringList2.first());
 
@@ -1229,7 +1224,7 @@ void OpenMVPlugin::connectClicked()
         m_connected = true;
         m_portName = selectedPort;
 
-        setSerialPortPath();
+        setPortPath();
 
         m_resetCommand->action()->setEnabled(true);
         m_connectCommand->action()->setEnabled(false);
@@ -1282,11 +1277,13 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                 connect(m_iodevice, &OpenMVPluginIO::closeResponse,
                         &loop, &QEventLoop::quit);
 
-                m_iodevice->scriptStop();
-
                 if(reset)
                 {
                     m_iodevice->sysReset();
+                }
+                else
+                {
+                    m_iodevice->scriptStop();
                 }
 
                 m_iodevice->close();
@@ -1296,10 +1293,16 @@ void OpenMVPlugin::disconnectClicked(bool reset)
 
             ///////////////////////////////////////////////////////////////////
 
-            m_connected = false;
-            m_portName = QString();
-            m_timer.invalidate();
+            m_frameSizeDumpTimer.restart();
+            m_getScriptRunningTimer.restart();
+            m_getTxBufferTimer.restart();
+
+            m_timer.restart();
             m_queue.clear();
+            m_connected = false;
+            m_running = false;
+            m_portName = QString();
+            m_portPath = QString();
             m_errorFilterString = QString();
 
             m_saveCommand->action()->setEnabled(false);
@@ -1373,8 +1376,6 @@ void OpenMVPlugin::startClicked()
             if(running2)
             {
                 m_iodevice->scriptStop();
-
-                Core::MessageManager::grayOutOldContent();
             }
 
             disconnect(conn);
@@ -1384,7 +1385,7 @@ void OpenMVPlugin::startClicked()
 
         m_iodevice->scriptExec(Core::EditorManager::currentEditor()->document()->contents());
 
-        m_timer.start();
+        m_timer.restart();
         m_queue.clear();
 
         ///////////////////////////////////////////////////////////////////////
@@ -1434,12 +1435,14 @@ void OpenMVPlugin::stopClicked()
             if(running2)
             {
                 m_iodevice->scriptStop();
-
-                Core::MessageManager::grayOutOldContent();
             }
 
             disconnect(conn);
         }
+
+        ///////////////////////////////////////////////////////////////////////
+
+        m_fpsLabel->setText(tr("FPS: 0"));
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -1477,7 +1480,7 @@ void OpenMVPlugin::processEvents()
             m_iodevice->getTxBuffer();
         }
 
-        if(m_timer.isValid() && m_timer.hasExpired(2000))
+        if(m_timer.hasExpired(2000))
         {
             m_fpsLabel->setText(tr("FPS: 0"));
         }
@@ -1506,9 +1509,9 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
         {
             editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
         }
-        else if(!getSerialPortPath().isEmpty())
+        else if(!m_portPath.isEmpty())
         {
-            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QDir::cleanPath(QDir::fromNativeSeparators(QString(fileName).prepend(getSerialPortPath())))));
+            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QDir::cleanPath(QDir::fromNativeSeparators(QString(fileName).prepend(m_portPath)))));
         }
 
         if(editor)
@@ -1542,12 +1545,12 @@ void OpenMVPlugin::saveScript()
     {
         int answer = QMessageBox::question(Core::ICore::dialogParent(),
             tr("Save Script"),
-            tr("Strip comments?"),
+            tr("Strip comments and convert spaces to tabs?"),
             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
 
         if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
         {
-            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath())) + QStringLiteral("main.py"));
+            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("main.py"));
 
             if(file.open(QIODevice::WriteOnly))
             {
@@ -1569,14 +1572,14 @@ void OpenMVPlugin::saveScript()
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Script"),
-                        tr("Error: %L1").arg(file.errorString()));
+                        tr("Error: %L1!").arg(file.errorString()));
                 }
             }
             else
             {
                 QMessageBox::critical(Core::ICore::dialogParent(),
                     tr("Save Script"),
-                    tr("Error: %L1").arg(file.errorString()));
+                    tr("Error: %L1!").arg(file.errorString()));
             }
         }
     }
@@ -1619,8 +1622,7 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
 {
     if(!m_working)
     {
-        // Get the drive path first because it uses the settings too...
-        QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
+        QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath));
 
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -1643,9 +1645,19 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
             }
             else
             {
-                m_iodevice->templateSave(rect.x(), rect.y(), rect.width(), rect.height(),
-                    QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1());
-                settings->setValue(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), path);
+                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1();
+
+                if(sendPath.size() <= DESCRIPTOR_SAVE_PATH_MAX_LEN)
+                {
+                    m_iodevice->templateSave(rect.x(), rect.y(), rect.width(), rect.height(), sendPath);
+                    settings->setValue(QStringLiteral(LAST_SAVE_TEMPLATE_PATH), path);
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Save Template"),
+                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromLatin1(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
+                }
             }
         }
 
@@ -1663,8 +1675,7 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
 {
     if(!m_working)
     {
-        // Get the drive path first because it uses the settings too...
-        QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(getSerialPortPath()));
+        QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath));
 
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -1687,9 +1698,19 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
             }
             else
             {
-                m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(),
-                    QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1());
-                settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1();
+
+                if(sendPath.size() <= DESCRIPTOR_SAVE_PATH_MAX_LEN)
+                {
+                    m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(), sendPath);
+                    settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Save Descriptor"),
+                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromLatin1(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
+                }
             }
         }
 
@@ -1701,6 +1722,78 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
             tr("Save Descriptor"),
             tr("Busy... please wait..."));
     }
+}
+
+void OpenMVPlugin::setPortPath()
+{
+    QStringList drives;
+
+    foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
+    {
+        if(info.isValid()
+        && info.isReady()
+        && (!info.isRoot())
+        && (!info.isReadOnly())
+        && (QString::fromLatin1(info.fileSystemType()).contains(Utils::HostOsInfo::isMacHost() ? QStringLiteral("msdos") : QStringLiteral("fat"), Qt::CaseInsensitive))
+        && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive))
+        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive)))
+        {
+            drives.append(info.rootPath());
+        }
+    }
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
+
+    if(drives.isEmpty())
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Select Drive"),
+            tr("No valid drives were found to associate with your OpenMV Cam!"));
+
+        m_portPath = QString();
+    }
+    else if(drives.size() == 1)
+    {
+        if(m_portPath == drives.first())
+        {
+            QMessageBox::information(Core::ICore::dialogParent(),
+                tr("Select Drive"),
+                tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive.").arg(drives.first()));
+        }
+        else
+        {
+            m_portPath = drives.first();
+            settings->setValue(m_portName, m_portPath);
+        }
+    }
+    else
+    {
+        int index = drives.indexOf(settings->value(m_portName).toString());
+
+        bool ok;
+        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+            tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
+            drives, (index != -1) ? index : 0, false, &ok,
+            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
+
+        if(ok)
+        {
+            m_portPath = temp;
+            settings->setValue(m_portName, m_portPath);
+        }
+    }
+
+    settings->endGroup();
+
+    m_pathButton->setText((!m_portPath.isEmpty()) ? tr("Drive: %L1").arg(m_portPath) : tr("Drive:"));
+
+    Core::IEditor *editor = Core::EditorManager::currentEditor();
+    m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+
+    m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
+    m_frameBuffer->enableSaveDescriptor(!m_portPath.isEmpty());
 }
 
 QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent)
@@ -1751,7 +1844,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Open Example"),
-                        tr("Error: %L1").arg(file.errorString()));
+                        tr("Error: %L1!").arg(file.errorString()));
                 }
             });
 
@@ -1760,83 +1853,6 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
     }
 
     return actions;
-}
-
-QString OpenMVPlugin::getSerialPortPath()
-{
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
-    QString path = settings->value(m_portName).toString();
-    settings->endGroup();
-    return path;
-}
-
-void OpenMVPlugin::setSerialPortPath(bool dialog)
-{
-    QStringList drives;
-
-    foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
-    {
-        if(info.isValid()
-        && info.isReady()
-        && (!info.isRoot())
-        && (!info.isReadOnly())
-        && (QString::fromLatin1(info.fileSystemType()).contains(Utils::HostOsInfo::isMacHost() ? QStringLiteral("msdos") : QStringLiteral("FAT"), Qt::CaseInsensitive)))
-        {
-            drives.append(info.rootPath());
-        }
-    }
-
-    QString path;
-
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
-
-    if(drives.isEmpty())
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-            tr("Select Drive"),
-            tr("No valid drives were found to associate with your OpenMV Cam!"));
-    }
-    else if(drives.size() == 1)
-    {
-        path = drives.first();
-        settings->setValue(m_portName, path);
-
-        if(dialog)
-        {
-            QMessageBox::information(Core::ICore::dialogParent(),
-                tr("Select Drive"),
-                tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive").arg(path));
-        }
-    }
-    else
-    {
-        int index = drives.indexOf(settings->value(m_portName).toString());
-
-        bool ok;
-        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
-            tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
-            drives, (index != -1) ? index : 0, false, &ok,
-            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-
-        if(ok)
-        {
-            path = temp;
-            settings->setValue(m_portName, path);
-        }
-    }
-
-    settings->endGroup();
-
-    m_pathButton->setText((!path.isEmpty()) ? tr("Drive: %L1").arg(path) : tr("Drive:"));
-
-    Core::IEditor *editor = Core::EditorManager::currentEditor();
-    m_saveCommand->action()->setEnabled((!path.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
-
-    m_frameBuffer->enableSaveTemplate(!path.isEmpty());
-    m_frameBuffer->enableSaveDescriptor(!path.isEmpty());
 }
 
 } // namespace Internal

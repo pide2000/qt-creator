@@ -90,6 +90,7 @@ public slots: // private
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
+    void setPortPath();
 
 signals:
 
@@ -99,8 +100,6 @@ signals:
 private:
 
     QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
-    QString getSerialPortPath();
-    void setSerialPortPath(bool dialog = false);
 
     Core::Command *m_saveCommand;
     Core::Command *m_resetCommand;
@@ -137,12 +136,15 @@ private:
     QElapsedTimer m_getScriptRunningTimer;
     QElapsedTimer m_getTxBufferTimer;
 
+    QElapsedTimer m_timer;
+    QQueue<qint64> m_queue;
+
     bool m_working;
     bool m_connected;
     bool m_running;
     QString m_portName;
-    QElapsedTimer m_timer;
-    QQueue<qint64> m_queue;
+    QString m_portPath;
+
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
 };

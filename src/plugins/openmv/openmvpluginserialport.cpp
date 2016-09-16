@@ -9,13 +9,10 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 {
     if(m_port)
     {
-        QThread::msleep(2);
         delete m_port;
     }
 
-    QThread::msleep(2);
     m_port = new QSerialPort(portName, this);
-    QThread::msleep(2);
 
     connect(m_port, &QSerialPort::readyRead,
             this, &OpenMVPluginSerialPort_private::processEvents);
@@ -23,13 +20,8 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
     || (!m_port->open(QIODevice::ReadWrite)))
     {
-        // Try again with a fresh serial port.
-
-        QThread::msleep(2);
         delete m_port;
-        QThread::msleep(2);
         m_port = new QSerialPort(portName, this);
-        QThread::msleep(2);
 
         connect(m_port, &QSerialPort::readyRead,
                 this, &OpenMVPluginSerialPort_private::processEvents);
@@ -37,7 +29,6 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
         if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
         || (!m_port->open(QIODevice::ReadWrite)))
         {
-            QThread::msleep(2);
             emit openResult(m_port->errorString());
             delete m_port;
             m_port = Q_NULLPTR;
@@ -46,7 +37,6 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 
     if(m_port)
     {
-        QThread::msleep(2);
         emit openResult(QString());
 
         QTimer *timer = new QTimer(m_port);
@@ -62,24 +52,20 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data)
 {
     if(data.isEmpty())
     {
-        QThread::msleep(2);
         emit readAll(QByteArray());
 
         if(m_port)
         {
-            QThread::msleep(2);
             delete m_port;
             m_port = Q_NULLPTR;
         }
     }
     else if(m_port)
     {
-        QThread::msleep(2);
         m_port->clearError();
 
         if((m_port->write(data) != data.size()) || (!m_port->flush()))
         {
-            QThread::msleep(2);
             delete m_port;
             m_port = Q_NULLPTR;
         }
