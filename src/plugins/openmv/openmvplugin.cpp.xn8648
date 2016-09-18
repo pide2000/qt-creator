@@ -170,7 +170,7 @@ void OpenMVPlugin::extensionsInitialized()
         tr("Connect"), this), Core::Id("OpenMV.Connect"));
     m_connectCommand->action()->setEnabled(true);
     m_connectCommand->action()->setVisible(true);
-    connect(m_connectCommand->action(), &QAction::triggered, this, [this] {connectClicked();});
+    connect(m_connectCommand->action(), &QAction::triggered, this, &OpenMVPlugin::connectClicked);
 
     m_disconnectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
@@ -561,60 +561,29 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
 void OpenMVPlugin::bootloaderClicked()
 {
     QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
-        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
     dialog->setWindowTitle(tr("Bootloader"));
     QFormLayout *layout = new QFormLayout(dialog);
-    layout->addRow(new QLabel(tr("Select a binary file to flash onto your OpenMV Cam.")));
-
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
     Utils::PathChooser *pathChooser = new Utils::PathChooser();
     pathChooser->setExpectedKind(Utils::PathChooser::File);
     pathChooser->setPromptDialogTitle(tr("Firmware Path"));
     pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin)"));
-    pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
-    layout->addRow(tr("Firmware Path"), pathChooser);
-
-    QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
-    checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
-    layout->addRow(checkBox);
+    layout->addRow(pathChooser->label(), pathChooser);
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    layout->addWidget(box);
+
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
-    layout->addRow(box);
 
-    if(dialog->exec() == QDialog::Accepted)
+    if(dialog->exec() == QDialogButtonBox::Ok)
     {
-        QString firmwarePath = pathChooser->fileName().toString();
-        bool flashFSErase = checkBox->isChecked();
 
-        if(pathChooser->fileName().toFileInfo().isFile())
-        {
-            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
-            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
-            settings->endGroup();
-            delete dialog;
-
-            connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
-        }
-        else
-        {
-            settings->endGroup();
-            delete dialog;
-
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Bootloader"),
-                tr("\"%L1\" is not a file!").arg(firmwarePath));
-        }
     }
-    else
-    {
-        settings->endGroup();
-        delete dialog;
-    }
+
+    delete dialog;
 }
 
 #define CONNECT_END() \
@@ -627,7 +596,7 @@ do { \
 #define RECONNECT_END() \
 do { \
     m_working = false; \
-    QTimer::singleShot(0, this, [this] {connectClicked();}); \
+    QTimer::singleShot(0, this, &OpenMVPlugin::connectClicked); \
     return; \
 } while(0)
 
@@ -649,11 +618,11 @@ do { \
     m_iodevice->close(); \
     m_loop.exec(); \
     m_working = false; \
-    QTimer::singleShot(0, this, [this] {connectClicked();}); \
+    QTimer::singleShot(0, this, &OpenMVPlugin::connectClicked); \
     return; \
 } while(0)
 
-void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePath, int forceFlashFSErase)
+void OpenMVPlugin::connectClicked()
 {
     if(!m_working)
     {
@@ -679,70 +648,65 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
         QString selectedPort;
-        bool forceBootloaderBricked = false;
+
+        QString forceFirmwarePath = QString();
+        int forceFlashFSErase = int();
+        bool forceBootloader = bool();
 
         if(stringList.isEmpty())
         {
-            if(forceBootloader)
-            {
-                forceBootloaderBricked = true;
-            }
-            else
-            {
-                QMessageBox::critical(Core::ICore::dialogParent(),
-                    tr("Connect"),
-                    tr("No OpenMV Cams found!"));
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Connect"),
+                tr("No OpenMV Cams found!"));
 
-                QFile boards(Core::ICore::resourcePath() + QStringLiteral("/firmware/boards.txt"));
+            QFile boards(Core::ICore::resourcePath() + QStringLiteral("/firmware/boards.txt"));
 
-                if(boards.open(QIODevice::ReadOnly))
+            if(boards.open(QIODevice::ReadOnly))
+            {
+                QMap<QString, QString> mappings;
+
+                forever
                 {
-                    QMap<QString, QString> mappings;
+                    QByteArray data = boards.readLine();
 
-                    forever
+                    if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                     {
-                        QByteArray data = boards.readLine();
-
-                        if((boards.error() == QFile::NoError) && (!data.isEmpty()))
-                        {
-                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
-                            mappings.insert(mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
+                        mappings.insert(mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
                     }
-
-                    if(!mappings.isEmpty())
+                    else
                     {
-                        if(QMessageBox::question(Core::ICore::dialogParent(),
-                            tr("Connect"),
-                            tr("Do you have an OpenMV Cam connected and is it bricked?"),
-                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
-                        == QMessageBox::Yes)
+                        break;
+                    }
+                }
+
+                if(!mappings.isEmpty())
+                {
+                    if(QMessageBox::question(Core::ICore::dialogParent(),
+                        tr("Connect"),
+                        tr("Do you have an OpenMV Cam connected and is it bricked?"),
+                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
+                    == QMessageBox::Yes)
+                    {
+                        int index = mappings.keys().indexOf(settings->value(QStringLiteral(LAST_BOARD_TYPE_STATE)).toString());
+
+                        bool ok;
+                        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+                            tr("Connect"), tr("Please select the board type"),
+                            mappings.keys(), (index != -1) ? index : 0, false, &ok,
+                            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                        if(ok)
                         {
-                            int index = mappings.keys().indexOf(settings->value(QStringLiteral(LAST_BOARD_TYPE_STATE)).toString());
+                            settings->setValue(QStringLiteral(LAST_BOARD_TYPE_STATE), temp);
 
-                            bool ok;
-                            QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
-                                tr("Connect"), tr("Please select the board type"),
-                                mappings.keys(), (index != -1) ? index : 0, false, &ok,
-                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-
-                            if(ok)
-                            {
-                                settings->setValue(QStringLiteral(LAST_BOARD_TYPE_STATE), temp);
-
-                                forceFirmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
-                                forceFlashFSErase = QMessageBox::question(Core::ICore::dialogParent(),
-                                    tr("Connect"),
-                                    tr("Erase the internal file system?"),
-                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
-                                forceBootloader = forceFlashFSErase != QMessageBox::Cancel;
-                                forceBootloaderBricked = true;
-                            }
+                            forceFirmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+                            forceFlashFSErase = QMessageBox::question(Core::ICore::dialogParent(),
+                                tr("Connect"),
+                                tr("Erase the internal file system?"),
+                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+                            forceBootloader = forceFlashFSErase != QMessageBox::Cancel;
                         }
                     }
                 }
@@ -761,7 +725,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
                 tr("Connect"), tr("Please select a serial port"),
                 stringList, (index != -1) ? index : 0, false, &ok,
-                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
             if(ok)
@@ -773,14 +737,14 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         settings->endGroup();
 
-        if((!forceBootloaderBricked) && selectedPort.isEmpty())
+        if((!forceBootloader) && selectedPort.isEmpty())
         {
             CONNECT_END();
         }
 
         // Open Port //////////////////////////////////////////////////////////
 
-        if(!forceBootloaderBricked)
+        if(!forceBootloader)
         {
             QString errorMessage2 = QString();
             QString *errorMessage2Ptr = &errorMessage2;
@@ -791,7 +755,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             });
 
             QProgressDialog dialog(tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
             dialog.setWindowModality(Qt::ApplicationModal);
 
@@ -919,8 +883,6 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                         }
                         else
                         {
-                            // Get Arch ///////////////////////////////////////
-
                             QString arch2 = QString();
                             QString *arch2Ptr = &arch2;
 
@@ -1020,7 +982,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                                 // Send Reset /////////////////////////////////
 
-                                if(!forceBootloaderBricked)
+                                if(!forceBootloader)
                                 {
                                     QEventLoop loop;
 
@@ -1043,8 +1005,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                         *errorMessage2Ptr = errorMessage;
                                     });
 
-                                    QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Reconnecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                    QProgressDialog dialog(forceBootloader ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Reconnecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
                                     dialog.setWindowModality(Qt::ApplicationModal);
 
@@ -1145,7 +1107,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 // Erase Flash ////////////////////////////////
                                 {
                                     QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
                                     dialog.setWindowModality(Qt::ApplicationModal);
                                     dialog.show();
@@ -1178,7 +1140,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 // Program Flash //////////////////////////////
                                 {
                                     QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, dataChunks.size() - 1, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
                                     dialog.setWindowModality(Qt::ApplicationModal);
                                     dialog.show();
@@ -1862,7 +1824,7 @@ void OpenMVPlugin::setPortPath()
         QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
             tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
             drives, (index != -1) ? index : 0, false, &ok,
-            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
 
         if(ok)

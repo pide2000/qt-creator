@@ -11,8 +11,8 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     setScene(new QGraphicsScene(this));
 
     QGraphicsTextItem *item = new QGraphicsTextItem;
-    item->setHtml(tr("<html><body style=\"color:#909090; font-size:14px\">"
-    "<div align='center'>"
+    item->setHtml(tr("<html><body style=\"color:#909090;font-size:14px\">"
+    "<div align=\"center\">"
     "<div style=\"font-size:20px\">No Image</div>"
     "</div>"
     "</body></html>"));

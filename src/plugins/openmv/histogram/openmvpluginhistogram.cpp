@@ -442,7 +442,7 @@ OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent),
     m_channel2 = m_ui->C2Plot->addGraph();
 
     setAttribute(Qt::WA_StyledBackground);
-    setStyleSheet(QStringLiteral("background-color:#1E1E27; color:#FFFFFF"));
+    setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#FFFFFF"));
 
     colorSpaceChanged(m_colorSpace);
 }

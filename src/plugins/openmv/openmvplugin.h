@@ -21,6 +21,7 @@
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
 #include <utils/environment.h>
+#include <utils/pathchooser.h>
 #include <utils/hostosinfo.h>
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
@@ -45,6 +46,9 @@
 #define JPG_COMPRESS_STATE "JPGCompressState"
 #define DISABLE_FRAME_BUFFER_STATE "DisableFrameBufferState"
 #define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
+#define LAST_FIRMWARE_PATH "LastFirmwarePath"
+#define LAST_FLASH_FS_ERASE_STATE "LastFlashFSEraseState"
+#define LAST_BOARD_TYPE_STATE "LastBoardTypeState"
 #define LAST_SERIAL_PORT_STATE "LastSerialPortState"
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
@@ -61,6 +65,12 @@
 
 #define FPS_AVERAGE_BUFFER_DEPTH    10 // in samples
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
+
+#define OLD_API_MAJOR 1
+#define OLD_API_MINOR 7
+#define OLD_API_PATCH 0
+
+#define OLD_API_BOARD "OMV2"
 
 namespace OpenMV {
 namespace Internal {
@@ -79,7 +89,8 @@ public:
 
 public slots: // private
 
-    void connectClicked();
+    void bootloaderClicked();
+    void connectClicked(bool forceBootloader = false, QString forceFirmwarePath = QString(), int forceFlashFSErase = int());
     void disconnectClicked(bool reset = false);
     void startClicked();
     void stopClicked();
@@ -101,6 +112,7 @@ private:
 
     QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
 
+    Core::Command *m_bootloaderCommand;
     Core::Command *m_saveCommand;
     Core::Command *m_resetCommand;
     Core::Command *m_docsCommand;

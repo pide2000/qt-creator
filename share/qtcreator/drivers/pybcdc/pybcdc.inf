@@ -2,10 +2,9 @@
 
 [Strings]
 DriverPackageDisplayName="Python Board USB Driver"
-ManufacturerName="OpenMV, LLC (openmv.io)"
+ManufacturerName="OpenMV, LLC (http://www.openmv.io)"
 ServiceName="USB RS-232 Emulation Driver"
-SerEnumServiceName="SerEnum Filter Driver"
-description="Python Board USB Comm Port"
+description="Python Board USB COM Port"
 
 [DefaultInstall]
 CopyINF=pybcdc.inf
@@ -17,10 +16,10 @@ Signature="$Windows NT$"
 Provider=%ManufacturerName%
 DriverPackageDisplayName=%DriverPackageDisplayName%
 CatalogFile=pybcdc.cat
-DriverVer=12/16/2013,1.0.0.1
+DriverVer=09/09/2016,1.1.1.0
 
 [Manufacturer]
-%ManufacturerName%=DeviceList, NTamd64, NTia64
+%ManufacturerName%=DeviceList,NTamd64,NTia64
 
 [DestinationDirs]
 FakeModemCopyFileSection=12
@@ -40,21 +39,14 @@ include=mdmcpq.inf,usb.inf
 CopyFiles=FakeModemCopyFileSection
 AddReg=DriverAddReg
 
-[DriverInstall.HW]
-AddReg=DriverAddReg.HW
-
 [DriverAddReg]
-HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
-
-[DriverAddReg.HW]
 HKR,,DevLoader,,*ntkern
 HKR,,NTMPDriver,,usbser.sys
-HKR,,"UpperFilters",0x00010000,"serenum"
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
 
 [DriverInstall.Services]
 include=mdmcpq.inf
 AddService=usbser,0x00000002,DriverService
-AddService=serenum,,SerEnumDriverService
 
 [DriverService]
 DisplayName=%ServiceName%
@@ -63,11 +55,3 @@ StartType=3
 ErrorControl=1
 ServiceBinary=%12%\usbser.sys
 LoadOrderGroup=Base
-
-[SerEnumDriverService]
-DisplayName=%SerEnumServiceName%
-ServiceType=1
-StartType=3
-ErrorControl=1
-ServiceBinary=%12%\serenum.sys
-LoadOrderGroup=PNP Filter
