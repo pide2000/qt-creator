@@ -21,8 +21,8 @@
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
 #include <utils/environment.h>
-#include <utils/pathchooser.h>
 #include <utils/hostosinfo.h>
+#include <utils/pathchooser.h>
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
 

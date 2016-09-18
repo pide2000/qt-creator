@@ -565,7 +565,6 @@ void OpenMVPlugin::bootloaderClicked()
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
     dialog->setWindowTitle(tr("Bootloader"));
     QFormLayout *layout = new QFormLayout(dialog);
-    layout->addRow(new QLabel(tr("Select a binary file to flash onto your OpenMV Cam.")));
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -581,9 +580,12 @@ void OpenMVPlugin::bootloaderClicked()
     checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
     layout->addRow(checkBox);
 
-    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
+    QPushButton *run = new QPushButton(tr("Run"));
+    box->addButton(run, QDialogButtonBox::AcceptRole);
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+    connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
     layout->addRow(box);
 
     if(dialog->exec() == QDialog::Accepted)
@@ -591,24 +593,12 @@ void OpenMVPlugin::bootloaderClicked()
         QString firmwarePath = pathChooser->fileName().toString();
         bool flashFSErase = checkBox->isChecked();
 
-        if(pathChooser->fileName().toFileInfo().isFile())
-        {
-            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
-            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
-            settings->endGroup();
-            delete dialog;
+        settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
+        settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
+        settings->endGroup();
+        delete dialog;
 
-            connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
-        }
-        else
-        {
-            settings->endGroup();
-            delete dialog;
-
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Bootloader"),
-                tr("\"%L1\" is not a file!").arg(firmwarePath));
-        }
+        connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
     }
     else
     {
