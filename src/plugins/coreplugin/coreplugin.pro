@@ -253,7 +253,12 @@ else:unix {
     IMAGE_SIZE_LIST = 16 24 32 48 64 128 256 512
 
     for(imagesize, IMAGE_SIZE_LIST) {
-        eval(image$${imagesize}.files = images/logo/$${imagesize}/QtProject-qtcreator.png)
+        #OPENMV-DIFF#
+        #eval(image$${imagesize}.files = images/logo/$${imagesize}/QtProject-qtcreator.png)
+        #OPENMV-DIFF#
+        eval(image$${imagesize}.extra = mkdir -p $$OUT_PWD/../../../install/share/icons/hicolor/$${imagesize}x$${imagesize}/apps && cp $$PWD/../../../../openmv-media/icons/openmv-icon/openmv$${imagesize}x$${imagesize}.png $$OUT_PWD/../../../install/share/icons/hicolor/$${imagesize}x$${imagesize}/apps/OpenMV-openmvide.png)
+        eval(image$${imagesize}.files = $$OUT_PWD/../../../install/share/icons/hicolor/$${imagesize}x$${imagesize}/apps/OpenMV-openmvide.png)
+        #OPENMV-DIFF#
         eval(image$${imagesize}.path = $$QTC_PREFIX/share/icons/hicolor/$${imagesize}x$${imagesize}/apps)
         INSTALLS += image$${imagesize}
     }

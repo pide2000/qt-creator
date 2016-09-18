@@ -1811,9 +1811,9 @@ void OpenMVPlugin::setPortPath()
         && info.isReady()
         && (!info.isRoot())
         && (!info.isReadOnly())
-        && (QString::fromLatin1(info.fileSystemType()).contains(Utils::HostOsInfo::isMacHost() ? QStringLiteral("msdos") : QStringLiteral("fat"), Qt::CaseInsensitive))
-        && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive))
-        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive)))
+        && ((QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"))) || (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"))))
+        && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
+        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive)))
         {
             drives.append(info.rootPath());
         }

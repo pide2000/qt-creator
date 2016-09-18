@@ -226,7 +226,7 @@ Component.prototype.createOperations = function()
                                 //OPENMV-DIFF//
                                 //"Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=Qt Creator\nGenericName=The IDE of choice for Qt development.\nGenericName[de]=Die IDE der Wahl zur Qt Entwicklung\nIcon=QtProject-qtcreator\nTerminal=false\nCategories=Development;IDE;Qt;\nMimeType=text/x-c++src;text/x-c++hdr;text/x-xsrc;application/x-designer;application/vnd.nokia.qt.qmakeprofile;application/vnd.nokia.xml.qt.resource;text/x-qml;text/x-qt.qml;text/x-qt.qbs;"
                                 //OPENMV-DIFF//
-                                "Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=OpenMV IDE\nGenericName=The IDE of choice for OpenMV Cam Development.\nGenericName[de]=Die IDE der Wahl zur OpenMV Cam Entwicklung\nIcon=OpenMV-openmvide\nTerminal=false\nCategories=Development;IDE;"
+                                "Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=OpenMV IDE\nGenericName=The IDE of choice for OpenMV Cam Development.\nGenericName[de]=Die IDE der Wahl zur OpenMV Cam Entwicklung\nIcon=OpenMV-openmvide\nTerminal=false\nCategories=Development;IDE;\nMimeType=text/x-python;"
                                 //OPENMV-DIFF//
                                 );
     }

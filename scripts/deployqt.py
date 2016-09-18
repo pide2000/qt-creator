@@ -307,7 +307,7 @@ def main():
     #OPENMV-DIFF#
     #plugins = ['accessible', 'codecs', 'designer', 'iconengines', 'imageformats', 'platformthemes', 'platforminputcontexts', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
     #OPENMV-DIFF#
-    plugins = ['iconengines', 'imageformats', 'platforms', 'printsupport', 'sqldrivers']
+    plugins = ['egldeviceintegrations', 'iconengines', 'imageformats', 'platforms', 'printsupport', 'sqldrivers', 'xcbglintegrations']
     #OPENMV-DIFF#
     imports = ['Qt', 'QtWebKit']
 
