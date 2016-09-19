@@ -1144,7 +1144,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     {
                                         QEventLoop loop;
 
-                                        QTimer::singleShot(1000, &loop, &QEventLoop::quit);
+                                        QTimer::singleShot(2000, &loop, &QEventLoop::quit);
 
                                         m_iodevice->flashErase(i);
 
@@ -1813,7 +1813,7 @@ void OpenMVPlugin::setPortPath()
         && (!info.isReadOnly())
         && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
         && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
-        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive)))
+        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
         {
             drives.append(info.rootPath());
         }

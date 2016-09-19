@@ -7,6 +7,14 @@
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
 
+// Originally, the OpenMV Cam's firmware was written for libusb. However, libusb
+// was not portable to Windows/Mac from Linux. The "hack" fix for this was to move
+// the libsub serial functions into USB CDC calls. This only works as long as
+// serial data is delivered in seperate USB packets to the camera. All the serial
+// code in the IDE has been written to achieve this packetizing goal...
+
+#define PACKET_LEN 60
+
 class OpenMVPluginSerialPort_private : public QObject
 {
     Q_OBJECT

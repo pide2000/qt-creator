@@ -93,11 +93,11 @@ static QByteArray byteSwap(QByteArray buffer, bool ok)
     return buffer;
 }
 
-static QByteArray pad64Bytes(QByteArray buffer)
+static QByteArray padPacketLen(QByteArray buffer)
 {
-    if((!buffer.size()) || (buffer.size() % 64))
+    if((!buffer.size()) || (buffer.size() % PACKET_LEN))
     {
-        buffer.append(QByteArray(64 - (buffer.size() % 64), 0));
+        buffer.append(QByteArray(PACKET_LEN - (buffer.size() % PACKET_LEN), 0));
     }
 
     return buffer;
@@ -210,7 +210,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_FRAME_DUMP);
                         serializeLong(buffer, size);
-                        m_commandQueue.push_front(pad64Bytes(buffer));
+                        m_commandQueue.push_front(padPacketLen(buffer));
 
                         m_expectedHeaderQueue.push_front(__USBDBG_FRAME_DUMP);
                         m_expectedDataQueue.push_front(size);
@@ -261,7 +261,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_TX_BUF);
                         serializeLong(buffer, len);
-                        m_commandQueue.push_front(pad64Bytes(buffer));
+                        m_commandQueue.push_front(padPacketLen(buffer));
 
                         m_expectedHeaderQueue.push_front(__USBDBG_TX_BUF);
                         m_expectedDataQueue.push_front(len);
@@ -402,7 +402,7 @@ void OpenMVPluginIO::getFirmwareVersion()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_FW_VERSION);
     serializeLong(buffer, FW_VERSION_RESPONSE_LEN);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_FW_VERSION);
     m_expectedDataQueue.enqueue(FW_VERSION_RESPONSE_LEN);
@@ -414,7 +414,7 @@ void OpenMVPluginIO::getArchString()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_ARCH_STR);
     serializeLong(buffer, ARCH_STR_RESPONSE_LEN);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_ARCH_STR);
     m_expectedDataQueue.enqueue(ARCH_STR_RESPONSE_LEN);
@@ -426,7 +426,7 @@ void OpenMVPluginIO::frameSizeDump()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_FRAME_SIZE);
     serializeLong(buffer, FRAME_SIZE_RESPONSE_LEN);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_SIZE);
     m_expectedDataQueue.enqueue(FRAME_SIZE_RESPONSE_LEN);
@@ -434,11 +434,11 @@ void OpenMVPluginIO::frameSizeDump()
 
 void OpenMVPluginIO::scriptExec(const QByteArray &data)
 {
-    QByteArray buffer, buffer2 = pad64Bytes(data).replace('\0', '\n');
+    QByteArray buffer, buffer2 = padPacketLen(data).replace('\0', '\n');
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_EXEC);
     serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(pad64Bytes(buffer) + buffer2);
+    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -450,7 +450,7 @@ void OpenMVPluginIO::scriptStop()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_STOP);
     serializeLong(buffer, int());
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -462,7 +462,7 @@ void OpenMVPluginIO::getScriptRunning()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_RUNNING);
     serializeLong(buffer, SCRIPT_RUNNING_RESPONSE_LEN);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_SCRIPT_RUNNING);
     m_expectedDataQueue.enqueue(SCRIPT_RUNNING_RESPONSE_LEN);
@@ -477,9 +477,9 @@ void OpenMVPluginIO::templateSave(int x, int y, int w, int h, const QByteArray &
     serializeWord(buffer2, y);
     serializeWord(buffer2, w);
     serializeWord(buffer2, h);
-    buffer2 = pad64Bytes(buffer2 + path);
+    buffer2 = padPacketLen(buffer2 + path);
     serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(pad64Bytes(buffer) + buffer2);
+    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -494,9 +494,9 @@ void OpenMVPluginIO::descriptorSave(int x, int y, int w, int h, const QByteArray
     serializeWord(buffer2, y);
     serializeWord(buffer2, w);
     serializeWord(buffer2, h);
-    buffer2 = pad64Bytes(buffer2 + path);
+    buffer2 = padPacketLen(buffer2 + path);
     serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(pad64Bytes(buffer) + buffer2);
+    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -510,7 +510,7 @@ void OpenMVPluginIO::setAttribute(int attribute, int value)
     serializeLong(buffer, int());
     serializeWord(buffer, attribute);
     serializeWord(buffer, value);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -523,7 +523,7 @@ void OpenMVPluginIO::getAttribute(int attribute)
     serializeByte(buffer, __USBDBG_ATTR_READ);
     serializeLong(buffer, ATTR_READ_RESPONSE_LEN);
     serializeWord(buffer, attribute);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_ATTR_READ);
     m_expectedDataQueue.enqueue(ATTR_READ_RESPONSE_LEN);
@@ -535,7 +535,7 @@ void OpenMVPluginIO::sysReset()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SYS_RESET);
     serializeLong(buffer, int());
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -548,7 +548,7 @@ void OpenMVPluginIO::fbEnable(bool enabled)
     serializeByte(buffer, __USBDBG_FB_ENABLE);
     serializeLong(buffer, int());
     serializeWord(buffer, enabled ? true : false);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -575,7 +575,7 @@ void OpenMVPluginIO::getTxBuffer()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_TX_BUF_LEN);
     serializeLong(buffer, TX_BUF_LEN_RESPONSE_LEN);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__USBDBG_TX_BUF_LEN);
     m_expectedDataQueue.enqueue(TX_BUF_LEN_RESPONSE_LEN);
@@ -585,7 +585,7 @@ void OpenMVPluginIO::bootloaderStart()
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_START);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(__BOOTLDR_START);
     m_expectedDataQueue.enqueue(BOOTLDR_START_RESPONSE_LEN);
@@ -595,7 +595,7 @@ void OpenMVPluginIO::bootloaderReset()
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_RESET);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -606,7 +606,7 @@ void OpenMVPluginIO::flashErase(int sector)
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_ERASE);
     serializeLong(buffer, sector);
-    m_commandQueue.enqueue(pad64Bytes(buffer));
+    m_commandQueue.enqueue(padPacketLen(buffer));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
@@ -616,7 +616,7 @@ void OpenMVPluginIO::flashWrite(const QByteArray &data)
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_WRITE);
-    m_commandQueue.enqueue(pad64Bytes(buffer + data));
+    m_commandQueue.enqueue(padPacketLen(buffer + data));
 
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());

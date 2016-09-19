@@ -62,12 +62,17 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data)
     }
     else if(m_port)
     {
-        m_port->clearError();
-
-        if((m_port->write(data) != data.size()) || (!m_port->flush()))
+        for(int i = 0; i < data.size() / PACKET_LEN; i++)
         {
-            delete m_port;
-            m_port = Q_NULLPTR;
+            m_port->clearError();
+
+            QByteArray bytes = data.mid(i * PACKET_LEN, PACKET_LEN);
+
+            if((m_port->write(bytes) != bytes.size()) || (!m_port->flush()))
+            {
+                delete m_port;
+                m_port = Q_NULLPTR;
+            }
         }
     }
 }
@@ -86,6 +91,7 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 {
     QThread *thread = new QThread;
     OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
+
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,
