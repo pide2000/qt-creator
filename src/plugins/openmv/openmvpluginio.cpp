@@ -97,7 +97,7 @@ static QByteArray pad64Bytes(QByteArray buffer)
 {
     if((!buffer.size()) || (buffer.size() % 64))
     {
-        buffer.append(64 - (buffer.size() % 64), 0);
+        buffer.append(QByteArray(64 - (buffer.size() % 64), 0));
     }
 
     return buffer;
