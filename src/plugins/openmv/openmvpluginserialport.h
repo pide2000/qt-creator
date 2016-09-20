@@ -4,6 +4,8 @@
 #include <QtCore>
 #include <QtSerialPort>
 
+#include <utils/hostosinfo.h>
+
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
 

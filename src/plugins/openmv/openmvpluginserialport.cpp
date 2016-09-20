@@ -79,7 +79,11 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data)
                 break;
             }
 
-            m_port->waitForBytesWritten(1);
+            if(Utils::HostOsInfo::isMacHost()
+            || Utils::HostOsInfo::isLinuxHost())
+            {
+                m_port->waitForBytesWritten(1);
+            }
         }
     }
 }

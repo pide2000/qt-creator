@@ -1,6 +1,6 @@
 # Hello World Example
 #
-# Welcome to the OpenMV IDE! Click on the gear button above to run the script!
+# Welcome to the OpenMV IDE! Click on the start button below to run the script!
 
 import sensor, image, time
 
