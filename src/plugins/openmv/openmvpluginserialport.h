@@ -13,7 +13,7 @@
 // serial data is delivered in seperate USB packets to the camera. All the serial
 // code in the IDE has been written to achieve this packetizing goal...
 
-#define PACKET_LEN 60
+#define PACKET_LEN 60 // 64 byte packets don't work on Mac (must be mult of 4).
 
 class OpenMVPluginSerialPort_private : public QObject
 {

@@ -696,8 +696,10 @@ void MainWindow::registerDefaultActions()
         QAction *closeAction = new QAction(tr("Close Window"), this);
         closeAction->setEnabled(false);
         cmd = ActionManager::registerAction(closeAction, Constants::CLOSE_WINDOW);
-        cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Meta+W")));
-        mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+        //OPENMV-DIFF//
+        //cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Meta+W")));
+        //mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+        //OPENMV-DIFF//
 
         mwindow->addSeparator(Constants::G_WINDOW_SIZE);
     }

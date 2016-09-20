@@ -137,7 +137,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     QAction *pinoutAction = new QAction(
          Utils::HostOsInfo::isMacHost() ? tr("About OpenMV Cam") : tr("About OpenMV Cam..."), this);
-    pinoutAction->setMenuRole(QAction::ApplicationSpecificRole);
+    pinoutAction->setMenuRole(QAction::AboutRole);
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
@@ -398,6 +398,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_portLabel = new QLabel(tr("Serial Port:"));
     m_portLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_portLabel);
+    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     m_pathButton = new QToolButton;
     m_pathButton->setText(tr("Drive:"));
@@ -411,12 +412,13 @@ void OpenMVPlugin::extensionsInitialized()
     m_versionLabel = new QLabel(tr("Firmware Version:"));
     m_versionLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_versionLabel);
+    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     m_fpsLabel = new QLabel(tr("FPS:"));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
     m_fpsLabel->setDisabled(true);
+    m_fpsLabel->setMinimumWidth(m_fpsLabel->fontMetrics().width(QStringLiteral("FPS: 000.000")));
     Core::ICore::statusBar()->addPermanentWidget(m_fpsLabel);
-    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     ///////////////////////////////////////////////////////////////////////////
 

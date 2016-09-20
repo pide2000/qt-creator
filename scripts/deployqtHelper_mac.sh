@@ -30,35 +30,41 @@
 
 echo "Deploying Qt"
 
-# collect designer plugins
-designerDestDir="$1/Contents/PlugIns/designer"
-if [ ! -d "$designerDestDir" ]; then
-    echo "- Copying designer plugins"
-    mkdir -p "$designerDestDir"
-    for plugin in "$3"/designer/*.dylib; do
-        cp "$plugin" "$designerDestDir"/ || exit 1
-    done
-fi
+#OPENMV-DIFF#
+## collect designer plugins
+#designerDestDir="$1/Contents/PlugIns/designer"
+#if [ ! -d "$designerDestDir" ]; then
+#    echo "- Copying designer plugins"
+#    mkdir -p "$designerDestDir"
+#    for plugin in "$3"/designer/*.dylib; do
+#        cp "$plugin" "$designerDestDir"/ || exit 1
+#    done
+#fi
+#OPENMV-DIFF#
 
-# copy Qt Quick 1 imports
-importsDir="$1/Contents/Imports/qtquick1"
-if [ -d "$4" ]; then
-    if [ ! -d "$importsDir" ]; then
-        echo "- Copying Qt Quick 1 imports"
-        mkdir -p "$importsDir"
-        cp -R "$4"/ "$importsDir"/
-    fi
-fi
+#OPENMV-DIFF#
+## copy Qt Quick 1 imports
+#importsDir="$1/Contents/Imports/qtquick1"
+#if [ -d "$4" ]; then
+#    if [ ! -d "$importsDir" ]; then
+#        echo "- Copying Qt Quick 1 imports"
+#        mkdir -p "$importsDir"
+#        cp -R "$4"/ "$importsDir"/
+#    fi
+#fi
+#OPENMV-DIFF#
 
-# copy Qt Quick 2 imports
-imports2Dir="$1/Contents/Imports/qtquick2"
-if [ -d "$5" ]; then
-    if [ ! -d "$imports2Dir" ]; then
-        echo "- Copying Qt Quick 2 imports"
-        mkdir -p "$imports2Dir"
-        cp -R "$5"/ "$imports2Dir"/
-    fi
-fi
+#OPENMV-DIFF#
+## copy Qt Quick 2 imports
+#imports2Dir="$1/Contents/Imports/qtquick2"
+#if [ -d "$5" ]; then
+#    if [ ! -d "$imports2Dir" ]; then
+#        echo "- Copying Qt Quick 2 imports"
+#        mkdir -p "$imports2Dir"
+#        cp -R "$5"/ "$imports2Dir"/
+#    fi
+#fi
+#OPENMV-DIFF#
 
 # copy qt creator qt.conf
 if [ ! -f "$1/Contents/Resources/qt.conf" ]; then
@@ -66,21 +72,21 @@ if [ ! -f "$1/Contents/Resources/qt.conf" ]; then
     cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/qt.conf" "$1/Contents/Resources/qt.conf" || exit 1
 fi
 
-# OPENMV-DIFF #
+#OPENMV-DIFF#
 ## copy ios tools' qt.conf
 #if [ ! -f "$1/Contents/Resources/ios/qt.conf" ]; then
 #    echo "- Copying ios/qt.conf"
 #    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/ios_qt.conf" "$1/Contents/Resources/ios/qt.conf" || exit 1
 #fi
-# OPENMV-DIFF #
+#OPENMV-DIFF#
 
-# OPENMV-DIFF #
+#OPENMV-DIFF#
 ## copy qml2puppet's qt.conf
 #if [ ! -f "$1/Contents/Resources/qmldesigner/qt.conf" ]; then
 #    echo "- Copying qmldesigner/qt.conf"
 #    cp -f "$(dirname "${BASH_SOURCE[0]}")/../dist/installer/mac/qmldesigner_qt.conf" "$1/Contents/Resources/qmldesigner/qt.conf" || exit 1
 #fi
-# OPENMV-DIFF #
+#OPENMV-DIFF#
 
 # copy Qt translations
 # check for known existing translation to avoid copying multiple times
@@ -127,7 +133,7 @@ if [ ! -d "$1/Contents/Frameworks/QtCore.framework" ]; then
 
     echo "- Running macdeployqt ($(which macdeployqt))"
 
-    # OPENMV-DIFF #
+    #OPENMV-DIFF#
     #macdeployqt "$1" \
     #    "-executable=$1/Contents/Resources/qtpromaker" \
     #    "-executable=$1/Contents/Resources/sdktool" \
@@ -144,9 +150,8 @@ if [ ! -d "$1/Contents/Frameworks/QtCore.framework" ]; then
     #    "-executable=$qbsapp-setup-qt" \
     #    "-executable=$qbsapp-setup-toolchains" \
     #    "$qml2puppetArgument" "$clangbackendArgument" || exit 1
-    # OPENMV-DIFF #
-    macdeployqt "$1" \
-        "$qml2puppetArgument" "$clangbackendArgument" || exit 1
-    # OPENMV-DIFF #
+    #OPENMV-DIFF#
+    macdeployqt "$1" || exit 1
+    #OPENMV-DIFF#
 
 fi
