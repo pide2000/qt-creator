@@ -6,23 +6,25 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_TIMEOUT  2000 // in ms
-#define USBDBG_COMMAND_RETRY    1
+#define USBDBG_COMMAND_TIMEOUT          2000
 
-#define ATTR_CONTRAST       0
-#define ATTR_BRIGHTNESS     1
-#define ATTR_SATURATION     2
-#define ATTR_GAINCEILING    3
+#define ATTR_CONTRAST                   0
+#define ATTR_BRIGHTNESS                 1
+#define ATTR_SATURATION                 2
+#define ATTR_GAINCEILING                3
 
-#define TEMPLATE_SAVE_PATH_MAX_LEN      (PACKET_LEN-9)
-#define DESCRIPTOR_SAVE_PATH_MAX_LEN    (PACKET_LEN-9)
+#define TEMPLATE_SAVE_PATH_MAX_LEN      55
+#define DESCRIPTOR_SAVE_PATH_MAX_LEN    55
 
-#define FLASH_SECTOR_START      4
-#define FLASH_SECTOR_END        11
-#define FLASH_SECTOR_ALL_START  1
-#define FLASH_SECTOR_ALL_END    11
+#define FLASH_SECTOR_START              4
+#define FLASH_SECTOR_END                11
+#define FLASH_SECTOR_ALL_START          1
+#define FLASH_SECTOR_ALL_END            11
 
-#define FLASH_WRITE_CHUNK_SIZE  (PACKET_LEN-4)
+#define FLASH_WRITE_CHUNK_SIZE          56
+
+#define FLASH_ERASE_DELAY               2000
+#define FLASH_WRITE_DELAY               1
 
 class OpenMVPluginIO : public QObject
 {
@@ -80,9 +82,9 @@ private:
 
     OpenMVPluginSerialPort *m_port;
     QTimer *m_timer;
+
     int m_processingResponse;
-    int m_retryCounter;
-    QQueue<QByteArray> m_commandQueue;
+    QQueue<OpenMVPluginSerialPortData> m_commandQueue;
     QQueue<int> m_expectedHeaderQueue;
     QQueue<int> m_expectedDataQueue;
     QByteArray m_receivedBytes;

@@ -4,18 +4,16 @@
 #include <QtCore>
 #include <QtSerialPort>
 
-#include <utils/hostosinfo.h>
-
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
 
-// Originally, the OpenMV Cam's firmware was written for libusb. However, libusb
-// was not portable to Windows/Mac from Linux. The "hack" fix for this was to move
-// the libsub serial functions into USB CDC calls. This only works as long as
-// serial data is delivered in seperate USB packets to the camera. All the serial
-// code in the IDE has been written to achieve this packetizing goal...
+#define TABOO_PACKET_SIZE 64
 
-#define PACKET_LEN 60 // 64 byte packets don't work on Mac (must be mult of 4).
+#define SET_START_END_DELAY(start_delay, end_delay) ((((start_delay) & 0xFFFF) << 0) | (((end_delay) & 0xFFFF) << 16))
+#define GET_START_DELAY(start_end_delay) (((start_end_delay) >> 0) & 0xFFFF)
+#define GET_END_DELAY(start_end_delay) (((start_end_delay) >> 16) & 0xFFFF)
+
+typedef QPair<QByteArray, int> OpenMVPluginSerialPortData;
 
 class OpenMVPluginSerialPort_private : public QObject
 {
@@ -28,7 +26,7 @@ public:
 public slots:
 
     void open(const QString &portName);
-    void write(const QByteArray &data);
+    void write(const OpenMVPluginSerialPortData &data);
 
 public slots: // private
 
@@ -64,7 +62,7 @@ signals:
     void open(const QString &portName);
     void openResult(const QString &errorMessage);
 
-    void write(const QByteArray &data);
+    void write(const OpenMVPluginSerialPortData &data);
     void readAll(const QByteArray &data);
 };
 

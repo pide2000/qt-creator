@@ -37,8 +37,6 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 
     if(m_port)
     {
-        emit openResult(QString());
-
         QTimer *timer = new QTimer(m_port);
 
         connect(timer, &QTimer::timeout,
@@ -46,43 +44,46 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 
         timer->start(1);
 
-        m_port->clear();
-
-        write(QByteArray(PACKET_LEN, 0));
+        emit openResult(QString());
     }
 }
 
-void OpenMVPluginSerialPort_private::write(const QByteArray &data)
+void OpenMVPluginSerialPort_private::write(const OpenMVPluginSerialPortData &data)
 {
-    if(data.isEmpty())
+    if(data.first.isEmpty())
     {
-        emit readAll(QByteArray());
-
         if(m_port)
         {
             delete m_port;
             m_port = Q_NULLPTR;
         }
+
+        emit readAll(QByteArray());
     }
     else if(m_port)
     {
-        for(int i = 0; i < data.size() / PACKET_LEN; i++)
+        if(GET_START_DELAY(data.second))
         {
-            QByteArray bytes = data.mid(i * PACKET_LEN, PACKET_LEN);
+            QThread::msleep(GET_START_DELAY(data.second));
+        }
 
-            m_port->clearError();
+        m_port->clearError();
 
-            if((m_port->write(bytes) != bytes.size()) || (!m_port->flush()))
-            {
-                delete m_port;
-                m_port = Q_NULLPTR;
-                break;
-            }
-
-            if(Utils::HostOsInfo::isMacHost()
-            || Utils::HostOsInfo::isLinuxHost())
+        if((m_port->write(data.first) != data.first.size()) || (!m_port->flush()))
+        {
+            delete m_port;
+            m_port = Q_NULLPTR;
+        }
+        else
+        {
+            while(m_port->bytesToWrite())
             {
                 m_port->waitForBytesWritten(1);
+            }
+
+            if(GET_END_DELAY(data.second))
+            {
+                QThread::msleep(GET_END_DELAY(data.second));
             }
         }
     }
@@ -102,6 +103,7 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 {
     QThread *thread = new QThread;
     OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
+
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,

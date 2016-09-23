@@ -1,41 +1,89 @@
 #include "openmvpluginio.h"
 
-#define __USBDBG_CMD                0x30
-#define __USBDBG_FW_VERSION         0x80
-#define __USBDBG_FRAME_SIZE         0x81
-#define __USBDBG_FRAME_DUMP         0x82
-#define __USBDBG_ARCH_STR           0x83
-#define __USBDBG_SCRIPT_EXEC        0x05
-#define __USBDBG_SCRIPT_STOP        0x06
-#define __USBDBG_SCRIPT_RUNNING     0x87
-#define __USBDBG_TEMPLATE_SAVE      0x08
-#define __USBDBG_DESCRIPTOR_SAVE    0x09
-#define __USBDBG_ATTR_READ          0x8A
-#define __USBDBG_ATTR_WRITE         0x0B
-#define __USBDBG_SYS_RESET          0x0C
-#define __USBDBG_FB_ENABLE          0x0D
-#define __USBDBG_JPEG_ENABLE        0x0E
-#define __USBDBG_TX_BUF_LEN         0x8E
-#define __USBDBG_TX_BUF             0x8F
+#define __USBDBG_CMD                    0x30
+#define __USBDBG_FW_VERSION             0x80
+#define __USBDBG_FRAME_SIZE             0x81
+#define __USBDBG_FRAME_DUMP             0x82
+#define __USBDBG_ARCH_STR               0x83
+#define __USBDBG_SCRIPT_EXEC            0x05
+#define __USBDBG_SCRIPT_STOP            0x06
+#define __USBDBG_SCRIPT_RUNNING         0x87
+#define __USBDBG_TEMPLATE_SAVE          0x08
+#define __USBDBG_DESCRIPTOR_SAVE        0x09
+#define __USBDBG_ATTR_READ              0x8A
+#define __USBDBG_ATTR_WRITE             0x0B
+#define __USBDBG_SYS_RESET              0x0C
+#define __USBDBG_FB_ENABLE              0x0D
+#define __USBDBG_JPEG_ENABLE            0x0E
+#define __USBDBG_TX_BUF_LEN             0x8E
+#define __USBDBG_TX_BUF                 0x8F
 
-#define __BOOTLDR_START             static_cast<int>(0xABCD0001)
-#define __BOOTLDR_RESET             static_cast<int>(0xABCD0002)
-#define __BOOTLDR_ERASE             static_cast<int>(0xABCD0004)
-#define __BOOTLDR_WRITE             static_cast<int>(0xABCD0008)
+#define __BOOTLDR_START                 static_cast<int>(0xABCD0001)
+#define __BOOTLDR_RESET                 static_cast<int>(0xABCD0002)
+#define __BOOTLDR_ERASE                 static_cast<int>(0xABCD0004)
+#define __BOOTLDR_WRITE                 static_cast<int>(0xABCD0008)
 
-#define FW_VERSION_RESPONSE_LEN     12
-#define ARCH_STR_RESPONSE_LEN       64
-#define FRAME_SIZE_RESPONSE_LEN     12
-#define SCRIPT_RUNNING_RESPONSE_LEN 4
-#define ATTR_READ_RESPONSE_LEN      1
-#define TX_BUF_LEN_RESPONSE_LEN     4
+#define FW_VERSION_RESPONSE_LEN         12
+#define ARCH_STR_RESPONSE_LEN           64
+#define FRAME_SIZE_RESPONSE_LEN         12
+#define SCRIPT_RUNNING_RESPONSE_LEN     4
+#define ATTR_READ_RESPONSE_LEN          1
+#define TX_BUF_LEN_RESPONSE_LEN         4
 
-#define BOOTLDR_START_RESPONSE_LEN  4
+#define BOOTLDR_START_RESPONSE_LEN      4
 
-#define IS_JPG(bpp)                 ((bpp) >= 3)
-#define IS_RGB(bpp)                 ((bpp) == 2)
-#define IS_GS(bpp)                  ((bpp) == 1)
-#define IS_BINARY(bpp)              ((bpp) == 0)
+#define IS_JPG(bpp)                     ((bpp) >= 3)
+#define IS_RGB(bpp)                     ((bpp) == 2)
+#define IS_GS(bpp)                      ((bpp) == 1)
+#define IS_BINARY(bpp)                  ((bpp) == 0)
+
+#define FW_VERSION_START_DELAY          100
+#define FW_VERSION_END_DELAY            0
+#define FRAME_SIZE_START_DELAY          0
+#define FRAME_SIZE_END_DELAY            0
+#define FRAME_DUMP_START_DELAY          0
+#define FRAME_DUMP_END_DELAY            0
+#define ARCH_STR_START_DELAY            0
+#define ARCH_STR_END_DELAY              0
+#define SCRIPT_EXEC_START_DELAY         0
+#define SCRIPT_EXEC_END_DELAY           0
+#define SCRIPT_EXEC_2_START_DELAY       0
+#define SCRIPT_EXEC_2_END_DELAY         0
+#define SCRIPT_STOP_START_DELAY         50
+#define SCRIPT_STOP_END_DELAY           50
+#define SCRIPT_RUNNING_START_DELAY      0
+#define SCRIPT_RUNNING_END_DELAY        0
+#define TEMPLATE_SAVE_START_DELAY       0
+#define TEMPLATE_SAVE_END_DELAY         0
+#define TEMPLATE_SAVE_2_START_DELAY     0
+#define TEMPLATE_SAVE_2_END_DELAY       0
+#define DESCRIPTOR_SAVE_START_DELAY     0
+#define DESCRIPTOR_SAVE_END_DELAY       0
+#define DESCRIPTOR_SAVE_2_START_DELAY   0
+#define DESCRIPTOR_SAVE_2_END_DELAY     0
+#define ATTR_READ_START_DELAY           0
+#define ATTR_READ_END_DELAY             0
+#define ATTR_WRITE_START_DELAY          0
+#define ATTR_WRITE_END_DELAY            0
+#define SYS_RESET_START_DELAY           0
+#define SYS_RESET_END_DELAY             0
+#define FB_ENABLE_START_DELAY           0
+#define FB_ENABLE_END_DELAY             0
+#define JPEG_ENABLE_START_DELAY         0
+#define JPEG_ENABLE_END_DELAY           0
+#define TX_BUF_LEN_START_DELAY          0
+#define TX_BUF_LEN_END_DELAY            0
+#define TX_BUF_START_DELAY              0
+#define TX_BUF_END_DELAY                0
+
+#define BOOTLDR_START_START_DELAY       0
+#define BOOTLDR_START_END_DELAY         0
+#define BOOTLDR_RESET_START_DELAY       0
+#define BOOTLDR_RESET_END_DELAY         0
+#define BOOTLDR_ERASE_START_DELAY       0
+#define BOOTLDR_ERASE_END_DELAY         0
+#define BOOTLDR_WRITE_START_DELAY       0
+#define BOOTLDR_WRITE_END_DELAY         0
 
 static void serializeByte(QByteArray &buffer, int value) // LittleEndian
 {
@@ -93,16 +141,6 @@ static QByteArray byteSwap(QByteArray buffer, bool ok)
     return buffer;
 }
 
-static QByteArray padPacketLen(QByteArray buffer)
-{
-    if((!buffer.size()) || (buffer.size() % PACKET_LEN))
-    {
-        buffer.append(QByteArray(PACKET_LEN - (buffer.size() % PACKET_LEN), 0));
-    }
-
-    return buffer;
-}
-
 OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : QObject(parent)
 {
     m_port = port;
@@ -117,8 +155,7 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
             this, &OpenMVPluginIO::timeout);
 
     m_processingResponse = int();
-    m_retryCounter = int();
-    m_commandQueue = QQueue<QByteArray>();
+    m_commandQueue = QQueue<OpenMVPluginSerialPortData>();
     m_expectedHeaderQueue = QQueue<int>();
     m_expectedDataQueue = QQueue<int>();
     m_receivedBytes = QByteArray();
@@ -139,17 +176,15 @@ void OpenMVPluginIO::processEvents()
 {
     if((!m_commandQueue.isEmpty()) && (!m_processingResponse))
     {
-        m_port->write(m_commandQueue.head());
+        m_port->write(m_commandQueue.dequeue());
 
         if(m_expectedHeaderQueue.head() && m_expectedDataQueue.head())
         {
             m_timer->start(USBDBG_COMMAND_TIMEOUT);
             m_processingResponse = m_expectedHeaderQueue.head();
-            m_retryCounter = USBDBG_COMMAND_RETRY;
         }
         else
         {
-            m_commandQueue.dequeue();
             m_expectedHeaderQueue.dequeue();
             m_expectedDataQueue.dequeue();
         }
@@ -175,8 +210,6 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
         if(m_receivedBytes.size() >= m_expectedDataQueue.head())
         {
             m_timer->stop();
-            m_retryCounter = int();
-            m_commandQueue.dequeue();
             int receivedBytes = m_expectedDataQueue.dequeue();
 
             switch(m_expectedHeaderQueue.dequeue())
@@ -210,7 +243,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_FRAME_DUMP);
                         serializeLong(buffer, size);
-                        m_commandQueue.push_front(padPacketLen(buffer));
+                        m_commandQueue.push_front(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(FRAME_DUMP_START_DELAY, FRAME_DUMP_END_DELAY)));
 
                         m_expectedHeaderQueue.push_front(__USBDBG_FRAME_DUMP);
                         m_expectedDataQueue.push_front(size);
@@ -261,7 +294,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                         serializeByte(buffer, __USBDBG_CMD);
                         serializeByte(buffer, __USBDBG_TX_BUF);
                         serializeLong(buffer, len);
-                        m_commandQueue.push_front(padPacketLen(buffer));
+                        m_commandQueue.push_front(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(TX_BUF_START_DELAY, TX_BUF_END_DELAY)));
 
                         m_expectedHeaderQueue.push_front(__USBDBG_TX_BUF);
                         m_expectedDataQueue.push_front(len);
@@ -295,77 +328,66 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
                 }
             }
 
-            m_processingResponse = int();
             m_receivedBytes.clear();
+            m_processingResponse = int();
         }
     }
 }
 
 void OpenMVPluginIO::timeout()
 {
-    if(m_retryCounter--)
-    {
-        m_port->write(m_commandQueue.head());
-        m_timer->start(USBDBG_COMMAND_TIMEOUT);
-        m_receivedBytes.clear();
-    }
-    else
-    {
-        m_retryCounter = int();
-        m_commandQueue.dequeue();
-        m_expectedDataQueue.dequeue();
-        m_receivedBytes.clear();
-        m_frameSizeW = int();
-        m_frameSizeH = int();
-        m_frameSizeBPP = int();
+    m_expectedDataQueue.dequeue();
+    m_receivedBytes.clear();
+    m_frameSizeW = int();
+    m_frameSizeH = int();
+    m_frameSizeBPP = int();
 
-        switch(m_expectedHeaderQueue.dequeue())
+    switch(m_expectedHeaderQueue.dequeue())
+    {
+        case __USBDBG_FW_VERSION:
         {
-            case __USBDBG_FW_VERSION:
-            {
-                emit firmwareVersion(int(), int(), int());
-                break;
-            }
-            case __USBDBG_ARCH_STR:
-            {
-                emit archString(QString());
-                break;
-            }
-            case __USBDBG_FRAME_SIZE:
-            {
-                break;
-            }
-            case __USBDBG_FRAME_DUMP:
-            {
-                break;
-            }
-            case __USBDBG_SCRIPT_RUNNING:
-            {
-                emit scriptRunning(bool());
-                break;
-            }
-            case __USBDBG_ATTR_READ:
-            {
-                emit attribute(int());
-                break;
-            }
-            case __USBDBG_TX_BUF_LEN:
-            {
-                break;
-            }
-            case __USBDBG_TX_BUF:
-            {
-                break;
-            }
-            case __BOOTLDR_START:
-            {
-                emit gotBootloaderStart(false);
-                break;
-            }
+            emit firmwareVersion(int(), int(), int());
+            break;
         }
-
-        m_processingResponse = int();
+        case __USBDBG_ARCH_STR:
+        {
+            emit archString(QString());
+            break;
+        }
+        case __USBDBG_FRAME_SIZE:
+        {
+            break;
+        }
+        case __USBDBG_FRAME_DUMP:
+        {
+            break;
+        }
+        case __USBDBG_SCRIPT_RUNNING:
+        {
+            emit scriptRunning(bool());
+            break;
+        }
+        case __USBDBG_ATTR_READ:
+        {
+            emit attribute(int());
+            break;
+        }
+        case __USBDBG_TX_BUF_LEN:
+        {
+            break;
+        }
+        case __USBDBG_TX_BUF:
+        {
+            break;
+        }
+        case __BOOTLDR_START:
+        {
+            emit gotBootloaderStart(false);
+            break;
+        }
     }
+
+    m_processingResponse = int();
 }
 
 bool OpenMVPluginIO::frameSizeDumpQueued() const
@@ -402,8 +424,7 @@ void OpenMVPluginIO::getFirmwareVersion()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_FW_VERSION);
     serializeLong(buffer, FW_VERSION_RESPONSE_LEN);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(FW_VERSION_START_DELAY, FW_VERSION_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_FW_VERSION);
     m_expectedDataQueue.enqueue(FW_VERSION_RESPONSE_LEN);
 }
@@ -414,8 +435,7 @@ void OpenMVPluginIO::getArchString()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_ARCH_STR);
     serializeLong(buffer, ARCH_STR_RESPONSE_LEN);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(ARCH_STR_START_DELAY, ARCH_STR_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_ARCH_STR);
     m_expectedDataQueue.enqueue(ARCH_STR_RESPONSE_LEN);
 }
@@ -426,20 +446,21 @@ void OpenMVPluginIO::frameSizeDump()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_FRAME_SIZE);
     serializeLong(buffer, FRAME_SIZE_RESPONSE_LEN);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(FRAME_SIZE_START_DELAY, FRAME_SIZE_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_FRAME_SIZE);
     m_expectedDataQueue.enqueue(FRAME_SIZE_RESPONSE_LEN);
 }
 
 void OpenMVPluginIO::scriptExec(const QByteArray &data)
 {
-    QByteArray buffer, buffer2 = padPacketLen(data).replace('\0', '\n');
+    QByteArray buffer, script = (data.size() % TABOO_PACKET_SIZE) ? data : (data + '\n');
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_EXEC);
-    serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
-
+    serializeLong(buffer, script.size());
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SCRIPT_EXEC_START_DELAY, SCRIPT_EXEC_END_DELAY)));
+    m_expectedHeaderQueue.enqueue(int());
+    m_expectedDataQueue.enqueue(int());
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(script, SET_START_END_DELAY(SCRIPT_EXEC_2_START_DELAY, SCRIPT_EXEC_2_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -450,8 +471,7 @@ void OpenMVPluginIO::scriptStop()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_STOP);
     serializeLong(buffer, int());
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SCRIPT_STOP_START_DELAY, SCRIPT_STOP_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -462,42 +482,45 @@ void OpenMVPluginIO::getScriptRunning()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SCRIPT_RUNNING);
     serializeLong(buffer, SCRIPT_RUNNING_RESPONSE_LEN);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SCRIPT_RUNNING_START_DELAY, SCRIPT_RUNNING_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_SCRIPT_RUNNING);
     m_expectedDataQueue.enqueue(SCRIPT_RUNNING_RESPONSE_LEN);
 }
 
 void OpenMVPluginIO::templateSave(int x, int y, int w, int h, const QByteArray &path)
 {
-    QByteArray buffer, buffer2;
+    QByteArray buffer;
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_TEMPLATE_SAVE);
-    serializeWord(buffer2, x);
-    serializeWord(buffer2, y);
-    serializeWord(buffer2, w);
-    serializeWord(buffer2, h);
-    buffer2 = padPacketLen(buffer2 + path);
-    serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
-
+    serializeLong(buffer, 2 + 2 + 2 + 2 + path.size());
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(TEMPLATE_SAVE_START_DELAY, TEMPLATE_SAVE_END_DELAY)));
+    m_expectedHeaderQueue.enqueue(int());
+    m_expectedDataQueue.enqueue(int());
+    buffer.clear();
+    serializeWord(buffer, x);
+    serializeWord(buffer, y);
+    serializeWord(buffer, w);
+    serializeWord(buffer, h);
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer + path, SET_START_END_DELAY(TEMPLATE_SAVE_2_START_DELAY, TEMPLATE_SAVE_2_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
 
 void OpenMVPluginIO::descriptorSave(int x, int y, int w, int h, const QByteArray &path)
 {
-    QByteArray buffer, buffer2;
+    QByteArray buffer;
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_DESCRIPTOR_SAVE);
-    serializeWord(buffer2, x);
-    serializeWord(buffer2, y);
-    serializeWord(buffer2, w);
-    serializeWord(buffer2, h);
-    buffer2 = padPacketLen(buffer2 + path);
-    serializeLong(buffer, buffer2.size());
-    m_commandQueue.enqueue(padPacketLen(buffer) + buffer2);
-
+    serializeLong(buffer, 2 + 2 + 2 + 2 + path.size());
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(DESCRIPTOR_SAVE_START_DELAY, DESCRIPTOR_SAVE_END_DELAY)));
+    m_expectedHeaderQueue.enqueue(int());
+    m_expectedDataQueue.enqueue(int());
+    buffer.clear();
+    serializeWord(buffer, x);
+    serializeWord(buffer, y);
+    serializeWord(buffer, w);
+    serializeWord(buffer, h);
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer + path, SET_START_END_DELAY(DESCRIPTOR_SAVE_2_START_DELAY, DESCRIPTOR_SAVE_2_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -510,8 +533,7 @@ void OpenMVPluginIO::setAttribute(int attribute, int value)
     serializeLong(buffer, int());
     serializeWord(buffer, attribute);
     serializeWord(buffer, value);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(ATTR_READ_START_DELAY, ATTR_READ_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -523,8 +545,7 @@ void OpenMVPluginIO::getAttribute(int attribute)
     serializeByte(buffer, __USBDBG_ATTR_READ);
     serializeLong(buffer, ATTR_READ_RESPONSE_LEN);
     serializeWord(buffer, attribute);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(ATTR_WRITE_START_DELAY, ATTR_WRITE_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_ATTR_READ);
     m_expectedDataQueue.enqueue(ATTR_READ_RESPONSE_LEN);
 }
@@ -535,8 +556,7 @@ void OpenMVPluginIO::sysReset()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_SYS_RESET);
     serializeLong(buffer, int());
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SYS_RESET_START_DELAY, SYS_RESET_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -548,8 +568,7 @@ void OpenMVPluginIO::fbEnable(bool enabled)
     serializeByte(buffer, __USBDBG_FB_ENABLE);
     serializeLong(buffer, int());
     serializeWord(buffer, enabled ? true : false);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(FB_ENABLE_START_DELAY, FB_ENABLE_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -563,8 +582,7 @@ void OpenMVPluginIO::jpegEnable(bool enabled)
 //  serializeByte(buffer, __USBDBG_JPEG_ENABLE);
 //  serializeLong(buffer, int());
 //  serializeWord(buffer, enabled ? true : false);
-//  m_commandQueue.enqueue(pad64Bytes(buffer));
-
+//  m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(JPEG_ENABLE_START_DELAY, JPEG_ENABLE_END_DELAY)));
 //  m_expectedHeaderQueue.enqueue(int());
 //  m_expectedDataQueue.enqueue(int());
 }
@@ -575,8 +593,7 @@ void OpenMVPluginIO::getTxBuffer()
     serializeByte(buffer, __USBDBG_CMD);
     serializeByte(buffer, __USBDBG_TX_BUF_LEN);
     serializeLong(buffer, TX_BUF_LEN_RESPONSE_LEN);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(TX_BUF_LEN_START_DELAY, TX_BUF_LEN_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__USBDBG_TX_BUF_LEN);
     m_expectedDataQueue.enqueue(TX_BUF_LEN_RESPONSE_LEN);
 }
@@ -585,8 +602,7 @@ void OpenMVPluginIO::bootloaderStart()
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_START);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(BOOTLDR_START_START_DELAY, BOOTLDR_START_END_DELAY)));
     m_expectedHeaderQueue.enqueue(__BOOTLDR_START);
     m_expectedDataQueue.enqueue(BOOTLDR_START_RESPONSE_LEN);
 }
@@ -595,8 +611,7 @@ void OpenMVPluginIO::bootloaderReset()
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_RESET);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(BOOTLDR_RESET_START_DELAY, BOOTLDR_RESET_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -606,8 +621,7 @@ void OpenMVPluginIO::flashErase(int sector)
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_ERASE);
     serializeLong(buffer, sector);
-    m_commandQueue.enqueue(padPacketLen(buffer));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(BOOTLDR_ERASE_START_DELAY, BOOTLDR_ERASE_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
@@ -616,16 +630,14 @@ void OpenMVPluginIO::flashWrite(const QByteArray &data)
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_WRITE);
-    m_commandQueue.enqueue(padPacketLen(buffer + data));
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(buffer + data, SET_START_END_DELAY(BOOTLDR_WRITE_START_DELAY, BOOTLDR_WRITE_END_DELAY)));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }
 
 void OpenMVPluginIO::close()
 {
-    m_commandQueue.enqueue(QByteArray());
-
+    m_commandQueue.enqueue(OpenMVPluginSerialPortData(QByteArray(), int()));
     m_expectedHeaderQueue.enqueue(int());
     m_expectedDataQueue.enqueue(int());
 }

@@ -7,6 +7,8 @@ namespace Internal {
 
 OpenMVPlugin::OpenMVPlugin() : IPlugin()
 {
+    qRegisterMetaType<OpenMVPluginSerialPortData>("OpenMVPluginSerialPortData");
+
     m_ioport = new OpenMVPluginSerialPort(this);
     m_iodevice = new OpenMVPluginIO(m_ioport, this);
 
@@ -983,9 +985,9 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     dataChunks.append(rawData.mid(i, qMin(FLASH_WRITE_CHUNK_SIZE, rawData.size() - i)));
                                 }
 
-                                if(dataChunks.last().size() != FLASH_WRITE_CHUNK_SIZE)
+                                if(dataChunks.last().size() % 4)
                                 {
-                                    dataChunks.last().append(QByteArray(FLASH_WRITE_CHUNK_SIZE - dataChunks.last().size(), 255));
+                                    dataChunks.last().append(QByteArray(4 - dataChunks.last().size(), 255));
                                 }
 
                                 if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
@@ -1146,7 +1148,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     {
                                         QEventLoop loop;
 
-                                        QTimer::singleShot(2000, &loop, &QEventLoop::quit);
+                                        QTimer::singleShot(FLASH_ERASE_DELAY, &loop, &QEventLoop::quit);
 
                                         m_iodevice->flashErase(i);
 
@@ -1179,7 +1181,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     {
                                         QEventLoop loop;
 
-                                        QTimer::singleShot(1, &loop, &QEventLoop::quit);
+                                        QTimer::singleShot(FLASH_WRITE_DELAY, &loop, &QEventLoop::quit);
 
                                         m_iodevice->flashWrite(dataChunks.at(i));
 
@@ -1559,7 +1561,7 @@ void OpenMVPlugin::processEvents()
             m_iodevice->getTxBuffer();
         }
 
-        if(m_timer.hasExpired(2000))
+        if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
         {
             m_fpsLabel->setText(tr("FPS: 0"));
         }

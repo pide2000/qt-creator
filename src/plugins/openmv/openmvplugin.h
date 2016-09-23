@@ -65,11 +65,11 @@
 
 #define FPS_AVERAGE_BUFFER_DEPTH    10 // in samples
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
+#define FPS_TIMER_EXPIRATION_TIME   2000 // in milliseconds
 
 #define OLD_API_MAJOR 1
 #define OLD_API_MINOR 7
 #define OLD_API_PATCH 0
-
 #define OLD_API_BOARD "OMV2"
 
 namespace OpenMV {
