@@ -33,20 +33,8 @@ DATA_DIRS = \
     html \
     styles \
     themes
-win32: DATA_DIRS += \
-    drivers \
-    dfuse
-linux-* {
-    contains(QT_ARCH, i386) {
-        DATA_DIRS += \
-        dfu-util-linux-x86
-    } else {
-        DATA_DIRS += \
-        dfu-util-linux-x86_64
-    }
-}
-macx: DATA_DIRS += \
-    dfu-util-mac
+win32: DATA_DIRS += drivers dfuse
+else: DATA_DIRS += pydfu
 #OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {

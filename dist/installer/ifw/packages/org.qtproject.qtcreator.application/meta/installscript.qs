@@ -231,12 +231,8 @@ Component.prototype.createOperations = function()
                                 //OPENMV-DIFF//
                                 );
         //OPENMV-DIFF//
-        var bitness = installer.execute("uname", "-m");
-        if (bitness.indexOf("x86_64") == -1) {
-            component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/dfu-util-linux-x86/40-openmv.rules", "/etc/udev/rules.d/" );
-        } else {
-            component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/dfu-util-linux-x86_64/40-openmv.rules", "/etc/udev/rules.d/" );
-        }
+        component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/pydfu/50-openmv.rules", "/etc/udev/rules.d/" );
+        component.addElevatedOperation( "Execute", "{0}", "udevamd", "control", "--reload-rules" );
         //OPENMV-DIFF//
     }
 }
