@@ -1202,6 +1202,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                                     dialog.show();
 
                                                     QString command;
+
                                                     Utils::SynchronousProcess process;
                                                     Utils::SynchronousProcessResponse response;
                                                     process.setTimeoutS(240); // 4 minutes...
@@ -1217,6 +1218,49 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                                             << QStringLiteral("--o")
                                                             << QStringLiteral("--fn")
                                                             << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
+                                                    }
+                                                    else if(Utils::HostOsInfo::isMacHost())
+                                                    {
+                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfu-util-mac/bin/dfu-util")));
+                                                        response = process.run(command, QStringList()
+                                                            << QStringLiteral("-d")
+                                                            << QStringLiteral("0483:df11")
+                                                            << QStringLiteral("-a")
+                                                            << QStringLiteral("0")
+                                                            << QStringLiteral("-D")
+                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
+                                                    }
+                                                    else if(Utils::HostOsInfo::isLinuxHost() && (QSysInfo::buildCpuArchitecture() == QStringLiteral("i386")))
+                                                    {
+                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfu-util-linux-x86/bin/dfu-util")));
+                                                        response = process.run(command, QStringList()
+                                                            << QStringLiteral("-d")
+                                                            << QStringLiteral("0483:df11")
+                                                            << QStringLiteral("-a")
+                                                            << QStringLiteral("0")
+                                                            << QStringLiteral("-D")
+                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
+                                                    }
+                                                    else if(Utils::HostOsInfo::isLinuxHost() && (QSysInfo::buildCpuArchitecture() == QStringLiteral("x86_64")))
+                                                    {
+                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfu-util-linux-x86_64/bin/dfu-util")));
+                                                        response = process.run(command, QStringList()
+                                                            << QStringLiteral("-d")
+                                                            << QStringLiteral("0483:df11")
+                                                            << QStringLiteral("-a")
+                                                            << QStringLiteral("0")
+                                                            << QStringLiteral("-D")
+                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
+                                                    }
+                                                    else
+                                                    {
+                                                        command = QString();
+                                                        response.result = Utils::SynchronousProcessResponse::StartFailed;
+                                                        response.stdOut = QString();
+
+                                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                                            tr("Connect"),
+                                                            tr("Unsupported host operating system!"));
                                                     }
 
                                                     if(response.result == Utils::SynchronousProcessResponse::Finished)

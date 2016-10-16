@@ -230,6 +230,14 @@ Component.prototype.createOperations = function()
                                 "Type=Application\nExec=" + component.qtCreatorBinaryPath + "\nPath=@TargetDir@\nName=OpenMV IDE\nGenericName=The IDE of choice for OpenMV Cam Development.\nGenericName[de]=Die IDE der Wahl zur OpenMV Cam Entwicklung\nIcon=OpenMV-openmvide\nTerminal=false\nCategories=Development;IDE;\nMimeType=text/x-python;"
                                 //OPENMV-DIFF//
                                 );
+        //OPENMV-DIFF//
+        var bitness = installer.execute("uname", "-m");
+        if (bitness.indexOf("x86_64") == -1) {
+            component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/dfu-util-linux-x86/40-openmv.rules", "/etc/udev/rules.d/" );
+        } else {
+            component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/dfu-util-linux-x86_64/40-openmv.rules", "/etc/udev/rules.d/" );
+        }
+        //OPENMV-DIFF//
     }
 }
 
