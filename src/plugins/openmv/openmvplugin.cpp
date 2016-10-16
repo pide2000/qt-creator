@@ -510,7 +510,9 @@ void OpenMVPlugin::extensionsInitialized()
             {
                 QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
 
-                if((OMV_IDE_VERSION_MAJOR < match.captured(1).toInt()) || (OMV_IDE_VERSION_MINOR < match.captured(2).toInt()) || (OMV_IDE_VERSION_RELEASE < match.captured(3).toInt()))
+                if((OMV_IDE_VERSION_MAJOR < match.captured(1).toInt())
+                || ((OMV_IDE_VERSION_MAJOR == match.captured(1).toInt()) && (OMV_IDE_VERSION_MINOR < match.captured(2).toInt()))
+                || ((OMV_IDE_VERSION_MAJOR == match.captured(1).toInt()) && (OMV_IDE_VERSION_MINOR == match.captured(2).toInt()) && (OMV_IDE_VERSION_RELEASE < match.captured(3).toInt())))
                 {
                     QMessageBox::information(Core::ICore::dialogParent(),
                         tr("Update Available"),
@@ -576,7 +578,7 @@ void OpenMVPlugin::bootloaderClicked()
     Utils::PathChooser *pathChooser = new Utils::PathChooser();
     pathChooser->setExpectedKind(Utils::PathChooser::File);
     pathChooser->setPromptDialogTitle(tr("Firmware Path"));
-    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin)"));
+    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
     pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
     layout->addRow(tr("Firmware Path"), pathChooser);
 
@@ -586,23 +588,37 @@ void OpenMVPlugin::bootloaderClicked()
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
     QPushButton *run = new QPushButton(tr("Run"));
+    run->setEnabled(pathChooser->isValid());
     box->addButton(run, QDialogButtonBox::AcceptRole);
+    layout->addRow(box);
+
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
-    layout->addRow(box);
 
     if(dialog->exec() == QDialog::Accepted)
     {
         QString firmwarePath = pathChooser->fileName().toString();
         bool flashFSErase = checkBox->isChecked();
 
-        settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
-        settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
-        settings->endGroup();
-        delete dialog;
+        if(QFileInfo(firmwarePath).isFile())
+        {
+            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
+            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
+            settings->endGroup();
+            delete dialog;
 
-        connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
+            connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Bootloader"),
+                tr("Please select a file!"));
+
+            settings->endGroup();
+            delete dialog;
+        }
     }
     else
     {
@@ -704,6 +720,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                         }
                         else
                         {
+                            boards.close();
                             break;
                         }
                     }
@@ -899,15 +916,22 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
             if((file.error() == QFile::NoError) && (!data.isEmpty()))
             {
+                file.close();
+
                 QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
 
-                if(forceBootloader || (major2 < match.captured(1).toInt()) || (minor2 < match.captured(2).toInt()) || (patch2 < match.captured(3).toInt()))
+                if(forceBootloader
+                || (major2 < match.captured(1).toInt())
+                || ((major2 == match.captured(1).toInt()) && (minor2 < match.captured(2).toInt()))
+                || ((major2 == match.captured(1).toInt()) && (minor2 == match.captured(2).toInt()) && (patch2 < match.captured(3).toInt())))
                 {
                     QString path = forceBootloader ? forceFirmwarePath : QString();
 
                     if(!forceBootloader)
                     {
-                        if((major2 < OLD_API_MAJOR) || (minor2 < OLD_API_MINOR) || (patch2 < OLD_API_PATCH))
+                        if((major2 < OLD_API_MAJOR)
+                        || ((major2 == OLD_API_MAJOR) && (minor2 < OLD_API_MINOR))
+                        || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 < OLD_API_PATCH)))
                         {
                             path = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + QStringLiteral(OLD_API_BOARD) + QStringLiteral("/firmware.bin");
                         }
@@ -953,6 +977,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                         }
                                         else
                                         {
+                                            boards.close();
                                             break;
                                         }
                                     }
@@ -978,6 +1003,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             if((firmware.error() == QFile::NoError) && (!rawData.isEmpty()))
                             {
+                                firmware.close();
+
                                 QList<QByteArray> dataChunks;
 
                                 for(int i = 0; i < rawData.size(); i += FLASH_WRITE_CHUNK_SIZE)
@@ -985,9 +1012,9 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     dataChunks.append(rawData.mid(i, qMin(FLASH_WRITE_CHUNK_SIZE, rawData.size() - i)));
                                 }
 
-                                if(dataChunks.last().size() % 4)
+                                if(dataChunks.last().size() % FLASH_WRITE_CHUNK_SIZE)
                                 {
-                                    dataChunks.last().append(QByteArray(4 - dataChunks.last().size(), 255));
+                                    dataChunks.last().append(QByteArray(FLASH_WRITE_CHUNK_SIZE - dataChunks.last().size(), 255));
                                 }
 
                                 if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
@@ -1028,6 +1055,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 }
 
                                 // Reconnect //////////////////////////////////
+
+                                if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
                                 {
                                     QString errorMessage2 = QString();
                                     QString *errorMessage2Ptr = &errorMessage2;
@@ -1108,31 +1137,114 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 // Start Bootloader ///////////////////////////
                                 {
                                     bool ok2 = bool();
-                                    bool *ok2Ptr = &ok2;
 
-                                    QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
-                                        this, [this, ok2Ptr] (bool ok) {
-                                        *ok2Ptr = ok;
-                                    });
+                                    if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
+                                    {
+                                        bool *ok2Ptr = &ok2;
 
-                                    QEventLoop loop;
+                                        QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
+                                            this, [this, ok2Ptr] (bool ok) {
+                                            *ok2Ptr = ok;
+                                        });
 
-                                    connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
-                                            &loop, &QEventLoop::quit);
+                                        QEventLoop loop;
 
-                                    m_iodevice->bootloaderStart();
+                                        connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
+                                                &loop, &QEventLoop::quit);
 
-                                    loop.exec();
+                                        m_iodevice->bootloaderStart();
 
-                                    disconnect(conn);
+                                        loop.exec();
+
+                                        disconnect(conn);
+                                    }
 
                                     if(!ok2)
                                     {
-                                        QMessageBox::critical(Core::ICore::dialogParent(),
-                                            tr("Connect"),
-                                            tr("Unable to connect to the bootloader!\n\nThis fails sometimes - please try again a few times before giving up."));
+                                        if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
+                                        {
+                                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                                tr("Connect"),
+                                                tr("Unable to connect to the bootloader!"));
 
-                                        CLOSE_CONNECT_END();
+                                            QEventLoop m_loop;
+                                            connect(m_iodevice, &OpenMVPluginIO::closeResponse, &m_loop, &QEventLoop::quit);
+                                            m_iodevice->close();
+                                            m_loop.exec();
+                                        }
+
+                                        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive) || QMessageBox::question(Core::ICore::dialogParent(),
+                                            tr("Connect"),
+                                            tr("OpenMV IDE can still try to upgrade your OpenMV Cam using your OpenMV Cam's DFU Bootloader.\n\n"
+                                               "Continue?"),
+                                            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                                        == QMessageBox::Ok)
+                                        {
+                                            if((answer == QMessageBox::Yes) || (QMessageBox::warning(Core::ICore::dialogParent(),
+                                                tr("Connect"),
+                                                tr("DFU update erases your OpenMV Cam's internal flash file system.\n\n"
+                                                   "Backup your data before continuing!"),
+                                                QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                                            == QMessageBox::Ok))
+                                            {
+                                                if(QMessageBox::information(Core::ICore::dialogParent(),
+                                                    tr("Connect"),
+                                                    tr("Disconnect your OpenMV Cam from your computer, add a jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n"
+                                                       "Click the Ok button after your OpenMV Cam's DFU Bootloader has enumerated."),
+                                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                                                == QMessageBox::Ok)
+                                                {
+                                                    QProgressDialog dialog(tr("Reprogramming...\n\n(this takes about 2 minutes)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                                    dialog.setWindowModality(Qt::ApplicationModal);
+                                                    dialog.setCancelButton(Q_NULLPTR);
+                                                    dialog.show();
+
+                                                    QString command;
+                                                    Utils::SynchronousProcess process;
+                                                    Utils::SynchronousProcessResponse response;
+                                                    process.setTimeoutS(240); // 4 minutes...
+                                                    process.setProcessChannelMode(QProcess::MergedChannels);
+
+                                                    if(Utils::HostOsInfo::isWindowsHost())
+                                                    {
+                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfuse/DfuSeCommand.exe")));
+                                                        response = process.run(command, QStringList()
+                                                            << QStringLiteral("-c")
+                                                            << QStringLiteral("-d")
+                                                            << QStringLiteral("--v")
+                                                            << QStringLiteral("--o")
+                                                            << QStringLiteral("--fn")
+                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
+                                                    }
+
+                                                    if(response.result == Utils::SynchronousProcessResponse::Finished)
+                                                    {
+                                                        QMessageBox::information(Core::ICore::dialogParent(),
+                                                            tr("Connect"),
+                                                            tr("DFU firmware update complete!\n\n"
+                                                               "Disconnect your OpenMV Cam from your computer, remove the jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n"
+                                                               "Click the Ok button after your OpenMV Cam has enumerated and finished running its built-in self test (blue led blinking)."));
+
+                                                        RECONNECT_END();
+                                                    }
+                                                    else
+                                                    {
+                                                        QMessageBox box(QMessageBox::Critical, tr("Connect"), tr("DFU firmware update failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
+                                                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                                                        box.setDetailedText(response.stdOut);
+                                                        box.setInformativeText(response.exitMessage(command, process.timeoutS()));
+                                                        box.setDefaultButton(QMessageBox::Ok);
+                                                        box.setEscapeButton(QMessageBox::Cancel);
+                                                        box.exec();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        CONNECT_END();
                                     }
                                 }
 
