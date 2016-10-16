@@ -1247,6 +1247,28 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                                         box.setDefaultButton(QMessageBox::Ok);
                                                         box.setEscapeButton(QMessageBox::Cancel);
                                                         box.exec();
+
+                                                        if(Utils::HostOsInfo::isMacHost())
+                                                        {
+                                                            QMessageBox::information(Core::ICore::dialogParent(),
+                                                                tr("Connect"),
+                                                                tr("PyDFU requires the following libraries to be installed:\n\n"
+                                                                   "MacPorts:\n"
+                                                                   "    sudo port install libusb py-pip\n"
+                                                                   "    sudo pip install pyusb\n"
+                                                                   "HomeBrew:\n"
+                                                                   "    sudo brew install libusb python\n"
+                                                                   "    sudo pip install pyusb"));
+                                                        }
+
+                                                        if(Utils::HostOsInfo::isLinuxHost())
+                                                        {
+                                                            QMessageBox::information(Core::ICore::dialogParent(),
+                                                                tr("Connect"),
+                                                                tr("PyDFU requires the following libraries to be installed:\n\n"
+                                                                   "    sudo apt-get install libusb-1.0 python-pip\n"
+                                                                   "    sudo pip install pyusb"));
+                                                        }
                                                     }
                                                 }
                                             }
