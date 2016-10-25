@@ -3,6 +3,8 @@
 OpenMVPluginSerialPort_private::OpenMVPluginSerialPort_private(QObject *parent) : QObject(parent)
 {
     m_port = Q_NULLPTR;
+    // Bootloader Stuff //
+    m_bootloaderStop = false;
 }
 
 void OpenMVPluginSerialPort_private::open(const QString &portName)
@@ -99,6 +101,194 @@ void OpenMVPluginSerialPort_private::processEvents()
     }
 }
 
+// Bootloader Stuff Start /////////////////////////////////////////////////////
+
+#define __USBDBG_CMD                    0x30
+#define __USBDBG_SYS_RESET              0x0C
+
+#define __BOOTLDR_START                 static_cast<int>(0xABCD0001)
+
+#define BOOTLDR_START_RESPONSE_LEN      4
+
+#define SYS_RESET_START_DELAY           0
+#define SYS_RESET_END_DELAY             0
+
+#define BOOTLDR_START_START_DELAY       0
+#define BOOTLDR_START_END_DELAY         0
+
+#define OPENMVCAM_VENDOR_ID             0x1209
+#define OPENMVCAM_PRODUCT_ID            0xABD1
+
+static void serializeByte(QByteArray &buffer, int value) // LittleEndian
+{
+    buffer.append(reinterpret_cast<const char *>(&value), 1);
+}
+
+static void serializeLong(QByteArray &buffer, int value) // LittleEndian
+{
+    buffer.append(reinterpret_cast<const char *>(&value), 4);
+}
+
+static int deserializeLong(QByteArray &buffer) // LittleEndian
+{
+    int r = int();
+    memcpy(&r, buffer.data(), 4);
+    buffer = buffer.mid(4);
+    return r;
+}
+
+void OpenMVPluginSerialPort_private::bootloaderCloseAndConnect(const QString &selectedPort)
+{
+    m_bootloaderStop = false;
+
+    // Send System Reset
+
+    QByteArray buffer;
+    serializeByte(buffer, __USBDBG_CMD);
+    serializeByte(buffer, __USBDBG_SYS_RESET);
+    serializeLong(buffer, int());
+    write(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SYS_RESET_START_DELAY, SYS_RESET_END_DELAY)));
+
+    // Send Close
+
+    if(m_port)
+    {
+        delete m_port;
+        m_port = Q_NULLPTR;
+    }
+
+    QThread::msleep(10);
+
+    bootloaderConnect(selectedPort);
+}
+
+void OpenMVPluginSerialPort_private::bootloaderConnect(const QString &selectedPort)
+{
+    m_bootloaderStop = false;
+
+    forever
+    {
+        QStringList stringList;
+
+        foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
+        {
+            if(port.hasVendorIdentifier() && (port.vendorIdentifier() == OPENMVCAM_VENDOR_ID)
+            && port.hasProductIdentifier() && (port.productIdentifier() == OPENMVCAM_PRODUCT_ID))
+            {
+                stringList.append(port.portName());
+            }
+        }
+
+        if(Utils::HostOsInfo::isMacHost())
+        {
+            stringList = stringList.filter(QStringLiteral("cu"), Qt::CaseInsensitive);
+        }
+
+        if(!stringList.isEmpty())
+        {
+            const QString portName = ((!selectedPort.isEmpty()) && stringList.contains(selectedPort)) ? selectedPort : stringList.first();
+
+            if(m_port)
+            {
+                delete m_port;
+            }
+
+            m_port = new QSerialPort(portName, this);
+
+            if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
+            || (!m_port->open(QIODevice::ReadWrite)))
+            {
+                delete m_port;
+                m_port = new QSerialPort(portName, this);
+
+                if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
+                || (!m_port->open(QIODevice::ReadWrite)))
+                {
+                    delete m_port;
+                    m_port = Q_NULLPTR;
+                }
+            }
+
+            if(m_port)
+            {
+                QThread::msleep(10);
+
+                QByteArray response;
+
+                for(int i = 0; i < 10; i++)
+                {
+                    QByteArray buffer;
+                    serializeLong(buffer, __BOOTLDR_START);
+                    write(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(BOOTLDR_START_START_DELAY, BOOTLDR_START_END_DELAY)));
+
+                    QElapsedTimer elaspedTimer;
+                    elaspedTimer.start();
+
+                    do
+                    {
+                        m_port->waitForReadyRead(1);
+                        response.append(m_port->readAll());
+                    }
+                    while((response.size() < BOOTLDR_START_RESPONSE_LEN) && (!elaspedTimer.hasExpired(10)));
+
+                    if(response.size() >= BOOTLDR_START_RESPONSE_LEN)
+                    {
+                        if(deserializeLong(response) == __BOOTLDR_START)
+                        {
+                            elaspedTimer.start();
+
+                            do
+                            {
+                                m_port->waitForReadyRead(1);
+                                m_port->readAll();
+                            }
+                            while(!elaspedTimer.hasExpired(100));
+
+                            connect(m_port, &QSerialPort::readyRead,
+                                    this, &OpenMVPluginSerialPort_private::processEvents);
+
+                            QTimer *timer = new QTimer(m_port);
+
+                            connect(timer, &QTimer::timeout,
+                                    this, &OpenMVPluginSerialPort_private::processEvents);
+
+                            timer->start(1);
+
+                            emit bootloaderDone(true);
+                            return; // success
+                        }
+
+                        break; // failure
+                    }
+                }
+
+                delete m_port;
+                m_port = Q_NULLPTR;
+
+                emit bootloaderDone(false);
+                return; // failure
+            }
+        }
+
+        QCoreApplication::processEvents();
+
+        if(m_bootloaderStop)
+        {
+            m_bootloaderStop = false;
+
+            emit bootloaderDone(false);
+            return; // failure
+        }
+    }
+}
+
+void OpenMVPluginSerialPort_private::bootloaderStop()
+{
+    m_bootloaderStop = true;
+}
+
+// Bootloader Stuff End ///////////////////////////////////////////////////////
+
 OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent)
 {
     QThread *thread = new QThread;
@@ -117,6 +307,22 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 
     connect(port, &OpenMVPluginSerialPort_private::readAll,
             this, &OpenMVPluginSerialPort::readAll);
+
+    // Bootloader Stuff Start //
+
+    connect(this, &OpenMVPluginSerialPort::bootloaderCloseAndConnect,
+            port, &OpenMVPluginSerialPort_private::bootloaderCloseAndConnect);
+
+    connect(this, &OpenMVPluginSerialPort::bootloaderConnect,
+            port, &OpenMVPluginSerialPort_private::bootloaderConnect);
+
+    connect(this, &OpenMVPluginSerialPort::bootloaderStop,
+            port, &OpenMVPluginSerialPort_private::bootloaderStop);
+
+    connect(port, &OpenMVPluginSerialPort_private::bootloaderDone,
+            this, &OpenMVPluginSerialPort::bootloaderDone);
+
+    // Bootloader Stuff End //
 
     connect(this, &OpenMVPluginSerialPort::destroyed,
             port, &OpenMVPluginSerialPort_private::deleteLater);

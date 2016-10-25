@@ -24,6 +24,9 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_running = false;
     m_portName = QString();
     m_portPath = QString();
+    m_major = int();
+    m_minor = int();
+    m_patch = int();
 
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
         "  File \"(.+?)\", line (\\d+).*?\n"
@@ -201,7 +204,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     m_stopCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
-        tr("Stop"), this), Core::Id("OpenMV.Stop"));
+        tr("Stop (halt script)"), this), Core::Id("OpenMV.Stop"));
     m_stopCommand->setDefaultKeySequence(tr("Ctrl+T"));
     m_stopCommand->action()->setEnabled(false);
     m_stopCommand->action()->setVisible(false);
@@ -397,24 +400,29 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
+    m_versionButton = new QToolButton;
+    m_versionButton->setText(tr("Firmware Version:"));
+    m_versionButton->setToolTip(tr("Camera firmware version"));
+    m_versionButton->setCheckable(false);
+    m_versionButton->setDisabled(true);
+    Core::ICore::statusBar()->addPermanentWidget(m_versionButton);
+    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
+    connect(m_versionButton, &QToolButton::clicked, this, &OpenMVPlugin::updateCam);
+
     m_portLabel = new QLabel(tr("Serial Port:"));
+    m_portLabel->setToolTip(tr("Camera serial port"));
     m_portLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_portLabel);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     m_pathButton = new QToolButton;
     m_pathButton->setText(tr("Drive:"));
-    m_pathButton->setToolTip(tr("Drive associated with the port"));
+    m_pathButton->setToolTip(tr("Drive associated with port"));
     m_pathButton->setCheckable(false);
     m_pathButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
     connect(m_pathButton, &QToolButton::clicked, this, &OpenMVPlugin::setPortPath);
-
-    m_versionLabel = new QLabel(tr("Firmware Version:"));
-    m_versionLabel->setDisabled(true);
-    Core::ICore::statusBar()->addPermanentWidget(m_versionLabel);
-    Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
     m_fpsLabel = new QLabel(tr("FPS:"));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
@@ -495,8 +503,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
-    // http://stackoverflow.com/questions/26361145/qsslsocket-error-when-ssl-is-not-used
-    QLoggingCategory::setFilterRules(QStringLiteral("qt.network.ssl.warning=false"));
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.network.ssl.warning=false")); // http://stackoverflow.com/questions/26361145/qsslsocket-error-when-ssl-is-not-used
 
     connect(Core::ICore::instance(), &Core::ICore::coreOpened, this, [this] {
 
@@ -521,6 +528,8 @@ void OpenMVPlugin::extensionsInitialized()
             }
 
             reply->deleteLater();
+
+            QTimer::singleShot(0, this, &OpenMVPlugin::packageUpdate);
         });
 
         QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-version.txt"))));
@@ -564,6 +573,32 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
     }
 }
 
+void OpenMVPlugin::packageUpdate()
+{
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    connect(manager, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *reply) {
+
+        QByteArray data = reply->readAll();
+
+        if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
+        {
+            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+
+            Q_UNUSED(match)
+        }
+
+        reply->deleteLater();
+    });
+
+    QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/resource-version.txt"))));
+
+    if(reply)
+    {
+        connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+    }
+}
+
 void OpenMVPlugin::bootloaderClicked()
 {
     QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
@@ -571,6 +606,7 @@ void OpenMVPlugin::bootloaderClicked()
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
     dialog->setWindowTitle(tr("Bootloader"));
     QFormLayout *layout = new QFormLayout(dialog);
+    layout->setVerticalSpacing(0);
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -581,10 +617,18 @@ void OpenMVPlugin::bootloaderClicked()
     pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
     pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
     layout->addRow(tr("Firmware Path"), pathChooser);
+    layout->addItem(new QSpacerItem(0, 6));
 
     QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
     checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
+    checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
     layout->addRow(checkBox);
+    QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
+    checkBox2->setChecked(true);
+    checkBox2->setEnabled(false);
+    checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
+    layout->addRow(checkBox2);
+    layout->addItem(new QSpacerItem(0, 6));
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
     QPushButton *run = new QPushButton(tr("Run"));
@@ -595,26 +639,40 @@ void OpenMVPlugin::bootloaderClicked()
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
+    connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
+        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
+        {
+            checkBox->setVisible(false);
+            checkBox2->setVisible(true);
+        }
+        else
+        {
+            checkBox->setVisible(true);
+            checkBox2->setVisible(false);
+
+        }
+        dialog->adjustSize();
+    });
 
     if(dialog->exec() == QDialog::Accepted)
     {
-        QString firmwarePath = pathChooser->fileName().toString();
+        QString forceFirmwarePath = pathChooser->path();
         bool flashFSErase = checkBox->isChecked();
 
-        if(QFileInfo(firmwarePath).isFile())
+        if(QFileInfo(forceFirmwarePath).isFile())
         {
-            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), firmwarePath);
+            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
             settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
             settings->endGroup();
             delete dialog;
 
-            connectClicked(true, firmwarePath, flashFSErase ? QMessageBox::Yes : QMessageBox::No);
+            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)) ? QMessageBox::Yes : QMessageBox::No);
         }
         else
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 tr("Bootloader"),
-                tr("Please select a file!"));
+                tr("\"%L1\" is not a file!").arg(forceFirmwarePath));
 
             settings->endGroup();
             delete dialog;
@@ -690,6 +748,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         QString selectedPort;
         bool forceBootloaderBricked = false;
+        QString firmwarePath = forceFirmwarePath;
 
         if(stringList.isEmpty())
         {
@@ -746,13 +805,18 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             {
                                 settings->setValue(QStringLiteral(LAST_BOARD_TYPE_STATE), temp);
 
-                                forceFirmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
-                                forceFlashFSErase = QMessageBox::question(Core::ICore::dialogParent(),
+                                int answer = QMessageBox::question(Core::ICore::dialogParent(),
                                     tr("Connect"),
                                     tr("Erase the internal file system?"),
                                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
-                                forceBootloader = forceFlashFSErase != QMessageBox::Cancel;
-                                forceBootloaderBricked = true;
+
+                                if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
+                                {
+                                    forceBootloader = true;
+                                    forceFlashFSErase = answer;
+                                    forceBootloaderBricked = true;
+                                    firmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+                                }
                             }
                         }
                     }
@@ -802,9 +866,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             });
 
             QProgressDialog dialog(tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+               Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+               (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
             dialog.setWindowModality(Qt::ApplicationModal);
+            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
 
             forever
             {
@@ -859,7 +924,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         int minor2 = int();
         int patch2 = int();
 
-        if(!forceBootloader)
+        if(!forceBootloaderBricked)
         {
             int *major2Ptr = &major2;
             int *minor2Ptr = &minor2;
@@ -908,513 +973,427 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         // Bootloader /////////////////////////////////////////////////////////
 
-        QFile file(Core::ICore::resourcePath() + QStringLiteral("/firmware/firmware.txt"));
-
-        if(file.open(QIODevice::ReadOnly))
+        if(forceBootloader)
         {
-            QByteArray data = file.readAll();
-
-            if((file.error() == QFile::NoError) && (!data.isEmpty()))
+            if(!forceBootloaderBricked)
             {
-                file.close();
-
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
-
-                if(forceBootloader
-                || (major2 < match.captured(1).toInt())
-                || ((major2 == match.captured(1).toInt()) && (minor2 < match.captured(2).toInt()))
-                || ((major2 == match.captured(1).toInt()) && (minor2 == match.captured(2).toInt()) && (patch2 < match.captured(3).toInt())))
+                if(firmwarePath.isEmpty())
                 {
-                    QString path = forceBootloader ? forceFirmwarePath : QString();
-
-                    if(!forceBootloader)
+                    if((major2 < OLD_API_MAJOR)
+                    || ((major2 == OLD_API_MAJOR) && (minor2 < OLD_API_MINOR))
+                    || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 < OLD_API_PATCH)))
                     {
-                        if((major2 < OLD_API_MAJOR)
-                        || ((major2 == OLD_API_MAJOR) && (minor2 < OLD_API_MINOR))
-                        || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 < OLD_API_PATCH)))
+                        firmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + QStringLiteral(OLD_API_BOARD) + QStringLiteral("/firmware.bin");
+                    }
+                    else
+                    {
+                        QString arch2 = QString();
+                        QString *arch2Ptr = &arch2;
+
+                        QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::archString,
+                            this, [this, arch2Ptr] (const QString &arch) {
+                            *arch2Ptr = arch;
+                        });
+
+                        QEventLoop loop;
+
+                        connect(m_iodevice, &OpenMVPluginIO::archString,
+                                &loop, &QEventLoop::quit);
+
+                        m_iodevice->getArchString();
+
+                        loop.exec();
+
+                        disconnect(conn);
+
+                        if(!arch2.isEmpty())
                         {
-                            path = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + QStringLiteral(OLD_API_BOARD) + QStringLiteral("/firmware.bin");
+                            QFile boards(Core::ICore::resourcePath() + QStringLiteral("/firmware/boards.txt"));
+
+                            if(boards.open(QIODevice::ReadOnly))
+                            {
+                                QMap<QString, QString> mappings;
+
+                                forever
+                                {
+                                    QByteArray data = boards.readLine();
+
+                                    if((boards.error() == QFile::NoError) && (!data.isEmpty()))
+                                    {
+                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
+                                        mappings.insert(mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
+                                    }
+                                    else
+                                    {
+                                        boards.close();
+                                        break;
+                                    }
+                                }
+
+                                QString value = mappings.value(arch2.simplified().replace(QStringLiteral("_"), QStringLiteral(" ")));
+
+                                if(!value.isEmpty())
+                                {
+                                    firmwarePath = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + value + QStringLiteral("/firmware.bin");
+                                }
+                                else
+                                {
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("Connect"),
+                                        tr("Unsupported board architecture!"));
+
+                                    CLOSE_CONNECT_END();
+                                }
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("Error: %L1!").arg(boards.errorString()));
+
+                                CLOSE_CONNECT_END();
+                            }
                         }
                         else
                         {
-                            // Get Arch ///////////////////////////////////////
-
-                            QString arch2 = QString();
-                            QString *arch2Ptr = &arch2;
-
-                            QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::archString,
-                                this, [this, arch2Ptr] (const QString &arch) {
-                                *arch2Ptr = arch;
-                            });
-
-                            QEventLoop loop;
-
-                            connect(m_iodevice, &OpenMVPluginIO::archString,
-                                    &loop, &QEventLoop::quit);
-
-                            m_iodevice->getArchString();
-
-                            loop.exec();
-
-                            disconnect(conn);
-
-                            if(!arch2.isEmpty())
-                            {
-                                QFile boards(Core::ICore::resourcePath() + QStringLiteral("/firmware/boards.txt"));
-
-                                if(boards.open(QIODevice::ReadOnly))
-                                {
-                                    QMap<QString, QString> mappings;
-
-                                    forever
-                                    {
-                                        QByteArray data = boards.readLine();
-
-                                        if((boards.error() == QFile::NoError) && (!data.isEmpty()))
-                                        {
-                                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
-                                            mappings.insert(mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
-                                        }
-                                        else
-                                        {
-                                            boards.close();
-                                            break;
-                                        }
-                                    }
-
-                                    QString value = mappings.value(arch2.simplified().replace(QStringLiteral("_"), QStringLiteral(" ")));
-
-                                    if(!value.isEmpty())
-                                    {
-                                        path = Core::ICore::resourcePath() + QStringLiteral("/firmware/") + value + QStringLiteral("/firmware.bin");
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if(!path.isEmpty())
-                    {
-                        QFile firmware(path);
-
-                        if(firmware.open(QIODevice::ReadOnly))
-                        {
-                            QByteArray rawData = firmware.readAll();
-
-                            if((firmware.error() == QFile::NoError) && (!rawData.isEmpty()))
-                            {
-                                firmware.close();
-
-                                QList<QByteArray> dataChunks;
-
-                                for(int i = 0; i < rawData.size(); i += FLASH_WRITE_CHUNK_SIZE)
-                                {
-                                    dataChunks.append(rawData.mid(i, qMin(FLASH_WRITE_CHUNK_SIZE, rawData.size() - i)));
-                                }
-
-                                if(dataChunks.last().size() % FLASH_WRITE_CHUNK_SIZE)
-                                {
-                                    dataChunks.last().append(QByteArray(FLASH_WRITE_CHUNK_SIZE - dataChunks.last().size(), 255));
-                                }
-
-                                if((!forceBootloader) && QMessageBox::information(Core::ICore::dialogParent(),
-                                    tr("Connect"),
-                                    tr("OpenMV IDE must upgrade your OpenMV Cam's firmware to continue."),
-                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                                != QMessageBox::Ok)
-                                {
-                                    CLOSE_CONNECT_END();
-                                }
-
-                                int answer = forceBootloader ? forceFlashFSErase : QMessageBox::question(Core::ICore::dialogParent(),
-                                    tr("Connect"),
-                                    tr("Erase internal file system?"),
-                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
-
-                                if((answer != QMessageBox::Yes) && (answer != QMessageBox::No))
-                                {
-                                    CLOSE_CONNECT_END();
-                                }
-
-                                int flash_start = (answer == QMessageBox::Yes) ? FLASH_SECTOR_ALL_START : FLASH_SECTOR_START;
-                                int flash_end = (answer == QMessageBox::Yes) ? FLASH_SECTOR_ALL_END : FLASH_SECTOR_END;
-
-                                // Send Reset /////////////////////////////////
-
-                                if(!forceBootloaderBricked)
-                                {
-                                    QEventLoop loop;
-
-                                    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
-                                            &loop, &QEventLoop::quit);
-
-                                    m_iodevice->sysReset();
-                                    m_iodevice->close();
-
-                                    loop.exec();
-                                }
-
-                                // Reconnect //////////////////////////////////
-
-                                if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
-                                {
-                                    QString errorMessage2 = QString();
-                                    QString *errorMessage2Ptr = &errorMessage2;
-
-                                    QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::openResult,
-                                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
-                                        *errorMessage2Ptr = errorMessage;
-                                    });
-
-                                    QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Reconnecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                                    dialog.setWindowModality(Qt::ApplicationModal);
-
-                                    forever
-                                    {
-                                        QStringList stringList2;
-
-                                        foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
-                                        {
-                                            if(port.hasVendorIdentifier() && (port.vendorIdentifier() == OPENMVCAM_VENDOR_ID)
-                                            && port.hasProductIdentifier() && (port.productIdentifier() == OPENMVCAM_PRODUCT_ID))
-                                            {
-                                                stringList2.append(port.portName());
-                                            }
-                                        }
-
-                                        if(Utils::HostOsInfo::isMacHost())
-                                        {
-                                            stringList2 = stringList2.filter(QStringLiteral("cu"), Qt::CaseInsensitive);
-                                        }
-
-                                        if(!stringList2.isEmpty())
-                                        {
-                                            QEventLoop loop;
-
-                                            connect(m_ioport, &OpenMVPluginSerialPort::openResult,
-                                                    &loop, &QEventLoop::quit);
-
-                                            m_ioport->open(((!selectedPort.isEmpty()) && stringList2.contains(selectedPort)) ? selectedPort : stringList2.first());
-
-                                            loop.exec();
-                                        }
-                                        else
-                                        {
-                                            errorMessage2 = tr("No OpenMV Cams found");
-                                        }
-
-                                        if(errorMessage2.isEmpty())
-                                        {
-                                            break;
-                                        }
-
-                                        dialog.show();
-
-                                        QApplication::processEvents();
-
-                                        if(dialog.wasCanceled())
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    dialog.close();
-
-                                    disconnect(conn);
-
-                                    if(!errorMessage2.isEmpty())
-                                    {
-                                        QMessageBox::critical(Core::ICore::dialogParent(),
-                                            tr("Connect"),
-                                            tr("Error: %L1!").arg(errorMessage2));
-
-                                        CONNECT_END();
-                                    }
-                                }
-
-                                // Start Bootloader ///////////////////////////
-                                {
-                                    bool ok2 = bool();
-
-                                    if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
-                                    {
-                                        bool *ok2Ptr = &ok2;
-
-                                        QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
-                                            this, [this, ok2Ptr] (bool ok) {
-                                            *ok2Ptr = ok;
-                                        });
-
-                                        QEventLoop loop;
-
-                                        connect(m_iodevice, &OpenMVPluginIO::gotBootloaderStart,
-                                                &loop, &QEventLoop::quit);
-
-                                        m_iodevice->bootloaderStart();
-
-                                        loop.exec();
-
-                                        disconnect(conn);
-                                    }
-
-                                    if(!ok2)
-                                    {
-                                        if(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
-                                        {
-                                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                                tr("Connect"),
-                                                tr("Unable to connect to the bootloader!"));
-
-                                            QEventLoop m_loop;
-                                            connect(m_iodevice, &OpenMVPluginIO::closeResponse, &m_loop, &QEventLoop::quit);
-                                            m_iodevice->close();
-                                            m_loop.exec();
-                                        }
-
-                                        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive) || QMessageBox::question(Core::ICore::dialogParent(),
-                                            tr("Connect"),
-                                            tr("OpenMV IDE can still try to upgrade your OpenMV Cam using your OpenMV Cam's DFU Bootloader.\n\n"
-                                               "Continue?"),
-                                            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                                        == QMessageBox::Ok)
-                                        {
-                                            if((answer == QMessageBox::Yes) || (QMessageBox::warning(Core::ICore::dialogParent(),
-                                                tr("Connect"),
-                                                tr("DFU update erases your OpenMV Cam's internal flash file system.\n\n"
-                                                   "Backup your data before continuing!"),
-                                                QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                                            == QMessageBox::Ok))
-                                            {
-                                                if(QMessageBox::information(Core::ICore::dialogParent(),
-                                                    tr("Connect"),
-                                                    tr("Disconnect your OpenMV Cam from your computer, add a jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n"
-                                                       "Click the Ok button after your OpenMV Cam's DFU Bootloader has enumerated."),
-                                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                                                == QMessageBox::Ok)
-                                                {
-                                                    QProgressDialog dialog(tr("Reprogramming...\n\n(may take up to 5 minutes)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                                    dialog.setWindowModality(Qt::ApplicationModal);
-                                                    dialog.setCancelButton(Q_NULLPTR);
-                                                    dialog.show();
-
-                                                    QString command;
-                                                    Utils::SynchronousProcess process;
-                                                    Utils::SynchronousProcessResponse response;
-                                                    process.setTimeoutS(300); // 5 minutes...
-                                                    process.setProcessChannelMode(QProcess::MergedChannels);
-
-                                                    if(Utils::HostOsInfo::isWindowsHost())
-                                                    {
-                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfuse/DfuSeCommand.exe")));
-                                                        response = process.run(command, QStringList()
-                                                            << QStringLiteral("-c")
-                                                            << QStringLiteral("-d")
-                                                            << QStringLiteral("--v")
-                                                            << QStringLiteral("--o")
-                                                            << QStringLiteral("--fn")
-                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
-                                                    }
-                                                    else
-                                                    {
-                                                        command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/pydfu/pydfu.py")));
-                                                        response = process.run(QStringLiteral("python"), QStringList()
-                                                            << command
-                                                            << QStringLiteral("-u")
-                                                            << QDir::cleanPath(QDir::toNativeSeparators(path.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive) ? (QFileInfo(path).path() + QStringLiteral("/openmv.dfu")) : path)));
-                                                    }
-
-                                                    if(response.result == Utils::SynchronousProcessResponse::Finished)
-                                                    {
-                                                        QMessageBox::information(Core::ICore::dialogParent(),
-                                                            tr("Connect"),
-                                                            tr("DFU firmware update complete!\n\n"
-                                                               "Disconnect your OpenMV Cam from your computer, remove the jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n"
-                                                               "Click the Ok button after your OpenMV Cam has enumerated and finished running its built-in self test (blue led blinking)."));
-
-                                                        RECONNECT_END();
-                                                    }
-                                                    else
-                                                    {
-                                                        QMessageBox box(QMessageBox::Critical, tr("Connect"), tr("DFU firmware update failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
-                                                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                                                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                                                        box.setDetailedText(response.stdOut);
-                                                        box.setInformativeText(response.exitMessage(command, process.timeoutS()));
-                                                        box.setDefaultButton(QMessageBox::Ok);
-                                                        box.setEscapeButton(QMessageBox::Cancel);
-                                                        box.exec();
-
-                                                        if(Utils::HostOsInfo::isMacHost())
-                                                        {
-                                                            QMessageBox::information(Core::ICore::dialogParent(),
-                                                                tr("Connect"),
-                                                                tr("PyDFU requires the following libraries to be installed:\n\n"
-                                                                   "MacPorts:\n"
-                                                                   "    sudo port install libusb py-pip\n"
-                                                                   "    sudo pip install pyusb\n"
-                                                                   "HomeBrew:\n"
-                                                                   "    sudo brew install libusb python\n"
-                                                                   "    sudo pip install pyusb"));
-                                                        }
-
-                                                        if(Utils::HostOsInfo::isLinuxHost())
-                                                        {
-                                                            QMessageBox::information(Core::ICore::dialogParent(),
-                                                                tr("Connect"),
-                                                                tr("PyDFU requires the following libraries to be installed:\n\n"
-                                                                   "    sudo apt-get install libusb-1.0 python-pip\n"
-                                                                   "    sudo pip install pyusb"));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        CONNECT_END();
-                                    }
-                                }
-
-                                // Erase Flash ////////////////////////////////
-                                {
-                                    QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                                    dialog.setWindowModality(Qt::ApplicationModal);
-                                    dialog.show();
-
-                                    for(int i = flash_start; i <= flash_end; i++)
-                                    {
-                                        QEventLoop loop;
-
-                                        QTimer::singleShot(FLASH_ERASE_DELAY, &loop, &QEventLoop::quit);
-
-                                        m_iodevice->flashErase(i);
-
-                                        loop.exec();
-
-                                        if(dialog.wasCanceled())
-                                        {
-                                            m_iodevice->bootloaderReset();
-
-                                            QMessageBox::warning(Core::ICore::dialogParent(),
-                                                tr("Connect"),
-                                                tr("Your OpenMV Cam is now bricked - reconnect to unbrick it."));
-
-                                            CLOSE_CONNECT_END();
-                                        }
-
-                                        dialog.setValue(i);
-                                    }
-                                }
-
-                                // Program Flash //////////////////////////////
-                                {
-                                    QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, dataChunks.size() - 1, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                                    dialog.setWindowModality(Qt::ApplicationModal);
-                                    dialog.show();
-
-                                    for(int i = 0; i < dataChunks.size(); i++)
-                                    {
-                                        QEventLoop loop;
-
-                                        QTimer::singleShot(FLASH_WRITE_DELAY, &loop, &QEventLoop::quit);
-
-                                        m_iodevice->flashWrite(dataChunks.at(i));
-
-                                        loop.exec();
-
-                                        if(dialog.wasCanceled())
-                                        {
-                                            m_iodevice->bootloaderReset();
-
-                                            QMessageBox::warning(Core::ICore::dialogParent(),
-                                                tr("Connect"),
-                                                tr("Your OpenMV Cam is now bricked - reconnect to unbrick it."));
-
-                                            CLOSE_CONNECT_END();
-                                        }
-
-                                        dialog.setValue(i);
-                                    }
-                                }
-
-                                // Reset Bootloader ///////////////////////////
-                                {
-                                    QEventLoop loop;
-
-                                    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
-                                            &loop, &QEventLoop::quit);
-
-                                    m_iodevice->bootloaderReset();
-                                    m_iodevice->close();
-
-                                    loop.exec();
-
-                                    QMessageBox::information(Core::ICore::dialogParent(),
-                                        tr("Connect"),
-                                        tr("Done with upgrading your OpenMV Cam firmware!\n\nPlease wait for your OpenMV Cam to reconnect to your computer before continuing."));
-
-                                    RECONNECT_END();
-                                }
-                            }
-                            else if(forceBootloader && (firmware.error() != QFile::NoError))
-                            {
-                                QMessageBox::critical(Core::ICore::dialogParent(),
-                                    tr("Connect"),
-                                    tr("Error: %L1!").arg(firmware.errorString()));
-
-                                CLOSE_CONNECT_END();
-                            }
-                            else if(forceBootloader)
-                            {
-                                QMessageBox::critical(Core::ICore::dialogParent(),
-                                    tr("Connect"),
-                                    tr("FIRMWARE.BIN empty!"));
-
-                                CLOSE_CONNECT_END();
-                            }
-                        }
-                        else if(forceBootloader)
-                        {
                             QMessageBox::critical(Core::ICore::dialogParent(),
                                 tr("Connect"),
-                                tr("Error: %L1!").arg(firmware.errorString()));
+                                tr("Timeout error while getting board architecture!"));
 
                             CLOSE_CONNECT_END();
                         }
                     }
                 }
+
+                if(firmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
+                {
+                    QEventLoop loop;
+
+                    connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                            &loop, &QEventLoop::quit);
+
+                    m_iodevice->close();
+
+                    loop.exec();
+                }
             }
-            else if(forceBootloader && (file.error() != QFile::NoError))
+
+            // BIN Bootloader /////////////////////////////////////////////////
+
+            while(firmwarePath.endsWith(QStringLiteral(".bin"), Qt::CaseInsensitive))
             {
-                QMessageBox::critical(Core::ICore::dialogParent(),
-                    tr("Connect"),
-                    tr("Error: %L1!").arg(file.errorString()));
+                QFile file(firmwarePath);
 
-                CLOSE_CONNECT_END();
+                if(file.open(QIODevice::ReadOnly))
+                {
+                    QByteArray data = file.readAll();
+
+                    if((file.error() == QFile::NoError) && (!data.isEmpty()))
+                    {
+                        file.close();
+
+                        QList<QByteArray> dataChunks;
+
+                        for(int i = 0; i < data.size(); i += FLASH_WRITE_CHUNK_SIZE)
+                        {
+                            dataChunks.append(data.mid(i, qMin(FLASH_WRITE_CHUNK_SIZE, data.size() - i)));
+                        }
+
+                        if(dataChunks.last().size() % FLASH_WRITE_CHUNK_SIZE)
+                        {
+                            dataChunks.last().append(QByteArray(FLASH_WRITE_CHUNK_SIZE - dataChunks.last().size(), 255));
+                        }
+
+                        // Start Bootloader ///////////////////////////////////
+                        {
+                            bool done2 = bool();
+                            bool *done2Ptr = &done2;
+
+                            QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderDone,
+                                this, [this, done2Ptr] (bool done) {
+                                *done2Ptr = done;
+                            });
+
+                            QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                            dialog.setWindowModality(Qt::ApplicationModal);
+                            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                            dialog.show();
+
+                            connect(&dialog, &QProgressDialog::canceled,
+                                    m_ioport, &OpenMVPluginSerialPort::bootloaderStop);
+
+                            QEventLoop loop;
+
+                            connect(m_ioport, &OpenMVPluginSerialPort::bootloaderDone,
+                                    &loop, &QEventLoop::quit);
+
+                            if(forceBootloaderBricked)
+                            {
+                                m_ioport->bootloaderConnect(selectedPort);
+                            }
+                            else
+                            {
+                                m_ioport->bootloaderCloseAndConnect(selectedPort);
+                            }
+
+                            loop.exec();
+
+                            dialog.close();
+
+                            disconnect(conn);
+
+                            if(!done2)
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("Unable to connect to your OpenMV Cam's normal bootloader!"));
+
+                                if(forceFirmwarePath.isEmpty() && QMessageBox::question(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("OpenMV IDE can still try to upgrade your OpenMV Cam using your OpenMV Cam's DFU Bootloader.\n\n"
+                                       "Continue?"),
+                                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                                == QMessageBox::Ok)
+                                {
+                                    firmwarePath = QFileInfo(firmwarePath).path() + QStringLiteral("/openmv.dfu");
+                                    break;
+                                }
+
+                                CONNECT_END();
+                            }
+                        }
+
+                        // Erase Flash ////////////////////////////////////////
+                        {
+                            int flash_start = forceFlashFSErase ? FLASH_SECTOR_ALL_START : FLASH_SECTOR_START;
+                            int flash_end = forceFlashFSErase ? FLASH_SECTOR_ALL_END : FLASH_SECTOR_END;
+
+                            QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
+                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                            dialog.setWindowModality(Qt::ApplicationModal);
+                            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                            dialog.setCancelButton(Q_NULLPTR);
+                            dialog.show();
+
+                            for(int i = flash_start; i <= flash_end; i++)
+                            {
+                                QEventLoop loop;
+
+                                QTimer::singleShot(FLASH_ERASE_DELAY, &loop, &QEventLoop::quit);
+
+                                m_iodevice->flashErase(i);
+
+                                loop.exec();
+
+                                dialog.setValue(i);
+                            }
+                        }
+
+                        // Program Flash //////////////////////////////////////
+                        {
+                            QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, dataChunks.size() - 1, Core::ICore::dialogParent(),
+                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                            dialog.setWindowModality(Qt::ApplicationModal);
+                            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                            dialog.setCancelButton(Q_NULLPTR);
+                            dialog.show();
+
+                            for(int i = 0; i < dataChunks.size(); i++)
+                            {
+                                QEventLoop loop;
+
+                                QTimer::singleShot(FLASH_WRITE_DELAY, &loop, &QEventLoop::quit);
+
+                                m_iodevice->flashWrite(dataChunks.at(i));
+
+                                loop.exec();
+
+                                dialog.setValue(i);
+                            }
+                        }
+
+                        // Reset Bootloader ///////////////////////////////////
+                        {
+                            QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                            dialog.setWindowModality(Qt::ApplicationModal);
+                            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                            dialog.setCancelButton(Q_NULLPTR);
+                            dialog.show();
+
+                            QEventLoop loop;
+
+                            connect(m_iodevice, &OpenMVPluginIO::closeResponse,
+                                    &loop, &QEventLoop::quit);
+
+                            m_iodevice->bootloaderReset();
+                            m_iodevice->close();
+
+                            loop.exec();
+
+                            dialog.close();
+
+                            QMessageBox::information(Core::ICore::dialogParent(),
+                                tr("Connect"),
+                                tr("Done upgrading your OpenMV Cam's firmware!\n\n"
+                                   "Click the Ok button after your OpenMV Cam has enumerated and finished running its built-in self test (blue led blinking - this takes a while)."));
+
+                            RECONNECT_END();
+                        }
+                    }
+                    else if(file.error() != QFile::NoError)
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Connect"),
+                            tr("Error: %L1!").arg(file.errorString()));
+
+                        if(forceBootloaderBricked)
+                        {
+                            CONNECT_END();
+                        }
+                        else
+                        {
+                            CLOSE_CONNECT_END();
+                        }
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Connect"),
+                            tr("The firmware file is empty!"));
+
+                        if(forceBootloaderBricked)
+                        {
+                            CONNECT_END();
+                        }
+                        else
+                        {
+                            CLOSE_CONNECT_END();
+                        }
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Connect"),
+                        tr("Error: %L1!").arg(file.errorString()));
+
+                    if(forceBootloaderBricked)
+                    {
+                        CONNECT_END();
+                    }
+                    else
+                    {
+                        CLOSE_CONNECT_END();
+                    }
+                }
             }
-            else if(forceBootloader)
+
+            // DFU Bootloader /////////////////////////////////////////////////
+
+            if(firmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
             {
-                QMessageBox::critical(Core::ICore::dialogParent(),
+                if(forceFlashFSErase || (QMessageBox::warning(Core::ICore::dialogParent(),
                     tr("Connect"),
-                    tr("FIRMWARE.TXT empty!"));
+                    tr("DFU update erases your OpenMV Cam's internal flash file system.\n\n"
+                       "Backup your data before continuing!"),
+                    QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                == QMessageBox::Ok))
+                {
+                    if(QMessageBox::information(Core::ICore::dialogParent(),
+                        tr("Connect"),
+                        tr("Disconnect your OpenMV Cam from your computer, add a jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n"
+                           "Click the Ok button after your OpenMV Cam's DFU Bootloader has enumerated."),
+                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                    == QMessageBox::Ok)
+                    {
+                        QProgressDialog dialog(tr("Reprogramming...\n\n(may take up to 5 minutes)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                        dialog.setWindowModality(Qt::ApplicationModal);
+                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                        dialog.setCancelButton(Q_NULLPTR);
+                        dialog.show();
 
-                CLOSE_CONNECT_END();
+                        QString command;
+                        Utils::SynchronousProcess process;
+                        Utils::SynchronousProcessResponse response;
+                        process.setTimeoutS(300); // 5 minutes...
+                        process.setProcessChannelMode(QProcess::MergedChannels);
+
+                        if(Utils::HostOsInfo::isWindowsHost())
+                        {
+                            command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfuse/DfuSeCommand.exe")));
+                            response = process.run(command, QStringList()
+                                << QStringLiteral("-c")
+                                << QStringLiteral("-d")
+                                << QStringLiteral("--v")
+                                << QStringLiteral("--o")
+                                << QStringLiteral("--fn")
+                                << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+                        }
+                        else
+                        {
+                            command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/pydfu/pydfu.py")));
+                            response = process.run(QStringLiteral("python"), QStringList()
+                                << command
+                                << QStringLiteral("-u")
+                                << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+                        }
+
+                        if(response.result == Utils::SynchronousProcessResponse::Finished)
+                        {
+                            QMessageBox::information(Core::ICore::dialogParent(),
+                                tr("Connect"),
+                                tr("DFU firmware update complete!\n\n") +
+                                (Utils::HostOsInfo::isWindowsHost() ? tr("Disconnect your OpenMV Cam from your computer, remove the jumper wire between the BOOT and RST pins, and then reconnect your OpenMV Cam to your computer.\n\n") : QString()) +
+                                tr("Click the Ok button after your OpenMV Cam has enumerated and finished running its built-in self test (blue led blinking - this takes a while)."));
+
+                            RECONNECT_END();
+                        }
+                        else
+                        {
+                            QMessageBox box(QMessageBox::Critical, tr("Connect"), tr("DFU firmware update failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
+                                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                            box.setDetailedText(response.stdOut);
+                            box.setInformativeText(response.exitMessage(command, process.timeoutS()));
+                            box.setDefaultButton(QMessageBox::Ok);
+                            box.setEscapeButton(QMessageBox::Cancel);
+                            box.exec();
+
+                            if(Utils::HostOsInfo::isMacHost())
+                            {
+                                QMessageBox::information(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("PyDFU requires the following libraries to be installed:\n\n"
+                                       "MacPorts:\n"
+                                       "    sudo port install libusb py-pip\n"
+                                       "    sudo pip install pyusb\n\n"
+                                       "HomeBrew:\n"
+                                       "    sudo brew install libusb python\n"
+                                       "    sudo pip install pyusb"));
+                            }
+
+                            if(Utils::HostOsInfo::isLinuxHost())
+                            {
+                                QMessageBox::information(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("PyDFU requires the following libraries to be installed:\n\n"
+                                       "    sudo apt-get install libusb-1.0 python-pip\n"
+                                       "    sudo pip install pyusb"));
+                            }
+                        }
+                    }
+                }
+
+                CONNECT_END();
             }
-        }
-        else if(forceBootloader)
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Connect"),
-                tr("Error: %L1!").arg(file.errorString()));
-
-            CLOSE_CONNECT_END();
         }
 
         // Stopping ///////////////////////////////////////////////////////////
@@ -1438,6 +1417,9 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_running = false;
         m_portName = selectedPort;
         m_portPath = QString();
+        m_major = major2;
+        m_minor = minor2;
+        m_patch = patch2;
         m_errorFilterString = QString();
 
         m_bootloaderCommand->action()->setEnabled(false);
@@ -1453,17 +1435,42 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_stopCommand->action()->setEnabled(false);
         m_stopCommand->action()->setVisible(false);
 
+        m_versionButton->setEnabled(true);
+        m_versionButton->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
         m_portLabel->setEnabled(true);
         m_portLabel->setText(tr("Serial Port: %L1").arg(m_portName));
         m_pathButton->setEnabled(true);
         m_pathButton->setText(tr("Drive:"));
-        m_versionLabel->setEnabled(true);
-        m_versionLabel->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
         m_fpsLabel->setEnabled(true);
         m_fpsLabel->setText(tr("FPS: 0"));
 
         m_frameBuffer->enableSaveTemplate(false);
         m_frameBuffer->enableSaveDescriptor(false);
+
+        QFile file(Core::ICore::resourcePath() + QStringLiteral("/firmware/firmware.txt"));
+
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QByteArray data = file.readAll();
+
+            if((file.error() == QFile::NoError) && (!data.isEmpty()))
+            {
+                file.close();
+
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+
+                if((major2 < match.captured(1).toInt())
+                || ((major2 == match.captured(1).toInt()) && (minor2 < match.captured(2).toInt()))
+                || ((major2 == match.captured(1).toInt()) && (minor2 == match.captured(2).toInt()) && (patch2 < match.captured(3).toInt())))
+                {
+                    m_versionButton->setText(m_versionButton->text().append(tr(" - [ out of date - click here to updgrade ]")));
+                }
+                else
+                {
+                    m_versionButton->setText(m_versionButton->text().append(tr(" - [ latest ]")));
+                }
+            }
+        }
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -1525,6 +1532,9 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_running = false;
             m_portName = QString();
             m_portPath = QString();
+            m_major = int();
+            m_minor = int();
+            m_patch = int();
             m_errorFilterString = QString();
 
             m_bootloaderCommand->action()->setEnabled(true);
@@ -1539,12 +1549,12 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_stopCommand->action()->setEnabled(false);
             m_stopCommand->action()->setVisible(false);
 
+            m_versionButton->setDisabled(true);
+            m_versionButton->setText(tr("Firmware Version:"));
             m_portLabel->setDisabled(true);
             m_portLabel->setText(tr("Serial Port:"));
             m_pathButton->setDisabled(true);
             m_pathButton->setText(tr("Drive:"));
-            m_versionLabel->setDisabled(true);
-            m_versionLabel->setText(tr("Firmware Version:"));
             m_fpsLabel->setDisabled(true);
             m_fpsLabel->setText(tr("FPS:"));
 
@@ -1943,6 +1953,86 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
     {
         QMessageBox::critical(Core::ICore::dialogParent(),
             tr("Save Descriptor"),
+            tr("Busy... please wait..."));
+    }
+}
+
+void OpenMVPlugin::updateCam()
+{
+    if(!m_working)
+    {
+        QFile file(Core::ICore::resourcePath() + QStringLiteral("/firmware/firmware.txt"));
+
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QByteArray data = file.readAll();
+
+            if((file.error() == QFile::NoError) && (!data.isEmpty()))
+            {
+                file.close();
+
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+
+                if((m_major < match.captured(1).toInt())
+                || ((m_major == match.captured(1).toInt()) && (m_minor < match.captured(2).toInt()))
+                || ((m_major == match.captured(1).toInt()) && (m_minor == match.captured(2).toInt()) && (m_patch < match.captured(3).toInt())))
+                {
+                    if(QMessageBox::warning(Core::ICore::dialogParent(),
+                        tr("Firmware Update"),
+                        tr("Update your OpenMV Cam's firmware to the latest version?"),
+                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                    == QMessageBox::Ok)
+                    {
+                        int answer = QMessageBox::question(Core::ICore::dialogParent(),
+                            tr("Firmware Update"),
+                            tr("Erase the internal file system?"),
+                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+
+                        if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
+                        {
+                            if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
+                            {
+                                disconnectClicked();
+
+                                if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
+                                {
+                                    connectClicked(true, QString(), answer);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    QMessageBox::information(Core::ICore::dialogParent(),
+                        tr("Firmware Update"),
+                        tr("Your OpenMV Cam's firmware is up to date."));
+                }
+            }
+            else if(file.error() != QFile::NoError)
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Firmware Update"),
+                    tr("Error: %L1!").arg(file.errorString()));
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Firmware Update"),
+                    tr("Cannot open firmware.txt!"));
+            }
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Firmware Update"),
+                tr("Error: %L1!").arg(file.errorString()));
+        }
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Firmware Update"),
             tr("Busy... please wait..."));
     }
 }

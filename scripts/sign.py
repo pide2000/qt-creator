@@ -74,7 +74,9 @@ def try_signFile(file):
         print "Trying again...",
         try: signFile(file)
         except:
-            sys.exit("Failed to sign %s." % file)
+            print("Failed to sign %s." % file)
+            # Don't die...
+            pass
 
 def main():
     __folder__ = os.path.dirname(os.path.abspath(__file__))

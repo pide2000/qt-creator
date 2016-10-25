@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QtGui/private/qzipreader_p.h>
 #include <QtNetwork>
 #include <QtSerialPort>
 #include <QtWidgets>
@@ -20,6 +21,7 @@
 #include <texteditor/texteditor.h>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
+#include <extensionsystem/pluginspec.h>
 #include <utils/environment.h>
 #include <utils/hostosinfo.h>
 #include <utils/pathchooser.h>
@@ -59,6 +61,11 @@
 #define OPENMVCAM_VENDOR_ID 0x1209
 #define OPENMVCAM_PRODUCT_ID 0xABD1
 
+#define OLD_API_MAJOR 1
+#define OLD_API_MINOR 7
+#define OLD_API_PATCH 0
+#define OLD_API_BOARD "OMV2"
+
 #define FRAME_SIZE_DUMP_SPACING     10 // in ms
 #define GET_SCRIPT_RUNNING_SPACING  100 // in ms
 #define GET_TX_BUFFER_SPACING       10 // in ms
@@ -66,11 +73,6 @@
 #define FPS_AVERAGE_BUFFER_DEPTH    10 // in samples
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
 #define FPS_TIMER_EXPIRATION_TIME   2000 // in milliseconds
-
-#define OLD_API_MAJOR 1
-#define OLD_API_MINOR 7
-#define OLD_API_PATCH 0
-#define OLD_API_BOARD "OMV2"
 
 namespace OpenMV {
 namespace Internal {
@@ -89,6 +91,7 @@ public:
 
 public slots: // private
 
+    void packageUpdate();
     void bootloaderClicked();
     void connectClicked(bool forceBootloader = false, QString forceFirmwarePath = QString(), int forceFlashFSErase = int());
     void disconnectClicked(bool reset = false);
@@ -96,11 +99,11 @@ public slots: // private
     void stopClicked();
     void processEvents();
     void errorFilter(const QByteArray &data);
-
     void saveScript();
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
+    void updateCam();
     void setPortPath();
 
 signals:
@@ -136,9 +139,9 @@ private:
     QComboBox *m_histogramColorSpace;
     OpenMVPluginHistogram *m_histogram;
 
+    QToolButton *m_versionButton;
     QLabel *m_portLabel;
     QToolButton *m_pathButton;
-    QLabel *m_versionLabel;
     QLabel *m_fpsLabel;
 
     OpenMVPluginSerialPort *m_ioport;
@@ -156,6 +159,9 @@ private:
     bool m_running;
     QString m_portName;
     QString m_portPath;
+    int m_major;
+    int m_minor;
+    int m_patch;
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;

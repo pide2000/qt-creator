@@ -4,6 +4,8 @@
 #include <QtCore>
 #include <QtSerialPort>
 
+#include <utils/hostosinfo.h>
+
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
 
@@ -28,6 +30,12 @@ public slots:
     void open(const QString &portName);
     void write(const OpenMVPluginSerialPortData &data);
 
+    // Bootloader Stuff //
+
+    void bootloaderCloseAndConnect(const QString &selectedPort);
+    void bootloaderConnect(const QString &selectedPort);
+    void bootloaderStop();
+
 public slots: // private
 
     void processEvents();
@@ -37,9 +45,17 @@ signals:
     void openResult(const QString &errorMessage);
     void readAll(const QByteArray &data);
 
+    // Bootloader Stuff //
+
+    void bootloaderDone(bool);
+
 private:
 
     QSerialPort *m_port;
+
+    // Bootloader Stuff //
+
+    bool m_bootloaderStop;
 };
 
 class OpenMVPluginSerialPort : public QObject
@@ -64,6 +80,14 @@ signals:
 
     void write(const OpenMVPluginSerialPortData &data);
     void readAll(const QByteArray &data);
+
+    // Bootloader Stuff //
+
+    void bootloaderCloseAndConnect(const QString &selectedPort);
+    void bootloaderConnect(const QString &selectedPort);
+    void bootloaderStop();
+
+    void bootloaderDone(bool);
 };
 
 #endif // OPENMVPLUGINSERIALPORT_H
