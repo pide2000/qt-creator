@@ -1106,12 +1106,17 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         // Start Bootloader ///////////////////////////////////
                         {
-                            bool done2 = bool();
-                            bool *done2Ptr = &done2;
+                            bool done2 = bool(), done22 = false;
+                            bool *done2Ptr = &done2, *done2Ptr2 = &done22;
 
-                            QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderDone,
+                            QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStartResponse,
                                 this, [this, done2Ptr] (bool done) {
                                 *done2Ptr = done;
+                            });
+
+                            QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStopResponse,
+                                this, [this, done2Ptr2] {
+                                *done2Ptr2 = true;
                             });
 
                             QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Connecting..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
@@ -1124,25 +1129,34 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             connect(&dialog, &QProgressDialog::canceled,
                                     m_ioport, &OpenMVPluginSerialPort::bootloaderStop);
 
-                            QEventLoop loop;
+                            QEventLoop loop, loop0, loop1;
 
-                            connect(m_ioport, &OpenMVPluginSerialPort::bootloaderDone,
+                            connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStartResponse,
                                     &loop, &QEventLoop::quit);
 
-                            if(forceBootloaderBricked)
-                            {
-                                m_ioport->bootloaderConnect(selectedPort);
-                            }
-                            else
-                            {
-                                m_ioport->bootloaderCloseAndConnect(selectedPort);
-                            }
+                            connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStopResponse,
+                                    &loop0, &QEventLoop::quit);
+
+                            connect(m_ioport, &OpenMVPluginSerialPort::bootloaderResetResponse,
+                                    &loop1, &QEventLoop::quit);
+
+                            m_ioport->bootloaderStart(!forceBootloaderBricked, selectedPort);
 
                             loop.exec();
 
                             dialog.close();
 
+                            if(!done22)
+                            {
+                                loop0.exec();
+                            }
+
+                            m_ioport->bootloaderReset();
+
+                            loop1.exec();
+
                             disconnect(conn);
+                            disconnect(conn2);
 
                             if(!done2)
                             {
@@ -1990,14 +2004,12 @@ void OpenMVPlugin::updateCam()
 
                         if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
                         {
+                            disconnectClicked();
+
                             if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
                             {
-                                disconnectClicked();
-
-                                if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
-                                {
-                                    connectClicked(true, QString(), answer);
-                                }
+                                // QString() to autoconnect to openmcam.
+                                connectClicked(true, QString(), answer);
                             }
                         }
                     }

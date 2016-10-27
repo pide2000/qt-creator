@@ -32,9 +32,9 @@ public slots:
 
     // Bootloader Stuff //
 
-    void bootloaderCloseAndConnect(const QString &selectedPort);
-    void bootloaderConnect(const QString &selectedPort);
+    void bootloaderStart(bool closeFirst, const QString &selectedPort);
     void bootloaderStop();
+    void bootloaderReset();
 
 public slots: // private
 
@@ -47,7 +47,9 @@ signals:
 
     // Bootloader Stuff //
 
-    void bootloaderDone(bool);
+    void bootloaderStartResponse(bool);
+    void bootloaderStopResponse();
+    void bootloaderResetResponse();
 
 private:
 
@@ -83,11 +85,13 @@ signals:
 
     // Bootloader Stuff //
 
-    void bootloaderCloseAndConnect(const QString &selectedPort);
-    void bootloaderConnect(const QString &selectedPort);
+    void bootloaderStart(bool closeFirst, const QString &selectedPort);
     void bootloaderStop();
+    void bootloaderReset();
 
-    void bootloaderDone(bool);
+    void bootloaderStartResponse(bool);
+    void bootloaderStopResponse();
+    void bootloaderResetResponse();
 };
 
 #endif // OPENMVPLUGINSERIALPORT_H
