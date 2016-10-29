@@ -230,7 +230,9 @@ void CorePlugin::extensionsInitialized()
 
 bool CorePlugin::delayedInitialize()
 {
-    HelpManager::setupHelpManager();
+    //OPENMV-DIFF//
+    //HelpManager::setupHelpManager();
+    //OPENMV-DIFF//
     m_locator->delayedInitialize();
     IWizardFactory::allWizardFactories(); // scan for all wizard factories
     return true;

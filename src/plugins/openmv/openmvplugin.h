@@ -1,6 +1,7 @@
 #ifndef OPENMVPLUGIN_H
 #define OPENMVPLUGIN_H
 
+#include <QtConcurrent>
 #include <QtCore>
 #include <QtGui>
 #include <QtGui/private/qzipreader_p.h>
@@ -23,7 +24,6 @@
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 #include <utils/environment.h>
-#include <utils/hostosinfo.h>
 #include <utils/pathchooser.h>
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
@@ -55,6 +55,9 @@
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
 #define LAST_SAVE_DESCIPTOR_PATH "LastSaveDescriptorPath"
+#define RESOURCES_MAJOR "ResourcesMajor"
+#define RESOURCES_MINOR "ResourcesMinor"
+#define RESOURCES_PATCH "ResourcesPatch"
 
 #define SERIAL_PORT_SETTINGS_GROUP "OpenMVSerialPort"
 

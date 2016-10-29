@@ -181,7 +181,11 @@ void HighlighterSettings::assignDefaultIgnoredPatterns()
 void HighlighterSettings::assignDefaultDefinitionsPath()
 {
     const QString &path =
-        Core::ICore::userResourcePath() + QLatin1String("/generic-highlighter");
+    //OPENMV-DIFF//
+    //    Core::ICore::userResourcePath() + QLatin1String("/generic-highlighter");
+    //OPENMV-DIFF//
+        Core::ICore::resourcePath() + QLatin1String("/generic-highlighter");
+    //OPENMV-DIFF//
     if (QFile::exists(path) || QDir().mkpath(path))
         m_definitionFilesPath = path;
 }

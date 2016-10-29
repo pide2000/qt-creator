@@ -214,8 +214,10 @@ MimeTypeSettingsPrivate::MimeTypeSettingsPrivate()
 {
     m_filterModel->setSourceModel(m_model);
     m_filterModel->setFilterKeyColumn(-1);
-    connect(ICore::instance(), &ICore::saveSettingsRequested,
-            this, &MimeTypeSettingsPrivate::writeUserModifiedMimeTypes);
+    //OPENMV-DIFF//
+    //connect(ICore::instance(), &ICore::saveSettingsRequested,
+    //        this, &MimeTypeSettingsPrivate::writeUserModifiedMimeTypes);
+    //OPENMV-DIFF//
 }
 
 MimeTypeSettingsPrivate::~MimeTypeSettingsPrivate()

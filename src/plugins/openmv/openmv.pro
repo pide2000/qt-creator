@@ -1,5 +1,5 @@
 include(../../qtcreatorplugin.pri)
-QT += gui-private network printsupport serialport
+QT += concurrent gui-private network printsupport serialport
 HEADERS += openmvplugin.h \
            openmvpluginserialport.h \
            openmvpluginio.h \
