@@ -6,7 +6,7 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_TIMEOUT          2000
+#define USBDBG_COMMAND_TIMEOUT          5000
 
 #define ATTR_CONTRAST                   0
 #define ATTR_BRIGHTNESS                 1
@@ -34,6 +34,7 @@ public:
 
     explicit OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent = Q_NULLPTR);
 
+    bool getTimeout();
     bool frameSizeDumpQueued() const;
     bool getScriptRunningQueued() const;
     bool getAttributeQueued() const;
@@ -83,6 +84,7 @@ private:
     OpenMVPluginSerialPort *m_port;
     QTimer *m_timer;
 
+    bool m_timeout;
     int m_processingResponse;
     QQueue<OpenMVPluginSerialPortData> m_commandQueue;
     QQueue<int> m_expectedHeaderQueue;

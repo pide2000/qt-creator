@@ -78,12 +78,25 @@ void OpenMVPluginSerialPort_private::write(const OpenMVPluginSerialPortData &dat
         }
         else
         {
+            QElapsedTimer elaspedTimer;
+            elaspedTimer.start();
+
             while(m_port->bytesToWrite())
             {
                 m_port->waitForBytesWritten(1);
+
+                if(elaspedTimer.hasExpired(WRITE_TIMEOUT))
+                {
+                    break;
+                }
             }
 
-            if(GET_END_DELAY(data.second))
+            if(m_port->bytesToWrite())
+            {
+                delete m_port;
+                m_port = Q_NULLPTR;
+            }
+            else if(GET_END_DELAY(data.second))
             {
                 QThread::msleep(GET_END_DELAY(data.second));
             }
@@ -99,6 +112,13 @@ void OpenMVPluginSerialPort_private::processEvents()
     {
         emit readAll(data);
     }
+}
+
+void OpenMVPluginSerialPort_private::isOpen()
+{
+    // Process any writes first...
+    QCoreApplication::processEvents();
+    emit isOpenResult(m_port);
 }
 
 // Bootloader Stuff Start /////////////////////////////////////////////////////
@@ -309,6 +329,12 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 
     connect(port, &OpenMVPluginSerialPort_private::readAll,
             this, &OpenMVPluginSerialPort::readAll);
+
+    connect(this, &OpenMVPluginSerialPort::isOpen,
+            port, &OpenMVPluginSerialPort_private::isOpen);
+
+    connect(port, &OpenMVPluginSerialPort_private::isOpenResult,
+            this, &OpenMVPluginSerialPort::isOpenResult);
 
     // Bootloader Stuff Start //
 

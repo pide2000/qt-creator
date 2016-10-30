@@ -154,6 +154,7 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
     connect(m_timer, &QTimer::timeout,
             this, &OpenMVPluginIO::timeout);
 
+    m_timeout = false;
     m_processingResponse = int();
     m_commandQueue = QQueue<OpenMVPluginSerialPortData>();
     m_expectedHeaderQueue = QQueue<int>();
@@ -336,58 +337,99 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
 void OpenMVPluginIO::timeout()
 {
-    m_expectedDataQueue.dequeue();
-    m_receivedBytes.clear();
-    m_frameSizeW = int();
-    m_frameSizeH = int();
-    m_frameSizeBPP = int();
-
-    switch(m_expectedHeaderQueue.dequeue())
+    forever
     {
-        case __USBDBG_FW_VERSION:
+        m_expectedDataQueue.dequeue();
+        m_receivedBytes.clear();
+        m_frameSizeW = int();
+        m_frameSizeH = int();
+        m_frameSizeBPP = int();
+
+        switch(m_expectedHeaderQueue.dequeue())
         {
-            emit firmwareVersion(int(), int(), int());
-            break;
+            case __USBDBG_FW_VERSION:
+            {
+                emit firmwareVersion(int(), int(), int());
+                break;
+            }
+            case __USBDBG_ARCH_STR:
+            {
+                emit archString(QString());
+                break;
+            }
+            case __USBDBG_FRAME_SIZE:
+            {
+                break;
+            }
+            case __USBDBG_FRAME_DUMP:
+            {
+                break;
+            }
+            case __USBDBG_SCRIPT_RUNNING:
+            {
+                emit scriptRunning(bool());
+                break;
+            }
+            case __USBDBG_ATTR_READ:
+            {
+                emit attribute(int());
+                break;
+            }
+            case __USBDBG_TX_BUF_LEN:
+            {
+                break;
+            }
+            case __USBDBG_TX_BUF:
+            {
+                break;
+            }
+            case __BOOTLDR_START:
+            {
+                emit gotBootloaderStart(false);
+                break;
+            }
         }
-        case __USBDBG_ARCH_STR:
+
+        m_processingResponse = int();
+
+        bool done = true;
+
+        while((!m_commandQueue.isEmpty()) && (!m_processingResponse))
         {
-            emit archString(QString());
-            break;
+            OpenMVPluginSerialPortData command = m_commandQueue.dequeue();
+
+            if(command.first.isEmpty())
+            {
+                m_port->write(command);
+            }
+
+            if(m_expectedHeaderQueue.head() && m_expectedDataQueue.head())
+            {
+                m_processingResponse = m_expectedHeaderQueue.head();
+
+                done = false;
+            }
+            else
+            {
+                m_expectedHeaderQueue.dequeue();
+                m_expectedDataQueue.dequeue();
+            }
         }
-        case __USBDBG_FRAME_SIZE:
+
+        if(done)
         {
-            break;
-        }
-        case __USBDBG_FRAME_DUMP:
-        {
-            break;
-        }
-        case __USBDBG_SCRIPT_RUNNING:
-        {
-            emit scriptRunning(bool());
-            break;
-        }
-        case __USBDBG_ATTR_READ:
-        {
-            emit attribute(int());
-            break;
-        }
-        case __USBDBG_TX_BUF_LEN:
-        {
-            break;
-        }
-        case __USBDBG_TX_BUF:
-        {
-            break;
-        }
-        case __BOOTLDR_START:
-        {
-            emit gotBootloaderStart(false);
             break;
         }
     }
 
-    m_processingResponse = int();
+    m_timeout = true;
+}
+
+bool OpenMVPluginIO::getTimeout()
+{
+    bool timeout = m_timeout;
+    m_timeout = false;
+    return timeout;
 }
 
 bool OpenMVPluginIO::frameSizeDumpQueued() const

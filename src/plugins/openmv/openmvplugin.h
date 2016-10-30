@@ -12,13 +12,10 @@
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/editormanager/editormanager.h>
-#include <coreplugin/coreconstants.h>
 #include <coreplugin/fancyactionbar.h>
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
-#include <coreplugin/id.h>
 #include <coreplugin/messagemanager.h>
-#include <coreplugin/minisplitter.h>
 #include <texteditor/texteditor.h>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>

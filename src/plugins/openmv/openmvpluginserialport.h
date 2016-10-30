@@ -15,6 +15,8 @@
 #define GET_START_DELAY(start_end_delay) (((start_end_delay) >> 0) & 0xFFFF)
 #define GET_END_DELAY(start_end_delay) (((start_end_delay) >> 16) & 0xFFFF)
 
+#define WRITE_TIMEOUT 5000
+
 typedef QPair<QByteArray, int> OpenMVPluginSerialPortData;
 
 class OpenMVPluginSerialPort_private : public QObject
@@ -29,6 +31,7 @@ public slots:
 
     void open(const QString &portName);
     void write(const OpenMVPluginSerialPortData &data);
+    void isOpen();
 
     // Bootloader Stuff //
 
@@ -44,6 +47,7 @@ signals:
 
     void openResult(const QString &errorMessage);
     void readAll(const QByteArray &data);
+    void isOpenResult(bool result);
 
     // Bootloader Stuff //
 
@@ -70,18 +74,14 @@ public:
 
 signals:
 
-    // Usage:
-    //
-    // 1: Create object on startup and destroy object on shutdown.
-    // 2: Call open and receive the result from open result.
-    // 3: Send with write and receive with read.
-    // 4: Call write with null and receive read with null to close.
-
     void open(const QString &portName);
     void openResult(const QString &errorMessage);
 
     void write(const OpenMVPluginSerialPortData &data);
     void readAll(const QByteArray &data);
+
+    void isOpen();
+    void isOpenResult(bool result);
 
     // Bootloader Stuff //
 

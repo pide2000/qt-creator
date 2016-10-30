@@ -129,7 +129,14 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
     docsCommand->setEnabled(true);
     connect(docsCommand, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/index.html")));
+        QUrl url = QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/index.html"));
+
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
     });
 
     QAction *forumsCommand = new QAction(tr("OpenMV Forums"), this);
@@ -137,7 +144,14 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
     connect(forumsCommand, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("http://www.openmv.io/forums/")));
+        QUrl url = QUrl(QStringLiteral("http://www.openmv.io/forums/"));
+
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
     });
 
     QAction *pinoutAction = new QAction(
@@ -147,7 +161,14 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
     connect(pinoutAction, &QAction::triggered, this, [this] {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/_images/pinout.png")));
+        QUrl url = QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/_images/pinout.png"));
+
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
     });
 
     QAction *aboutAction = new QAction(QIcon::fromTheme(QStringLiteral("help-about")),
@@ -599,7 +620,14 @@ void OpenMVPlugin::extensionsInitialized()
 
                     if(box.clickedButton() == button)
                     {
-                        QDesktopServices::openUrl(QUrl(QStringLiteral("http://www.openmv.io/download/")));
+                        QUrl url = QUrl(QStringLiteral("http://www.openmv.io/download/"));
+
+                        if(!QDesktopServices::openUrl(url))
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                                  QString(),
+                                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+                        }
                     }
                     else
                     {
@@ -666,12 +694,37 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
     }
 }
 
-//static bool extractAll(QByteArray *data, const QString &path)
-//{
-//    QBuffer buffer(&data);
-//    QZipReader reader(&buffer);
-//    return reader.extractAll(path);
-//}
+static bool removeRecursively(const Utils::FileName &path, QString *error)
+{
+    return Utils::FileUtils::removeRecursively(path, error);
+}
+
+static bool removeRecursivelyWrapper(const Utils::FileName &path, QString *error)
+{
+    QEventLoop loop;
+    QFutureWatcher<bool> watcher;
+    QObject::connect(&watcher, &QFutureWatcher<bool>::finished, &loop, &QEventLoop::quit);
+    watcher.setFuture(QtConcurrent::run(removeRecursively, path, error));
+    loop.exec();
+    return watcher.result();
+}
+
+static bool extractAll(QByteArray *data, const QString &path)
+{
+    QBuffer buffer(data);
+    QZipReader reader(&buffer);
+    return reader.extractAll(path);
+}
+
+static bool extractAllWrapper(QByteArray *data, const QString &path)
+{
+    QEventLoop loop;
+    QFutureWatcher<bool> watcher;
+    QObject::connect(&watcher, &QFutureWatcher<bool>::finished, &loop, &QEventLoop::quit);
+    watcher.setFuture(QtConcurrent::run(extractAll, data, path));
+    loop.exec();
+    return watcher.result();
+}
 
 void OpenMVPlugin::packageUpdate()
 {
@@ -712,9 +765,16 @@ void OpenMVPlugin::packageUpdate()
 
                 if(box.clickedButton() == button)
                 {
+                    QProgressDialog *dialog = new QProgressDialog(tr("Installing..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                    dialog->setWindowModality(Qt::ApplicationModal);
+                    dialog->setAttribute(Qt::WA_ShowWithoutActivating);
+                    dialog->setCancelButton(Q_NULLPTR);
+
                     QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
 
-                    connect(manager2, &QNetworkAccessManager::finished, this, [this, new_major, new_minor, new_patch] (QNetworkReply *reply2) {
+                    connect(manager2, &QNetworkAccessManager::finished, this, [this, new_major, new_minor, new_patch, dialog] (QNetworkReply *reply2) {
 
                         QByteArray data2 = reply2->readAll();
 
@@ -732,7 +792,7 @@ void OpenMVPlugin::packageUpdate()
 
                             QString error;
 
-                            if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
+                            if(!removeRecursivelyWrapper(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
                             {
                                 QMessageBox::critical(Core::ICore::dialogParent(),
                                     QString(),
@@ -743,10 +803,7 @@ void OpenMVPlugin::packageUpdate()
                             }
                             else
                             {
-                                QBuffer buffer(&data2);
-                                QZipReader reader(&buffer);
-
-                                if(!reader.extractAll(Core::ICore::userResourcePath()))
+                                if(!extractAllWrapper(&data2, Core::ICore::userResourcePath()))
                                 {
                                     QMessageBox::critical(Core::ICore::dialogParent(),
                                         QString(),
@@ -763,6 +820,12 @@ void OpenMVPlugin::packageUpdate()
                                 settings2->setValue(QStringLiteral(RESOURCES_MINOR), new_minor);
                                 settings2->setValue(QStringLiteral(RESOURCES_PATCH), new_patch);
                                 settings2->sync();
+
+                                QMessageBox::information(Core::ICore::dialogParent(),
+                                    QString(),
+                                    tr("Installation Sucessful! Please restart OpenMV IDE."));
+
+                                QApplication::quit();
                             }
 
                             settings2->endGroup();
@@ -781,6 +844,8 @@ void OpenMVPlugin::packageUpdate()
                         }
 
                         reply2->deleteLater();
+
+                        delete dialog;
                     });
 
                     QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
@@ -790,16 +855,7 @@ void OpenMVPlugin::packageUpdate()
                     if(reply2)
                     {
                         connect(reply2, &QNetworkReply::sslErrors, reply2, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
-
-                        QProgressDialog *dialog = new QProgressDialog(tr("Installing..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                        dialog->setWindowModality(Qt::ApplicationModal);
-                        dialog->setAttribute(Qt::WA_ShowWithoutActivating);
-                        dialog->setCancelButton(Q_NULLPTR);
                         dialog->show();
-
-                        connect(manager2, &QNetworkAccessManager::finished, dialog, &QProgressDialog::deleteLater);
                     }
                     else
                     {
@@ -1424,8 +1480,44 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 QTimer::singleShot(FLASH_ERASE_DELAY, &loop, &QEventLoop::quit);
 
                                 m_iodevice->flashErase(i);
+                                m_iodevice->processEvents();
 
                                 loop.exec();
+
+                                // Check Timeout //////////////////////////////
+                                {
+                                    // isOpen() is not executed in series with
+                                    // the above call. This is okay. We do not
+                                    // need to meet ordering here...
+
+                                    bool isOpen2 = bool();
+                                    bool *isOpen2Ptr = &isOpen2;
+
+                                    QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
+                                        this, [this, isOpen2Ptr] (bool isOpen) {
+                                        *isOpen2Ptr = isOpen;
+                                    });
+
+                                    QEventLoop loop2;
+
+                                    connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
+                                            &loop2, &QEventLoop::quit);
+
+                                    m_ioport->isOpen();
+
+                                    loop2.exec();
+
+                                    disconnect(conn2);
+
+                                    if(!isOpen2)
+                                    {
+                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                            tr("Connect"),
+                                            tr("Timeout Error!"));
+
+                                        CLOSE_CONNECT_END();
+                                    }
+                                }
 
                                 dialog.setValue(i);
                             }
@@ -1448,8 +1540,44 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 QTimer::singleShot(FLASH_WRITE_DELAY, &loop, &QEventLoop::quit);
 
                                 m_iodevice->flashWrite(dataChunks.at(i));
+                                m_iodevice->processEvents();
 
                                 loop.exec();
+
+                                // Check Timeout //////////////////////////////
+                                {
+                                    // isOpen() is not executed in series with
+                                    // the above call. This is okay. We do not
+                                    // need to meet ordering here...
+
+                                    bool isOpen2 = bool();
+                                    bool *isOpen2Ptr = &isOpen2;
+
+                                    QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
+                                        this, [this, isOpen2Ptr] (bool isOpen) {
+                                        *isOpen2Ptr = isOpen;
+                                    });
+
+                                    QEventLoop loop2;
+
+                                    connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
+                                            &loop2, &QEventLoop::quit);
+
+                                    m_ioport->isOpen();
+
+                                    loop2.exec();
+
+                                    disconnect(conn2);
+
+                                    if(!isOpen2)
+                                    {
+                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                            tr("Connect"),
+                                            tr("Timeout Error!"));
+
+                                        CLOSE_CONNECT_END();
+                                    }
+                                }
 
                                 dialog.setValue(i);
                             }
@@ -1646,6 +1774,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         ///////////////////////////////////////////////////////////////////////
 
+        m_iodevice->getTimeout(); // clear
+
         m_frameSizeDumpTimer.restart();
         m_getScriptRunningTimer.restart();
         m_getTxBufferTimer.restart();
@@ -1760,6 +1890,8 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             }
 
             ///////////////////////////////////////////////////////////////////
+
+            m_iodevice->getTimeout(); // clear
 
             m_frameSizeDumpTimer.restart();
             m_getScriptRunningTimer.restart();
@@ -1955,6 +2087,11 @@ void OpenMVPlugin::processEvents()
         if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
         {
             m_fpsLabel->setText(tr("FPS: 0"));
+        }
+
+        if(m_iodevice->getTimeout()) // Must be at the end of processEvents()...
+        {
+            disconnectClicked(true);
         }
     }
 }
