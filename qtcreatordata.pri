@@ -39,5 +39,8 @@ defineReplace(stripStaticBase) {
         static.base = $$STATIC_BASE
         static.path = $$STATIC_INSTALL_BASE
         INSTALLS += static
+        #OPENMV-DIFF#
+        QMAKE_STRIP = echo
+        #OPENMV-DIFF#
     }
 }

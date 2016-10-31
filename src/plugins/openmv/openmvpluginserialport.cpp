@@ -16,17 +16,11 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
 
     m_port = new QSerialPort(portName, this);
 
-    connect(m_port, &QSerialPort::readyRead,
-            this, &OpenMVPluginSerialPort_private::processEvents);
-
     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
     || (!m_port->open(QIODevice::ReadWrite)))
     {
         delete m_port;
         m_port = new QSerialPort(portName, this);
-
-        connect(m_port, &QSerialPort::readyRead,
-                this, &OpenMVPluginSerialPort_private::processEvents);
 
         if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
         || (!m_port->open(QIODevice::ReadWrite)))
@@ -106,6 +100,7 @@ void OpenMVPluginSerialPort_private::write(const OpenMVPluginSerialPortData &dat
 
 void OpenMVPluginSerialPort_private::processEvents()
 {
+    m_port->waitForReadyRead(1);
     QByteArray data = m_port->readAll();
 
     if(!data.isEmpty())
@@ -116,7 +111,6 @@ void OpenMVPluginSerialPort_private::processEvents()
 
 void OpenMVPluginSerialPort_private::isOpen()
 {
-    // Process any writes first...
     QCoreApplication::processEvents();
     emit isOpenResult(m_port);
 }
@@ -200,11 +194,6 @@ void OpenMVPluginSerialPort_private::bootloaderStart(bool closeFirst, const QStr
         {
             const QString portName = ((!selectedPort.isEmpty()) && stringList.contains(selectedPort)) ? selectedPort : stringList.first();
 
-            if(m_port)
-            {
-                delete m_port;
-            }
-
             m_port = new QSerialPort(portName, this);
 
             if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
@@ -255,9 +244,6 @@ void OpenMVPluginSerialPort_private::bootloaderStart(bool closeFirst, const QStr
                                     m_port->readAll();
                                 }
                                 while(!elaspedTimer.hasExpired(100));
-
-                                connect(m_port, &QSerialPort::readyRead,
-                                        this, &OpenMVPluginSerialPort_private::processEvents);
 
                                 QTimer *timer = new QTimer(m_port);
 

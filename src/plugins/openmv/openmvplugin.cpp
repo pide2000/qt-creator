@@ -1437,6 +1437,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             loop1.exec();
 
                             disconnect(conn);
+
                             disconnect(conn2);
 
                             if(!done2)
@@ -2066,32 +2067,34 @@ void OpenMVPlugin::processEvents()
 {
     if((!m_working) && m_connected)
     {
-        if((!m_disableFrameBuffer->isChecked()) && (!m_iodevice->frameSizeDumpQueued()) && m_frameSizeDumpTimer.hasExpired(FRAME_SIZE_DUMP_SPACING))
-        {
-            m_frameSizeDumpTimer.restart();
-            m_iodevice->frameSizeDump();
-        }
-
-        if((!m_iodevice->getScriptRunningQueued()) && m_getScriptRunningTimer.hasExpired(GET_SCRIPT_RUNNING_SPACING))
-        {
-            m_getScriptRunningTimer.restart();
-            m_iodevice->getScriptRunning();
-        }
-
-        if((!m_iodevice->getTxBufferQueued()) && m_getTxBufferTimer.hasExpired(GET_TX_BUFFER_SPACING))
-        {
-            m_getTxBufferTimer.restart();
-            m_iodevice->getTxBuffer();
-        }
-
-        if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
-        {
-            m_fpsLabel->setText(tr("FPS: 0"));
-        }
-
-        if(m_iodevice->getTimeout()) // Must be at the end of processEvents()...
+        if(m_iodevice->getTimeout())
         {
             disconnectClicked(true);
+        }
+        else
+        {
+            if((!m_disableFrameBuffer->isChecked()) && (!m_iodevice->frameSizeDumpQueued()) && m_frameSizeDumpTimer.hasExpired(FRAME_SIZE_DUMP_SPACING))
+            {
+                m_frameSizeDumpTimer.restart();
+                m_iodevice->frameSizeDump();
+            }
+
+            if((!m_iodevice->getScriptRunningQueued()) && m_getScriptRunningTimer.hasExpired(GET_SCRIPT_RUNNING_SPACING))
+            {
+                m_getScriptRunningTimer.restart();
+                m_iodevice->getScriptRunning();
+            }
+
+            if((!m_iodevice->getTxBufferQueued()) && m_getTxBufferTimer.hasExpired(GET_TX_BUFFER_SPACING))
+            {
+                m_getTxBufferTimer.restart();
+                m_iodevice->getTxBuffer();
+            }
+
+            if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
+            {
+                m_fpsLabel->setText(tr("FPS: 0"));
+            }
         }
     }
 }
@@ -2370,7 +2373,6 @@ void OpenMVPlugin::updateCam()
 
                             if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
                             {
-                                // QString() to autoconnect to openmcam.
                                 connectClicked(true, QString(), answer);
                             }
                         }
