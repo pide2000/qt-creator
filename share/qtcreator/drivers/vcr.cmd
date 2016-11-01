@@ -3,6 +3,7 @@ echo Installing VCR Driver...
 
 if DEFINED PROCESSOR_ARCHITEW6432 goto :install_wow
 
+:install
 if DEFINED PROCESSOR_ARCHITECTURE goto :install_64
 "%~dp0\vcredist_x86.exe" /install /quiet /norestart
 exit

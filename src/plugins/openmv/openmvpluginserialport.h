@@ -15,7 +15,7 @@
 #define GET_START_DELAY(start_end_delay) (((start_end_delay) >> 0) & 0xFFFF)
 #define GET_END_DELAY(start_end_delay) (((start_end_delay) >> 16) & 0xFFFF)
 
-#define WRITE_TIMEOUT 5000
+#define WRITE_TIMEOUT 2000
 
 typedef QPair<QByteArray, int> OpenMVPluginSerialPortData;
 

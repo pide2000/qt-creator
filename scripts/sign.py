@@ -4,11 +4,6 @@
 
 import argparse, fnmatch, os, sys
 
-exclude_list = [
-    "share/qtcreator/dfuse",
-    "share/qtcreator/drivers"
-]
-
 def try_which(program):
     if os.path.dirname(program):
         if os.path.isfile(program) and os.access(program, os.X_OK):
@@ -108,14 +103,7 @@ def main():
             paths = dirnames + filenames
             for extension in extensions:
                 for path in fnmatch.filter(paths, extension):
-                    ok = True
-                    file = os.path.join(dirpath, path)
-                    for exclude in exclude_list:
-                        e = os.path.normpath(os.path.join(target, exclude))
-                        if os.path.normpath(file).startswith(e):
-                            ok = False
-                            break
-                    if ok: try_signFile(file)
+                    try_signFile(os.path.join(dirpath, path))
 
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()

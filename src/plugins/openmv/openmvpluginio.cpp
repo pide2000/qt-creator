@@ -148,6 +148,12 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
     connect(m_port, &OpenMVPluginSerialPort::readAll,
             this, &OpenMVPluginIO::readAll);
 
+    m_preTimer = new QTimer(this);
+    m_preTimer->setSingleShot(true);
+
+    connect(m_preTimer, &QTimer::timeout,
+            this, &OpenMVPluginIO::preTimeout);
+
     m_timer = new QTimer(this);
     m_timer->setSingleShot(true);
 
@@ -181,6 +187,7 @@ void OpenMVPluginIO::processEvents()
 
         if(m_expectedHeaderQueue.head() && m_expectedDataQueue.head())
         {
+            m_preTimer->start(USBDBG_COMMAND_PRETIMEOUT);
             m_timer->start(USBDBG_COMMAND_TIMEOUT);
             m_processingResponse = m_expectedHeaderQueue.head();
         }
@@ -210,6 +217,7 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
 
         if(m_receivedBytes.size() >= m_expectedDataQueue.head())
         {
+            m_preTimer->stop();
             m_timer->stop();
             int receivedBytes = m_expectedDataQueue.dequeue();
 
@@ -333,6 +341,22 @@ void OpenMVPluginIO::readAll(const QByteArray &data)
             m_processingResponse = int();
         }
     }
+}
+
+void OpenMVPluginIO::preTimeout()
+{
+    // Sometimes host OSs won't return received serial data until more serial data
+    // comes in. An extra getScriptRunning command is sent to get the OpenMV Cam
+    // to response which will unstuck the host OS USB driver. The extra response
+    // bytes are received with the stuck command and then tossed.
+
+    QByteArray buffer;
+    serializeByte(buffer, __USBDBG_CMD);
+    serializeByte(buffer, __USBDBG_SCRIPT_RUNNING);
+    serializeLong(buffer, SCRIPT_RUNNING_RESPONSE_LEN);
+    m_port->write(OpenMVPluginSerialPortData(buffer, SET_START_END_DELAY(SCRIPT_RUNNING_START_DELAY, SCRIPT_RUNNING_END_DELAY)));
+    m_expectedDataQueue.head() += SCRIPT_RUNNING_RESPONSE_LEN;
+    m_preTimer->start(USBDBG_COMMAND_PRETIMEOUT);
 }
 
 void OpenMVPluginIO::timeout()

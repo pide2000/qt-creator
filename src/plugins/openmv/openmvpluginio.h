@@ -6,7 +6,9 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_TIMEOUT          5000
+#define USBDBG_COMMAND_TIMEOUT          WRITE_TIMEOUT
+#define USBDBG_COMMAND_PRETIMEOUT_DIV   4
+#define USBDBG_COMMAND_PRETIMEOUT       (USBDBG_COMMAND_TIMEOUT/USBDBG_COMMAND_PRETIMEOUT_DIV)
 
 #define ATTR_CONTRAST                   0
 #define ATTR_BRIGHTNESS                 1
@@ -66,6 +68,7 @@ public slots: // private
 
     void processEvents();
     void readAll(const QByteArray &data);
+    void preTimeout();
     void timeout();
 
 signals:
@@ -82,6 +85,7 @@ signals:
 private:
 
     OpenMVPluginSerialPort *m_port;
+    QTimer *m_preTimer;
     QTimer *m_timer;
 
     bool m_timeout;
