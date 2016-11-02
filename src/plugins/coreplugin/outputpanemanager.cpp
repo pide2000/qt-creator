@@ -221,15 +221,17 @@ QWidget *OutputPaneManager::buttonsWidget()
     return m_buttonsWidget;
 }
 
-// Return shortcut as Alt+<number> or Cmd+<number> if number is a non-zero digit
-static inline QKeySequence paneShortCut(int number)
-{
-    if (number < 1 || number > 9)
-        return QKeySequence();
-
-    const int modifier = HostOsInfo::isMacHost() ? Qt::CTRL : Qt::ALT;
-    return QKeySequence(modifier | (Qt::Key_0 + number));
-}
+//OPENMV-DIFF//
+//// Return shortcut as Alt+<number> or Cmd+<number> if number is a non-zero digit
+//static inline QKeySequence paneShortCut(int number)
+//{
+//    if (number < 1 || number > 9)
+//        return QKeySequence();
+//
+//    const int modifier = HostOsInfo::isMacHost() ? Qt::CTRL : Qt::ALT;
+//    return QKeySequence(modifier | (Qt::Key_0 + number));
+//}
+//OPENMV-DIFF//
 
 void OutputPaneManager::init()
 {

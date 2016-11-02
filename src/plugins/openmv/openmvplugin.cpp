@@ -156,7 +156,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     QAction *pinoutAction = new QAction(
          Utils::HostOsInfo::isMacHost() ? tr("About OpenMV Cam") : tr("About OpenMV Cam..."), this);
-    pinoutAction->setMenuRole(QAction::AboutRole);
+    pinoutAction->setMenuRole(QAction::ApplicationSpecificRole);
     m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
     helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
     pinoutAction->setEnabled(true);
