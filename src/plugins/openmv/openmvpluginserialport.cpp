@@ -194,6 +194,11 @@ void OpenMVPluginSerialPort_private::bootloaderStart(bool closeFirst, const QStr
         {
             const QString portName = ((!selectedPort.isEmpty()) && stringList.contains(selectedPort)) ? selectedPort : stringList.first();
 
+            if(m_port)
+            {
+                delete m_port;
+            }
+
             m_port = new QSerialPort(portName, this);
 
             if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
@@ -301,7 +306,6 @@ OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent
 {
     QThread *thread = new QThread;
     OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
-
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,
