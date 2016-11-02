@@ -232,8 +232,8 @@ Component.prototype.createOperations = function()
                                 //OPENMV-DIFF//
                                 );
         //OPENMV-DIFF//
-        component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/pydfu/50-openmv.rules", "/etc/udev/rules.d/" );
-        component.addElevatedOperation( "Execute", "{0}", "udevamd", "control", "--reload-rules" );
+        //component.addElevatedOperation( "Copy", "@TargetDir@/share/qtcreator/pydfu/50-openmv.rules", "/etc/udev/rules.d/" );
+        //component.addElevatedOperation( "Execute", "{0}", "udevadm", "control", "--reload-rules" );
         //OPENMV-DIFF//
     }
 }
