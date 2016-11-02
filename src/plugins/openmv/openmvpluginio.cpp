@@ -128,13 +128,11 @@ static QByteArray byteSwap(QByteArray buffer, bool ok)
 {
     if(ok)
     {
-        char *data = buffer.data();
-
         for(int i = 0, j = (buffer.size() / 2) * 2; i < j; i += 2)
         {
-            char tmp = data[i];
-            data[i] = data[i+1];
-            data[i+1] = tmp;
+            char tmp = buffer.data()[i];
+            buffer.data()[i] = buffer.data()[i+1];
+            buffer.data()[i+1] = tmp;
         }
     }
 
