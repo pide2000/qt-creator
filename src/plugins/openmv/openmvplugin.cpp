@@ -647,8 +647,14 @@ void OpenMVPlugin::extensionsInitialized()
             reply->deleteLater();
         });
 
-        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-version.txt")));
+        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                                                                      "www."
+#endif
+                                                                      "openmv.io/upload/openmv-ide-version.txt")));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
         QNetworkReply *reply = manager->get(request);
 
         if(reply)
@@ -848,8 +854,14 @@ void OpenMVPlugin::packageUpdate()
                         delete dialog;
                     });
 
-                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
+                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                                                                                   "www."
+#endif
+                                                                                   "openmv.io/upload/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
                     request2.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
                     QNetworkReply *reply2 = manager2->get(request2);
 
                     if(reply2)
@@ -870,8 +882,14 @@ void OpenMVPlugin::packageUpdate()
         reply->deleteLater();
     });
 
-    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://www.openmv.io/upload/openmv-ide-resources-version.txt")));
+    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                                                                  "www."
+#endif
+                                                                  "openmv.io/upload/openmv-ide-resources-version.txt")));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
     QNetworkReply *reply = manager->get(request);
 
     if(reply)
