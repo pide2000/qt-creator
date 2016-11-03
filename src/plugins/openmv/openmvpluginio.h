@@ -6,9 +6,6 @@
 
 #include "openmvpluginserialport.h"
 
-#define USBDBG_COMMAND_TIMEOUT          5000
-#define USBDBG_COMMAND_PRETIMEOUT       1000
-
 #define ATTR_CONTRAST                   0
 #define ATTR_BRIGHTNESS                 1
 #define ATTR_SATURATION                 2
@@ -51,8 +48,8 @@ public slots:
     void getScriptRunning();
     void templateSave(int x, int y, int w, int h, const QByteArray &path);
     void descriptorSave(int x, int y, int w, int h, const QByteArray &path);
-    void setAttribute(int attribute, int value);
     void getAttribute(int attribute);
+    void setAttribute(int attribute, int value);
     void sysReset();
     void fbEnable(bool enable);
     void jpegEnable(bool enabled);
@@ -65,37 +62,42 @@ public slots:
 
 public slots: // private
 
-    void processEvents();
-    void readAll(const QByteArray &data);
-    void preTimeout();
-    void timeout();
+    void command();
+    void commandResult(const OpenMVPluginSerialPortCommandResult &commandResult);
 
 signals:
 
     void firmwareVersion(int major, int minor, int patch);
-    void archString(const QString &arch);
     void frameBufferData(const QPixmap &data);
-    void scriptRunning(bool);
+    void archString(const QString &arch);
+    void scriptExecDone();
+    void scriptStopDone();
+    void scriptRunning(bool running);
+    void templateSaveDone();
+    void descriptorSaveDone();
     void attribute(int);
+    void setAttrributeDone();
+    void sysResetDone();
+    void fbEnableDone();
+    void jpegEnableDone();
     void printData(const QByteArray &data);
-    void gotBootloaderStart(bool);
+    void gotBootloaderStart(bool ok);
+    void bootloaderResetDone(bool ok);
+    void flashEraseDone(bool ok);
+    void flashWriteDone(bool ok);
     void closeResponse();
 
 private:
 
     OpenMVPluginSerialPort *m_port;
-    QTimer *m_preTimer;
-    QTimer *m_timer;
-    bool m_timeout;
-    int m_processingResponse;
-    QQueue<OpenMVPluginSerialPortData> m_commandQueue;
-    QQueue<int> m_expectedHeaderQueue;
-    QQueue<int> m_expectedDataQueue;
-    QByteArray m_receivedBytes;
+
+    QQueue<OpenMVPluginSerialPortCommand> m_postedQueue;
+    QQueue<int> m_completionQueue;
     int m_frameSizeW;
     int m_frameSizeH;
     int m_frameSizeBPP;
     QByteArray m_lineBuffer;
+    bool m_timeout;
 };
 
 #endif // OPENMVPLUGINIO_H

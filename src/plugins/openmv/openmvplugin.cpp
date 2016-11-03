@@ -7,7 +7,8 @@ namespace Internal {
 
 OpenMVPlugin::OpenMVPlugin() : IPlugin()
 {
-    qRegisterMetaType<OpenMVPluginSerialPortData>("OpenMVPluginSerialPortData");
+    qRegisterMetaType<OpenMVPluginSerialPortCommand>("OpenMVPluginSerialPortCommand");
+    qRegisterMetaType<OpenMVPluginSerialPortCommandResult>("OpenMVPluginSerialPortCommandResult");
 
     m_ioport = new OpenMVPluginSerialPort(this);
     m_iodevice = new OpenMVPluginIO(m_ioport, this);
@@ -22,11 +23,11 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_working = false;
     m_connected = false;
     m_running = false;
-    m_portName = QString();
-    m_portPath = QString();
     m_major = int();
     m_minor = int();
     m_patch = int();
+    m_portName = QString();
+    m_portPath = QString();
 
     m_errorFilterRegex = QRegularExpression(QStringLiteral(
         "  File \"(.+?)\", line (\\d+).*?\n"
@@ -47,7 +48,10 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage)
 
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
-    connect(Core::ICore::instance(), &Core::ICore::coreOpened, splashScreen, &QSplashScreen::deleteLater);
+
+    connect(Core::ICore::instance(), &Core::ICore::coreOpened,
+            splashScreen, &QSplashScreen::deleteLater);
+
     splashScreen->show();
 
     return true;
@@ -1030,8 +1034,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
         {
-            if(port.hasVendorIdentifier() && (port.vendorIdentifier() == OPENMVCAM_VENDOR_ID)
-            && port.hasProductIdentifier() && (port.productIdentifier() == OPENMVCAM_PRODUCT_ID))
+            if(port.hasVendorIdentifier() && (port.vendorIdentifier() == OPENMVCAM_VID)
+            && port.hasProductIdentifier() && (port.productIdentifier() == OPENMVCAM_PID))
             {
                 stringList.append(port.portName());
             }
@@ -1439,7 +1443,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             connect(m_ioport, &OpenMVPluginSerialPort::bootloaderResetResponse,
                                     &loop1, &QEventLoop::quit);
 
-                            m_ioport->bootloaderStart(!forceBootloaderBricked, selectedPort);
+                            m_ioport->bootloaderStart(selectedPort);
 
                             loop.exec();
 
@@ -1484,6 +1488,14 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             int flash_start = forceFlashFSErase ? FLASH_SECTOR_ALL_START : FLASH_SECTOR_START;
                             int flash_end = forceFlashFSErase ? FLASH_SECTOR_ALL_END : FLASH_SECTOR_END;
 
+                            bool ok2 = bool();
+                            bool *ok2Ptr = &ok2;
+
+                            QMetaObject::Connection conn2 = connect(m_iodevice, &OpenMVPluginIO::flashEraseDone,
+                                this, [this, ok2Ptr] (bool ok) {
+                                *ok2Ptr = ok;
+                            });
+
                             QProgressDialog dialog(tr("Erasing..."), tr("Cancel"), flash_start, flash_end, Core::ICore::dialogParent(),
                                 Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
@@ -1494,56 +1506,51 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             for(int i = flash_start; i <= flash_end; i++)
                             {
-                                QEventLoop loop;
+                                QEventLoop loop0, loop1;
 
-                                QTimer::singleShot(FLASH_ERASE_DELAY, &loop, &QEventLoop::quit);
+                                connect(m_iodevice, &OpenMVPluginIO::flashEraseDone,
+                                        &loop0, &QEventLoop::quit);
 
                                 m_iodevice->flashErase(i);
-                                m_iodevice->processEvents();
 
-                                loop.exec();
+                                loop0.exec();
 
-                                // Check Timeout //////////////////////////////
+                                if(!ok2)
                                 {
-                                    // isOpen() is not executed in series with
-                                    // the above call. This is okay. We do not
-                                    // need to meet ordering here...
-
-                                    bool isOpen2 = bool();
-                                    bool *isOpen2Ptr = &isOpen2;
-
-                                    QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
-                                        this, [this, isOpen2Ptr] (bool isOpen) {
-                                        *isOpen2Ptr = isOpen;
-                                    });
-
-                                    QEventLoop loop2;
-
-                                    connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
-                                            &loop2, &QEventLoop::quit);
-
-                                    m_ioport->isOpen();
-
-                                    loop2.exec();
-
-                                    disconnect(conn2);
-
-                                    if(!isOpen2)
-                                    {
-                                        QMessageBox::critical(Core::ICore::dialogParent(),
-                                            tr("Connect"),
-                                            tr("Timeout Error!"));
-
-                                        CLOSE_CONNECT_END();
-                                    }
+                                    break;
                                 }
 
+                                QTimer::singleShot(FLASH_ERASE_DELAY, &loop1, &QEventLoop::quit);
+
+                                loop1.exec();
+
                                 dialog.setValue(i);
+                            }
+
+                            dialog.close();
+
+                            disconnect(conn2);
+
+                            if(!ok2)
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("Timeout Error!"));
+
+                                CLOSE_CONNECT_END();
                             }
                         }
 
                         // Program Flash //////////////////////////////////////
                         {
+                            bool ok2 = bool();
+                            bool *ok2Ptr = &ok2;
+
+                            QMetaObject::Connection conn2 = connect(m_iodevice, &OpenMVPluginIO::flashWriteDone,
+                                this, [this, ok2Ptr] (bool ok) {
+                                *ok2Ptr = ok;
+                            });
+
                             QProgressDialog dialog(tr("Programming..."), tr("Cancel"), 0, dataChunks.size() - 1, Core::ICore::dialogParent(),
                                 Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
@@ -1554,51 +1561,38 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             for(int i = 0; i < dataChunks.size(); i++)
                             {
-                                QEventLoop loop;
+                                QEventLoop loop0, loop1;
 
-                                QTimer::singleShot(FLASH_WRITE_DELAY, &loop, &QEventLoop::quit);
+                                connect(m_iodevice, &OpenMVPluginIO::flashWriteDone,
+                                        &loop0, &QEventLoop::quit);
 
                                 m_iodevice->flashWrite(dataChunks.at(i));
-                                m_iodevice->processEvents();
 
-                                loop.exec();
+                                loop0.exec();
 
-                                // Check Timeout //////////////////////////////
+                                if(!ok2)
                                 {
-                                    // isOpen() is not executed in series with
-                                    // the above call. This is okay. We do not
-                                    // need to meet ordering here...
-
-                                    bool isOpen2 = bool();
-                                    bool *isOpen2Ptr = &isOpen2;
-
-                                    QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
-                                        this, [this, isOpen2Ptr] (bool isOpen) {
-                                        *isOpen2Ptr = isOpen;
-                                    });
-
-                                    QEventLoop loop2;
-
-                                    connect(m_ioport, &OpenMVPluginSerialPort::isOpenResult,
-                                            &loop2, &QEventLoop::quit);
-
-                                    m_ioport->isOpen();
-
-                                    loop2.exec();
-
-                                    disconnect(conn2);
-
-                                    if(!isOpen2)
-                                    {
-                                        QMessageBox::critical(Core::ICore::dialogParent(),
-                                            tr("Connect"),
-                                            tr("Timeout Error!"));
-
-                                        CLOSE_CONNECT_END();
-                                    }
+                                    break;
                                 }
 
+                                QTimer::singleShot(FLASH_WRITE_DELAY, &loop1, &QEventLoop::quit);
+
+                                loop1.exec();
+
                                 dialog.setValue(i);
+                            }
+
+                            dialog.close();
+
+                            disconnect(conn2);
+
+                            if(!ok2)
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Connect"),
+                                    tr("Timeout Error!"));
+
+                                CLOSE_CONNECT_END();
                             }
                         }
 
@@ -1835,6 +1829,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_frameBuffer->enableSaveTemplate(false);
         m_frameBuffer->enableSaveDescriptor(false);
 
+        // Check Version //////////////////////////////////////////////////////
+
         QFile file(Core::ICore::userResourcePath() + QStringLiteral("/firmware/firmware.txt"));
 
         if(file.open(QIODevice::ReadOnly))
@@ -1862,7 +1858,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         ///////////////////////////////////////////////////////////////////////
 
-        setPortPath();
+        QTimer::singleShot(0, this, &OpenMVPlugin::setPortPath);
 
         CONNECT_END();
     }
@@ -1881,11 +1877,6 @@ void OpenMVPlugin::disconnectClicked(bool reset)
         if(!m_working)
         {
             m_working = true;
-
-            while(m_iodevice->frameSizeDumpQueued() && m_iodevice->getScriptRunningQueued() && m_iodevice->getTxBufferQueued())
-            {
-                QApplication::processEvents();
-            }
 
             // Stopping ///////////////////////////////////////////////////////
             {
@@ -1920,11 +1911,11 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_queue.clear();
             m_connected = false;
             m_running = false;
-            m_portName = QString();
-            m_portPath = QString();
             m_major = int();
             m_minor = int();
             m_patch = int();
+            m_portName = QString();
+            m_portPath = QString();
             m_errorFilterString = QString();
 
             m_bootloaderCommand->action()->setEnabled(true);
@@ -1971,11 +1962,6 @@ void OpenMVPlugin::startClicked()
     if(!m_working)
     {
         m_working = true;
-
-        while(m_iodevice->frameSizeDumpQueued() && m_iodevice->getScriptRunningQueued() && m_iodevice->getTxBufferQueued())
-        {
-            QApplication::processEvents();
-        }
 
         // Stopping ///////////////////////////////////////////////////////////
         {
@@ -2030,11 +2016,6 @@ void OpenMVPlugin::stopClicked()
     if(!m_working)
     {
         m_working = true;
-
-        while(m_iodevice->frameSizeDumpQueued() && m_iodevice->getScriptRunningQueued() && m_iodevice->getTxBufferQueued())
-        {
-            QApplication::processEvents();
-        }
 
         // Stopping ///////////////////////////////////////////////////////////
         {
@@ -2189,12 +2170,10 @@ void OpenMVPlugin::saveScript()
                 if(answer == QMessageBox::Yes)
                 {
                     QString bytes = QString::fromLatin1(contents);
-
                     bytes.remove(QRegularExpression(QStringLiteral("^\\s*?\n"), QRegularExpression::MultilineOption));
                     bytes.remove(QRegularExpression(QStringLiteral("^\\s*#.*?\n"), QRegularExpression::MultilineOption));
                     bytes.remove(QRegularExpression(QStringLiteral("\\s*#.*?$"), QRegularExpression::MultilineOption));
                     bytes.replace(QStringLiteral("    "), QStringLiteral("\t"));
-
                     contents = bytes.toLatin1();
                 }
 
@@ -2433,74 +2412,83 @@ void OpenMVPlugin::updateCam()
 
 void OpenMVPlugin::setPortPath()
 {
-    QStringList drives;
-
-    foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
+    if(!m_working)
     {
-        if(info.isValid()
-        && info.isReady()
-        && (!info.isRoot())
-        && (!info.isReadOnly())
-        && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
-        && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
-        && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
+        QStringList drives;
+
+        foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
         {
-            drives.append(info.rootPath());
+            if(info.isValid()
+            && info.isReady()
+            && (!info.isRoot())
+            && (!info.isReadOnly())
+            && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
+            && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
+            && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
+            {
+                drives.append(info.rootPath());
+            }
         }
-    }
 
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SERIAL_PORT_SETTINGS_GROUP));
 
-    if(drives.isEmpty())
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-            tr("Select Drive"),
-            tr("No valid drives were found to associate with your OpenMV Cam!"));
-
-        m_portPath = QString();
-    }
-    else if(drives.size() == 1)
-    {
-        if(m_portPath == drives.first())
+        if(drives.isEmpty())
         {
-            QMessageBox::information(Core::ICore::dialogParent(),
+            QMessageBox::critical(Core::ICore::dialogParent(),
                 tr("Select Drive"),
-                tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive.").arg(drives.first()));
+                tr("No valid drives were found to associate with your OpenMV Cam!"));
+
+            m_portPath = QString();
+        }
+        else if(drives.size() == 1)
+        {
+            if(m_portPath == drives.first())
+            {
+                QMessageBox::information(Core::ICore::dialogParent(),
+                    tr("Select Drive"),
+                    tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive.").arg(drives.first()));
+            }
+            else
+            {
+                m_portPath = drives.first();
+                settings->setValue(m_portName, m_portPath);
+            }
         }
         else
         {
-            m_portPath = drives.first();
-            settings->setValue(m_portName, m_portPath);
+            int index = drives.indexOf(settings->value(m_portName).toString());
+
+            bool ok;
+            QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+                tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
+                drives, (index != -1) ? index : 0, false, &ok,
+                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
+
+            if(ok)
+            {
+                m_portPath = temp;
+                settings->setValue(m_portName, m_portPath);
+            }
         }
+
+        settings->endGroup();
+
+        m_pathButton->setText((!m_portPath.isEmpty()) ? tr("Drive: %L1").arg(m_portPath) : tr("Drive:"));
+
+        Core::IEditor *editor = Core::EditorManager::currentEditor();
+        m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+
+        m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
+        m_frameBuffer->enableSaveDescriptor(!m_portPath.isEmpty());
     }
     else
     {
-        int index = drives.indexOf(settings->value(m_portName).toString());
-
-        bool ok;
-        QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
-            tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
-            drives, (index != -1) ? index : 0, false, &ok,
-            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
-
-        if(ok)
-        {
-            m_portPath = temp;
-            settings->setValue(m_portName, m_portPath);
-        }
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Select Drive"),
+            tr("Busy... please wait..."));
     }
-
-    settings->endGroup();
-
-    m_pathButton->setText((!m_portPath.isEmpty()) ? tr("Drive: %L1").arg(m_portPath) : tr("Drive:"));
-
-    Core::IEditor *editor = Core::EditorManager::currentEditor();
-    m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
-
-    m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
-    m_frameBuffer->enableSaveDescriptor(!m_portPath.isEmpty());
 }
 
 QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent)

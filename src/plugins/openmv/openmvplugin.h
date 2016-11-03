@@ -58,9 +58,6 @@
 
 #define SERIAL_PORT_SETTINGS_GROUP "OpenMVSerialPort"
 
-#define OPENMVCAM_VENDOR_ID 0x1209
-#define OPENMVCAM_PRODUCT_ID 0xABD1
-
 #define OLD_API_MAJOR 1
 #define OLD_API_MINOR 7
 #define OLD_API_PATCH 0
@@ -122,7 +119,6 @@ private:
     Core::Command *m_forumsCommand;
     Core::Command *m_pinoutCommand;
     Core::Command *m_aboutCommand;
-
     Core::Command *m_connectCommand;
     Core::Command *m_disconnectCommand;
     Core::Command *m_startCommand;
@@ -157,11 +153,11 @@ private:
     bool m_working;
     bool m_connected;
     bool m_running;
-    QString m_portName;
-    QString m_portPath;
     int m_major;
     int m_minor;
     int m_patch;
+    QString m_portName;
+    QString m_portPath;
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
