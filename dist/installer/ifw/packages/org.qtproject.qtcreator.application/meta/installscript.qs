@@ -190,9 +190,9 @@ Component.prototype.createOperations = function()
                                 "@TargetDir@/OpenMVIDEUninst.exe",
                                 "@StartMenuDir@/Uninstall.lnk",
                                 "workingDirectory=@homeDir@" );
-        component.addElevatedOperation("Execute", "{0}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\openmv\\openmv.cmd");
-        component.addElevatedOperation("Execute", "{0}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\pybcdc\\pybcdc.cmd");
-        component.addElevatedOperation("Execute", "{0,256}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\dfuse.cmd");
+        component.addElevatedOperation("Execute", "{256}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\openmv\\openmv.cmd");
+        component.addElevatedOperation("Execute", "{256}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\pybcdc\\pybcdc.cmd");
+        component.addElevatedOperation("Execute", "{256}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\dfuse.cmd");
         component.addElevatedOperation("Execute", "{0}", "cmd", "/c", "@TargetDir@\\share\\qtcreator\\drivers\\vcr.cmd");
         //OPENMV-DIFF//
 
