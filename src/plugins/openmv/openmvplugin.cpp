@@ -1262,6 +1262,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                 CLOSE_CONNECT_END();
             }
+            else if((major2 < 0) || (100 < major2) || (minor2 < 0) || (100 < minor2) || (patch2 < 0) || (100 < patch2))
+            {
+                CLOSE_RECONNECT_END();
+            }
         }
 
         // Bootloader /////////////////////////////////////////////////////////
