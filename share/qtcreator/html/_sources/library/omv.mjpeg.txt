@@ -49,6 +49,11 @@ Constructors
    ``height`` is automatically set equal to the image sensor vertical resolution
    unless explicitly overridden.
 
+   .. note::
+
+      ``width`` and ``height`` are keyword arguments which must be explicitly
+      invoked in the function call by writing ``width=`` and ``height=``.
+
 Methods
 -------
 
@@ -73,11 +78,10 @@ Methods
    ``quality`` is the jpeg compression quality to use to compress the image if
    it's not in JPEG format (either RGB565 or GRAYSCALE format).
 
-     .. note:: Currently, as of firmware version 1.4. We don't support high
-        quality JPEGs. Our software jpeg compression code has been tweaked to run
-        as fast as possible at the expense of quality. In future firmware versions
-        we'll implement separate compression algorithms for higher quality images.
-        So, you won't notice much of a difference adjusting the quality right now.
+   .. note::
+
+      ``quality`` is keyword arguments which must be explicitly invoked in the
+      function call by writing ``quality=``.
 
 .. method:: mjpeg.close(fps):
 

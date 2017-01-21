@@ -4,23 +4,27 @@
 .. module:: time
    :synopsis: tracking elapsed time
 
-The ``time`` module is used for tracking elapsed time.
-
-  .. note:: The time module is deprecated. In the future ``fps`` and ``avg``
-     will be implemented in the ``sensor`` module. All other
-     functionality in the module can be found in the ``pyb`` module.
-     Finally, the standard time module will replace this module.
+The ``time`` module is used for tracking elapsed time. ``import utime`` for the
+standard python time module.
 
 Functions
 ---------
 
-.. function:: ticks()
+.. function:: time.ticks()
 
    Returns the elapsed milliseconds since power on.
 
-.. function:: sleep(ms)
+   .. note::
+
+      Use the :func:`pyb.millis()` instead of this function.
+
+.. function:: time.sleep(ms)
 
    Sleeps for ``ms`` number of milliseconds.
+
+   .. note::
+
+      Use the :func:`pyb.delay()` instead of this function.
 
 Constructors
 ------------

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MicroPython tutorial &mdash; MicroPython 1.4.4 documentation</title>
+  <title>OpenMV Cam Tutorial &mdash; MicroPython 1.8 documentation</title>
   
 
   
@@ -34,10 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.4.4 documentation" href="../../index.html"/>
-        <link rel="up" title="MicroPython documentation contents" href="../../openmvcam_contents.html"/>
-        <link rel="next" title="MicroPython libraries" href="../../library/index.html"/>
-        <link rel="prev" title="General information about the openmv cam" href="../general.html"/> 
+    <link rel="top" title="MicroPython 1.8 documentation" href="../../index.html"/>
+        <link rel="next" title="1. Software Setup" href="software_setup.html"/>
+        <link rel="prev" title="Quick reference for the openmvcam" href="../quickref.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -55,7 +54,7 @@
           
 
           
-            <a href="../../openmvcam_index.html" class="icon icon-home"> MicroPython
+            <a href="../../index.html" class="icon icon-home"> MicroPython
           
 
           
@@ -68,7 +67,7 @@
             
             
               <div class="version">
-                1.4
+                1.8
               </div>
             
           
@@ -91,40 +90,16 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">MicroPython tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#tutorials-requiring-extra-components">Tutorials requiring extra components</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#tips-tricks-and-useful-things-to-know">Tips, tricks and useful things to know</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">OpenMV Cam Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="software_setup.html">1. Software Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_setup.html">2. Hardware Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openmvide_overview.html">3. OpenMV IDE Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="more_information.html">4. More Information</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">The OpenMV Cam hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">The MicroPython language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../openmvcam_contents.html">MicroPython documentation contents</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../general.html">General information about the openmv cam</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">MicroPython tutorial</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tutorials-requiring-extra-components">Tutorials requiring extra components</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#tips-tricks-and-useful-things-to-know">Tips, tricks and useful things to know</a><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">The OpenMV Cam hardware</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
-</ul>
-</li>
 </ul>
 
             
@@ -138,7 +113,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../openmvcam_index.html">MicroPython</a>
+        <a href="../../index.html">MicroPython</a>
       </nav>
 
 
@@ -153,11 +128,9 @@
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../../openmvcam_index.html">Docs</a> &raquo;</li>
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
       
-          <li><a href="../../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
-      
-    <li>MicroPython tutorial</li>
+    <li>OpenMV Cam Tutorial</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -171,48 +144,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="micropython-tutorial">
-<span id="tutorial-index"></span><h1>MicroPython tutorial<a class="headerlink" href="#micropython-tutorial" title="Permalink to this headline">¶</a></h1>
-<p>This tutorial is intended to get you started with your openmvcam.
-All you need is a openmvcam and a micro-USB cable to connect it to
-your PC.  If it is your first time, it is recommended to follow
-the tutorial through in the order below.</p>
+  <div class="section" id="openmv-cam-tutorial">
+<span id="tutorial-index"></span><h1>OpenMV Cam Tutorial<a class="headerlink" href="#openmv-cam-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>The OpenMV Cam tutorial covers how to use your OpenMV Cam and its accessories.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="software_setup.html">1. Software Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_setup.html">2. Hardware Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="openmvide_overview.html">3. OpenMV IDE Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="more_information.html">4. More Information</a></li>
+</ul>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The tutorial is not available yet. It will be in the following weeks.
-For now... things to know:</p>
-<blockquote class="last">
-<div><ul class="simple">
-<li>1: If your camera IC is dirty then you can clean it with a micro fiber cloth doused in isopropyl alcohol.</li>
-<li>2: You have to manually attach your lens to your OpenMV Cam and focus it yourself (it would cost a fortune for MacroFab to to this for us). Use the helloworld.py script in the IDE to help.</li>
-<li>3: For windows, see the setup guide link on the docs homepage.</li>
-<li>4: For Mac, we don&#8217;t have an IDE for you just yet, we&#8217;ll generate one after we finish the docs. Alternatively, you can install the development environment for Mac and just run the IDE yourself (because its a python script) if you can&#8217;t wait.</li>
-<li>5: For linux, just plug the camera into your computer and it should work.</li>
-<li>6: Be-gentle with the USB connector (it&#8217;s surface mount only).</li>
-<li>7: Select an area in the IDE&#8217;s frame buffer and then click copy color to get color tracking settings (starting point settings you&#8217;ll have to tweak them to make them work for everything).</li>
-<li>8: Have fun, and if you want to help us out fork our repo and sumbit PRs. You can add new features to the firmware if you think something is missing. You don&#8217;t have to wait on us.</li>
-<li>9: Ask questions on the forums. Save email for private stuff.</li>
-<li>10: Seriously, post questions on the forum, we&#8217;ll answer really quickly. Don&#8217;t be afraid of posting things on the forums. We want user feedback so we know what needs to be our focus.</li>
-</ul>
-</div></blockquote>
-</div>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
-<div class="section" id="tutorials-requiring-extra-components">
-<h2>Tutorials requiring extra components<a class="headerlink" href="#tutorials-requiring-extra-components" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
-</div>
-<div class="section" id="tips-tricks-and-useful-things-to-know">
-<h2>Tips, tricks and useful things to know<a class="headerlink" href="#tips-tricks-and-useful-things-to-know" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
+<p class="last">The tutorial is not complete at all right now. This note will be removed
+once the tutorial has enough content describing more or less everything
+about the OpenMV Cam.</p>
 </div>
 </div>
 
@@ -223,10 +170,10 @@ For now... things to know:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../library/index.html" class="btn btn-neutral float-right" title="MicroPython libraries" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="software_setup.html" class="btn btn-neutral float-right" title="1. Software Setup" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../general.html" class="btn btn-neutral" title="General information about the openmv cam" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../quickref.html" class="btn btn-neutral" title="Quick reference for the openmvcam" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -235,8 +182,8 @@ For now... things to know:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, Damien P. George.
-      Last updated on 02 Jul 2016.
+        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
+      Last updated on 08 Jan 2017.
 
     </p>
   </div>
@@ -250,15 +197,62 @@ For now... things to know:</p>
     </section>
 
   </div>
-  
-
+  <!--
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Ports and Versions</span>
+    openmvcam (latest)
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Ports</dt>
+      
+        <dd><a href="//en/latest/unix">unix</a></dd>
+      
+        <dd><a href="//en/latest/pyboard">pyboard</a></dd>
+      
+        <dd><a href="//en/latest/wipy">wipy</a></dd>
+      
+        <dd><a href="//en/latest/esp8266">esp8266</a></dd>
+      
+        <dd><a href="//en/latest/openmvcam">openmvcam</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Versions</dt>
+      
+        <dd><a href="//en/latest/openmvcam">latest</a></dd>
+      
+    </dl>
+    -->
+    <!--
+    <dl>
+      <dt>Downloads</dt>
+      
+    </dl>
+    -->
+    <!--
+    <hr/>
+    <dl>
+      <dt>External links</dt>
+        <dd>
+          <a href="http://www.micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://github.com/micropython/micropython">GitHub</a>
+        </dd>
+    </dl>
+  </div>
+</div>
+-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.4.4',
+            VERSION:'1.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

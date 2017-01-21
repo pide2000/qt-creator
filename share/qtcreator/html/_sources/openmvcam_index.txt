@@ -4,12 +4,10 @@ MicroPython documentation and references
 .. toctree::
 
     openmvcam/quickref.rst
-    openmvcam/general.rst
     openmvcam/tutorial/index.rst
     library/index.rst
-    openmvcam/hardware/index.rst
+    reference/index.rst
     license.rst
-    openmvcam_contents.rst
 
 Indices and tables
 ==================

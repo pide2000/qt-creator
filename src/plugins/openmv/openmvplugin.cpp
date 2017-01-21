@@ -148,7 +148,7 @@ void OpenMVPlugin::extensionsInitialized()
     helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
     forumsCommand->setEnabled(true);
     connect(forumsCommand, &QAction::triggered, this, [this] {
-        QUrl url = QUrl(QStringLiteral("http://www.openmv.io/forums/"));
+        QUrl url = QUrl(QStringLiteral("http://forums.openmv.io/"));
 
         if(!QDesktopServices::openUrl(url))
         {
@@ -198,6 +198,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_connectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
         tr("Connect"), this), Core::Id("OpenMV.Connect"));
+    m_connectCommand->setDefaultKeySequence(tr("Ctrl+E"));
     m_connectCommand->action()->setEnabled(true);
     m_connectCommand->action()->setVisible(true);
     connect(m_connectCommand->action(), &QAction::triggered, this, [this] {connectClicked();});
@@ -205,6 +206,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_disconnectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
         tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
+    m_disconnectCommand->setDefaultKeySequence(tr("Ctrl+E"));
     m_disconnectCommand->action()->setEnabled(false);
     m_disconnectCommand->action()->setVisible(false);
     connect(m_disconnectCommand->action(), &QAction::triggered, this, [this] {disconnectClicked();});
@@ -230,7 +232,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_stopCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
         tr("Stop (halt script)"), this), Core::Id("OpenMV.Stop"));
-    m_stopCommand->setDefaultKeySequence(tr("Ctrl+T"));
+    m_stopCommand->setDefaultKeySequence(tr("Ctrl+R"));
     m_stopCommand->action()->setEnabled(false);
     m_stopCommand->action()->setVisible(false);
     connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
@@ -578,7 +580,7 @@ void OpenMVPlugin::extensionsInitialized()
                 Core::EditorManager::cutForwardNavigationHistory();
                 Core::EditorManager::addCurrentPositionToNavigationHistory();
 
-                QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral(" $.") + QFileInfo(filePath).completeSuffix();
+                QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral("_$.") + QFileInfo(filePath).completeSuffix();
                 TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, data));
 
                 if(editor)
@@ -624,7 +626,7 @@ void OpenMVPlugin::extensionsInitialized()
 
                     if(box.clickedButton() == button)
                     {
-                        QUrl url = QUrl(QStringLiteral("http://www.openmv.io/download/"));
+                        QUrl url = QUrl(QStringLiteral("http://openmv.io/pages/download"));
 
                         if(!QDesktopServices::openUrl(url))
                         {
@@ -651,11 +653,7 @@ void OpenMVPlugin::extensionsInitialized()
             reply->deleteLater();
         });
 
-        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://"
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-                                                                      "www."
-#endif
-                                                                      "openmv.io/upload/openmv-ide-version.txt")));
+        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://raw.githubusercontent.com/openmv/openmv-ide/master/openmv-ide-version.txt")));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -858,11 +856,7 @@ void OpenMVPlugin::packageUpdate()
                         delete dialog;
                     });
 
-                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://"
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-                                                                                   "www."
-#endif
-                                                                                   "openmv.io/upload/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
+                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://github.com/openmv/openmv-ide/releases/download/v%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
                     request2.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -886,11 +880,7 @@ void OpenMVPlugin::packageUpdate()
         reply->deleteLater();
     });
 
-    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://"
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-                                                                  "www."
-#endif
-                                                                  "openmv.io/upload/openmv-ide-resources-version.txt")));
+    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://raw.githubusercontent.com/openmv/openmv-ide/master/openmv-ide-resources-version.txt")));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -1409,12 +1399,13 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         // Start Bootloader ///////////////////////////////////
                         {
-                            bool done2 = bool(), done22 = false;
-                            bool *done2Ptr = &done2, *done2Ptr2 = &done22;
+                            bool done2 = bool(), loopExit = false, done22 = false;
+                            bool *done2Ptr = &done2, *loopExitPtr = &loopExit, *done2Ptr2 = &done22;
 
                             QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStartResponse,
-                                this, [this, done2Ptr] (bool done) {
+                                this, [this, done2Ptr, loopExitPtr] (bool done) {
                                 *done2Ptr = done;
+                                *loopExitPtr = true;
                             });
 
                             QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStopResponse,
@@ -1445,7 +1436,14 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             m_ioport->bootloaderStart(selectedPort);
 
-                            loop.exec();
+                            // NOT loop.exec();
+                            while(!loopExit)
+                            {
+                                QSerialPortInfo::availablePorts();
+                                QApplication::processEvents();
+                                // Keep updating the list of available serial
+                                // ports for the non-gui serial thread.
+                            }
 
                             dialog.close();
 
@@ -1708,22 +1706,46 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         if(Utils::HostOsInfo::isWindowsHost())
                         {
-                            command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfuse/DfuSeCommand.exe")));
-                            response = process.run(command, QStringList()
-                                << QStringLiteral("-c")
-                                << QStringLiteral("-d")
-                                << QStringLiteral("--v")
-                                << QStringLiteral("--o")
-                                << QStringLiteral("--fn")
-                                << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+                            for(int i = 0; i < 10; i++) // try multiple times...
+                            {
+                                command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/dfuse/DfuSeCommand.exe")));
+                                response = process.run(command, QStringList()
+                                    << QStringLiteral("-c")
+                                    << QStringLiteral("-d")
+                                    << QStringLiteral("--v")
+                                    << QStringLiteral("--o")
+                                    << QStringLiteral("--fn")
+                                    << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+
+                                if(response.result == Utils::SynchronousProcessResponse::Finished)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    QApplication::processEvents();
+                                }
+                            }
                         }
                         else
                         {
-                            command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/pydfu/pydfu.py")));
-                            response = process.run(QStringLiteral("python"), QStringList()
-                                << command
-                                << QStringLiteral("-u")
-                                << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+                            for(int i = 0; i < 10; i++) // try multiple times...
+                            {
+                                command = QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/pydfu/pydfu.py")));
+                                response = process.run(QStringLiteral("python"), QStringList()
+                                    << command
+                                    << QStringLiteral("-u")
+                                    << QDir::cleanPath(QDir::toNativeSeparators(firmwarePath)));
+
+                                if(response.result == Utils::SynchronousProcessResponse::Finished)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    QApplication::processEvents();
+                                }
+                            }
                         }
 
                         if(response.result == Utils::SynchronousProcessResponse::Finished)
@@ -1858,7 +1880,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         ///////////////////////////////////////////////////////////////////////
 
-        QTimer::singleShot(0, this, &OpenMVPlugin::setPortPath);
+        QTimer::singleShot(0, this, [this] { OpenMVPlugin::setPortPath(true); });
 
         CONNECT_END();
     }
@@ -2082,6 +2104,11 @@ void OpenMVPlugin::processEvents()
             {
                 m_getScriptRunningTimer.restart();
                 m_iodevice->getScriptRunning();
+
+                if(m_portPath.isEmpty())
+                {
+                    setPortPath(true);
+                }
             }
 
             if((!m_iodevice->getTxBufferQueued()) && m_getTxBufferTimer.hasExpired(GET_TX_BUFFER_SPACING))
@@ -2093,7 +2120,7 @@ void OpenMVPlugin::processEvents()
             if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
             {
                 m_fpsLabel->setText(tr("FPS: 0"));
-            }
+            }      
         }
     }
 }
@@ -2380,6 +2407,28 @@ void OpenMVPlugin::updateCam()
                     QMessageBox::information(Core::ICore::dialogParent(),
                         tr("Firmware Update"),
                         tr("Your OpenMV Cam's firmware is up to date."));
+
+                    if(QMessageBox::question(Core::ICore::dialogParent(),
+                        tr("Firmware Update"),
+                        tr("Need to reset your OpenMV Cam's firmware to the release version?"),
+                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
+                    == QMessageBox::Yes)
+                    {
+                        int answer = QMessageBox::question(Core::ICore::dialogParent(),
+                            tr("Firmware Update"),
+                            tr("Erase the internal file system?"),
+                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+
+                        if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
+                        {
+                            disconnectClicked();
+
+                            if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
+                            {
+                                connectClicked(true, QString(), answer);
+                            }
+                        }
+                    }
                 }
             }
             else if(file.error() != QFile::NoError)
@@ -2410,7 +2459,7 @@ void OpenMVPlugin::updateCam()
     }
 }
 
-void OpenMVPlugin::setPortPath()
+void OpenMVPlugin::setPortPath(bool silent)
 {
     if(!m_working)
     {
@@ -2435,9 +2484,12 @@ void OpenMVPlugin::setPortPath()
 
         if(drives.isEmpty())
         {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Select Drive"),
-                tr("No valid drives were found to associate with your OpenMV Cam!"));
+            if(!silent)
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Select Drive"),
+                    tr("No valid drives were found to associate with your OpenMV Cam!"));
+            }
 
             m_portPath = QString();
         }
@@ -2447,7 +2499,7 @@ void OpenMVPlugin::setPortPath()
             {
                 QMessageBox::information(Core::ICore::dialogParent(),
                     tr("Select Drive"),
-                    tr("\"%L1\" is the only drive avialable so it must be your OpenMV Cam's drive.").arg(drives.first()));
+                    tr("\"%L1\" is the only drive available so it must be your OpenMV Cam's drive.").arg(drives.first()));
             }
             else
             {
@@ -2460,11 +2512,11 @@ void OpenMVPlugin::setPortPath()
             int index = drives.indexOf(settings->value(m_portName).toString());
 
             bool ok;
-            QString temp = QInputDialog::getItem(Core::ICore::dialogParent(),
+            QString temp = (!silent) ? QInputDialog::getItem(Core::ICore::dialogParent(),
                 tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
                 drives, (index != -1) ? index : 0, false, &ok,
                 Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint)) : drives.first();
 
             if(ok)
             {

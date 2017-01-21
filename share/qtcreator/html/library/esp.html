@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>esp — functions related to the ESP8266 &mdash; MicroPython 1.4.4 documentation</title>
+  <title>esp — functions related to the ESP8266 &mdash; MicroPython 1.8 documentation</title>
   
 
   
@@ -34,10 +34,10 @@
   
 
   
-    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
-        <link rel="next" title="class socket – network socket" href="esp.socket.html"/>
-        <link rel="prev" title="class USB_VCP – USB virtual comm port" href="pyb.USB_VCP.html"/> 
+        <link rel="next" title="pyb — functions related to the board" href="pyb.html"/>
+        <link rel="prev" title="uctypes – access C structures" href="uctypes.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -55,7 +55,7 @@
           
 
           
-            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+            <a href="../index.html" class="icon icon-home"> MicroPython
           
 
           
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.4
+                1.8
               </div>
             
           
@@ -91,14 +91,10 @@
             
                 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a></li>
 </ul>
 
             
@@ -112,7 +108,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../openmvcam_index.html">MicroPython</a>
+        <a href="../index.html">MicroPython</a>
       </nav>
 
 
@@ -127,9 +123,7 @@
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
-      
-          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+    <li><a href="../index.html">Docs</a> &raquo;</li>
       
           <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
       
@@ -153,48 +147,55 @@
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="esp.scan">
-<code class="descclassname">esp.</code><code class="descname">scan</code><span class="sig-paren">(</span><em>cb</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.scan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate scanning for the available wireless networks.</p>
-<p>Once the scanning is complete, the provided callback function <code class="docutils literal"><span class="pre">cb</span></code> will
-be called once for each network found, and passed a tuple with information
-about that network.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="esp.status">
-<code class="descclassname">esp.</code><code class="descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current status of the wireless connection.</p>
-<p>The possible statuses are defined as constants:</p>
+<dt id="esp.sleep_type">
+<code class="descclassname">esp.</code><code class="descname">sleep_type</code><span class="sig-paren">(</span><span class="optional">[</span><em>sleep_type</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.sleep_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the sleep type.</p>
+<p>If the <code class="docutils literal"><span class="pre">sleep_type</span></code> parameter is provided, sets the sleep type to its
+value. If the function is called without parameters, returns the current
+sleep type.</p>
+<p>The possible sleep types are defined as constants:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">STAT_IDLE</span></code> &#8211; no connection and no activity,</li>
-<li><code class="docutils literal"><span class="pre">STAT_CONNECTING</span></code> &#8211; connecting in progress,</li>
-<li><code class="docutils literal"><span class="pre">STAT_WRONG_PASSWORD</span></code> &#8211; failed due to incorrect password,</li>
-<li><code class="docutils literal"><span class="pre">STAT_NO_AP_FOUND</span></code> &#8211; failed because no access point replied,</li>
-<li><code class="docutils literal"><span class="pre">STAT_CONNECT_FAIL</span></code> &#8211; failed due to other problems,</li>
-<li><code class="docutils literal"><span class="pre">STAT_GOT_IP</span></code> &#8211; connection susccessful.</li>
+<li><code class="docutils literal"><span class="pre">SLEEP_NONE</span></code> &#8211; all functions enabled,</li>
+<li><code class="docutils literal"><span class="pre">SLEEP_MODEM</span></code> &#8211; modem sleep, shuts down the WiFi Modem circuit.</li>
+<li><code class="docutils literal"><span class="pre">SLEEP_LIGHT</span></code> &#8211; light sleep, shuts down the WiFi Modem circuit
+and suspends the processor periodically.</li>
 </ul>
 </div></blockquote>
+<p>The system enters the set sleep mode automatically when possible.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="esp.getaddrinfo">
-<code class="descclassname">esp.</code><code class="descname">getaddrinfo</code><span class="sig-paren">(</span><em>(hostname</em>, <em>port</em>, <em>lambda)</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.getaddrinfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate resolving of the given hostname.</p>
-<p>When the hostname is resolved, the provided <code class="docutils literal"><span class="pre">lambda</span></code> callback will be
-called with two arguments, first being the hostname being resolved,
-second a tuple with information about that hostname.</p>
+<dt id="esp.deepsleep">
+<code class="descclassname">esp.</code><code class="descname">deepsleep</code><span class="sig-paren">(</span><em>time=0</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.deepsleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enter deep sleep.</p>
+<p>The whole module powers down, except for the RTC clock circuit, which can
+be used to restart the module after the specified time if the pin 16 is
+connected to the reset pin. Otherwise the module will sleep until manually
+reset.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="esp.socket.html">class socket &#8211; network socket</a></li>
-</ul>
-</div>
+<dl class="function">
+<dt id="esp.flash_id">
+<code class="descclassname">esp.</code><code class="descname">flash_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the device ID of the flash memory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_read">
+<code class="descclassname">esp.</code><code class="descname">flash_read</code><span class="sig-paren">(</span><em>byte_offset</em>, <em>length_or_buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_write">
+<code class="descclassname">esp.</code><code class="descname">flash_write</code><span class="sig-paren">(</span><em>byte_offset</em>, <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="esp.flash_erase">
+<code class="descclassname">esp.</code><code class="descname">flash_erase</code><span class="sig-paren">(</span><em>sector_no</em><span class="sig-paren">)</span><a class="headerlink" href="#esp.flash_erase" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -205,10 +206,10 @@ second a tuple with information about that hostname.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="esp.socket.html" class="btn btn-neutral float-right" title="class socket – network socket" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pyb.html" class="btn btn-neutral float-right" title="pyb — functions related to the board" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pyb.USB_VCP.html" class="btn btn-neutral" title="class USB_VCP – USB virtual comm port" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="uctypes.html" class="btn btn-neutral" title="uctypes – access C structures" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -217,8 +218,8 @@ second a tuple with information about that hostname.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, Damien P. George.
-      Last updated on 02 Jul 2016.
+        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
+      Last updated on 07 Jan 2017.
 
     </p>
   </div>
@@ -232,15 +233,62 @@ second a tuple with information about that hostname.</p>
     </section>
 
   </div>
-  
-
+  <!--
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Ports and Versions</span>
+    openmvcam (latest)
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Ports</dt>
+      
+        <dd><a href="//en/latest/unix">unix</a></dd>
+      
+        <dd><a href="//en/latest/pyboard">pyboard</a></dd>
+      
+        <dd><a href="//en/latest/wipy">wipy</a></dd>
+      
+        <dd><a href="//en/latest/esp8266">esp8266</a></dd>
+      
+        <dd><a href="//en/latest/openmvcam">openmvcam</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Versions</dt>
+      
+        <dd><a href="//en/latest/openmvcam">latest</a></dd>
+      
+    </dl>
+    -->
+    <!--
+    <dl>
+      <dt>Downloads</dt>
+      
+    </dl>
+    -->
+    <!--
+    <hr/>
+    <dl>
+      <dt>External links</dt>
+        <dd>
+          <a href="http://www.micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://github.com/micropython/micropython">GitHub</a>
+        </dd>
+    </dl>
+  </div>
+</div>
+-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.4.4',
+            VERSION:'1.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

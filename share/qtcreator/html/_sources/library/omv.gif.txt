@@ -11,7 +11,7 @@ class Gif -- Gif recorder
 
 You can use the gif module to record small video clips. Note that gif files save
 uncompressed image data. So, they are best for recording short video clips that
-you want to share. Use ``gif`` for long clips.
+you want to share. Use ``mjpeg`` for long clips.
 
 Example usage::
 
@@ -54,6 +54,13 @@ Constructors
      - True for color results in a rgb232 7-bit per pixel gif.
 
    ``loop`` when True results in the gif automatically looping on playback.
+   Defaults to True.
+
+   .. note::
+
+      ``width``, ``height``, ``color``, and ``loop`` are keyword arguments
+      which must be explicitly invoked in the function call by writing
+      ``width=``, ``height=``, ``color=``, and ``resolution=``.
 
 Methods
 -------
@@ -76,7 +83,7 @@ Methods
 
 .. method:: gif.loop():
 
-   Returns if the gif object had loop set in it's constructor.
+   Returns if the gif object had loop set in its constructor.
 
 .. method:: gif.add_frame(image, delay=10):
 
@@ -86,6 +93,11 @@ Methods
 
    ``delay`` is the number of centi-seconds to wait before displaying this frame
    after the previous frame (if not the first frame).
+
+   .. note::
+
+      ``delay`` is keyword arguments which must be explicitly invoked in the
+      function call by writing ``delay=``.
 
 .. method:: gif.close():
 

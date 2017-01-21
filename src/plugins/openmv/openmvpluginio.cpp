@@ -98,7 +98,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
 
                     if(w)
                     {
-                        int size = IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (IS_BINARY(bpp) ? (((w + 7) / 8) * h) : int()));
+                        int size = IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (IS_BINARY(bpp) ? (((w + 31) / 32) * h) : int()));
 
                         if(size)
                         {
@@ -121,7 +121,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     QPixmap pixmap = QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
                     ? QImage::fromData(data, "JPG")
                     : QImage(reinterpret_cast<const uchar *>(byteSwap(data,
-                        IS_RGB(m_frameSizeBPP)).constData()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW + 7) / 8) : (m_frameSizeW * m_frameSizeBPP),
+                        IS_RGB(m_frameSizeBPP)).constData()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW + 31) / 32) : (m_frameSizeW * m_frameSizeBPP),
                         IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : (IS_GS(m_frameSizeBPP) ? QImage::Format_Grayscale8 : QImage::Format_MonoLSB)));
 
                     if(!pixmap.isNull())

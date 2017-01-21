@@ -1523,7 +1523,11 @@ void EditorManagerPrivate::setupSaveActions(IDocument *document, QAction *saveAc
                                             QAction *saveAsAction, QAction *revertToSavedAction)
 {
     const bool hasFile = document != 0 && !document->filePath().isEmpty();
-    saveAction->setEnabled(hasFile && document->isModified());
+    //OPENMV-DIFF//
+    //saveAction->setEnabled(hasFile && document->isModified());
+    //OPENMV-DIFF//
+    saveAction->setEnabled(document != 0 && document->isModified());
+    //OPENMV-DIFF//
     saveAsAction->setEnabled(document != 0 && document->isSaveAsAllowed());
     revertToSavedAction->setEnabled(hasFile);
 
@@ -2297,7 +2301,18 @@ void EditorManager::setReloadSetting(IDocument::ReloadSetting behavior)
 
 void EditorManager::saveDocument()
 {
-    EditorManagerPrivate::saveDocument(currentDocument());
+    //OPENMV-DIFF//
+    //EditorManagerPrivate::saveDocument(currentDocument());
+    //OPENMV-DIFF//
+    if(currentDocument()->filePath().isEmpty())
+    {
+        EditorManagerPrivate::saveDocumentAs(currentDocument());
+    }
+    else
+    {
+        EditorManagerPrivate::saveDocument(currentDocument());
+    }
+    //OPENMV-DIFF//
 }
 
 void EditorManager::saveDocumentAs()

@@ -101,7 +101,7 @@ public slots: // private
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
     void updateCam();
-    void setPortPath();
+    void setPortPath(bool silent = false);
 
 signals:
 

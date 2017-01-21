@@ -554,6 +554,10 @@ bool TextDocument::save(QString *errorString, const QString &saveFileName, bool 
     // inform about the new filename
     const QFileInfo fi(fName);
     d->m_document.setModified(false); // also triggers update of the block revisions
+    //OPENMV-DIFF//
+    setUniqueDisplayName(QString());
+    setPreferredDisplayName(QString());
+    //OPENMV-DIFF//
     setFilePath(Utils::FileName::fromUserInput(fi.absoluteFilePath()));
     emit changed();
     return true;

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class Accel – accelerometer control &mdash; MicroPython 1.4.4 documentation</title>
+  <title>class Accel – accelerometer control &mdash; MicroPython 1.8 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.4.4 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
         <link rel="up" title="pyb — functions related to the board" href="pyb.html"/>
-        <link rel="next" title="class ADC – analog to digital conversion: read analog values on a pin" href="pyb.ADC.html"/>
+        <link rel="next" title="class ADC – analog to digital conversion" href="pyb.ADC.html"/>
         <link rel="prev" title="pyb — functions related to the board" href="pyb.html"/> 
 
   
@@ -55,7 +55,7 @@
           
 
           
-            <a href="../openmvcam_index.html" class="icon icon-home"> MicroPython
+            <a href="../index.html" class="icon icon-home"> MicroPython
           
 
           
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.4
+                1.8
               </div>
             
           
@@ -91,14 +91,10 @@
             
                 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmv cam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html">The OpenMV Cam hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-the-components-on-the-openmv-cam">Datasheets for the components on the OpenMV Cam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/hardware/index.html#datasheets-for-other-components">Datasheets for other components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam_contents.html">MicroPython documentation contents</a></li>
 </ul>
 
             
@@ -112,7 +108,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../openmvcam_index.html">MicroPython</a>
+        <a href="../index.html">MicroPython</a>
       </nav>
 
 
@@ -127,9 +123,7 @@
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="../openmvcam_index.html">Docs</a> &raquo;</li>
-      
-          <li><a href="../openmvcam_contents.html">MicroPython documentation contents</a> &raquo;</li>
+    <li><a href="../index.html">Docs</a> &raquo;</li>
       
           <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
       
@@ -151,7 +145,7 @@
             
   <div class="section" id="class-accel-accelerometer-control">
 <h1>class Accel &#8211; accelerometer control<a class="headerlink" href="#class-accel-accelerometer-control" title="Permalink to this headline">¶</a></h1>
-<p>Accel is an object that controls the accelerometer.  Example usage:</p>
+<p>Accel is an object that controls the accelerometer. Example usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">accel</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Accel</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
     <span class="k">print</span><span class="p">(</span><span class="n">accel</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">accel</span><span class="o">.</span><span class="n">y</span><span class="p">(),</span> <span class="n">accel</span><span class="o">.</span><span class="n">z</span><span class="p">())</span>
@@ -164,15 +158,6 @@
 <dt id="pyb.Accel">
 <em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">Accel</code><a class="headerlink" href="#pyb.Accel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return an accelerometer object.</p>
-<p>Note: if you read accelerometer values immediately after creating this object
-you will get 0.  It takes around 20ms for the first sample to be ready, so,
-unless you have some other code between creating this object and reading its
-values, you should put a <code class="docutils literal"><span class="pre">pyb.delay(20)</span></code> after creating it.  For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">accel</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Accel</span><span class="p">()</span>
-<span class="n">pyb</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">accel</span><span class="o">.</span><span class="n">x</span><span class="p">())</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>
@@ -182,6 +167,10 @@ values, you should put a <code class="docutils literal"><span class="pre">pyb.de
 <dt id="accel.filtered_xyz">
 <code class="descclassname">accel.</code><code class="descname">filtered_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#accel.filtered_xyz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a 3-tuple of filtered x, y and z values.</p>
+<p>Implementation note: this method is currently implemented as taking the
+sum of 4 samples, sampled from the 3 previous calls to this function along
+with the sample from the current call. Returned values are therefore 4
+times the size of what they would be from the raw x(), y() and z() calls.</p>
 </dd></dl>
 
 <dl class="method">
@@ -218,7 +207,7 @@ values, you should put a <code class="docutils literal"><span class="pre">pyb.de
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pyb.ADC.html" class="btn btn-neutral float-right" title="class ADC – analog to digital conversion: read analog values on a pin" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pyb.ADC.html" class="btn btn-neutral float-right" title="class ADC – analog to digital conversion" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="pyb.html" class="btn btn-neutral" title="pyb — functions related to the board" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -230,8 +219,8 @@ values, you should put a <code class="docutils literal"><span class="pre">pyb.de
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, Damien P. George.
-      Last updated on 02 Jul 2016.
+        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
+      Last updated on 07 Jan 2017.
 
     </p>
   </div>
@@ -245,15 +234,62 @@ values, you should put a <code class="docutils literal"><span class="pre">pyb.de
     </section>
 
   </div>
-  
-
+  <!--
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Ports and Versions</span>
+    openmvcam (latest)
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Ports</dt>
+      
+        <dd><a href="//en/latest/unix">unix</a></dd>
+      
+        <dd><a href="//en/latest/pyboard">pyboard</a></dd>
+      
+        <dd><a href="//en/latest/wipy">wipy</a></dd>
+      
+        <dd><a href="//en/latest/esp8266">esp8266</a></dd>
+      
+        <dd><a href="//en/latest/openmvcam">openmvcam</a></dd>
+      
+    </dl>
+    <dl>
+      <dt>Versions</dt>
+      
+        <dd><a href="//en/latest/openmvcam">latest</a></dd>
+      
+    </dl>
+    -->
+    <!--
+    <dl>
+      <dt>Downloads</dt>
+      
+    </dl>
+    -->
+    <!--
+    <hr/>
+    <dl>
+      <dt>External links</dt>
+        <dd>
+          <a href="http://www.micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://github.com/micropython/micropython">GitHub</a>
+        </dd>
+    </dl>
+  </div>
+</div>
+-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.4.4',
+            VERSION:'1.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
