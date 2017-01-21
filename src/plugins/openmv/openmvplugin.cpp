@@ -128,6 +128,18 @@ void OpenMVPlugin::extensionsInitialized()
     resetCommand->setEnabled(false);
     connect(resetCommand, &QAction::triggered, this, [this] {disconnectClicked(true);});
 
+    toolsMenu->addSeparator();
+
+    m_machineVisionToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.MachineVision"));
+    m_machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
+    toolsMenu->addMenu(m_machineVisionToolsMenu);
+
+    QAction *keypointsEditorCommand = new QAction(tr("Keypoints Editor"), this);
+    m_keypointsEditorCommand = Core::ActionManager::registerAction(keypointsEditorCommand, Core::Id("OpenMV.KeypointsEditor"));
+    m_machineVisionToolsMenu->addAction(m_keypointsEditorCommand);
+
+    toolsMenu->addSeparator();
+
     QAction *docsCommand = new QAction(tr("OpenMV Docs"), this);
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);

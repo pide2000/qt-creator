@@ -123,6 +123,8 @@ private:
     Core::Command *m_disconnectCommand;
     Core::Command *m_startCommand;
     Core::Command *m_stopCommand;
+    Core::ActionContainer *m_machineVisionToolsMenu;
+    Core::Command *m_keypointsEditorCommand;
 
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;
