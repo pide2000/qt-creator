@@ -137,10 +137,6 @@ public slots:
 protected:
 
     void keyPressEvent(QKeyEvent *event);
-
-private:
-
-    void myFitInView();
 };
 
 class KeypointsEditor : public QDialog

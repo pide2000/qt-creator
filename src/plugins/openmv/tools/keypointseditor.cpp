@@ -125,7 +125,7 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
     setMinimumWidth(160);
     setMinimumHeight(120);
     setScene(new QGraphicsScene(this));
-    scene()->addPixmap(pixmap);
+    QGraphicsPixmapItem *item = scene()->addPixmap(pixmap);
 
     foreach(const QObject *o, keypoints->children())
     {
@@ -133,7 +133,8 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
             sqrt((pixmap.width()*pixmap.width())+(pixmap.height()*pixmap.height()))/20)); // sqrt((160*160)+(120*120))/20=10
     }
 
-    myFitInView();
+    qreal scale = qMin(width() / item->boundingRect().width(), height() / item->boundingRect().height());
+    setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(scale, scale));
 }
 
 void KeypointsView::valueChanged(int value)
@@ -174,12 +175,6 @@ void KeypointsView::keyPressEvent(QKeyEvent *event)
     QGraphicsView::keyPressEvent(event);
 }
 
-void KeypointsView::myFitInView()
-{
-    qreal scale = qMin(width() / sceneRect().width(), height() / sceneRect().height());
-    setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(scale, scale));
-}
-
 KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
     setMaximumWidth(800);
@@ -207,13 +202,12 @@ KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QW
         slider->setTickPosition(QSlider::TicksBothSides);
         slider->setSingleStep(1);
         slider->setPageStep(1);
-        slider->setTracking(true);
         slider->setRange(1, keypoints->m_max_octave);
         h_layout->addWidget(slider);
         h_layout->addItem(new QSpacerItem(6, 0));
         connect(slider, &QSlider::valueChanged, view, &KeypointsView::valueChanged);
 
-        QLabel *number = new QLabel();
+        QLabel *number = new QLabel(QStringLiteral("1"));
         h_layout->addWidget(number);
         connect(slider, &QSlider::valueChanged, number, static_cast<void (QLabel::*)(int)>(&QLabel::setNum));
 
@@ -221,8 +215,6 @@ KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QW
         layout->addItem(new QSpacerItem(0, 6));
 
         slider->setValue(1);
-        slider->setValue(keypoints->m_max_octave); // causes signals to execute
-        slider->setValue(1); // causes signals to execute
     }
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
