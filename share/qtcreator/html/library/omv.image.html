@@ -255,43 +255,22 @@ values goes between 0-255.</p>
 
 <dl class="function">
 <dt id="image.image.load_decriptor">
-<code class="descclassname">image.</code><code class="descname">load_decriptor</code><span class="sig-paren">(</span><em>type</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.load_decriptor" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">load_decriptor</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.load_decriptor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a descriptor object from disk.</p>
-<p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to load:</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">image.DESC_LBP</span></code></li>
-<li><code class="docutils literal"><span class="pre">image.DESC_ORB</span></code></li>
-</ul>
-</div></blockquote>
 <p><code class="docutils literal"><span class="pre">path</span></code> is the path to the descriptor file to load.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="image.image.save_descriptor">
-<code class="descclassname">image.</code><code class="descname">save_descriptor</code><span class="sig-paren">(</span><em>type</em>, <em>path</em>, <em>descriptor</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.save_descriptor" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">save_descriptor</code><span class="sig-paren">(</span><em>path</em>, <em>descriptor</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.save_descriptor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the descriptor object <code class="docutils literal"><span class="pre">descriptor</span></code> to disk.</p>
-<p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to save:</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">image.DESC_LBP</span></code></li>
-<li><code class="docutils literal"><span class="pre">image.DESC_ORB</span></code></li>
-</ul>
-</div></blockquote>
 <p><code class="docutils literal"><span class="pre">path</span></code> is the path to the descriptor file to save.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="image.image.match_descriptor">
-<code class="descclassname">image.</code><code class="descname">match_descriptor</code><span class="sig-paren">(</span><em>type</em>, <em>descritor0</em>, <em>descriptor1</em>, <em>threshold=70</em>, <em>filter_outliers=False</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.match_descriptor" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal"><span class="pre">type</span></code> is the descriptor type to match:</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">image.DESC_LBP</span></code></li>
-<li><code class="docutils literal"><span class="pre">image.DESC_ORB</span></code></li>
-</ul>
-</div></blockquote>
-<p>For LBP descriptors this function returns an integer representing the
+<code class="descclassname">image.</code><code class="descname">match_descriptor</code><span class="sig-paren">(</span><em>descritor0</em>, <em>descriptor1</em>, <em>threshold=70</em>, <em>filter_outliers=False</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.match_descriptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For LBP descriptors this function returns an integer representing the
 difference between the two descriptors. You may then threshold/compare this
 distance metric as necessary. The distance is a measure of similarity. The
 closer it is to zero the better the LBP keypoint match.</p>
@@ -1828,7 +1807,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 21 Jan 2017.
+      Last updated on 22 Jan 2017.
 
     </p>
   </div>

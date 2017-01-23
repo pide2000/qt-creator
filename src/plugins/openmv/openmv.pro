@@ -17,5 +17,5 @@ SOURCES += openmvplugin.cpp \
            histogram/lab_tab.c \
            histogram/yuv_tab.c  \
            qcustomplot/qcustomplot.cpp
-FORMS += tools/keypointseditor.ui histogram/openmvpluginhistogram.ui
+FORMS += histogram/openmvpluginhistogram.ui
 RESOURCES += openmv.qrc

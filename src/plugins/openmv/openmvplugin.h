@@ -29,6 +29,7 @@
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
 #include "histogram/openmvpluginhistogram.h"
+#include "tools/keypointseditor.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
@@ -51,7 +52,9 @@
 #define LAST_SERIAL_PORT_STATE "LastSerialPortState"
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
-#define LAST_SAVE_DESCIPTOR_PATH "LastSaveDescriptorPath"
+#define LAST_SAVE_DESCRIPTOR_PATH "LastSaveDescriptorPath"
+#define LAST_EDIT_KEYPOINTS_PATH "LastEditKeypointsPath"
+#define LAST_MERGE_KEYPOINTS_PATH "LastMergeKeypointsPath"
 #define RESOURCES_MAJOR "ResourcesMajor"
 #define RESOURCES_MINOR "ResourcesMinor"
 #define RESOURCES_PATCH "ResourcesPatch"
@@ -102,6 +105,9 @@ public slots: // private
     void saveDescriptor(const QRect &rect);
     void updateCam();
     void setPortPath(bool silent = false);
+
+    void openThresholdEditor();
+    void openKeypointsEditor();
 
 signals:
 

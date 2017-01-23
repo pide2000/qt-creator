@@ -45,34 +45,19 @@ Functions
        RGB888 means 8-bits (0-255) for red, green, and blue. The grayscale
        values goes between 0-255.
 
-.. function:: image.load_decriptor(type, path)
+.. function:: image.load_decriptor(path)
 
    Loads a descriptor object from disk.
 
-   ``type`` is the descriptor type to load:
-
-       * ``image.DESC_LBP``
-       * ``image.DESC_ORB``
-
    ``path`` is the path to the descriptor file to load.
 
-.. function:: image.save_descriptor(type, path, descriptor)
+.. function:: image.save_descriptor(path, descriptor)
 
    Saves the descriptor object ``descriptor`` to disk.
 
-   ``type`` is the descriptor type to save:
-
-       * ``image.DESC_LBP``
-       * ``image.DESC_ORB``
-
    ``path`` is the path to the descriptor file to save.
 
-.. function:: image.match_descriptor(type, descritor0, descriptor1, threshold=70, filter_outliers=False)
-
-   ``type`` is the descriptor type to match:
-
-       * ``image.DESC_LBP``
-       * ``image.DESC_ORB``
+.. function:: image.match_descriptor(descritor0, descriptor1, threshold=70, filter_outliers=False)
 
    For LBP descriptors this function returns an integer representing the
    difference between the two descriptors. You may then threshold/compare this

@@ -129,7 +129,6 @@ void OpenMVPlugin::extensionsInitialized()
     connect(resetCommand, &QAction::triggered, this, [this] {disconnectClicked(true);});
 
     toolsMenu->addSeparator();
-
     m_machineVisionToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.MachineVision"));
     m_machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
     toolsMenu->addMenu(m_machineVisionToolsMenu);
@@ -137,8 +136,7 @@ void OpenMVPlugin::extensionsInitialized()
     QAction *keypointsEditorCommand = new QAction(tr("Keypoints Editor"), this);
     m_keypointsEditorCommand = Core::ActionManager::registerAction(keypointsEditorCommand, Core::Id("OpenMV.KeypointsEditor"));
     m_machineVisionToolsMenu->addAction(m_keypointsEditorCommand);
-
-    toolsMenu->addSeparator();
+    connect(keypointsEditorCommand, &QAction::triggered, this, &OpenMVPlugin::openKeypointsEditor);
 
     QAction *docsCommand = new QAction(tr("OpenMV Docs"), this);
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
@@ -2334,8 +2332,8 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
 
         QString path =
             QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Descriptor"),
-                settings->value(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), drivePath).toString(),
-                tr("Image Files (*.lbp *.ff)"));
+                settings->value(QStringLiteral(LAST_SAVE_DESCRIPTOR_PATH), drivePath).toString(),
+                tr("Keypoints Files (*.lbp *.orb)"));
 
         if(!path.isEmpty())
         {
@@ -2355,7 +2353,7 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
                 if(sendPath.size() <= DESCRIPTOR_SAVE_PATH_MAX_LEN)
                 {
                     m_iodevice->descriptorSave(rect.x(), rect.y(), rect.width(), rect.height(), sendPath);
-                    settings->setValue(QStringLiteral(LAST_SAVE_DESCIPTOR_PATH), path);
+                    settings->setValue(QStringLiteral(LAST_SAVE_DESCRIPTOR_PATH), path);
                 }
                 else
                 {
@@ -2633,6 +2631,136 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
     }
 
     return actions;
+}
+
+void OpenMVPlugin::openThresholdEditor()
+{
+
+}
+
+void OpenMVPlugin::openKeypointsEditor()
+{
+    QMessageBox box(QMessageBox::Question, tr("Keypoints Editor"), tr("What would you like to do?"), QMessageBox::Cancel, Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+    QPushButton *button0 = box.addButton(tr("Edit File"), QMessageBox::AcceptRole);
+    QPushButton *button1 = box.addButton(tr("Merge Files"), QMessageBox::AcceptRole);
+    box.setDefaultButton(button0);
+    box.setEscapeButton(QMessageBox::Cancel);
+    box.exec();
+
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath));
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    if(box.clickedButton() == button0)
+    {
+        QString path =
+            QFileDialog::getOpenFileName(Core::ICore::dialogParent(), tr("Edit Keypoints"),
+                settings->value(QStringLiteral(LAST_EDIT_KEYPOINTS_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+                tr("Keypoints Files (*.lbp *.orb)"));
+
+        if(!path.isEmpty())
+        {
+            QScopedPointer<Keypoints> ks(Keypoints::newKeypoints(path));
+
+            if(ks)
+            {
+                QString name = QFileInfo(path).completeBaseName();
+
+                QStringList list = QDir(QFileInfo(path).path()).entryList(QStringList()
+                    << (name + QStringLiteral(".bmp"))
+                    << (name + QStringLiteral(".jpg"))
+                    << (name + QStringLiteral(".jpeg"))
+                    << (name + QStringLiteral(".ppm"))
+                    << (name + QStringLiteral(".pgm"))
+                    << (name + QStringLiteral(".pbm")),
+                    QDir::Files,
+                    QDir::Name);
+
+                if(!list.isEmpty())
+                {
+                    KeypointsEditor editor(ks.data(), QPixmap(QFileInfo(path).path() + QDir::separator() + list.first()), Core::ICore::dialogParent(),
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                    if(editor.exec() == QDialog::Accepted)
+                    {
+                        if(ks->saveKeypoints(path))
+                        {
+                            settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_PATH), path);
+                        }
+                        else
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Save Edited Keypoints"),
+                                tr("Failed to save the edited keypoints for an unknown reason!"));
+                        }
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Edit Keypoints"),
+                        tr("Failed to find the keypoints image file!"));
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Edit Keypoints"),
+                    tr("Failed to load the keypoints file for an unknown reason!"));
+            }
+        }
+    }
+    else if(box.clickedButton() == button1)
+    {
+        QStringList paths =
+            QFileDialog::getOpenFileNames(Core::ICore::dialogParent(), tr("Merge Keypoints"),
+                QFileInfo(settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString()).path(),
+                tr("Keypoints Files (*.lbp *.orb)"));
+
+        if(!paths.isEmpty())
+        {
+            QScopedPointer<Keypoints> ks(Keypoints::newKeypoints(paths.takeFirst()));
+
+            if(ks)
+            {
+                foreach(const QString &path, paths)
+                {
+                    ks->mergeKeypoints(path);
+                }
+
+                QString path =
+                    QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Merged Keypoints"),
+                        settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath).toString(),
+                        tr("Keypoints Files (*.lbp *.orb)"));
+
+                if(!path.isEmpty())
+                {
+                    if(ks->saveKeypoints(path))
+                    {
+                        settings->setValue(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), path);
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Save Merged Keypoints"),
+                            tr("Failed to save the merged keypoints for an unknown reason!"));
+                    }
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Merge Keypoints"),
+                    tr("Failed to load the first keypoints file for an unknown reason!"));
+            }
+        }
+    }
+
+    settings->endGroup();
 }
 
 } // namespace Internal
