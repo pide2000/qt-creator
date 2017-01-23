@@ -663,7 +663,7 @@ void OpenMVPlugin::extensionsInitialized()
             reply->deleteLater();
         });
 
-        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://raw.githubusercontent.com/openmv/openmv-ide/master/openmv-ide-version.txt")));
+        QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://upload.openmv.io/openmv-ide-version.txt")));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -866,7 +866,7 @@ void OpenMVPlugin::packageUpdate()
                         delete dialog;
                     });
 
-                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://github.com/openmv/openmv-ide/releases/download/v%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
+                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://upload.openmv.io/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
                     request2.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -890,7 +890,7 @@ void OpenMVPlugin::packageUpdate()
         reply->deleteLater();
     });
 
-    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://raw.githubusercontent.com/openmv/openmv-ide/master/openmv-ide-resources-version.txt")));
+    QNetworkRequest request = QNetworkRequest(QUrl(QStringLiteral("http://upload.openmv.io/openmv-ide-resources-version.txt")));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
