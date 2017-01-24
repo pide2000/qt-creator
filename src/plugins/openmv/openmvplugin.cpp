@@ -2134,7 +2134,7 @@ void OpenMVPlugin::processEvents()
             if(m_timer.hasExpired(FPS_TIMER_EXPIRATION_TIME))
             {
                 m_fpsLabel->setText(tr("FPS: 0"));
-            }      
+            }
         }
     }
 }
@@ -2525,12 +2525,12 @@ void OpenMVPlugin::setPortPath(bool silent)
         {
             int index = drives.indexOf(settings->value(m_portName).toString());
 
-            bool ok;
-            QString temp = (!silent) ? QInputDialog::getItem(Core::ICore::dialogParent(),
+            bool ok = silent;
+            QString temp = silent ? drives.first() : QInputDialog::getItem(Core::ICore::dialogParent(),
                 tr("Select Drive"), tr("Please associate a drive with your OpenMV Cam"),
                 drives, (index != -1) ? index : 0, false, &ok,
                 Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint)) : drives.first();
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
 
             if(ok)
             {
