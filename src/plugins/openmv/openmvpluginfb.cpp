@@ -30,6 +30,16 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     m_band->hide();
 }
 
+bool OpenMVPluginFB::pixmapValid() const
+{
+    return m_pixmap;
+}
+
+QPixmap OpenMVPluginFB::pixmap() const
+{
+    return m_pixmap ? m_pixmap->pixmap() : QPixmap();
+}
+
 void OpenMVPluginFB::enableFitInView(bool enable)
 {
     m_enableFitInView = enable;

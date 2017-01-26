@@ -29,6 +29,7 @@
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
 #include "histogram/openmvpluginhistogram.h"
+#include "tools/thresholdeditor.h"
 #include "tools/keypointseditor.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
@@ -53,6 +54,7 @@
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
 #define LAST_SAVE_DESCRIPTOR_PATH "LastSaveDescriptorPath"
+#define LAST_THRESHOLD_EDITOR_PATH "LastThresholdEditorPath"
 #define LAST_EDIT_KEYPOINTS_PATH "LastEditKeypointsPath"
 #define LAST_MERGE_KEYPOINTS_PATH "LastMergeKeypointsPath"
 #define RESOURCES_MAJOR "ResourcesMajor"
@@ -105,7 +107,6 @@ public slots: // private
     void saveDescriptor(const QRect &rect);
     void updateCam();
     void setPortPath(bool silent = false);
-
     void openThresholdEditor();
     void openKeypointsEditor();
 
@@ -130,6 +131,7 @@ private:
     Core::Command *m_startCommand;
     Core::Command *m_stopCommand;
     Core::ActionContainer *m_machineVisionToolsMenu;
+    Core::Command *m_thresholdEditorCommand;
     Core::Command *m_keypointsEditorCommand;
 
     Core::MiniSplitter *m_hsplitter;

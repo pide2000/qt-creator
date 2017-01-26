@@ -16,7 +16,6 @@ Keypoints *Keypoints::newKeypoints(const QString &path, QObject *parent)
             stream.setByteOrder(QDataStream::LittleEndian);
             stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
             Keypoints *ks = new Keypoints(parent);
-
             stream >> ks->m_type;
             stream >> ks->m_size;
 
@@ -58,7 +57,6 @@ void Keypoints::mergeKeypoints(const QString &path)
             stream.setByteOrder(QDataStream::LittleEndian);
             stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
             quint32 type, size;
-
             stream >> type;
             stream >> size;
 
@@ -95,7 +93,6 @@ bool Keypoints::saveKeypoints(const QString &path)
         QDataStream stream(&data, QIODevice::WriteOnly);
         stream.setByteOrder(QDataStream::LittleEndian);
         stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
-
         stream << m_type;
         stream << m_size;
 
@@ -124,6 +121,7 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMinimumWidth(160);
     setMinimumHeight(120);
+    setBackgroundBrush(QColor(230, 230, 239));
     setScene(new QGraphicsScene(this));
     QGraphicsPixmapItem *item = scene()->addPixmap(pixmap);
 
@@ -135,19 +133,6 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
 
     qreal scale = qMin(width() / item->boundingRect().width(), height() / item->boundingRect().height());
     setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(scale, scale));
-}
-
-void KeypointsView::valueChanged(int value)
-{
-    foreach(QGraphicsItem *item, scene()->items())
-    {
-        KeypointsItem *k = qgraphicsitem_cast<KeypointsItem *>(item);
-
-        if(k)
-        {
-            k->setVisible(k->m_k->m_octave == value);
-        }
-    }
 }
 
 void KeypointsView::keyPressEvent(QKeyEvent *event)
@@ -177,8 +162,6 @@ void KeypointsView::keyPressEvent(QKeyEvent *event)
 
 KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
-    setMaximumWidth(800);
-    setMaximumHeight(600);
     setWindowTitle(tr("Keypoints Editor"));
 
     QFormLayout *layout = new QFormLayout(this);
@@ -193,28 +176,25 @@ KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QW
 
     if(keypoints->m_max_octave > 1)
     {
-        QWidget *temp = new QWidget();
-        QHBoxLayout *h_layout = new QHBoxLayout(temp);
-        h_layout->setMargin(0);
+        for(int i = 1; i <= keypoints->m_max_octave; i++)
+        {
+            QCheckBox *box = new QCheckBox(tr("Show Octave %L1").arg(i));
+            box->setCheckable(true);
+            box->setChecked(true);
+            layout->addRow(box);
+            layout->addItem(new QSpacerItem(0, 6));
+            connect(box, &QCheckBox::toggled, this, [this, view, i] (bool checked) {
+                foreach(QGraphicsItem *item, view->scene()->items())
+                {
+                    KeypointsItem *k = qgraphicsitem_cast<KeypointsItem *>(item);
 
-        QSlider *slider = new QSlider(Qt::Horizontal);
-        slider->setTickInterval(1);
-        slider->setTickPosition(QSlider::TicksBothSides);
-        slider->setSingleStep(1);
-        slider->setPageStep(1);
-        slider->setRange(1, keypoints->m_max_octave);
-        h_layout->addWidget(slider);
-        h_layout->addItem(new QSpacerItem(6, 0));
-        connect(slider, &QSlider::valueChanged, view, &KeypointsView::valueChanged);
-
-        QLabel *number = new QLabel(QStringLiteral("1"));
-        h_layout->addWidget(number);
-        connect(slider, &QSlider::valueChanged, number, static_cast<void (QLabel::*)(int)>(&QLabel::setNum));
-
-        layout->addRow(tr("Selected Octave"), temp);
-        layout->addItem(new QSpacerItem(0, 6));
-
-        slider->setValue(1);
+                    if(k && (k->m_k->m_octave == i))
+                    {
+                        k->setVisible(checked);
+                    }
+                }
+            });
+        }
     }
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);

@@ -54,14 +54,12 @@ class KeypointsItem : public QGraphicsItem
 
 public:
 
-    enum { Type = UserType + 1 };
-
     explicit KeypointsItem(Keypoint *k, int size, QGraphicsItem * parent = Q_NULLPTR) : QGraphicsItem(parent)
     {
         setAcceptHoverEvents(true);
         setFlag(QGraphicsItem::ItemIsSelectable, true);
         m_k = k;
-        m_size = size;
+        m_size = size / sqrt(m_k->m_octave);
     }
 
     QRectF boundingRect() const
@@ -81,6 +79,7 @@ public:
     {
         Q_UNUSED(option)
         Q_UNUSED(widget)
+
         QPointF p0 = QPointF(m_k->m_x,
                              m_k->m_y);
         QPointF p1 = QPointF(m_k->m_x + (cos((m_k->m_angle * M_PI) / 180.0) * m_size),
@@ -92,6 +91,11 @@ public:
         painter->drawLine(p0, p1);
         painter->restore();
     }
+
+    enum KeypointsItemType
+    {
+        Type = UserType + 1
+    };
 
     int type() const
     {
@@ -129,10 +133,6 @@ class KeypointsView : public QGraphicsView
 public:
 
     explicit KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent = Q_NULLPTR);
-
-public slots:
-
-    void valueChanged(int value);
 
 protected:
 

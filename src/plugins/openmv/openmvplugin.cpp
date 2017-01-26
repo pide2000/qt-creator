@@ -133,6 +133,11 @@ void OpenMVPlugin::extensionsInitialized()
     m_machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
     toolsMenu->addMenu(m_machineVisionToolsMenu);
 
+    QAction *thresholdEditorCommand = new QAction(tr("Threshold Editor"), this);
+    m_thresholdEditorCommand = Core::ActionManager::registerAction(thresholdEditorCommand, Core::Id("OpenMV.ThresholdEditor"));
+    m_machineVisionToolsMenu->addAction(m_thresholdEditorCommand);
+    connect(thresholdEditorCommand, &QAction::triggered, this, &OpenMVPlugin::openThresholdEditor);
+
     QAction *keypointsEditorCommand = new QAction(tr("Keypoints Editor"), this);
     m_keypointsEditorCommand = Core::ActionManager::registerAction(keypointsEditorCommand, Core::Id("OpenMV.KeypointsEditor"));
     m_machineVisionToolsMenu->addAction(m_keypointsEditorCommand);
@@ -2635,7 +2640,58 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
 
 void OpenMVPlugin::openThresholdEditor()
 {
+    QMessageBox box(QMessageBox::Question, tr("Threshold Editor"), tr("Source image location?"), QMessageBox::Cancel, Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+    QPushButton *button0 = box.addButton(tr(" Frame Buffer "), QMessageBox::AcceptRole);
+    QPushButton *button1 = box.addButton(tr(" Image File "), QMessageBox::AcceptRole);
+    box.setDefaultButton(button0);
+    box.setEscapeButton(QMessageBox::Cancel);
+    box.exec();
 
+    QString drivePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath));
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    if(box.clickedButton() == button0)
+    {
+        if(m_frameBuffer->pixmapValid())
+        {
+            ThresholdEditor editor(m_frameBuffer->pixmap(), Core::ICore::dialogParent(),
+                Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+            editor.exec();
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Threshold Editor"),
+                tr("No image loaded!"));
+        }
+    }
+    else if(box.clickedButton() == button1)
+    {
+        QString path =
+            QFileDialog::getOpenFileName(Core::ICore::dialogParent(), tr("Image File"),
+                settings->value(QStringLiteral(LAST_THRESHOLD_EDITOR_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+                tr("Image Files (*.bmp *.jpg *.jpeg *.png *.ppm)"));
+
+        if(!path.isEmpty())
+        {
+            QPixmap pixmap = QPixmap(path);
+
+            ThresholdEditor editor(pixmap, Core::ICore::dialogParent(),
+                Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+            editor.exec();
+            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_PATH), path);
+        }
+    }
+
+    settings->endGroup();
 }
 
 void OpenMVPlugin::openKeypointsEditor()
@@ -2643,8 +2699,8 @@ void OpenMVPlugin::openKeypointsEditor()
     QMessageBox box(QMessageBox::Question, tr("Keypoints Editor"), tr("What would you like to do?"), QMessageBox::Cancel, Core::ICore::dialogParent(),
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-    QPushButton *button0 = box.addButton(tr("Edit File"), QMessageBox::AcceptRole);
-    QPushButton *button1 = box.addButton(tr("Merge Files"), QMessageBox::AcceptRole);
+    QPushButton *button0 = box.addButton(tr(" Edit File "), QMessageBox::AcceptRole);
+    QPushButton *button1 = box.addButton(tr(" Merge Files "), QMessageBox::AcceptRole);
     box.setDefaultButton(button0);
     box.setEscapeButton(QMessageBox::Cancel);
     box.exec();
@@ -2668,7 +2724,6 @@ void OpenMVPlugin::openKeypointsEditor()
             if(ks)
             {
                 QString name = QFileInfo(path).completeBaseName();
-
                 QStringList list = QDir(QFileInfo(path).path()).entryList(QStringList()
                     << (name + QStringLiteral(".bmp"))
                     << (name + QStringLiteral(".jpg"))
@@ -2681,13 +2736,28 @@ void OpenMVPlugin::openKeypointsEditor()
 
                 if(!list.isEmpty())
                 {
-                    KeypointsEditor editor(ks.data(), QPixmap(QFileInfo(path).path() + QDir::separator() + list.first()), Core::ICore::dialogParent(),
-                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                    QString pixmapPath = QFileInfo(path).path() + QDir::separator() + list.first();
+                    QPixmap pixmap = QPixmap(pixmapPath);
+
+                    KeypointsEditor editor(ks.data(), pixmap, Core::ICore::dialogParent(),
+                        Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
                     if(editor.exec() == QDialog::Accepted)
                     {
-                        if(ks->saveKeypoints(path))
+                        if(QFile::exists(path + QStringLiteral(".bak")))
+                        {
+                            QFile::remove(path + QStringLiteral(".bak"));
+                        }
+
+                        if(QFile::exists(pixmapPath + QStringLiteral(".bak")))
+                        {
+                            QFile::remove(pixmapPath + QStringLiteral(".bak"));
+                        }
+
+                        if(QFile::copy(path, path + QStringLiteral(".bak"))
+                        && QFile::copy(pixmapPath, pixmapPath + QStringLiteral(".bak"))
+                        && ks->saveKeypoints(path))
                         {
                             settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_PATH), path);
                         }
@@ -2718,7 +2788,7 @@ void OpenMVPlugin::openKeypointsEditor()
     {
         QStringList paths =
             QFileDialog::getOpenFileNames(Core::ICore::dialogParent(), tr("Merge Keypoints"),
-                QFileInfo(settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString()).path(),
+                settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
                 tr("Keypoints Files (*.lbp *.orb)"));
 
         if(!paths.isEmpty())

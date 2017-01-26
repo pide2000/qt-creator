@@ -12,6 +12,8 @@ class OpenMVPluginFB : public QGraphicsView
 public:
 
     explicit OpenMVPluginFB(QWidget *parent = Q_NULLPTR);
+    bool pixmapValid() const;
+    QPixmap pixmap() const;
 
 public slots:
 
