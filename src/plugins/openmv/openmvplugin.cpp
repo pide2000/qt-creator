@@ -148,32 +148,32 @@ void OpenMVPlugin::extensionsInitialized()
     m_AprilTagGeneratorSubmenu->menu()->setTitle(tr("AprilTag Generator"));
     m_machineVisionToolsMenu->addMenu(m_AprilTagGeneratorSubmenu);
 
-    QAction *tag16h5Command = new QAction(tr("TAG16H5 Family"), this);
+    QAction *tag16h5Command = new QAction(tr("TAG16H5 Family (30 Tags)"), this);
     m_tag16h5Command = Core::ActionManager::registerAction(tag16h5Command, Core::Id("OpenMV.TAG16H5"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag16h5Command);
     connect(tag16h5Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag16h5_create());});
 
-    QAction *tag25h7Command = new QAction(tr("TAG25H7 Family"), this);
+    QAction *tag25h7Command = new QAction(tr("TAG25H7 Family (242 Tags)"), this);
     m_tag25h7Command = Core::ActionManager::registerAction(tag25h7Command, Core::Id("OpenMV.TAG25H7"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag25h7Command);
     connect(tag25h7Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h7_create());});
 
-    QAction *tag25h9Command = new QAction(tr("TAG25H9 Family"), this);
+    QAction *tag25h9Command = new QAction(tr("TAG25H9 Family (35 Tags)"), this);
     m_tag25h9Command = Core::ActionManager::registerAction(tag25h9Command, Core::Id("OpenMV.TAG25H9"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag25h9Command);
     connect(tag25h9Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h9_create());});
 
-    QAction *tag36h10Command = new QAction(tr("TAG36H10 Family"), this);
+    QAction *tag36h10Command = new QAction(tr("TAG36H10 Family (2320 Tags)"), this);
     m_tag36h10Command = Core::ActionManager::registerAction(tag36h10Command, Core::Id("OpenMV.TAG36H10"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag36h10Command);
     connect(tag36h10Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h10_create());});
 
-    QAction *tag36h11Command = new QAction(tr("TAG36H11 Family (Recommended)"), this);
+    QAction *tag36h11Command = new QAction(tr("TAG36H11 Family (587 Tags - Recommended)"), this);
     m_tag36h11Command = Core::ActionManager::registerAction(tag36h11Command, Core::Id("OpenMV.TAG36H11"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag36h11Command);
     connect(tag36h11Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h11_create());});
 
-    QAction *tag36artoolkitCommand = new QAction(tr("ARKTOOLKIT Family"), this);
+    QAction *tag36artoolkitCommand = new QAction(tr("ARKTOOLKIT Family (512 Tags)"), this);
     m_tag36artoolkitCommand = Core::ActionManager::registerAction(tag36artoolkitCommand, Core::Id("OpenMV.ARKTOOLKIT"));
     m_AprilTagGeneratorSubmenu->addAction(m_tag36artoolkitCommand);
     connect(tag36artoolkitCommand, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36artoolkit_create());});
