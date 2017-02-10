@@ -21,7 +21,7 @@
     <Version>{version}</Version>
     <Title>OpenMV IDE {display_version}</Title>
     <Publisher>OpenMV, LLC</Publisher>
-    <ProductUrl>http://www.openmv.io</ProductUrl>
+    <ProductUrl>https://openmv.io</ProductUrl>
 
     <MaintenanceToolName>Uninstall OpenMV IDE</MaintenanceToolName>
     <TargetDir>@homeDir@/Applications/OpenMV IDE</TargetDir>
