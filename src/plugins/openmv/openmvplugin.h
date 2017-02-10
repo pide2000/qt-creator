@@ -31,6 +31,12 @@
 #include "histogram/openmvpluginhistogram.h"
 #include "tools/thresholdeditor.h"
 #include "tools/keypointseditor.h"
+#include "tools/tag16h5.h"
+#include "tools/tag25h7.h"
+#include "tools/tag25h9.h"
+#include "tools/tag36h10.h"
+#include "tools/tag36h11.h"
+#include "tools/tag36artoolkit.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
@@ -56,7 +62,11 @@
 #define LAST_SAVE_DESCRIPTOR_PATH "LastSaveDescriptorPath"
 #define LAST_THRESHOLD_EDITOR_PATH "LastThresholdEditorPath"
 #define LAST_EDIT_KEYPOINTS_PATH "LastEditKeypointsPath"
-#define LAST_MERGE_KEYPOINTS_PATH "LastMergeKeypointsPath"
+#define LAST_MERGE_KEYPOINTS_OPEN_PATH "LastMergeKeypointsOpenPath"
+#define LAST_MERGE_KEYPOINTS_SAVE_PATH "LastMergeKeypointsSavePath"
+#define LAST_APRILTAG_RANGE_MIN "LastAprilTagRangeMin"
+#define LAST_APRILTAG_RANGE_MAX "LastAprilTagRangeMax"
+#define LAST_APRILTAG_PATH "LastAprilTagPath"
 #define RESOURCES_MAJOR "ResourcesMajor"
 #define RESOURCES_MINOR "ResourcesMinor"
 #define RESOURCES_PATCH "ResourcesPatch"
@@ -109,6 +119,8 @@ public slots: // private
     void setPortPath(bool silent = false);
     void openThresholdEditor();
     void openKeypointsEditor();
+    void openAprilTagGenerator(apriltag_family_t *family);
+    void openQRCodeGenerator();
 
 signals:
 
@@ -133,6 +145,14 @@ private:
     Core::ActionContainer *m_machineVisionToolsMenu;
     Core::Command *m_thresholdEditorCommand;
     Core::Command *m_keypointsEditorCommand;
+    Core::ActionContainer *m_AprilTagGeneratorSubmenu;
+    Core::Command *m_tag16h5Command;
+    Core::Command *m_tag25h7Command;
+    Core::Command *m_tag25h9Command;
+    Core::Command *m_tag36h10Command;
+    Core::Command *m_tag36h11Command;
+    Core::Command *m_tag36artoolkitCommand;
+    Core::Command *m_QRCodeGeneratorCommand;
 
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;

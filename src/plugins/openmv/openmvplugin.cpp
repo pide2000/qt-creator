@@ -143,6 +143,46 @@ void OpenMVPlugin::extensionsInitialized()
     m_machineVisionToolsMenu->addAction(m_keypointsEditorCommand);
     connect(keypointsEditorCommand, &QAction::triggered, this, &OpenMVPlugin::openKeypointsEditor);
 
+    m_machineVisionToolsMenu->addSeparator();
+    m_AprilTagGeneratorSubmenu = Core::ActionManager::createMenu(Core::Id("OpenMV.AprilTagGenerator"));
+    m_AprilTagGeneratorSubmenu->menu()->setTitle(tr("AprilTag Generator"));
+    m_machineVisionToolsMenu->addMenu(m_AprilTagGeneratorSubmenu);
+
+    QAction *tag16h5Command = new QAction(tr("TAG16H5 Family"), this);
+    m_tag16h5Command = Core::ActionManager::registerAction(tag16h5Command, Core::Id("OpenMV.TAG16H5"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag16h5Command);
+    connect(tag16h5Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag16h5_create());});
+
+    QAction *tag25h7Command = new QAction(tr("TAG25H7 Family"), this);
+    m_tag25h7Command = Core::ActionManager::registerAction(tag25h7Command, Core::Id("OpenMV.TAG25H7"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag25h7Command);
+    connect(tag25h7Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h7_create());});
+
+    QAction *tag25h9Command = new QAction(tr("TAG25H9 Family"), this);
+    m_tag25h9Command = Core::ActionManager::registerAction(tag25h9Command, Core::Id("OpenMV.TAG25H9"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag25h9Command);
+    connect(tag25h9Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h9_create());});
+
+    QAction *tag36h10Command = new QAction(tr("TAG36H10 Family"), this);
+    m_tag36h10Command = Core::ActionManager::registerAction(tag36h10Command, Core::Id("OpenMV.TAG36H10"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag36h10Command);
+    connect(tag36h10Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h10_create());});
+
+    QAction *tag36h11Command = new QAction(tr("TAG36H11 Family (Recommended)"), this);
+    m_tag36h11Command = Core::ActionManager::registerAction(tag36h11Command, Core::Id("OpenMV.TAG36H11"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag36h11Command);
+    connect(tag36h11Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h11_create());});
+
+    QAction *tag36artoolkitCommand = new QAction(tr("ARKTOOLKIT Family"), this);
+    m_tag36artoolkitCommand = Core::ActionManager::registerAction(tag36artoolkitCommand, Core::Id("OpenMV.ARKTOOLKIT"));
+    m_AprilTagGeneratorSubmenu->addAction(m_tag36artoolkitCommand);
+    connect(tag36artoolkitCommand, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36artoolkit_create());});
+
+    QAction *QRCodeGeneratorCommand = new QAction(tr("QRCode Generator"), this);
+    m_QRCodeGeneratorCommand = Core::ActionManager::registerAction(QRCodeGeneratorCommand, Core::Id("OpenMV.QRCodeGenerator"));
+    m_machineVisionToolsMenu->addAction(m_QRCodeGeneratorCommand);
+    connect(QRCodeGeneratorCommand, &QAction::triggered, this, &OpenMVPlugin::openQRCodeGenerator);
+
     QAction *docsCommand = new QAction(tr("OpenMV Docs"), this);
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
@@ -2788,12 +2828,13 @@ void OpenMVPlugin::openKeypointsEditor()
     {
         QStringList paths =
             QFileDialog::getOpenFileNames(Core::ICore::dialogParent(), tr("Merge Keypoints"),
-                settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+                settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_OPEN_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
                 tr("Keypoints Files (*.lbp *.orb)"));
 
         if(!paths.isEmpty())
         {
-            QScopedPointer<Keypoints> ks(Keypoints::newKeypoints(paths.takeFirst()));
+            QString first = paths.takeFirst();
+            QScopedPointer<Keypoints> ks(Keypoints::newKeypoints(first));
 
             if(ks)
             {
@@ -2804,14 +2845,15 @@ void OpenMVPlugin::openKeypointsEditor()
 
                 QString path =
                     QFileDialog::getSaveFileName(Core::ICore::dialogParent(), tr("Save Merged Keypoints"),
-                        settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), drivePath).toString(),
+                        settings->value(QStringLiteral(LAST_MERGE_KEYPOINTS_SAVE_PATH), drivePath).toString(),
                         tr("Keypoints Files (*.lbp *.orb)"));
 
                 if(!path.isEmpty())
                 {
                     if(ks->saveKeypoints(path))
                     {
-                        settings->setValue(QStringLiteral(LAST_MERGE_KEYPOINTS_PATH), path);
+                        settings->setValue(QStringLiteral(LAST_MERGE_KEYPOINTS_OPEN_PATH), first);
+                        settings->setValue(QStringLiteral(LAST_MERGE_KEYPOINTS_SAVE_PATH), path);
                     }
                     else
                     {
@@ -2831,6 +2873,168 @@ void OpenMVPlugin::openKeypointsEditor()
     }
 
     settings->endGroup();
+}
+
+void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
+{
+    QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+    dialog->setWindowTitle(tr("AprilTag Generator"));
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(new QLabel(tr("What tag images from the %L1 tag family do you want to generate?").arg(QString::fromLatin1(family->name).toUpper())));
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    QWidget *temp = new QWidget();
+    QHBoxLayout *tempLayout = new QHBoxLayout(temp);
+    tempLayout->setMargin(0);
+
+    QWidget *minTemp = new QWidget();
+    QFormLayout *minTempLayout = new QFormLayout(minTemp);
+    minTempLayout->setMargin(0);
+    QSpinBox *minRange = new QSpinBox();
+    minRange->setMinimum(0);
+    minRange->setMaximum(family->ncodes - 1);
+    minRange->setValue(settings->value(QStringLiteral(LAST_APRILTAG_RANGE_MIN), 0).toInt());
+    minRange->setAccelerated(true);
+    minTempLayout->addRow(tr("Min (%1)").arg(0), minRange); // don't use %L1 here
+    tempLayout->addWidget(minTemp);
+
+    QWidget *maxTemp = new QWidget();
+    QFormLayout *maxTempLayout = new QFormLayout(maxTemp);
+    maxTempLayout->setMargin(0);
+    QSpinBox *maxRange = new QSpinBox();
+    maxRange->setMinimum(0);
+    maxRange->setMaximum(family->ncodes - 1);
+    maxRange->setValue(settings->value(QStringLiteral(LAST_APRILTAG_RANGE_MAX), family->ncodes - 1).toInt());
+    maxRange->setAccelerated(true);
+    maxTempLayout->addRow(tr("Max (%1)").arg(family->ncodes - 1), maxRange); // don't use %L1 here
+    tempLayout->addWidget(maxTemp);
+
+    layout->addWidget(temp);
+
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+    layout->addWidget(box);
+
+    if(dialog->exec() == QDialog::Accepted)
+    {
+        int min = qMin(minRange->value(), maxRange->value());
+        int max = qMax(minRange->value(), maxRange->value());
+        int number = max - min + 1;
+
+        QString path =
+            QFileDialog::getExistingDirectory(Core::ICore::dialogParent(), tr("AprilTag Generator - Where do you want to save %n tag image(s) to?", "", number),
+                settings->value(QStringLiteral(LAST_APRILTAG_PATH), QDir::homePath()).toString());
+
+        if(!path.isEmpty())
+        {
+            QProgressDialog progress(tr("Generating images..."), tr("Cancel"), 0, number - 1, Core::ICore::dialogParent(),
+                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+            progress.setWindowModality(Qt::ApplicationModal);
+
+            for(int i = 0; i < number; i++)
+            {
+                progress.setValue(i);
+
+                QImage image(family->d + 4, family->d + 4, QImage::Format_Grayscale8);
+
+                for(uint32_t y = 0; y < (family->d + 4); y++)
+                {
+                    for(uint32_t x = 0; x < (family->d + 4); x++)
+                    {
+                        if((x == 0) || (x == (family->d + 3)) || (y == 0) || (y == (family->d + 3)))
+                        {
+                            image.setPixel(x, y, -1);
+                        }
+                        else if((x == 1) || (x == (family->d + 2)) || (y == 1) || (y == (family->d + 2)))
+                        {
+                            image.setPixel(x, y, family->black_border ? 0 : -1);
+                        }
+                        else
+                        {
+                            image.setPixel(x, y, ((family->codes[min + i] >> (((family->d + 1 - y) * family->d) + (family->d + 1 - x))) & 1) ? -1 : 0);
+                        }
+                    }
+                }
+
+                QPixmap pixmap(816, 1056); // 8" x 11" (96 DPI)
+                pixmap.fill();
+
+                QPainter painter;
+
+                if(!painter.begin(&pixmap))
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("AprilTag Generator"),
+                        tr("Painting - begin failed!"));
+
+                    progress.cancel();
+                    break;
+                }
+
+                QFont font = painter.font();
+                font.setPointSize(40);
+                painter.setFont(font);
+
+                painter.drawImage(8, 8, image.scaled(800, 800, Qt::KeepAspectRatio, Qt::FastTransformation));
+                painter.drawText(0 + 8, 8 + 800 + 8 + 80, 800, 80, Qt::AlignHCenter | Qt::AlignVCenter, QString::fromLatin1(family->name).toUpper() + QString(QStringLiteral(" - %1")).arg(min + i));
+
+                if(!painter.end())
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("AprilTag Generator"),
+                        tr("Painting - end failed!"));
+
+                    progress.cancel();
+                    break;
+                }
+
+                if(!pixmap.save(path + QDir::separator() + QString::fromLatin1(family->name).toLower() + QString(QStringLiteral("_%1.png")).arg(min + i)))
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("AprilTag Generator"),
+                        tr("Failed to save the image file for an unknown reason!"));
+
+                    progress.cancel();
+                }
+
+                if(progress.wasCanceled())
+                {
+                    break;
+                }
+            }
+
+            if(!progress.wasCanceled())
+            {
+                settings->setValue(QStringLiteral(LAST_APRILTAG_RANGE_MIN), min);
+                settings->setValue(QStringLiteral(LAST_APRILTAG_RANGE_MAX), max);
+                settings->setValue(QStringLiteral(LAST_APRILTAG_PATH), path);
+            }
+        }
+    }
+
+    settings->endGroup();
+    delete dialog;
+    free(family->name);
+    free(family->codes);
+    free(family);
+}
+
+void OpenMVPlugin::openQRCodeGenerator()
+{
+    QUrl url = QUrl(QStringLiteral("http://www.google.com/#q=qr+code+generator"));
+
+    if(!QDesktopServices::openUrl(url))
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+                              QString(),
+                              tr("Failed to open: \"%L1\"").arg(url.toString()));
+    }
 }
 
 } // namespace Internal
