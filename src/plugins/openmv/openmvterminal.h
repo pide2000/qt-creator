@@ -11,16 +11,18 @@
 #include <utils/ansiescapecodehandler.h>
 #include <utils/icon.h>
 #include <utils/styledbar.h>
+#include <utils/synchronousprocess.h>
+#include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/editormanager/ieditor.h>
 #include <coreplugin/find/basetextfind.h>
+#include <coreplugin/findplaceholder.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/idocument.h>
 #include <coreplugin/minisplitter.h>
 #include <texteditor/fontsettings.h>
-#include <texteditor/icodestylepreferences.h>
-#include <texteditor/tabsettings.h>
 #include <texteditor/texteditorsettings.h>
+#include <texteditor/texteditor.h>
 
 #include "openmvpluginfb.h"
 #include "openmv/histogram/openmvpluginhistogram.h"
@@ -70,6 +72,8 @@ private:
     QByteArray m_frameBufferData;
     Utils::AnsiEscapeCodeHandler m_handler;
     QChar m_lastChar;
+    QRegularExpression m_errorFilterRegex;
+    QString m_errorFilterString;
 };
 
 class OpenMVTerminal : public QWidget

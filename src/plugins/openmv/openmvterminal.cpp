@@ -7,30 +7,39 @@
 #define ZOOM_STATE "ZoomState"
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
+#define ERROR_FILTER_MAX_SIZE 1000
 
 MyPlainTextEdit::MyPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent)
 {
-    m_tabWidth = TextEditor::TextEditorSettings::instance()->codeStyle()->tabSettings().m_tabSize;
+    m_tabWidth = 8; // TODO...
     m_textCursor = QTextCursor(document());
     m_stateMachine = ASCII;
     m_shiftReg = QByteArray();
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
+    m_errorFilterRegex = QRegularExpression(QStringLiteral(
+        "  File \"(.+?)\", line (\\d+).*?\n"
+        "(?!(Exception: IDE interrupt|KeyboardInterrupt))(.+?:.+?)\n"));
+    m_errorFilterString = QString();
 
+    setReadOnly(true);
+    setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setFrameShape(QFrame::NoFrame);
     setUndoRedoEnabled(false);
     setMaximumBlockCount(100000);
     setWordWrapMode(QTextOption::NoWrap);
 
-    setFont(TextEditor::TextEditorSettings::instance()->fontSettings().font());
+    QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
+    font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
+    setFont(font);
 
     QPalette p = palette();
     p.setColor(QPalette::Highlight, p.color(QPalette::Active, QPalette::Highlight));
     p.setColor(QPalette::HighlightedText, p.color(QPalette::Active, QPalette::HighlightedText));
     p.setColor(QPalette::Base, QColor(QStringLiteral("#1E1E27")));
-    p.setColor(QPalette::Text, QColor(QStringLiteral("#FFFFFF")));
+    p.setColor(QPalette::Text, QColor(QStringLiteral("#EEEEF7")));
     setPalette(p);
 }
 
@@ -158,6 +167,54 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
         }
 
         m_shiftReg = m_shiftReg.append(data.at(i)).right(5);
+    }
+
+    // Error Filter //
+    {
+        m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromUtf8(data)));
+
+        QRegularExpressionMatch match;
+        int index = m_errorFilterString.indexOf(m_errorFilterRegex, 0, &match);
+
+        if(index != -1)
+        {
+            QString fileName = match.captured(1);
+            int lineNumber = match.captured(2).toInt() - 1;
+            QString errorMessage = match.captured(4);
+
+            Core::EditorManager::cutForwardNavigationHistory();
+            Core::EditorManager::addCurrentPositionToNavigationHistory();
+
+            TextEditor::BaseTextEditor *editor = Q_NULLPTR;
+
+            if(fileName == QStringLiteral("<stdin>"))
+            {
+                editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
+            }
+
+            if(editor)
+            {
+                Core::EditorManager::addCurrentPositionToNavigationHistory();
+                editor->gotoLine(lineNumber);
+
+                QTextCursor cursor = editor->textCursor();
+
+                if(cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor))
+                {
+                    editor->editorWidget()->setBlockSelection(cursor);
+                }
+
+                Core::EditorManager::activateEditor(editor);
+            }
+
+            QMessageBox *box = new QMessageBox(QMessageBox::Critical, QString(), errorMessage, QMessageBox::Ok, Core::ICore::mainWindow());
+            connect(box, &QMessageBox::finished, box, &QMessageBox::deleteLater);
+            QTimer::singleShot(0, box, &QMessageBox::exec);
+
+            m_errorFilterString = m_errorFilterString.mid(index + match.capturedLength(0));
+        }
+
+        m_errorFilterString = m_errorFilterString.right(ERROR_FILTER_MAX_SIZE);
     }
 
     foreach(const Utils::FormattedText &text, m_handler.parseText(Utils::FormattedText(QString::fromUtf8(buffer))))
@@ -432,11 +489,12 @@ void MyPlainTextEdit::clear()
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
+    m_errorFilterString = QString();
 }
 
 void MyPlainTextEdit::execute()
 {
-    emit writeBytes("\x05" + Core::EditorManager::currentEditor()->document()->contents() + "\x04");
+    emit writeBytes("\x05\n" + Core::EditorManager::currentEditor()->document()->contents().trimmed() + "\x04");
 }
 
 void MyPlainTextEdit::interrupt()
@@ -616,7 +674,29 @@ void MyPlainTextEdit::resizeEvent(QResizeEvent *event)
 
 void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
+    QMenu menu;
 
+    menu.addAction(tr("Copy"), this, [this] {
+        copy();
+    });
+
+    menu.addAction(tr("Paste"), this, [this] {
+        emit writeBytes(QApplication::clipboard()->text().replace(QRegularExpression(QStringLiteral("\r(?!\n)")), QStringLiteral("\r\n")).replace(QRegularExpression(QStringLiteral("(?<!\r)\n")), QStringLiteral("\r\n")).toUtf8());
+    });
+
+    menu.addSeparator();
+
+    menu.addAction(tr("Select All"), this, [this] {
+        selectAll();
+    });
+
+    menu.addAction(tr("Find"), this, [this] {
+        Core::ActionManager::command(Core::Constants::FIND_IN_DOCUMENT)->action()->trigger();
+    });
+
+    menu.addSeparator();
+
+    menu.exec(event->globalPos());
 }
 
 OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, QWidget *parent) : QWidget(parent)
@@ -723,7 +803,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 
     QToolButton *executeButton = new QToolButton;
     executeButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/run_small.png"), Utils::Theme::IconsBaseColor}}).icon());
-    executeButton->setToolTip(tr("Run current script in editor window."));
+    executeButton->setToolTip(tr("Run current script in editor window"));
     styledBar2Layout->addWidget(executeButton);
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, executeButton, [executeButton] (Core::IEditor *editor) {
         executeButton->setEnabled(editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false);
@@ -731,12 +811,12 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 
     QToolButton *interruptButton = new QToolButton;
     interruptButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/stop_small.png"), Utils::Theme::IconsBaseColor}}).icon());
-    interruptButton->setToolTip(tr("Stop running script."));
+    interruptButton->setToolTip(tr("Stop running script"));
     styledBar2Layout->addWidget(interruptButton);
 
     QToolButton *reloadButton = new QToolButton;
     reloadButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/reload_gray.png"), Utils::Theme::IconsBaseColor}}).icon());
-    reloadButton->setToolTip(tr("Reset the board."));
+    reloadButton->setToolTip(tr("Soft reset"));
     styledBar2Layout->addWidget(reloadButton);
     styledBar2Layout->addStretch(1);
 
@@ -759,6 +839,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout2->setSpacing(0);
     tempLayout2->addWidget(styledBar2);
     tempLayout2->addWidget(m_edit);
+    tempLayout2->addWidget(new Core::FindToolBarPlaceHolder(this));
     tempWidget2->setLayout(tempLayout2);
 
     m_hsplitter = new Core::MiniSplitter(Qt::Horizontal);

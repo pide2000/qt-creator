@@ -2820,23 +2820,27 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                     *errorMessage2Ptr = errorMessage;
                                 });
 
-                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                dialog.setWindowModality(Qt::ApplicationModal);
-                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-                                dialog.setCancelButton(Q_NULLPTR);
-                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+                                // QProgressDialog scoping...
+                                {
+                                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                    dialog.setWindowModality(Qt::ApplicationModal);
+                                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                    dialog.setCancelButton(Q_NULLPTR);
+                                    QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-                                QEventLoop loop;
+                                    QEventLoop loop;
 
-                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                        &loop, &QEventLoop::quit);
+                                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                            &loop, &QEventLoop::quit);
 
-                                terminalDevice->open(data.commandStr, data.commandVal);
+                                    terminalDevice->open(data.commandStr, data.commandVal);
 
-                                loop.exec();
-                                dialog.close();
+                                    loop.exec();
+                                    dialog.close();
+                                }
+
                                 disconnect(conn);
 
                                 if(!errorMessage2.isEmpty())
@@ -2928,23 +2932,27 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                     *errorMessage2Ptr = errorMessage;
                                 });
 
-                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                dialog.setWindowModality(Qt::ApplicationModal);
-                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-                                dialog.setCancelButton(Q_NULLPTR);
-                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+                                // QProgressDialog scoping...
+                                {
+                                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                    dialog.setWindowModality(Qt::ApplicationModal);
+                                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                    dialog.setCancelButton(Q_NULLPTR);
+                                    QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-                                QEventLoop loop;
+                                    QEventLoop loop;
 
-                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                        &loop, &QEventLoop::quit);
+                                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                            &loop, &QEventLoop::quit);
 
-                                terminalDevice->open(data.commandStr, data.commandVal);
+                                    terminalDevice->open(data.commandStr, data.commandVal);
 
-                                loop.exec();
-                                dialog.close();
+                                    loop.exec();
+                                    dialog.close();
+                                }
+
                                 disconnect(conn);
 
                                 if(!errorMessage2.isEmpty())
@@ -3035,23 +3043,27 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                     *errorMessage2Ptr = errorMessage;
                                 });
 
-                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                dialog.setWindowModality(Qt::ApplicationModal);
-                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-                                dialog.setCancelButton(Q_NULLPTR);
-                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+                                // QProgressDialog scoping...
+                                {
+                                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                    dialog.setWindowModality(Qt::ApplicationModal);
+                                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                    dialog.setCancelButton(Q_NULLPTR);
+                                    QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-                                QEventLoop loop;
+                                    QEventLoop loop;
 
-                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                        &loop, &QEventLoop::quit);
+                                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                            &loop, &QEventLoop::quit);
 
-                                terminalDevice->open(data.commandStr, data.commandVal);
+                                    terminalDevice->open(data.commandStr, data.commandVal);
 
-                                loop.exec();
-                                dialog.close();
+                                    loop.exec();
+                                    dialog.close();
+                                }
+
                                 disconnect(conn);
 
                                 if(!errorMessage2.isEmpty())
@@ -3143,23 +3155,27 @@ void OpenMVPlugin::openTerminalAboutToShow()
                 *errorMessage2Ptr = errorMessage;
             });
 
-            QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-            dialog.setWindowModality(Qt::ApplicationModal);
-            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-            dialog.setCancelButton(Q_NULLPTR);
-            QTimer::singleShot(1000, &dialog, &QWidget::show);
+            // QProgressDialog scoping...
+            {
+                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                dialog.setWindowModality(Qt::ApplicationModal);
+                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                dialog.setCancelButton(Q_NULLPTR);
+                QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-            QEventLoop loop;
+                QEventLoop loop;
 
-            connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                    &loop, &QEventLoop::quit);
+                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                        &loop, &QEventLoop::quit);
 
-            terminalDevice->open(data.commandStr, data.commandVal);
+                terminalDevice->open(data.commandStr, data.commandVal);
 
-            loop.exec();
-            dialog.close();
+                loop.exec();
+                dialog.close();
+            }
+
             disconnect(conn);
 
             if(!errorMessage2.isEmpty())

@@ -52,7 +52,7 @@ MessageOutputWindow::MessageOutputWindow()
     //OPENMV-DIFF//
     p = m_widget->palette();
     p.setColor(QPalette::Base, QColor(QStringLiteral("#1E1E27")));
-    p.setColor(QPalette::Text, QColor(QStringLiteral("#FFFFFF")));
+    p.setColor(QPalette::Text, QColor(QStringLiteral("#EEEEF7")));
     m_widget->setPalette(p);
     m_widget->setMaxLineCount(100000);
     m_widget->setWordWrapEnabled(false);

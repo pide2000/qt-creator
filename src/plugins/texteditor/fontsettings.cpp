@@ -439,8 +439,11 @@ QString FontSettings::defaultSchemeFileName(const QString &fileName)
         if (!themeScheme.isEmpty() && QFile::exists(defaultScheme + themeScheme))
             defaultScheme += themeScheme;
         else
-            // OPENMV-DIFF // defaultScheme += QLatin1String("default.xml");
+            //OPENMV-DIFF//
+            //defaultScheme += QLatin1String("default.xml");
+            //OPENMV-DIFF//
             defaultScheme += QLatin1String("inkpot.xml");
+            //OPENMV-DIFF//
     }
 
     return defaultScheme;
