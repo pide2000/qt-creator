@@ -78,7 +78,7 @@ void OpenMVPlugin::extensionsInitialized()
                "\n"
                "while(True):\n"
                "    img = sensor.snapshot()\n").
-            arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toLatin1()));
+            arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toUtf8()));
         if(editor)
         {
             editor->editorWidget()->configureGenericHighlighter();
@@ -129,8 +129,15 @@ void OpenMVPlugin::extensionsInitialized()
     connect(resetCommand, &QAction::triggered, this, [this] {disconnectClicked(true);});
 
     toolsMenu->addSeparator();
+    m_openTerminalMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.OpenTermnial"));
+    m_openTerminalMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    m_openTerminalMenu->menu()->setTitle(tr("Open Terminal"));
+    toolsMenu->addMenu(m_openTerminalMenu);
+    connect(m_openTerminalMenu->menu(), &QMenu::aboutToShow, this, &OpenMVPlugin::openTerminalAboutToShow);
+
     m_machineVisionToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.MachineVision"));
     m_machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
+    m_machineVisionToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
     toolsMenu->addMenu(m_machineVisionToolsMenu);
 
     QAction *thresholdEditorCommand = new QAction(tr("Threshold Editor"), this);
@@ -457,6 +464,8 @@ void OpenMVPlugin::extensionsInitialized()
     m_vsplitter->insertWidget(1, tempWidget1);
     m_vsplitter->setStretchFactor(0, 0);
     m_vsplitter->setStretchFactor(1, 1);
+    m_vsplitter->setCollapsible(0, true);
+    m_vsplitter->setCollapsible(1, true);
 
     connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
     connect(m_iodevice, &OpenMVPluginIO::printData, this, &OpenMVPlugin::errorFilter);
@@ -532,6 +541,21 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
     settings->endGroup();
 
+    m_openTerminalMenuData = QList<openTerminalMenuData_t>();
+
+    for(int i = 0, j = settings->beginReadArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP)); i < j; i++)
+    {
+        settings->setArrayIndex(i);
+        openTerminalMenuData_t data;
+        data.displayName = settings->value(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME)).toString();
+        data.optionIndex = settings->value(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX)).toInt();
+        data.commandStr = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_STR)).toString();
+        data.commandVal = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL)).toInt();
+        m_openTerminalMenuData.append(data);
+    }
+
+    settings->endArray();
+
     connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this] {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -550,6 +574,19 @@ void OpenMVPlugin::extensionsInitialized()
         settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
             m_histogramColorSpace->currentIndex());
         settings->endGroup();
+
+        settings->beginWriteArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP));
+
+        for(int i = 0, j = m_openTerminalMenuData.size(); i < j; i++)
+        {
+            settings->setArrayIndex(i);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME), m_openTerminalMenuData.at(i).displayName);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX), m_openTerminalMenuData.at(i).optionIndex);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_STR), m_openTerminalMenuData.at(i).commandStr);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL), m_openTerminalMenuData.at(i).commandVal);
+        }
+
+        settings->endArray();
     });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -590,8 +627,8 @@ void OpenMVPlugin::extensionsInitialized()
             {
                 QString error;
 
-                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QChar::fromLatin1('/') + dir),
-                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QChar::fromLatin1('/') + dir),
+                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QLatin1Char('/') + dir),
+                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QLatin1Char('/') + dir),
                                                       &error))
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
@@ -661,7 +698,7 @@ void OpenMVPlugin::extensionsInitialized()
 
             if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
             {
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
                 int major = match.captured(1).toInt();
                 int minor = match.captured(2).toInt();
@@ -799,7 +836,7 @@ void OpenMVPlugin::packageUpdate()
 
         if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
         {
-            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
             int new_major = match.captured(1).toInt();
             int new_minor = match.captured(2).toInt();
@@ -1122,7 +1159,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                         {
-                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
+                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromUtf8(data));
                             mappings.insert(mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
                         }
                         else
@@ -1372,7 +1409,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                                     if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                                     {
-                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromLatin1(data));
+                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromUtf8(data));
                                         mappings.insert(mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
                                     }
                                     else
@@ -1922,7 +1959,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             {
                 file.close();
 
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
                 if((major2 < match.captured(1).toInt())
                 || ((major2 == match.captured(1).toInt()) && (minor2 < match.captured(2).toInt()))
@@ -2186,7 +2223,7 @@ void OpenMVPlugin::processEvents()
 
 void OpenMVPlugin::errorFilter(const QByteArray &data)
 {
-    m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromLatin1(data)));
+    m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromUtf8(data)));
 
     QRegularExpressionMatch match;
     int index = m_errorFilterString.indexOf(m_errorFilterRegex, 0, &match);
@@ -2255,12 +2292,12 @@ void OpenMVPlugin::saveScript()
 
                 if(answer == QMessageBox::Yes)
                 {
-                    QString bytes = QString::fromLatin1(contents);
+                    QString bytes = QString::fromUtf8(contents);
                     bytes.remove(QRegularExpression(QStringLiteral("^\\s*?\n"), QRegularExpression::MultilineOption));
                     bytes.remove(QRegularExpression(QStringLiteral("^\\s*#.*?\n"), QRegularExpression::MultilineOption));
                     bytes.remove(QRegularExpression(QStringLiteral("\\s*#.*?$"), QRegularExpression::MultilineOption));
                     bytes.replace(QStringLiteral("    "), QStringLiteral("\t"));
-                    contents = bytes.toLatin1();
+                    contents = bytes.toUtf8();
                 }
 
                 if(file.write(contents) != contents.size())
@@ -2340,7 +2377,7 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
             }
             else
             {
-                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1();
+                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QLatin1Char('/')).toUtf8();
 
                 if(sendPath.size() <= DESCRIPTOR_SAVE_PATH_MAX_LEN)
                 {
@@ -2351,7 +2388,7 @@ void OpenMVPlugin::saveTemplate(const QRect &rect)
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Template"),
-                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromLatin1(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
+                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromUtf8(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
                 }
             }
         }
@@ -2393,7 +2430,7 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
             }
             else
             {
-                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QChar::fromLatin1('/')).toLatin1();
+                QByteArray sendPath = QString(path).remove(0, drivePath.size()).prepend(QLatin1Char('/')).toUtf8();
 
                 if(sendPath.size() <= DESCRIPTOR_SAVE_PATH_MAX_LEN)
                 {
@@ -2404,7 +2441,7 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Descriptor"),
-                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromLatin1(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
+                        tr("\"%L1\" is longer than a max length of %L2 characters!").arg(QString::fromUtf8(sendPath)).arg(DESCRIPTOR_SAVE_PATH_MAX_LEN));
                 }
             }
         }
@@ -2433,7 +2470,7 @@ void OpenMVPlugin::updateCam()
             {
                 file.close();
 
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
                 if((m_major < match.captured(1).toInt())
                 || ((m_major == match.captured(1).toInt()) && (m_minor < match.captured(2).toInt()))
@@ -2530,7 +2567,7 @@ void OpenMVPlugin::setPortPath(bool silent)
             && info.isReady()
             && (!info.isRoot())
             && (!info.isReadOnly())
-            && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
+            && (QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
             && ((!Utils::HostOsInfo::isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
             && ((!Utils::HostOsInfo::isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
             {
@@ -2676,6 +2713,478 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
     }
 
     return actions;
+}
+
+const int connectToSerialPortIndex = 0;
+const int connectToUDPPortIndex = 1;
+const int connectToTCPPortIndex = 2;
+
+void OpenMVPlugin::openTerminalAboutToShow()
+{
+    m_openTerminalMenu->menu()->clear();
+    m_openTerminalMenu->menu()->addAction(tr("New Terminal"), this, [this] {
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+        QStringList optionList = QStringList()
+            << tr("Connect to serial port")
+            << tr("Connect to UDP port")
+            << tr("Connect to TCP port");
+
+        int optionListIndex = optionList.indexOf(settings->value(QStringLiteral(LAST_OPEN_TERMINAL_SELECT)).toString());
+
+        bool optionNameOk;
+        QString optionName = QInputDialog::getItem(Core::ICore::dialogParent(),
+            tr("New Terminal"), tr("Please select an option"),
+            optionList, (optionListIndex != -1) ? optionListIndex : 0, false, &optionNameOk,
+            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+        if(optionNameOk)
+        {
+            switch(optionList.indexOf(optionName))
+            {
+                case connectToSerialPortIndex:
+                {
+                    QStringList stringList;
+
+                    foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
+                    {
+                        stringList.append(port.portName());
+                    }
+
+                    if(Utils::HostOsInfo::isMacHost())
+                    {
+                        stringList = stringList.filter(QStringLiteral("cu"), Qt::CaseInsensitive);
+                    }
+
+                    int index = stringList.indexOf(settings->value(QStringLiteral(LAST_OPEN_TERMINAL_SERIAL_PORT)).toString());
+
+                    bool portNameValueOk;
+                    QString portNameValue = QInputDialog::getItem(Core::ICore::dialogParent(),
+                        tr("New Terminal"), tr("Please select a serial port"),
+                        stringList, (index != -1) ? index : 0, false, &portNameValueOk,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                    if(portNameValueOk)
+                    {
+                        bool baudRateOk;
+                        QString baudRate = QInputDialog::getText(Core::ICore::dialogParent(),
+                            tr("New Terminal"), tr("Please enter a baud rate"),
+                            QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_SERIAL_PORT_BAUD_RATE), QStringLiteral("115200")).toString(), &baudRateOk,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                        if(baudRateOk && (!baudRate.isEmpty()))
+                        {
+                            bool buadRateValueOk;
+                            int baudRateValue = baudRate.toInt(&buadRateValueOk);
+
+                            if(buadRateValueOk)
+                            {
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SERIAL_PORT), portNameValue);
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SERIAL_PORT_BAUD_RATE), baudRateValue);
+
+                                openTerminalMenuData_t data;
+                                data.displayName = tr("Serial Port - %L1 - %L2 BPS").arg(portNameValue).arg(baudRateValue);
+                                data.optionIndex = connectToSerialPortIndex;
+                                data.commandStr = portNameValue;
+                                data.commandVal = baudRateValue;
+
+                                if(!openTerminalMenuDataContains(data.displayName))
+                                {
+                                    m_openTerminalMenuData.append(data);
+
+                                    if(m_openTerminalMenuData.size() > 10)
+                                    {
+                                        m_openTerminalMenuData.removeFirst();
+                                    }
+                                }
+
+                                OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings());
+                                OpenMVTerminalSerialPort *terminalDevice = new OpenMVTerminalSerialPort(terminal);
+
+                                connect(terminal, &OpenMVTerminal::writeBytes,
+                                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                        terminal, &OpenMVTerminal::readBytes);
+
+                                QString errorMessage2 = QString();
+                                QString *errorMessage2Ptr = &errorMessage2;
+
+                                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                    *errorMessage2Ptr = errorMessage;
+                                });
+
+                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                dialog.setWindowModality(Qt::ApplicationModal);
+                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                dialog.setCancelButton(Q_NULLPTR);
+                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                                QEventLoop loop;
+
+                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        &loop, &QEventLoop::quit);
+
+                                terminalDevice->open(data.commandStr, data.commandVal);
+
+                                loop.exec();
+                                dialog.close();
+                                disconnect(conn);
+
+                                if(!errorMessage2.isEmpty())
+                                {
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("New Terminal"),
+                                        tr("Error: %L1!").arg(errorMessage2));
+
+                                    if(Utils::HostOsInfo::isLinuxHost() && errorMessage2.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive))
+                                    {
+                                        QMessageBox::information(Core::ICore::dialogParent(),
+                                            tr("New Terminal"),
+                                            tr("Try doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(Utils::Environment::systemEnvironment().userName()));
+                                    }
+
+                                    delete terminalDevice;
+                                    delete terminal;
+                                }
+                                else
+                                {
+                                    terminal->show();
+                                }
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("New Terminal"),
+                                    tr("Invalid string: \"%L1\"!").arg(baudRate));
+                            }
+                        }
+                    }
+
+                    break;
+                }
+                case connectToUDPPortIndex:
+                {
+                    bool hostNameOk;
+                    QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
+                        tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
+                        QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                    if(hostNameOk && (!hostName.isEmpty()))
+                    {
+                        QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
+
+                        if(hostNameList.size() == 2)
+                        {
+                            bool portValueOk;
+                            QString hostNameValue = hostNameList.at(0);
+                            int portValue = hostNameList.at(1).toInt(&portValueOk);
+
+                            if(portValueOk)
+                            {
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), hostName);
+
+                                openTerminalMenuData_t data;
+                                data.displayName = tr("UDP Port - %L1").arg(hostName);
+                                data.optionIndex = connectToUDPPortIndex;
+                                data.commandStr = hostNameValue;
+                                data.commandVal = portValue;
+
+                                if(!openTerminalMenuDataContains(data.displayName))
+                                {
+                                    m_openTerminalMenuData.append(data);
+
+                                    if(m_openTerminalMenuData.size() > 10)
+                                    {
+                                        m_openTerminalMenuData.removeFirst();
+                                    }
+                                }
+
+                                OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings());
+                                OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
+
+                                connect(terminal, &OpenMVTerminal::writeBytes,
+                                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                        terminal, &OpenMVTerminal::readBytes);
+
+                                QString errorMessage2 = QString();
+                                QString *errorMessage2Ptr = &errorMessage2;
+
+                                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                    *errorMessage2Ptr = errorMessage;
+                                });
+
+                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                dialog.setWindowModality(Qt::ApplicationModal);
+                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                dialog.setCancelButton(Q_NULLPTR);
+                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                                QEventLoop loop;
+
+                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        &loop, &QEventLoop::quit);
+
+                                terminalDevice->open(data.commandStr, data.commandVal);
+
+                                loop.exec();
+                                dialog.close();
+                                disconnect(conn);
+
+                                if(!errorMessage2.isEmpty())
+                                {
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("New Terminal"),
+                                        tr("Error: %L1!").arg(errorMessage2));
+
+                                    delete terminalDevice;
+                                    delete terminal;
+                                }
+                                else
+                                {
+                                    terminal->show();
+                                }
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("New Terminal"),
+                                    tr("Invalid string: \"%L1\"!").arg(hostName));
+                            }
+                        }
+                        else
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("New Terminal"),
+                                tr("Invalid string: \"%L1\"!").arg(hostName));
+                        }
+                    }
+
+                    break;
+                }
+                case connectToTCPPortIndex:
+                {
+                    bool hostNameOk;
+                    QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
+                        tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
+                        QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                    if(hostNameOk && (!hostName.isEmpty()))
+                    {
+                        QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
+
+                        if(hostNameList.size() == 2)
+                        {
+                            bool portValueOk;
+                            QString hostNameValue = hostNameList.at(0);
+                            int portValue = hostNameList.at(1).toInt(&portValueOk);
+
+                            if(portValueOk)
+                            {
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), hostName);
+
+                                openTerminalMenuData_t data;
+                                data.displayName = tr("TCP Port - %L1").arg(hostName);
+                                data.optionIndex = connectToTCPPortIndex;
+                                data.commandStr = hostNameValue;
+                                data.commandVal = portValue;
+
+                                if(!openTerminalMenuDataContains(data.displayName))
+                                {
+                                    m_openTerminalMenuData.append(data);
+
+                                    if(m_openTerminalMenuData.size() > 10)
+                                    {
+                                        m_openTerminalMenuData.removeFirst();
+                                    }
+                                }
+
+                                OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings());
+                                OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
+
+                                connect(terminal, &OpenMVTerminal::writeBytes,
+                                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                        terminal, &OpenMVTerminal::readBytes);
+
+                                QString errorMessage2 = QString();
+                                QString *errorMessage2Ptr = &errorMessage2;
+
+                                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                    *errorMessage2Ptr = errorMessage;
+                                });
+
+                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                dialog.setWindowModality(Qt::ApplicationModal);
+                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                dialog.setCancelButton(Q_NULLPTR);
+                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                                QEventLoop loop;
+
+                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        &loop, &QEventLoop::quit);
+
+                                terminalDevice->open(data.commandStr, data.commandVal);
+
+                                loop.exec();
+                                dialog.close();
+                                disconnect(conn);
+
+                                if(!errorMessage2.isEmpty())
+                                {
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("New Terminal"),
+                                        tr("Error: %L1!").arg(errorMessage2));
+
+                                    delete terminalDevice;
+                                    delete terminal;
+                                }
+                                else
+                                {
+                                    terminal->show();
+                                }
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("New Terminal"),
+                                    tr("Invalid string: \"%L1\"!").arg(hostName));
+                            }
+                        }
+                        else
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("New Terminal"),
+                                tr("Invalid string: \"%L1\"!").arg(hostName));
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        settings->endGroup();
+    });
+
+    m_openTerminalMenu->menu()->addSeparator();
+
+    for(int i = 0, j = m_openTerminalMenuData.size(); i < j; i++)
+    {
+        openTerminalMenuData_t data = m_openTerminalMenuData.at(i);
+        m_openTerminalMenu->menu()->addAction(data.displayName, this, [this, data] {
+            OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings());
+            OpenMVTerminalPort *terminalDevice;
+
+            switch(data.optionIndex)
+            {
+                case connectToSerialPortIndex:
+                {
+                    terminalDevice = new OpenMVTerminalSerialPort(terminal);
+                    break;
+                }
+                case connectToUDPPortIndex:
+                {
+                    terminalDevice = new OpenMVTerminalUDPPort(terminal);
+                    break;
+                }
+                case connectToTCPPortIndex:
+                {
+                    terminalDevice = new OpenMVTerminalTCPPort(terminal);
+                    break;
+                }
+                default:
+                {
+                    delete terminal;
+
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Open Terminal"),
+                        tr("Error: Option Index!"));
+
+                    return;
+                }
+            }
+
+            connect(terminal, &OpenMVTerminal::writeBytes,
+                    terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+            connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                    terminal, &OpenMVTerminal::readBytes);
+
+            QString errorMessage2 = QString();
+            QString *errorMessage2Ptr = &errorMessage2;
+
+            QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                *errorMessage2Ptr = errorMessage;
+            });
+
+            QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+            dialog.setWindowModality(Qt::ApplicationModal);
+            dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+            dialog.setCancelButton(Q_NULLPTR);
+            QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+            QEventLoop loop;
+
+            connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                    &loop, &QEventLoop::quit);
+
+            terminalDevice->open(data.commandStr, data.commandVal);
+
+            loop.exec();
+            dialog.close();
+            disconnect(conn);
+
+            if(!errorMessage2.isEmpty())
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Open Terminal"),
+                    tr("Error: %L1!").arg(errorMessage2));
+
+                delete terminalDevice;
+                delete terminal;
+            }
+            else
+            {
+                terminal->show();
+            }
+        });
+    }
+
+    if(m_openTerminalMenuData.size())
+    {
+        m_openTerminalMenu->menu()->addSeparator();
+        m_openTerminalMenu->menu()->addAction(tr("Clear Menu"), this, [this] {
+            m_openTerminalMenuData.clear();
+        });
+    }
 }
 
 void OpenMVPlugin::openThresholdEditor()
@@ -2882,7 +3391,7 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
     dialog->setWindowTitle(tr("AprilTag Generator"));
     QVBoxLayout *layout = new QVBoxLayout(dialog);
-    layout->addWidget(new QLabel(tr("What tag images from the %L1 tag family do you want to generate?").arg(QString::fromLatin1(family->name).toUpper())));
+    layout->addWidget(new QLabel(tr("What tag images from the %L1 tag family do you want to generate?").arg(QString::fromUtf8(family->name).toUpper())));
 
     QSettings *settings = ExtensionSystem::PluginManager::settings();
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
@@ -2915,6 +3424,11 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
 
     layout->addWidget(temp);
 
+    QCheckBox *checkBox = new QCheckBox(tr("Inlcude tag family and ID number in the image"));
+    checkBox->setCheckable(true);
+    checkBox->setChecked(settings->value(QStringLiteral(LAST_APRILTAG_INCLUDE), true).toBool());
+    layout->addWidget(checkBox);
+
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
@@ -2925,6 +3439,7 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
         int min = qMin(minRange->value(), maxRange->value());
         int max = qMax(minRange->value(), maxRange->value());
         int number = max - min + 1;
+        bool include = checkBox->isChecked();
 
         QString path =
             QFileDialog::getExistingDirectory(Core::ICore::dialogParent(), tr("AprilTag Generator - Where do you want to save %n tag image(s) to?", "", number),
@@ -2962,7 +3477,7 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
                     }
                 }
 
-                QPixmap pixmap(816, 1056); // 8" x 11" (96 DPI)
+                QPixmap pixmap(816, include ? 1056 : 816); // 8" x 11" (96 DPI)
                 pixmap.fill();
 
                 QPainter painter;
@@ -2982,7 +3497,11 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
                 painter.setFont(font);
 
                 painter.drawImage(8, 8, image.scaled(800, 800, Qt::KeepAspectRatio, Qt::FastTransformation));
-                painter.drawText(0 + 8, 8 + 800 + 8 + 80, 800, 80, Qt::AlignHCenter | Qt::AlignVCenter, QString::fromLatin1(family->name).toUpper() + QString(QStringLiteral(" - %1")).arg(min + i));
+
+                if(include)
+                {
+                    painter.drawText(0 + 8, 8 + 800 + 8 + 80, 800, 80, Qt::AlignHCenter | Qt::AlignVCenter, QString::fromUtf8(family->name).toUpper() + QString(QStringLiteral(" - %1")).arg(min + i));
+                }
 
                 if(!painter.end())
                 {
@@ -2994,7 +3513,7 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
                     break;
                 }
 
-                if(!pixmap.save(path + QDir::separator() + QString::fromLatin1(family->name).toLower() + QString(QStringLiteral("_%1.png")).arg(min + i)))
+                if(!pixmap.save(path + QDir::separator() + QString::fromUtf8(family->name).toLower() + QString(QStringLiteral("_%1.png")).arg(min + i)))
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("AprilTag Generator"),
@@ -3013,7 +3532,12 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
             {
                 settings->setValue(QStringLiteral(LAST_APRILTAG_RANGE_MIN), min);
                 settings->setValue(QStringLiteral(LAST_APRILTAG_RANGE_MAX), max);
+                settings->setValue(QStringLiteral(LAST_APRILTAG_INCLUDE), include);
                 settings->setValue(QStringLiteral(LAST_APRILTAG_PATH), path);
+
+                QMessageBox::information(Core::ICore::dialogParent(),
+                    tr("AprilTag Generator"),
+                    tr("Generation complete!"));
             }
         }
     }

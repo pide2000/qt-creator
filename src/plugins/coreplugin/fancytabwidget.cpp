@@ -495,6 +495,8 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     m_hsplitter->insertWidget(1, m_vsplitter);
     m_hsplitter->setStretchFactor(0, 1);
     m_hsplitter->setStretchFactor(1, 0);
+    m_hsplitter->setCollapsible(0, true);
+    m_hsplitter->setCollapsible(1, true);
     vlayout->insertWidget(0, m_hsplitter);
     //OPENMV-DIFF//
     mainLayout->addLayout(vlayout);

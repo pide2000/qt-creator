@@ -28,6 +28,7 @@
 #include "openmvpluginserialport.h"
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
+#include "openmvterminal.h"
 #include "histogram/openmvpluginhistogram.h"
 #include "tools/thresholdeditor.h"
 #include "tools/keypointseditor.h"
@@ -60,18 +61,29 @@
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define LAST_SAVE_TEMPLATE_PATH "LastSaveTemplatePath"
 #define LAST_SAVE_DESCRIPTOR_PATH "LastSaveDescriptorPath"
+#define LAST_OPEN_TERMINAL_SELECT "LastOpenTerminalSelect"
+#define LAST_OPEN_TERMINAL_SERIAL_PORT "LastOpenTerminalSerialPort"
+#define LAST_OPEN_TERMINAL_SERIAL_PORT_BAUD_RATE "LastOpenTerminalSerialPortBaudRate"
+#define LAST_OPEN_TERMINAL_UDP_PORT "LastOpenTerminalUDPPort"
+#define LAST_OPEN_TERMINAL_TCP_PORT "LastOpenTerminalTCPPort"
 #define LAST_THRESHOLD_EDITOR_PATH "LastThresholdEditorPath"
 #define LAST_EDIT_KEYPOINTS_PATH "LastEditKeypointsPath"
 #define LAST_MERGE_KEYPOINTS_OPEN_PATH "LastMergeKeypointsOpenPath"
 #define LAST_MERGE_KEYPOINTS_SAVE_PATH "LastMergeKeypointsSavePath"
 #define LAST_APRILTAG_RANGE_MIN "LastAprilTagRangeMin"
 #define LAST_APRILTAG_RANGE_MAX "LastAprilTagRangeMax"
+#define LAST_APRILTAG_INCLUDE "LastAprilTagInclude"
 #define LAST_APRILTAG_PATH "LastAprilTagPath"
 #define RESOURCES_MAJOR "ResourcesMajor"
 #define RESOURCES_MINOR "ResourcesMinor"
 #define RESOURCES_PATCH "ResourcesPatch"
 
 #define SERIAL_PORT_SETTINGS_GROUP "OpenMVSerialPort"
+#define OPEN_TERMINAL_SETTINGS_GROUP "OpenMVOpenTerminal"
+#define OPEN_TERMINAL_DISPLAY_NAME "DisplayName"
+#define OPEN_TERMINAL_OPTION_INDEX "OptionIndex"
+#define OPEN_TERMINAL_COMMAND_STR "CommandStr"
+#define OPEN_TERMINAL_COMMAND_VAL "CommandVal"
 
 #define OLD_API_MAJOR 1
 #define OLD_API_MINOR 7
@@ -117,6 +129,7 @@ public slots: // private
     void saveDescriptor(const QRect &rect);
     void updateCam();
     void setPortPath(bool silent = false);
+    void openTerminalAboutToShow();
     void openThresholdEditor();
     void openKeypointsEditor();
     void openAprilTagGenerator(apriltag_family_t *family);
@@ -142,6 +155,7 @@ private:
     Core::Command *m_disconnectCommand;
     Core::Command *m_startCommand;
     Core::Command *m_stopCommand;
+    Core::ActionContainer *m_openTerminalMenu;
     Core::ActionContainer *m_machineVisionToolsMenu;
     Core::Command *m_thresholdEditorCommand;
     Core::Command *m_keypointsEditorCommand;
@@ -191,6 +205,30 @@ private:
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
+
+    typedef struct openTerminalMenuData
+    {
+        QString displayName;
+        int optionIndex;
+        QString commandStr;
+        int commandVal;
+    }
+    openTerminalMenuData_t;
+
+    QList<openTerminalMenuData_t> m_openTerminalMenuData;
+
+    bool openTerminalMenuDataContains(const QString &displayName)
+    {
+        foreach(const openTerminalMenuData_t &data, m_openTerminalMenuData)
+        {
+            if(data.displayName == displayName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 };
 
 } // namespace Internal
