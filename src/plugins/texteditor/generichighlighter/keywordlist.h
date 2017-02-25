@@ -25,6 +25,9 @@
 
 #ifndef KEYWORDLIST_H
 #define KEYWORDLIST_H
+//OPENMV-DIFF//
+#include "../texteditor_global.h"
+//OPENMV-DIFF//
 
 #include <QString>
 #include <QSet>
@@ -32,7 +35,11 @@
 namespace TextEditor {
 namespace Internal {
 
-class KeywordList
+//OPENMV-DIFF//
+//class KeywordList
+//OPENMV-DIFF//
+class TEXTEDITOR_EXPORT KeywordList
+//OPENMV-DIFF//
 {
 public:
 

@@ -25,6 +25,9 @@
 
 #ifndef HIGHLIGHTDEFINITION_H
 #define HIGHLIGHTDEFINITION_H
+//OPENMV-DIFF//
+#include "../texteditor_global.h"
+//OPENMV-DIFF//
 
 #include <QString>
 #include <QHash>
@@ -38,7 +41,11 @@ class KeywordList;
 class Context;
 class ItemData;
 
-class HighlightDefinition
+//OPENMV-DIFF//
+//class HighlightDefinition
+//OPENMV-DIFF//
+class TEXTEDITOR_EXPORT HighlightDefinition
+//OPENMV-DIFF//
 {
 public:
     HighlightDefinition();

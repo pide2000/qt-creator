@@ -5,11 +5,11 @@
 #define HSPLITTER_STATE "HSplitterState"
 #define VSPLITTER_STATE "VSplitterState"
 #define ZOOM_STATE "ZoomState"
+#define FONT_ZOOM_STATE "FontZoomState"
 #define LAST_SAVE_IMAGE_PATH "LastSaveImagePath"
 #define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
-#define ERROR_FILTER_MAX_SIZE 1000
 
-MyPlainTextEdit::MyPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent)
+MyPlainTextEdit::MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent) : QPlainTextEdit(parent)
 {
     m_tabWidth = 8; // TODO...
     m_textCursor = QTextCursor(document());
@@ -18,12 +18,7 @@ MyPlainTextEdit::MyPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent)
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
-    m_errorFilterRegex = QRegularExpression(QStringLiteral(
-        "  File \"(.+?)\", line (\\d+).*?\n"
-        "(?!(Exception: IDE interrupt|KeyboardInterrupt))(.+?:.+?)\n"));
-    m_errorFilterString = QString();
 
-    setReadOnly(true);
     setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setFrameShape(QFrame::NoFrame);
@@ -32,7 +27,7 @@ MyPlainTextEdit::MyPlainTextEdit(QWidget *parent) : QPlainTextEdit(parent)
     setWordWrapMode(QTextOption::NoWrap);
 
     QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
-    font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
+    font.setPointSize(fontPointSizeF);
     setFont(font);
 
     QPalette p = palette();
@@ -167,54 +162,6 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
         }
 
         m_shiftReg = m_shiftReg.append(data.at(i)).right(5);
-    }
-
-    // Error Filter //
-    {
-        m_errorFilterString.append(Utils::SynchronousProcess::normalizeNewlines(QString::fromUtf8(data)));
-
-        QRegularExpressionMatch match;
-        int index = m_errorFilterString.indexOf(m_errorFilterRegex, 0, &match);
-
-        if(index != -1)
-        {
-            QString fileName = match.captured(1);
-            int lineNumber = match.captured(2).toInt() - 1;
-            QString errorMessage = match.captured(4);
-
-            Core::EditorManager::cutForwardNavigationHistory();
-            Core::EditorManager::addCurrentPositionToNavigationHistory();
-
-            TextEditor::BaseTextEditor *editor = Q_NULLPTR;
-
-            if(fileName == QStringLiteral("<stdin>"))
-            {
-                editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::currentEditor());
-            }
-
-            if(editor)
-            {
-                Core::EditorManager::addCurrentPositionToNavigationHistory();
-                editor->gotoLine(lineNumber);
-
-                QTextCursor cursor = editor->textCursor();
-
-                if(cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor))
-                {
-                    editor->editorWidget()->setBlockSelection(cursor);
-                }
-
-                Core::EditorManager::activateEditor(editor);
-            }
-
-            QMessageBox *box = new QMessageBox(QMessageBox::Critical, QString(), errorMessage, QMessageBox::Ok, Core::ICore::mainWindow());
-            connect(box, &QMessageBox::finished, box, &QMessageBox::deleteLater);
-            QTimer::singleShot(0, box, &QMessageBox::exec);
-
-            m_errorFilterString = m_errorFilterString.mid(index + match.capturedLength(0));
-        }
-
-        m_errorFilterString = m_errorFilterString.right(ERROR_FILTER_MAX_SIZE);
     }
 
     foreach(const Utils::FormattedText &text, m_handler.parseText(Utils::FormattedText(QString::fromUtf8(buffer))))
@@ -483,18 +430,18 @@ void MyPlainTextEdit::clear()
 {
     m_textCursor.select(QTextCursor::Document);
     m_textCursor.removeSelectedText();
+
     m_textCursor = QTextCursor(document());
     m_stateMachine = ASCII;
     m_shiftReg = QByteArray();
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
-    m_errorFilterString = QString();
 }
 
 void MyPlainTextEdit::execute()
 {
-    emit writeBytes("\x05\n" + Core::EditorManager::currentEditor()->document()->contents().trimmed() + "\x04");
+    emit writeBytes("\x05" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04");
 }
 
 void MyPlainTextEdit::interrupt()
@@ -657,6 +604,15 @@ void MyPlainTextEdit::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void MyPlainTextEdit::wheelEvent(QWheelEvent *event)
+{
+    QPlainTextEdit::wheelEvent(event);
+
+    if(event->modifiers() & Qt::ControlModifier) {
+        Utils::FadingIndicator::showText(this, tr("Zoom: %1%").arg(int(100 * (font().pointSizeF() / TextEditor::TextEditorSettings::fontSettings().defaultFontSize()))), Utils::FadingIndicator::SmallText);
+    }
+}
+
 void MyPlainTextEdit::resizeEvent(QResizeEvent *event)
 {
     bool atBottom = verticalScrollBar()->value() == verticalScrollBar()->maximum();
@@ -699,11 +655,16 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
+bool MyPlainTextEdit::focusNextPrevChild(bool next)
+{
+    Q_UNUSED(next)
+    return false;
+}
+
 OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(displayName);
     setAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_QuitOnClose, false);
 
     m_settings = new QSettings(settings->fileName(), settings->format(), this);
     m_settings->beginGroup(QStringLiteral(TERMINAL_SETTINGS_GROUP));
@@ -820,7 +781,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     styledBar2Layout->addWidget(reloadButton);
     styledBar2Layout->addStretch(1);
 
-    MyPlainTextEdit *m_edit = new MyPlainTextEdit;
+    m_edit = new MyPlainTextEdit(m_settings->value(QStringLiteral(FONT_ZOOM_STATE), TextEditor::TextEditorSettings::fontSettings().defaultFontSize()).toReal());
     connect(this, &OpenMVTerminal::readBytes, m_edit, &MyPlainTextEdit::readBytes);
     connect(m_edit, &MyPlainTextEdit::writeBytes, this, &OpenMVTerminal::writeBytes);
     connect(m_edit, &MyPlainTextEdit::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
@@ -901,6 +862,7 @@ void OpenMVTerminal::closeEvent(QCloseEvent *event)
     m_settings->setValue(QStringLiteral(HSPLITTER_STATE), m_hsplitter->saveState());
     m_settings->setValue(QStringLiteral(VSPLITTER_STATE), m_vsplitter->saveState());
     m_settings->setValue(QStringLiteral(ZOOM_STATE), m_zoom->isChecked());
+    m_settings->setValue(QStringLiteral(FONT_ZOOM_STATE), m_edit->font().pointSizeF());
     m_settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex());
 
     QWidget::closeEvent(event);

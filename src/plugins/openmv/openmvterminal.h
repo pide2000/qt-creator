@@ -9,6 +9,7 @@
 
 #include <aggregation/aggregate.h>
 #include <utils/ansiescapecodehandler.h>
+#include <utils/fadingindicator.h>
 #include <utils/icon.h>
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
@@ -33,7 +34,7 @@ class MyPlainTextEdit : public QPlainTextEdit
 
 public:
 
-    explicit MyPlainTextEdit(QWidget *parent = Q_NULLPTR);
+    explicit MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent = Q_NULLPTR);
 
 public slots:
 
@@ -50,9 +51,11 @@ signals:
 
 protected:
 
-    void contextMenuEvent(QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
+    bool focusNextPrevChild(bool next);
 
 private:
 
@@ -72,8 +75,6 @@ private:
     QByteArray m_frameBufferData;
     Utils::AnsiEscapeCodeHandler m_handler;
     QChar m_lastChar;
-    QRegularExpression m_errorFilterRegex;
-    QString m_errorFilterString;
 };
 
 class OpenMVTerminal : public QWidget
@@ -101,6 +102,7 @@ private:
     Core::MiniSplitter *m_vsplitter;
     QToolButton *m_zoom;
     QComboBox *m_histogramColorSpace;
+    MyPlainTextEdit *m_edit;
 };
 
 // Base ///////////////////////////////////////////////////////////////////////

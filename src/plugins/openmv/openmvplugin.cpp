@@ -760,6 +760,232 @@ void OpenMVPlugin::extensionsInitialized()
             QTimer::singleShot(0, this, &OpenMVPlugin::packageUpdate);
         }
     });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    typedef struct documentation
+    {
+        QString id;
+        QString moduleName;
+        QString className;
+        QString itemName;
+        QString parameters;
+        QString text;
+    }
+    documentation_t;
+
+    QList<documentation_t> modules;
+    QList<documentation_t> classes;
+    QList<documentation_t> datas;
+    QList<documentation_t> functions;
+    QList<documentation_t> methods;
+    QSet<QString> arguments;
+
+    QRegularExpression moduleRegEx(QStringLiteral("<div class=\"section\" id=\"module-(.+?)\">"));
+    QRegularExpression cdfmRegEx(QStringLiteral("<dl class=\"(class|data|function|method)\">"
+                                                "<dt id=\"(.+?)\">.*?"
+                                                "<code class=\"descclassname\">(.+?)</code><code class=\"descname\">(.+?)</code>(.*?)</dt>"
+                                                "<dd>(.*?)</dd>"
+                                                "</dl>"));
+    QRegularExpression argumentRegEx(QStringLiteral("<span class=\"sig-paren\">\\(</span>(.*?)<span class=\"sig-paren\">\\)</span>"));
+    QRegularExpression tRegEx(QStringLiteral("\\(.*?\\)"));
+    QRegularExpression lRegEx(QStringLiteral("\\[.*?\\]"));
+
+    QDirIterator it(Core::ICore::userResourcePath() + QStringLiteral("/html/library"), QDir::Files);
+
+    while(it.hasNext())
+    {
+        QFile file(it.next());
+
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QString data = QString::fromUtf8(file.readAll()).simplified().replace(QStringLiteral("> <"), QStringLiteral("><"));
+
+            if((file.error() == QFile::NoError) && (!data.isEmpty()))
+            {
+                file.close();
+
+                QRegularExpressionMatch moduleMatch = moduleRegEx.match(data);
+
+                if(moduleMatch.hasMatch())
+                {
+                    QString name = moduleMatch.captured(1);
+
+                    documentation_t d;
+                    d.id = QStringLiteral("module-") + name;
+                    d.moduleName = name;
+                    d.className = QString();
+                    d.itemName = name;
+                    d.parameters = QString();
+                    d.text = QString();
+                    modules.append(d);
+
+                    if(name.startsWith(QLatin1Char('u')))
+                    {
+                        name = name.mid(1);
+
+                        documentation_t d;
+                        d.id = QStringLiteral("module-") + name;
+                        d.moduleName = name;
+                        d.className = QString();
+                        d.itemName = name;
+                        d.parameters = QString();
+                        d.text = QString();
+                        modules.append(d);
+                    }
+                }
+
+                QRegularExpressionMatchIterator matches = cdfmRegEx.globalMatch(data);
+
+                while(matches.hasNext())
+                {
+                    QRegularExpressionMatch match = matches.next();
+                    QString type = match.captured(1);
+                    QString id = match.captured(2);
+                    QString className = match.captured(3).remove(QLatin1Char('.'));
+                    QString itemName = match.captured(4);
+                    QString parameters = match.captured(5);
+                    QString text = match.captured(6);
+                    QString moduleName = id;
+
+                    if(moduleName.endsWith(itemName))
+                    {
+                        moduleName.chop(itemName.size());
+                    }
+
+                    if(moduleName.endsWith(QLatin1Char('.')))
+                    {
+                        moduleName.chop(1);
+                    }
+
+                    if(moduleName.endsWith(className))
+                    {
+                        moduleName.chop(className.size());
+                    }
+
+                    if(moduleName.endsWith(QLatin1Char('.')))
+                    {
+                        moduleName.chop(1);
+                    }
+
+                    documentation_t d;
+                    d.id = id;
+                    d.moduleName = moduleName.isEmpty() ? className : moduleName;
+                    d.className = className;
+                    d.itemName = itemName;
+                    d.parameters = parameters.left(parameters.indexOf(QStringLiteral("<a")));
+                    d.text = text;
+
+                    if(type == QStringLiteral("class"))
+                    {
+                        classes.append(d);
+                    }
+                    else if(type == QStringLiteral("data"))
+                    {
+                        datas.append(d);
+                    }
+                    else if(type == QStringLiteral("function"))
+                    {
+                        functions.append(d);
+                    }
+                    else if(type == QStringLiteral("method"))
+                    {
+                        methods.append(d);
+                    }
+
+                    QRegularExpressionMatch args = argumentRegEx.match(d.parameters);
+
+                    if(args.hasMatch())
+                    {
+                        foreach(const QString &arg, args.captured(1).
+                                                    remove(QLatin1String("<em>")).
+                                                    remove(QLatin1String("</em>")).
+                                                    remove(QLatin1String("<span class=\"optional\">[</span>")).
+                                                    remove(QLatin1String("<span class=\"optional\">]</span>")).
+                                                    remove(tRegEx).
+                                                    remove(lRegEx).
+                                                    remove(QLatin1Char(' ')).
+                                                    split(QLatin1Char(','), QString::SkipEmptyParts))
+                        {
+                            int equals = arg.indexOf(QLatin1Char('='));
+
+                            if(equals != -1)
+                            {
+                                arguments.insert(arg.left(equals));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    connect(TextEditor::Internal::Manager::instance(), &TextEditor::Internal::Manager::highlightingFilesRegistered, this, [this, modules, classes, datas, functions, methods, arguments] {
+        QString id = TextEditor::Internal::Manager::instance()->definitionIdByName(QStringLiteral("Python"));
+
+        if(!id.isEmpty())
+        {
+            QSharedPointer<TextEditor::Internal::HighlightDefinition> def = TextEditor::Internal::Manager::instance()->definition(id);
+
+            if(def)
+            {
+                QSharedPointer<TextEditor::Internal::KeywordList> modulesList = def->keywordList(QStringLiteral("listOpenMVModules"));
+                QSharedPointer<TextEditor::Internal::KeywordList> classesList = def->keywordList(QStringLiteral("listOpenMVClasses"));
+                QSharedPointer<TextEditor::Internal::KeywordList> datasList = def->keywordList(QStringLiteral("listOpenMVDatas"));
+                QSharedPointer<TextEditor::Internal::KeywordList> functionsList = def->keywordList(QStringLiteral("listOpenMVFunctions"));
+                QSharedPointer<TextEditor::Internal::KeywordList> methodsList = def->keywordList(QStringLiteral("listOpenMVMethods"));
+                QSharedPointer<TextEditor::Internal::KeywordList> argumentsList = def->keywordList(QStringLiteral("listOpenMVArguments"));
+
+                if(modulesList)
+                {
+                    foreach(const documentation_t &d, modules)
+                    {
+                        modulesList->addKeyword(d.itemName);
+                    }
+                }
+
+                if(classesList)
+                {
+                    foreach(const documentation_t &d, classes)
+                    {
+                        classesList->addKeyword(d.itemName);
+                    }
+                }
+
+                if(datasList)
+                {
+                    foreach(const documentation_t &d, datas)
+                    {
+                        datasList->addKeyword(d.itemName);
+                    }
+                }
+
+                if(functionsList)
+                {
+                    foreach(const documentation_t &d, functions)
+                    {
+                        functionsList->addKeyword(d.itemName);
+                    }
+                }
+
+                if(methodsList)
+                {
+                    foreach(const documentation_t &d, methods)
+                    {
+                        methodsList->addKeyword(d.itemName);
+                    }
+                }
+
+                if(argumentsList)
+                {
+                    foreach(const QString &d, arguments.values())
+                    {
+                        argumentsList->addKeyword(d);
+                    }
+                }
+            }
+        }
+    });
 }
 
 ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
@@ -2862,6 +3088,8 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                 else
                                 {
                                     terminal->show();
+                                    connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                            terminal, &OpenMVTerminal::close);
                                 }
                             }
                             else
@@ -2967,6 +3195,8 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                 else
                                 {
                                     terminal->show();
+                                    connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                            terminal, &OpenMVTerminal::close);
                                 }
                             }
                             else
@@ -3078,6 +3308,8 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                 else
                                 {
                                     terminal->show();
+                                    connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                            terminal, &OpenMVTerminal::close);
                                 }
                             }
                             else
@@ -3190,6 +3422,8 @@ void OpenMVPlugin::openTerminalAboutToShow()
             else
             {
                 terminal->show();
+                connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                        terminal, &OpenMVTerminal::close);
             }
         });
     }

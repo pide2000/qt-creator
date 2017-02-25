@@ -10372,7 +10372,11 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
   
   mPaintBuffer.fill(mBackgroundBrush.style() == Qt::SolidPattern ? mBackgroundBrush.color() : Qt::transparent);
   QCPPainter painter;
-  painter.begin(&mPaintBuffer);
+  //OPENMV-DIFF//
+  //painter.begin(&mPaintBuffer)
+  //OPENMV-DIFF//
+  if(width() && height()) painter.begin(&mPaintBuffer);
+  //OPENMV-DIFF//
   if (painter.isActive())
   {
     painter.setRenderHint(QPainter::HighQualityAntialiasing); // to make Antialiasing look good if using the OpenGL graphicssystem
@@ -10385,8 +10389,10 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
     else
       update();
   } else // might happen if QCustomPlot has width or height zero
-    qDebug() << Q_FUNC_INFO << "Couldn't activate painter on buffer. This usually happens because QCustomPlot has width or height zero.";
-  
+    //OPENMV-DIFF//
+    //qDebug() << Q_FUNC_INFO << "Couldn't activate painter on buffer. This usually happens because QCustomPlot has width or height zero.";
+    //OPENMV-DIFF//
+
   emit afterReplot();
   mReplotting = false;
 }

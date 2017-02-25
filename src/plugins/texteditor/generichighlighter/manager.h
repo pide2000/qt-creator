@@ -25,6 +25,9 @@
 
 #ifndef MANAGER_H
 #define MANAGER_H
+//OPENMV-DIFF//
+#include "../texteditor_global.h"
+//OPENMV-DIFF//
 
 #include "highlightdefinitionmetadata.h"
 
@@ -55,7 +58,11 @@ class MultiDefinitionDownloader;
 
 // This is the generic highlighter manager. It is not thread-safe.
 
-class Manager : public QObject
+//OPENMV-DIFF//
+//class Manager : public QObject
+//OPENMV-DIFF//
+class TEXTEDITOR_EXPORT Manager : public QObject
+//OPENMV-DIFF//
 {
     Q_OBJECT
 public:

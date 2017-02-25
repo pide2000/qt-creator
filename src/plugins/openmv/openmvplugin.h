@@ -16,6 +16,9 @@
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/messagemanager.h>
+#include <texteditor/generichighlighter/highlightdefinition.h>
+#include <texteditor/generichighlighter/keywordlist.h>
+#include <texteditor/generichighlighter/manager.h>
 #include <texteditor/texteditor.h>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
