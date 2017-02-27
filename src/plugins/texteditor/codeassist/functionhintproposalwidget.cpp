@@ -60,6 +60,9 @@ struct FunctionHintProposalWidgetPrivate
     int m_currentHint;
     int m_totalHints;
     int m_currentArgument;
+    //OPENMV-DIFF//
+    bool m_twice;
+    //OPENMV-DIFF//
     bool m_escapePressed;
 };
 
@@ -74,6 +77,9 @@ FunctionHintProposalWidgetPrivate::FunctionHintProposalWidgetPrivate()
     , m_currentHint(-1)
     , m_totalHints(0)
     , m_currentArgument(-1)
+    //OPENMV-DIFF//
+    , m_twice(false)
+    //OPENMV-DIFF//
     , m_escapePressed(false)
 {
     m_hintLabel->setTextFormat(Qt::RichText);
@@ -194,6 +200,20 @@ bool FunctionHintProposalWidget::eventFilter(QObject *obj, QEvent *e)
         }
         break;
     case QEvent::KeyPress:
+        //OPENMV-DIFF//
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Return) {
+            d->m_escapePressed = true;
+            e->accept();
+        }
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Enter) {
+            d->m_escapePressed = true;
+            e->accept();
+        }
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_ParenRight) {
+            d->m_escapePressed = true;
+            e->accept();
+        }
+        //OPENMV-DIFF//
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Escape) {
             d->m_escapePressed = true;
             e->accept();
@@ -204,6 +224,11 @@ bool FunctionHintProposalWidget::eventFilter(QObject *obj, QEvent *e)
             if (ke->key() == Qt::Key_Up) {
                 previousPage();
                 return true;
+            //OPENMV-DIFF//
+            } else if (ke->key() == Qt::Key_Comma && (d->m_twice = !d->m_twice)) {
+                nextPage();
+                return false;
+            //OPENMV-DIFF//
             } else if (ke->key() == Qt::Key_Down) {
                 nextPage();
                 return true;
@@ -213,10 +238,33 @@ bool FunctionHintProposalWidget::eventFilter(QObject *obj, QEvent *e)
         break;
     case QEvent::KeyRelease: {
             QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+            //OPENMV-DIFF//
+            if (ke->key() == Qt::Key_Return && d->m_escapePressed) {
+                abort();
+                emit explicitlyAborted();
+                return false;
+            }
+            if (ke->key() == Qt::Key_Enter && d->m_escapePressed) {
+                abort();
+                emit explicitlyAborted();
+                return false;
+            }
+            if (ke->key() == Qt::Key_ParenRight && d->m_escapePressed) {
+                abort();
+                emit explicitlyAborted();
+                return false;
+            }
+            //OPENMV-DIFF//
             if (ke->key() == Qt::Key_Escape && d->m_escapePressed) {
                 abort();
                 emit explicitlyAborted();
                 return false;
+            //OPENMV-DIFF//
+            } else if (ke->key() == Qt::Key_Comma) {
+                QTC_CHECK(d->m_model);
+                if (d->m_model && d->m_model->size() > 1)
+                    return false;
+            //OPENMV-DIFF//
             } else if (ke->key() == Qt::Key_Up || ke->key() == Qt::Key_Down) {
                 QTC_CHECK(d->m_model);
                 if (d->m_model && d->m_model->size() > 1)

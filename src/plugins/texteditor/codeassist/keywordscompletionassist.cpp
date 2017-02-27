@@ -51,12 +51,20 @@ Keywords::Keywords(const QStringList &variabels, const QStringList &functions, c
 
 bool Keywords::isVariable(const QString &word) const
 {
-    return qBinaryFind(m_variables, word) != m_variables.constEnd();
+    //OPENMV-DIFF//
+    //return qBinaryFind(m_variables, word) != m_variables.constEnd();
+    //OPENMV-DIFF//
+    return m_variables.contains(word);
+    //OPENMV-DIFF//
 }
 
 bool Keywords::isFunction(const QString &word) const
 {
-    return qBinaryFind(m_functions, word) != m_functions.constEnd();
+    //OPENMV-DIFF//
+    //return qBinaryFind(m_functions, word) != m_functions.constEnd();
+    //OPENMV-DIFF//
+    return m_functions.contains(word);
+    //OPENMV-DIFF//
 }
 
 QStringList Keywords::variables() const

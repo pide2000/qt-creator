@@ -127,8 +127,7 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
 
     foreach(const QObject *o, keypoints->children())
     {
-        scene()->addItem(new KeypointsItem(const_cast<Keypoint *>(static_cast<const Keypoint *>(o)),
-            sqrt((pixmap.width()*pixmap.width())+(pixmap.height()*pixmap.height()))/20)); // sqrt((160*160)+(120*120))/20=10
+        scene()->addItem(new KeypointsItem(const_cast<Keypoint *>(static_cast<const Keypoint *>(o)), sqrt((pixmap.width()*pixmap.width())+(pixmap.height()*pixmap.height()))/20)); // sqrt((160*160)+(120*120))/20=10
     }
 
     qreal scale = qMin(width() / item->boundingRect().width(), height() / item->boundingRect().height());
@@ -160,19 +159,21 @@ void KeypointsView::keyPressEvent(QKeyEvent *event)
     QGraphicsView::keyPressEvent(event);
 }
 
+void KeypointsView::resizeEvent(QResizeEvent *event)
+{
+    qreal rawScale = qMin(width() / sceneRect().width(), height() / sceneRect().height());
+    setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(rawScale, rawScale));
+    QGraphicsView::resizeEvent(event);
+}
+
 KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
     setWindowTitle(tr("Keypoints Editor"));
 
-    QFormLayout *layout = new QFormLayout(this);
-    layout->setVerticalSpacing(0);
-
+    QVBoxLayout *layout = new QVBoxLayout(this);
     KeypointsView *view = new KeypointsView(keypoints, pixmap);
-    layout->addRow(view);
-    layout->addItem(new QSpacerItem(0, 6));
-
-    layout->addRow(new QLabel(tr("Select and delete outlier keypoints using both the mouse and the delete key.")));
-    layout->addItem(new QSpacerItem(0, 6));
+    layout->addWidget(view);
+    layout->addWidget(new QLabel(tr("Select and delete outlier keypoints using both the mouse and the delete key.")));
 
     if(keypoints->m_max_octave > 1)
     {
@@ -181,8 +182,7 @@ KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QW
             QCheckBox *box = new QCheckBox(tr("Show Octave %L1").arg(i));
             box->setCheckable(true);
             box->setChecked(true);
-            layout->addRow(box);
-            layout->addItem(new QSpacerItem(0, 6));
+            layout->addWidget(box);
             connect(box, &QCheckBox::toggled, this, [this, view, i] (bool checked) {
                 foreach(QGraphicsItem *item, view->scene()->items())
                 {
@@ -200,7 +200,7 @@ KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QW
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
     QPushButton *done = new QPushButton(tr("Done"));
     box->addButton(done, QDialogButtonBox::AcceptRole);
-    layout->addRow(box);
+    layout->addWidget(box);
 
     connect(box, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, this, &QDialog::reject);

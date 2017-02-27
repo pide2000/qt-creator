@@ -118,7 +118,9 @@ void ThresholdEditor::changed()
 
     if(sender() == m_combo)
     {
+        QSize s = size();
         adjustSize();
+        resize(s);
     }
 }
 
@@ -137,8 +139,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
 {
     setWindowTitle(tr("Threhsold Editor"));
 
-    QFormLayout *layout = new QFormLayout(this);
-    layout->setVerticalSpacing(0);
+    QVBoxLayout *layout = new QVBoxLayout(this);
 
     // Graphics Views //
     {
@@ -152,7 +153,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         {
             QWidget *tmp = new QWidget();
             QVBoxLayout *v_layout = new QVBoxLayout(tmp);
-            v_layout->setMargin(0);;
+            v_layout->setMargin(0);
 
             m_raw = new QGraphicsView();
             m_raw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -190,8 +191,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
             h_layout->addWidget(tmp);
         }
 
-        layout->addRow(temp);
-        layout->addItem(new QSpacerItem(0, 6));
+        layout->addWidget(temp);
 
         qreal rawScale = qMin((m_raw->width()-1) / m_raw->sceneRect().width(), (m_raw->height()-1) / m_raw->sceneRect().height());
         m_raw->setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(rawScale, rawScale));
@@ -221,8 +221,13 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         h_layout->addWidget(m_invert);
         connect(m_invert, &QCheckBox::toggled, this, &ThresholdEditor::changed);
 
-        layout->addRow(tr("Select the best color tracking thresholds."), temp);
-        layout->addItem(new QSpacerItem(0, 6));
+        QHBoxLayout *t_layout = new QHBoxLayout();
+        t_layout->setMargin(0);
+        t_layout->addWidget(new QLabel(tr("Select the best color tracking thresholds.")));
+        t_layout->addWidget(temp);
+        QWidget *t_widget = new QWidget();
+        t_widget->setLayout(t_layout);
+        layout->addWidget(t_widget);
     }
 
     // Grayscale //
@@ -281,7 +286,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         m_GOut->setReadOnly(true);
         v_layout->addRow(tr("Grayscale Threshold"), m_GOut);
 
-        layout->addRow(m_paneG);
+        layout->addWidget(m_paneG);
     }
 
     // LAB //
@@ -432,12 +437,17 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         m_LABOut->setReadOnly(true);
         v_layout->addRow(tr("LAB Threshold"), m_LABOut);
 
-        layout->addRow(m_paneLAB);
+        layout->addWidget(m_paneLAB);
     }
 
-    layout->addItem(new QSpacerItem(0, 6));
+    QHBoxLayout *b_layout = new QHBoxLayout();
+    b_layout->setMargin(0);
+    b_layout->addWidget(new QLabel(tr("Copy the threshold above before closing.")));
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close);
-    layout->addRow(tr("Copy the threshold above before closing."), box);
+    b_layout->addWidget(box);
+    QWidget *b_widget = new QWidget();
+    b_widget->setLayout(b_layout);
+    layout->addWidget(b_widget);
 
     connect(box, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, this, &QDialog::reject);

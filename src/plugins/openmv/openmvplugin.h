@@ -16,9 +16,17 @@
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/messagemanager.h>
+#include <texteditor/codeassist/assistinterface.h>
+#include <texteditor/codeassist/completionassistprovider.h>
+#include <texteditor/codeassist/functionhintproposal.h>
+#include <texteditor/codeassist/genericproposal.h>
+#include <texteditor/codeassist/iassistprovider.h>
+#include <texteditor/codeassist/iassistprocessor.h>
+#include <texteditor/codeassist/keywordscompletionassist.h>
 #include <texteditor/generichighlighter/highlightdefinition.h>
 #include <texteditor/generichighlighter/keywordlist.h>
 #include <texteditor/generichighlighter/manager.h>
+#include <texteditor/textdocument.h>
 #include <texteditor/texteditor.h>
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
@@ -27,6 +35,7 @@
 #include <utils/pathchooser.h>
 #include <utils/styledbar.h>
 #include <utils/synchronousprocess.h>
+#include <utils/tooltip/tooltip.h>
 
 #include "openmvpluginserialport.h"
 #include "openmvpluginio.h"
@@ -103,6 +112,41 @@
 
 namespace OpenMV {
 namespace Internal {
+
+class OpenMVPluginCompletionAssistProvider : public TextEditor::CompletionAssistProvider
+{
+
+public:
+
+    OpenMVPluginCompletionAssistProvider(const QStringList &variables, const QStringList &functions, const QMap<QString, QStringList> &functionArgs)
+    {
+        m_keywords = TextEditor::Keywords(variables, functions, functionArgs);
+    }
+
+    bool supportsEditor(Core::Id editorId) const
+    {
+        return editorId == editorId;
+    }
+
+    TextEditor::IAssistProcessor *createProcessor() const
+    {
+        return new TextEditor::KeywordsCompletionAssistProcessor(m_keywords);
+    }
+
+    int activationCharSequenceLength() const
+    {
+        return 1;
+    }
+
+    bool isActivationCharSequence(const QString &sequence) const
+    {
+        return (sequence.at(0) == QLatin1Char('.')) || (sequence.at(0) == QLatin1Char('('));
+    }
+
+private:
+
+    TextEditor::Keywords m_keywords;
+};
 
 class OpenMVPlugin : public ExtensionSystem::IPlugin
 {
@@ -208,6 +252,28 @@ private:
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    typedef struct documentation
+    {
+        QString id;
+        QString moduleName;
+        QString className;
+        QString itemName;
+        QString parameters;
+        QString text;
+    }
+    documentation_t;
+
+    QList<documentation_t> m_modules;
+    QList<documentation_t> m_classes;
+    QList<documentation_t> m_datas;
+    QList<documentation_t> m_functions;
+    QList<documentation_t> m_methods;
+    QSet<QString> m_arguments;
+
+    ///////////////////////////////////////////////////////////////////////////
 
     typedef struct openTerminalMenuData
     {

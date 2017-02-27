@@ -12,12 +12,12 @@
 #include <utils/fadingindicator.h>
 #include <utils/icon.h>
 #include <utils/styledbar.h>
-#include <utils/synchronousprocess.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/editormanager/ieditor.h>
 #include <coreplugin/find/basetextfind.h>
 #include <coreplugin/findplaceholder.h>
+#include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/idocument.h>
 #include <coreplugin/minisplitter.h>
@@ -83,7 +83,8 @@ class OpenMVTerminal : public QWidget
 
 public:
 
-    explicit OpenMVTerminal(const QString &displayName, QSettings *settings, QWidget *parent = Q_NULLPTR);
+    explicit OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, QWidget *parent = Q_NULLPTR);
+    ~OpenMVTerminal();
 
 signals:
 
@@ -103,6 +104,7 @@ private:
     QToolButton *m_zoom;
     QComboBox *m_histogramColorSpace;
     MyPlainTextEdit *m_edit;
+    Core::IContext *m_context;
 };
 
 // Base ///////////////////////////////////////////////////////////////////////

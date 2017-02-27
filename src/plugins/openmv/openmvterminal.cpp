@@ -19,7 +19,7 @@ MyPlainTextEdit::MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent) : QPlain
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
 
-    setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    setReadOnly(true);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setFrameShape(QFrame::NoFrame);
     setUndoRedoEnabled(false);
@@ -413,6 +413,11 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
             string.chop(1);
         }
 
+        if(m_textCursor.document()->isEmpty())
+        {
+            string.remove(QRegularExpression(QStringLiteral("^\\s+")));
+        }
+
         m_textCursor.insertText(string, text.format);
     }
 
@@ -430,7 +435,6 @@ void MyPlainTextEdit::clear()
 {
     m_textCursor.select(QTextCursor::Document);
     m_textCursor.removeSelectedText();
-
     m_textCursor = QTextCursor(document());
     m_stateMachine = ASCII;
     m_shiftReg = QByteArray();
@@ -499,6 +503,16 @@ void MyPlainTextEdit::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Down:
         {
             emit writeBytes("\x0E"); // CTRL+N (14)
+            break;
+        }
+        case Qt::Key_PageUp:
+        {
+            QPlainTextEdit::keyPressEvent(event);
+            break;
+        }
+        case Qt::Key_PageDown:
+        {
+            QPlainTextEdit::keyPressEvent(event);
             break;
         }
         case Qt::Key_Tab:
@@ -637,7 +651,7 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
     });
 
     menu.addAction(tr("Paste"), this, [this] {
-        emit writeBytes(QApplication::clipboard()->text().replace(QRegularExpression(QStringLiteral("\r(?!\n)")), QStringLiteral("\r\n")).replace(QRegularExpression(QStringLiteral("(?<!\r)\n")), QStringLiteral("\r\n")).toUtf8());
+        emit writeBytes(QApplication::clipboard()->text().toUtf8());
     });
 
     menu.addSeparator();
@@ -646,11 +660,11 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
         selectAll();
     });
 
+    menu.addSeparator();
+
     menu.addAction(tr("Find"), this, [this] {
         Core::ActionManager::command(Core::Constants::FIND_IN_DOCUMENT)->action()->trigger();
     });
-
-    menu.addSeparator();
 
     menu.exec(event->globalPos());
 }
@@ -661,7 +675,7 @@ bool MyPlainTextEdit::focusNextPrevChild(bool next)
     return false;
 }
 
-OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, QWidget *parent) : QWidget(parent)
+OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(displayName);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -683,7 +697,6 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_zoom->setText(tr("Zoom"));
     m_zoom->setToolTip(tr("Zoom to fit"));
     m_zoom->setCheckable(true);
-    m_zoom->setChecked(m_settings->value(QStringLiteral(ZOOM_STATE), false).toBool());
     styledBar0Layout->addWidget(m_zoom);
 
     OpenMVPluginFB *m_frameBuffer = new OpenMVPluginFB;
@@ -695,6 +708,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout0->addWidget(m_frameBuffer);
     tempWidget0->setLayout(tempLayout0);
     connect(m_zoom, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
+    m_zoom->setChecked(m_settings->value(QStringLiteral(ZOOM_STATE), false).toBool());
     connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, [this] (const QPixmap &data) {
         QString path =
             QFileDialog::getSaveFileName(this, tr("Save Image"),
@@ -732,7 +746,6 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
     m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
     m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
-    m_histogramColorSpace->setCurrentIndex(m_settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), RGB_COLOR_SPACE).toInt());
     m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
     styledBar1Layout->addWidget(m_histogramColorSpace);
 
@@ -745,6 +758,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout1->addWidget(m_histogram);
     tempWidget1->setLayout(tempLayout1);
     connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+    m_histogramColorSpace->setCurrentIndex(m_settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), RGB_COLOR_SPACE).toInt());
     connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
 
     Utils::StyledBar *styledBar2 = new Utils::StyledBar;
@@ -834,6 +848,22 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
             setStyleSheet(widget->styleSheet());
         }
     }
+
+    m_context = new Core::IContext;
+    m_context->setContext(context);
+    m_context->setWidget(this);
+    Core::ICore::addContextObject(m_context);
+
+    Core::Command *overrideCtrlE = Core::ActionManager::registerAction(new QAction(), Core::Id("OpenMV.Terminal.Ctrl.E"), context);
+    overrideCtrlE->setDefaultKeySequence(tr("Ctrl+E"));
+    Core::Command *overrideCtrlR = Core::ActionManager::registerAction(new QAction(), Core::Id("OpenMV.Terminal.Ctrl.R"), context);
+    overrideCtrlR->setDefaultKeySequence(tr("Ctrl+R"));
+}
+
+OpenMVTerminal::~OpenMVTerminal()
+{
+    Core::ICore::removeContextObject(m_context);
+    delete m_context;
 }
 
 void OpenMVTerminal::showEvent(QShowEvent *event)
