@@ -123,14 +123,14 @@ KeypointsView::KeypointsView(Keypoints *keypoints, const QPixmap &pixmap, QWidge
     setMinimumHeight(120);
     setBackgroundBrush(QColor(230, 230, 239));
     setScene(new QGraphicsScene(this));
-    QGraphicsPixmapItem *item = scene()->addPixmap(pixmap);
+    scene()->addPixmap(pixmap);
 
     foreach(const QObject *o, keypoints->children())
     {
         scene()->addItem(new KeypointsItem(const_cast<Keypoint *>(static_cast<const Keypoint *>(o)), sqrt((pixmap.width()*pixmap.width())+(pixmap.height()*pixmap.height()))/20)); // sqrt((160*160)+(120*120))/20=10
     }
 
-    qreal scale = qMin(width() / item->boundingRect().width(), height() / item->boundingRect().height());
+    qreal scale = qMin(width() / sceneRect().width(), height() / sceneRect().height());
     setTransform(QTransform(1, 0, 0, 0, 1, 0, 0, 0, 1).scale(scale, scale));
 }
 
@@ -166,8 +166,16 @@ void KeypointsView::resizeEvent(QResizeEvent *event)
     QGraphicsView::resizeEvent(event);
 }
 
-KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
+void KeypointsEditor::showEvent(QShowEvent *event)
 {
+    restoreGeometry(m_geometry);
+
+    QDialog::showEvent(event);
+}
+
+KeypointsEditor::KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QByteArray geometry, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
+{
+    m_geometry = geometry;
     setWindowTitle(tr("Keypoints Editor"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);

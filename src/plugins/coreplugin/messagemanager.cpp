@@ -27,7 +27,6 @@
 #include "messageoutputwindow.h"
 
 #include <extensionsystem/pluginmanager.h>
-
 //OPENMV-DIFF//
 #include "outputwindow.h"
 //OPENMV-DIFF//
@@ -91,6 +90,12 @@ void MessageManager::write(const QString &text, PrintToOutputPaneFlags flags)
 }
 
 //OPENMV-DIFF//
+OutputWindow *MessageManager::outputWindow()
+{
+    if (!m_messageOutputWindow)
+        return 0;
+    return m_messageOutputWindow->m_widget;
+}
 void MessageManager::printData(const QByteArray &data)
 {
     if (!m_messageOutputWindow)

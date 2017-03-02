@@ -27,6 +27,11 @@
 #include <QFontMetrics>
 #include <QPainter>
 #include <QStyle>
+//OPENMV-DIFF//
+#include <QStyleOption>
+#include <utils/hostosinfo.h>
+#include <utils/theme/theme.h>
+//OPENMV-DIFF//
 
 /*!
     \class Utils::ElidingLabel
@@ -40,13 +45,17 @@ namespace Utils {
 ElidingLabel::ElidingLabel(QWidget *parent)
     : QLabel(parent), m_elideMode(Qt::ElideRight)
 {
-    setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    //OPENMV-DIFF//
+    //setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    //OPENMV-DIFF//
 }
 
 ElidingLabel::ElidingLabel(const QString &text, QWidget *parent)
     : QLabel(text, parent), m_elideMode(Qt::ElideRight)
 {
-    setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    //OPENMV-DIFF//
+    //setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    //OPENMV-DIFF//
 }
 
 Qt::TextElideMode ElidingLabel::elideMode() const
@@ -67,10 +76,14 @@ void ElidingLabel::paintEvent(QPaintEvent *)
     QFontMetrics fm = fontMetrics();
     QString txt = text();
     if (txt.length() > 4 && fm.width(txt) > contents.width()) {
-        setToolTip(txt);
+        //OPENMV-DIFF//
+        //setToolTip(txt);
+        //OPENMV-DIFF//
         txt = fm.elidedText(txt, m_elideMode, contents.width());
     } else {
-        setToolTip(QString());
+        //OPENMV-DIFF//
+        //setToolTip(QString());
+        //OPENMV-DIFF//
     }
     int flags = QStyle::visualAlignment(layoutDirection(), alignment()) | Qt::TextSingleLine;
 
@@ -78,5 +91,57 @@ void ElidingLabel::paintEvent(QPaintEvent *)
     drawFrame(&painter);
     painter.drawText(contents, flags, txt);
 }
+
+//OPENMV-DIFF//
+ElidingToolButton::ElidingToolButton(QWidget *parent)
+    : QToolButton(parent), m_elideMode(Qt::ElideRight)
+{
+
+}
+
+Qt::TextElideMode ElidingToolButton::elideMode() const
+{
+    return m_elideMode;
+}
+
+void ElidingToolButton::setElideMode(const Qt::TextElideMode &elideMode)
+{
+    m_elideMode = elideMode;
+    update();
+}
+
+void ElidingToolButton::paintEvent(QPaintEvent *)
+{
+    const QFontMetrics fm = fontMetrics();
+    const int baseLine = (height() - fm.height() + 1) / 2 + fm.ascent();
+
+    QPainter p(this);
+
+    QStyleOption styleOption;
+    styleOption.initFrom(this);
+    const bool hovered = !HostOsInfo::isMacHost() && (styleOption.state & QStyle::State_MouseOver);
+
+    if(isEnabled())
+    {
+        Theme::Color c = Theme::BackgroundColorDark;
+
+        if (hovered)
+            c = Theme::BackgroundColorHover;
+        else if (isDown() || isChecked())
+            c = Theme::BackgroundColorSelected;
+
+        if (c != Theme::BackgroundColorDark)
+            p.fillRect(rect(), creatorTheme()->color(c));
+
+        p.setFont(font());
+        p.setPen(creatorTheme()->color(Theme::OutputPaneToggleButtonTextColorChecked));
+
+        if (!isChecked())
+            p.setPen(creatorTheme()->color(Theme::OutputPaneToggleButtonTextColorUnchecked));
+    }
+
+    p.drawText(4, baseLine, fm.elidedText(text(), Qt::ElideRight, width() - 5));
+}
+//OPENMV-DIFF//
 
 } // namespace Utils

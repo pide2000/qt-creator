@@ -147,7 +147,15 @@ class KeypointsEditor : public QDialog
 
 public:
 
-    explicit KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit KeypointsEditor(Keypoints *keypoints, const QPixmap &pixmap, QByteArray geometry, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+
+protected:
+
+    void showEvent(QShowEvent *event);
+
+private:
+
+    QByteArray m_geometry;
 };
 
 #endif // KEYPOINTSEDITOR_H

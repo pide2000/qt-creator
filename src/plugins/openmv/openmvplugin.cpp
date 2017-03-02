@@ -491,7 +491,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
-    m_versionButton = new QToolButton;
+    m_versionButton = new Utils::ElidingToolButton;
     m_versionButton->setText(tr("Firmware Version:"));
     m_versionButton->setToolTip(tr("Camera firmware version"));
     m_versionButton->setCheckable(false);
@@ -500,13 +500,13 @@ void OpenMVPlugin::extensionsInitialized()
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
     connect(m_versionButton, &QToolButton::clicked, this, &OpenMVPlugin::updateCam);
 
-    m_portLabel = new QLabel(tr("Serial Port:"));
+    m_portLabel = new Utils::ElidingLabel(tr("Serial Port:"));
     m_portLabel->setToolTip(tr("Camera serial port"));
     m_portLabel->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_portLabel);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
 
-    m_pathButton = new QToolButton;
+    m_pathButton = new Utils::ElidingToolButton;
     m_pathButton->setText(tr("Drive:"));
     m_pathButton->setToolTip(tr("Drive associated with port"));
     m_pathButton->setCheckable(false);
@@ -515,7 +515,7 @@ void OpenMVPlugin::extensionsInitialized()
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
     connect(m_pathButton, &QToolButton::clicked, this, &OpenMVPlugin::setPortPath);
 
-    m_fpsLabel = new QLabel(tr("FPS:"));
+    m_fpsLabel = new Utils::ElidingLabel(tr("FPS:"));
     m_fpsLabel->setToolTip(tr("May be different from camera FPS"));
     m_fpsLabel->setDisabled(true);
     m_fpsLabel->setMinimumWidth(m_fpsLabel->fontMetrics().width(QStringLiteral("FPS: 000.000")));
@@ -765,10 +765,48 @@ void OpenMVPlugin::extensionsInitialized()
 
                 QTextCursor cursor(widget->textDocument()->document());
                 cursor.setPosition(position);
-                cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
-                QString text = cursor.selectedText();
+                cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+                QString text = cursor.selectedText().replace(QChar::ParagraphSeparator, QLatin1Char('\n'));
 
-                if(!text.contains(QLatin1Char('#'), Qt::CaseInsensitive))
+                enum
+                {
+                    IN_NONE,
+                    IN_COMMENT,
+                    IN_STRING_0,
+                    IN_STRING_1
+                }
+                in_state = IN_NONE;
+
+                for(int i = 0; i < text.size(); i++)
+                {
+                    switch(in_state)
+                    {
+                        case IN_NONE:
+                        {
+                            if((text.at(i) == QLatin1Char('#')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_COMMENT;
+                            if((text.at(i) == QLatin1Char('\'')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_0;
+                            if((text.at(i) == QLatin1Char('\"')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_1;
+                            break;
+                        }
+                        case IN_COMMENT:
+                        {
+                            if((text.at(i) == QLatin1Char('\n')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                            break;
+                        }
+                        case IN_STRING_0:
+                        {
+                            if((text.at(i) == QLatin1Char('\'')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                            break;
+                        }
+                        case IN_STRING_1:
+                        {
+                            if((text.at(i) == QLatin1Char('\"')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                            break;
+                        }
+                    }
+                }
+
+                if(in_state == IN_NONE)
                 {
                     cursor.setPosition(position);
                     cursor.select(QTextCursor::WordUnderCursor);
@@ -843,6 +881,12 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE), m_disableFrameBuffer->isChecked()).toBool());
     m_histogramColorSpace->setCurrentIndex(
         settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
+    QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
+    font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
+    Core::MessageManager::outputWindow()->setBaseFont(font);
+    Core::MessageManager::outputWindow()->setWheelZoomEnabled(true);
+    Core::MessageManager::outputWindow()->setFontZoom(
+        settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
     settings->endGroup();
 
     m_openTerminalMenuData = QList<openTerminalMenuData_t>();
@@ -877,6 +921,8 @@ void OpenMVPlugin::extensionsInitialized()
             m_disableFrameBuffer->isChecked());
         settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
             m_histogramColorSpace->currentIndex());
+        settings->setValue(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE),
+            Core::MessageManager::outputWindow()->fontZoom());
         settings->endGroup();
 
         settings->beginWriteArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP));
@@ -2278,6 +2324,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             }
         }
 
+        // Check ID ///////////////////////////////////////////////////////////
+
         ///////////////////////////////////////////////////////////////////////
 
         QTimer::singleShot(0, this, [this] { OpenMVPlugin::setPortPath(true); });
@@ -3535,11 +3583,12 @@ void OpenMVPlugin::openThresholdEditor()
     {
         if(m_frameBuffer->pixmapValid())
         {
-            ThresholdEditor editor(m_frameBuffer->pixmap(), Core::ICore::dialogParent(),
+            ThresholdEditor editor(m_frameBuffer->pixmap(), settings->value(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE)).toByteArray(), Core::ICore::dialogParent(),
                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
             editor.exec();
+            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
         }
         else
         {
@@ -3559,11 +3608,12 @@ void OpenMVPlugin::openThresholdEditor()
         {
             QPixmap pixmap = QPixmap(path);
 
-            ThresholdEditor editor(pixmap, Core::ICore::dialogParent(),
+            ThresholdEditor editor(pixmap, settings->value(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE)).toByteArray(), Core::ICore::dialogParent(),
                 Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
             editor.exec();
+            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
             settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_PATH), path);
         }
     }
@@ -3616,7 +3666,7 @@ void OpenMVPlugin::openKeypointsEditor()
                     QString pixmapPath = QFileInfo(path).path() + QDir::separator() + list.first();
                     QPixmap pixmap = QPixmap(pixmapPath);
 
-                    KeypointsEditor editor(ks.data(), pixmap, Core::ICore::dialogParent(),
+                    KeypointsEditor editor(ks.data(), pixmap, settings->value(QStringLiteral(LAST_EDIT_KEYPOINTS_STATE)).toByteArray(), Core::ICore::dialogParent(),
                         Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
@@ -3636,6 +3686,7 @@ void OpenMVPlugin::openKeypointsEditor()
                         && QFile::copy(pixmapPath, pixmapPath + QStringLiteral(".bak"))
                         && ks->saveKeypoints(path))
                         {
+                            settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_STATE), editor.saveGeometry());
                             settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_PATH), path);
                         }
                         else
@@ -3644,6 +3695,11 @@ void OpenMVPlugin::openKeypointsEditor()
                                 tr("Save Edited Keypoints"),
                                 tr("Failed to save the edited keypoints for an unknown reason!"));
                         }
+                    }
+                    else
+                    {
+                        settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_STATE), editor.saveGeometry());
+                        settings->setValue(QStringLiteral(LAST_EDIT_KEYPOINTS_PATH), path);
                     }
                 }
                 else

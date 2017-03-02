@@ -29,6 +29,9 @@
 #include "core_global.h"
 #include "ioutputpane.h"
 #include <QMetaType>
+//OPENMV-DIFF//
+#include "messageoutputwindow.h"
+//OPENMV-DIFF//
 
 #include <QObject>
 
@@ -57,6 +60,9 @@ public:
     Q_DECLARE_FLAGS(PrintToOutputPaneFlags, PrintToOutputPaneFlag)
 
     static void write(const QString &text); // imply NoModeSwitch
+    //OPENMV-DIFF//
+    static OutputWindow *outputWindow();
+    //OPENMV-DIFF//
 
 public slots:
     static void write(const QString &text, Core::MessageManager::PrintToOutputPaneFlags flags);

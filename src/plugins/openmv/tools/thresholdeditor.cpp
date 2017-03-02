@@ -135,8 +135,16 @@ void ThresholdEditor::resizeEvent(QResizeEvent *event)
     QDialog::resizeEvent(event);
 }
 
-ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
+void ThresholdEditor::showEvent(QShowEvent *event)
 {
+    restoreGeometry(m_geometry);
+
+    QDialog::showEvent(event);
+}
+
+ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
+{
+    m_geometry = geometry;
     setWindowTitle(tr("Threhsold Editor"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -170,7 +178,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
             h_layout->addItem(new QSpacerItem(10, 0));
         }
 
-        QPixmap white(pixmap.width(), pixmap.height());
+        QPixmap white(pixmap.width(), pixmap.height()); white.fill(Qt::white);
 
         {
             QWidget *tmp = new QWidget();
@@ -287,6 +295,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         v_layout->addRow(tr("Grayscale Threshold"), m_GOut);
 
         layout->addWidget(m_paneG);
+        if(m_combo->currentIndex()) m_paneG->hide();
     }
 
     // LAB //
@@ -438,6 +447,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QWidget *parent, Qt::Win
         v_layout->addRow(tr("LAB Threshold"), m_LABOut);
 
         layout->addWidget(m_paneLAB);
+        if(!m_combo->currentIndex()) m_paneLAB->hide();
     }
 
     QHBoxLayout *b_layout = new QHBoxLayout();

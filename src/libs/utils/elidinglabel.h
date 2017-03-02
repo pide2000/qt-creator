@@ -28,6 +28,9 @@
 
 #include "utils_global.h"
 #include <QLabel>
+//OPENMV-DIFF//
+#include <QToolButton>
+//OPENVM-DIFF//
 
 namespace Utils {
 
@@ -49,6 +52,26 @@ protected:
 private:
     Qt::TextElideMode m_elideMode;
 };
+
+//OPENMV-DIFF//
+class  QTCREATOR_UTILS_EXPORT ElidingToolButton : public QToolButton
+{
+    Q_OBJECT
+    Q_PROPERTY(Qt::TextElideMode elideMode READ elideMode WRITE setElideMode DESIGNABLE true)
+
+public:
+    explicit ElidingToolButton(QWidget *parent = 0);
+
+    Qt::TextElideMode elideMode() const;
+    void setElideMode(const Qt::TextElideMode &elideMode);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+
+private:
+    Qt::TextElideMode m_elideMode;
+};
+//OPENMV-DIFF//
 
 } // namespace Utils
 

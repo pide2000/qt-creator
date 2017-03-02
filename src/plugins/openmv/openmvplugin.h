@@ -16,12 +16,8 @@
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/messagemanager.h>
-#include <texteditor/codeassist/assistinterface.h>
+#include <coreplugin/outputwindow.h>
 #include <texteditor/codeassist/completionassistprovider.h>
-#include <texteditor/codeassist/functionhintproposal.h>
-#include <texteditor/codeassist/genericproposal.h>
-#include <texteditor/codeassist/iassistprovider.h>
-#include <texteditor/codeassist/iassistprocessor.h>
 #include <texteditor/codeassist/keywordscompletionassist.h>
 #include <texteditor/generichighlighter/highlightdefinition.h>
 #include <texteditor/generichighlighter/keywordlist.h>
@@ -31,6 +27,7 @@
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
+#include <utils/elidinglabel.h>
 #include <utils/environment.h>
 #include <utils/pathchooser.h>
 #include <utils/styledbar.h>
@@ -63,6 +60,7 @@
 #define HSPLITTER_STATE "HSplitterState"
 #define VSPLITTER_STATE "VSplitterState"
 #define ZOOM_STATE "ZoomState"
+#define OUTPUT_WINDOW_FONT_ZOOM_STATE "OutputWindowFontZoomState"
 #define JPG_COMPRESS_STATE "JPGCompressState"
 #define DISABLE_FRAME_BUFFER_STATE "DisableFrameBufferState"
 #define HISTOGRAM_COLOR_SPACE_STATE "HistogramColorSpace"
@@ -78,7 +76,9 @@
 #define LAST_OPEN_TERMINAL_SERIAL_PORT_BAUD_RATE "LastOpenTerminalSerialPortBaudRate"
 #define LAST_OPEN_TERMINAL_UDP_PORT "LastOpenTerminalUDPPort"
 #define LAST_OPEN_TERMINAL_TCP_PORT "LastOpenTerminalTCPPort"
+#define LAST_THRESHOLD_EDITOR_STATE "LastThresholdEditorState"
 #define LAST_THRESHOLD_EDITOR_PATH "LastThresholdEditorPath"
+#define LAST_EDIT_KEYPOINTS_STATE "LastEditKeyointsState"
 #define LAST_EDIT_KEYPOINTS_PATH "LastEditKeypointsPath"
 #define LAST_MERGE_KEYPOINTS_OPEN_PATH "LastMergeKeypointsOpenPath"
 #define LAST_MERGE_KEYPOINTS_SAVE_PATH "LastMergeKeypointsSavePath"
@@ -140,7 +140,7 @@ public:
 
     bool isActivationCharSequence(const QString &sequence) const
     {
-        return (sequence.at(0) == QLatin1Char('.')) || (sequence.at(0) == QLatin1Char('('));
+        return (sequence.at(0) == QLatin1Char('.')) || (sequence.at(0) == QLatin1Char('(')) || (sequence.at(0) == QLatin1Char(','));
     }
 
 private:
@@ -226,10 +226,10 @@ private:
     QComboBox *m_histogramColorSpace;
     OpenMVPluginHistogram *m_histogram;
 
-    QToolButton *m_versionButton;
-    QLabel *m_portLabel;
-    QToolButton *m_pathButton;
-    QLabel *m_fpsLabel;
+    Utils::ElidingToolButton *m_versionButton;
+    Utils::ElidingLabel *m_portLabel;
+    Utils::ElidingToolButton *m_pathButton;
+    Utils::ElidingLabel  *m_fpsLabel;
 
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;

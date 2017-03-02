@@ -31,6 +31,9 @@
 
 #include <utils/outputformatter.h>
 #include <utils/synchronousprocess.h>
+//OPENMV-DIFF//
+#include <utils/fadingindicator.h>
+//OPENMV-DIFF//
 
 #include <QAction>
 #include <QScrollBar>
@@ -223,6 +226,9 @@ void OutputWindow::wheelEvent(QWheelEvent *e)
             float delta = e->angleDelta().y() / 120.f;
             zoomInF(delta);
             emit wheelZoom();
+            //OPENMV-DIFF//
+            Utils::FadingIndicator::showText(this, tr("Zoom: %1%").arg(int(100 * (font().pointSizeF() / d->m_originalFontSize))), Utils::FadingIndicator::SmallText);
+            //OPENMV-DIFF//
             return;
         }
     }
