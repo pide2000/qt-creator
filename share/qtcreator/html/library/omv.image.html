@@ -137,6 +137,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-image-image-object">class Image &#8211; Image object</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id4">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">Methods</a></li>
@@ -913,6 +914,201 @@ payload in this case must be treated as just a large byte array.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="class-apriltag-apriltag-object">
+<h1>class AprilTag &#8211; AprilTag object<a class="headerlink" href="#class-apriltag-apriltag-object" title="Permalink to this headline">¶</a></h1>
+<p>The apriltag object is returned by <code class="docutils literal"><span class="pre">image.find_apriltags</span></code>.</p>
+<dl class="method">
+<dt id="image.apriltag.rect">
+<code class="descclassname">apriltag.</code><code class="descname">rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangle tuple (x, y, w, h) for use with other <code class="docutils literal"><span class="pre">image</span></code> methods
+like <code class="docutils literal"><span class="pre">image.draw_rectangle</span></code> of the apriltag&#8217;s bounding box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.x">
+<code class="descclassname">apriltag.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the apriltag&#8217;s bounding box x coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.y">
+<code class="descclassname">apriltag.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the apriltag&#8217;s bounding box y coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.w">
+<code class="descclassname">apriltag.</code><code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the apriltag&#8217;s bounding box w coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.h">
+<code class="descclassname">apriltag.</code><code class="descname">h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the apriltag&#8217;s bounding box h coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.id">
+<code class="descclassname">apriltag.</code><code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the numeric id of the apriltag.</p>
+<blockquote>
+<div><ul class="simple">
+<li>TAG16H5 -&gt; 0 to 29</li>
+<li>TAG25H7 -&gt; 0 to 241</li>
+<li>TAG25H9 -&gt; 0 to 34</li>
+<li>TAG36H10 -&gt; 0 to 2319</li>
+<li>TAG36H11 -&gt; 0 to 586</li>
+<li>ARTOOLKIT -&gt; 0 to 511</li>
+</ul>
+</div></blockquote>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.family">
+<code class="descclassname">apriltag.</code><code class="descname">family</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.family" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the numeric family of the apriltag.</p>
+<blockquote>
+<div><ul class="simple">
+<li>image.TAG16H5</li>
+<li>image.TAG25H7</li>
+<li>image.TAG25H9</li>
+<li>image.TAG36H10</li>
+<li>image.TAG36H11</li>
+<li>image.ARTOOLKIT</li>
+</ul>
+</div></blockquote>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.cx">
+<code class="descclassname">apriltag.</code><code class="descname">cx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.cx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the centroid x position of the apriltag (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[6]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.cy">
+<code class="descclassname">apriltag.</code><code class="descname">cy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.cy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the centroid y position of the apriltag (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.rotation">
+<code class="descclassname">apriltag.</code><code class="descname">rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation of the apriltag in radians (float).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[8]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.decision_margin">
+<code class="descclassname">apriltag.</code><code class="descname">decision_margin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.decision_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the quality of the apriltag match (0.0 - 1.0) where 1.0 is the best.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[9]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.hamming">
+<code class="descclassname">apriltag.</code><code class="descname">hamming</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.hamming" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of accepted bit errors for this tag.</p>
+<blockquote>
+<div><ul class="simple">
+<li>TAG16H5 -&gt; 0 bit errors will be accepted</li>
+<li>TAG25H7 -&gt; up to 1 bit error may be accepted</li>
+<li>TAG25H9 -&gt; up to 3 bit errors may be accepted</li>
+<li>TAG36H10 -&gt; up to 3 bit errors may be accepted</li>
+<li>TAG36H11 -&gt; up to 4 bit errors may be accepted</li>
+<li>ARTOOLKIT -&gt; 0 bit errors will be accepted</li>
+</ul>
+</div></blockquote>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[10]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.goodness">
+<code class="descclassname">apriltag.</code><code class="descname">goodness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.goodness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the quality of the apriltag image (0.0 - 1.0) where 1.0 is the best.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This value is always 0.0 for now. We may enable a feature called &#8220;tag
+refinement&#8221; in the future which will allow detection of small apriltags.
+However, this feature currently drops the frame rate to less than 1 FPS.</p>
+</div>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[11]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.x_translation">
+<code class="descclassname">apriltag.</code><code class="descname">x_translation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.x_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the translation in unknown units from the camera in the X direction.</p>
+<p>This method is useful for determining the apriltag&#8217;s location away from the
+camera. However, the size of the apriltag, the lens you are using, etc. all
+come into play as to actually determining what the X units are in. For ease
+of use we recommend you use a lookup table to convert the output of this
+method to something useful for your application.</p>
+<p>Note that this is the left-to-right direction.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[12]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.y_translation">
+<code class="descclassname">apriltag.</code><code class="descname">y_translation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.y_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the translation in unknown units from the camera in the Y direction.</p>
+<p>This method is useful for determining the apriltag&#8217;s location away from the
+camera. However, the size of the apriltag, the lens you are using, etc. all
+come into play as to actually determining what the Y units are in. For ease
+of use we recommend you use a lookup table to convert the output of this
+method to something useful for your application.</p>
+<p>Note that this is the up-to-down direction.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[13]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.z_translation">
+<code class="descclassname">apriltag.</code><code class="descname">z_translation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.z_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the translation in unknown units from the camera in the Z direction.</p>
+<p>This method is useful for determining the apriltag&#8217;s location away from the
+camera. However, the size of the apriltag, the lens you are using, etc. all
+come into play as to actually determining what the Z units are in. For ease
+of use we recommend you use a lookup table to convert the output of this
+method to something useful for your application.</p>
+<p>Note that this is the front-to-back direction.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[14]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.x_rotation">
+<code class="descclassname">apriltag.</code><code class="descname">x_rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.x_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation in radians of the apriltag in the X plane. E.g. moving
+the camera left-to-right while looking at the tag.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[15]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.y_rotation">
+<code class="descclassname">apriltag.</code><code class="descname">y_rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.y_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation in radians of the apriltag in the Y plane. E.g. moving
+the camera up-to-down while looking at the tag.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[16]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.apriltag.z_rotation">
+<code class="descclassname">apriltag.</code><code class="descname">z_rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.apriltag.z_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation in radians of the apriltag in the Z plane. E.g.
+rotating the camera while looking directly at the tag.</p>
+<p>Note that this is just a renamed version of <code class="docutils literal"><span class="pre">apriltag.rotation()</span></code>.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[17]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="class-image-image-object">
 <h1>class Image &#8211; Image object<a class="headerlink" href="#class-image-image-object" title="Permalink to this headline">¶</a></h1>
 <p>The image object is the basic object for machine vision operations.</p>
@@ -1459,7 +1655,7 @@ explicitly invoked in the function call by writing <code class="docutils literal
 
 <dl class="method">
 <dt id="image.image.find_blobs">
-<code class="descclassname">image.</code><code class="descname">find_blobs</code><span class="sig-paren">(</span><em>thresholds</em>, <em>roi=Auto</em>, <em>x_stride=2</em>, <em>y_stride=1</em>, <em>invert=False</em>, <em>area_threshold=10</em>, <em>pixels_threshold=10</em>, <em>merge=False</em>, <em>margin=0</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_blobs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">find_blobs</code><span class="sig-paren">(</span><em>thresholds</em>, <em>roi=Auto</em>, <em>x_stride=2</em>, <em>y_stride=1</em>, <em>invert=False</em>, <em>area_threshold=10</em>, <em>pixels_threshold=10</em>, <em>merge=False</em>, <em>margin=0</em>, <em>threshold_cb=None</em>, <em>merge_cb=None</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_blobs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds all blobs (connected pixel regions that pass a threshold test) in the
 image and returns a list of <code class="docutils literal"><span class="pre">blob</span></code> objects which describe each blob.
 Please see the <code class="docutils literal"><span class="pre">blob</span></code> object more more information.</p>
@@ -1511,8 +1707,16 @@ back with two colors then you know it might be a color code.</p>
 <p>You might also want to merge blobs if you are using tight color bounds which
 do not fully track all the pixels of an object you are trying to follow.</p>
 <p>Finally, if you want to merge blobs, but, don&#8217;t want two color thresholds to
-be merged then just call <code class="docutils literal"><span class="pre">image.finc_blobs</span></code> twice with separate thresholds
+be merged then just call <code class="docutils literal"><span class="pre">image.find_blobs</span></code> twice with separate thresholds
 so that blobs aren&#8217;t merged.</p>
+<p><code class="docutils literal"><span class="pre">threshold_cb</span></code> may be set to the function to call on every blob after its
+been thresholded to filter it from the list of blobs to be merged. The call
+back function will receive one argument - the blob object to be filtered.
+The call back then must return True to keep the blob and False to filter it.</p>
+<p><code class="docutils literal"><span class="pre">merge_cb</span></code> may be set to the function to call on every two blobs about to
+be merged to prevent or allow the merge. The call back function will receive
+two arguments - the two blob objects to be merged. The call back then must
+return True to merge the blobs or False to prevent merging the blobs.</p>
 <p>Not supported on compressed images.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1542,6 +1746,63 @@ specified, it is equal to the image rectangle. Only pixels within the
 <p class="first admonition-title">Note</p>
 <p class="last"><code class="docutils literal"><span class="pre">roi</span></code> is a keyword argument which must be explicitly invoked in the
 function call by writing <code class="docutils literal"><span class="pre">roi=</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_apriltags">
+<code class="descclassname">image.</code><code class="descname">find_apriltags</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>families=image.TAG36H11</em>, <em>fx=Auto</em>, <em>fy=Auto</em>, <em>cx=Auto</em>, <em>cy=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_apriltags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all apriltags within the <code class="docutils literal"><span class="pre">roi</span></code> and returns a list of <code class="docutils literal"><span class="pre">apriltag</span></code>
+objects. Please see the <code class="docutils literal"><span class="pre">apriltag</span></code> object for more information.</p>
+<p>Unlike QR Codes, AprilTags can be detected at much farther distances, worse
+lighting, in warped images, etc. AprilTags are robust too all kinds of
+image distortion issues that QR Codes are not to. That said, AprilTags
+can only encode a numeric ID as their payload.</p>
+<p>AprilTags can also be used for localization purposes. Each <code class="docutils literal"><span class="pre">apriltag</span></code>
+object returns its translation and rotation from the camera. The units
+of the translation are determined by <code class="docutils literal"><span class="pre">fx</span></code>, <code class="docutils literal"><span class="pre">fy</span></code>, <code class="docutils literal"><span class="pre">cx</span></code>, and <code class="docutils literal"><span class="pre">cy</span></code>
+which are the focal lengths and center points of the image in the X and
+Y directions respectively.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To create AprilTags use the tag generator tool built-in to OpenMV IDE.
+The tag generator can create printable 8.5&#8221;x11&#8221; AprilTags.</p>
+</div>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p><code class="docutils literal"><span class="pre">families</span></code> is bitmask of tag families to decode. It is the logical OR of:</p>
+<blockquote>
+<div><ul class="simple">
+<li>image.TAG16H5</li>
+<li>image.TAG25H7</li>
+<li>image.TAG25H9</li>
+<li>image.TAG36H10</li>
+<li>image.TAG36H11</li>
+<li>image.ARTOOLKIT</li>
+</ul>
+</div></blockquote>
+<p>By default it is just <code class="docutils literal"><span class="pre">image.TAG36H11</span></code> which is the best tag family to
+use. Note that <code class="docutils literal"><span class="pre">find_apriltags</span></code> slows down a bit per enabled tag family.</p>
+<p><code class="docutils literal"><span class="pre">fx</span></code> is the camera X focal length in pixels. For the standard OpenMV Cam
+this is (2.8 / 3.984) * 656. Which is the lens focal length in mm, divided
+by the camera sensor length in the X direction multiplied by the number of
+camera sensor pixels in the X direction (for the OV7725 camera).</p>
+<p><code class="docutils literal"><span class="pre">fx</span></code> is the camera Y focal length in pixels. For the standard OpenMV Cam
+this is (2.8 / 2.952) * 488. Which is the lens focal length in mm, divided
+by the camera sensor length in the Y direction multiplied by the number of
+camera sensor pixels in the Y direction (for the OV7725 camera).</p>
+<p><code class="docutils literal"><span class="pre">cx</span></code> is the image center which is just <code class="docutils literal"><span class="pre">image.width()/2</span></code>. This is not
+<code class="docutils literal"><span class="pre">roi.w()/2</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">cy</span></code> is the image center which is just <code class="docutils literal"><span class="pre">image.height()/2</span></code>. This is not
+<code class="docutils literal"><span class="pre">roi.h()/2</span></code>.</p>
+<p>Not supported on compressed images.</p>
+<p>Only supported on the OpenMV Cam M7 or better (not enough RAM on the M4).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">roi</span></code>, <code class="docutils literal"><span class="pre">families</span></code>, <code class="docutils literal"><span class="pre">fx</span></code>, <code class="docutils literal"><span class="pre">fy</span></code>, <code class="docutils literal"><span class="pre">cx</span></code>, and <code class="docutils literal"><span class="pre">cy</span></code> are keyword
+arguments which must be explicitly invoked in the function call by
+writing <code class="docutils literal"><span class="pre">roi=</span></code>, <code class="docutils literal"><span class="pre">families=</span></code>, <code class="docutils literal"><span class="pre">fx=</span></code>, <code class="docutils literal"><span class="pre">fy=</span></code>, <code class="docutils literal"><span class="pre">cx=</span></code>, and <code class="docutils literal"><span class="pre">cy=</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -1784,6 +2045,42 @@ on an image.</p>
 <dd><p>Slower and more accurate corner detection algorithm for ORB keypoints.</p>
 </dd></dl>
 
+<dl class="data">
+<dt id="image.image.TAG16H5">
+<code class="descclassname">image.</code><code class="descname">TAG16H5</code><a class="headerlink" href="#image.image.TAG16H5" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAG1H5 tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.TAG25H7">
+<code class="descclassname">image.</code><code class="descname">TAG25H7</code><a class="headerlink" href="#image.image.TAG25H7" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAG25H7 tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.TAG25H9">
+<code class="descclassname">image.</code><code class="descname">TAG25H9</code><a class="headerlink" href="#image.image.TAG25H9" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAG25H9 tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.TAG36H10">
+<code class="descclassname">image.</code><code class="descname">TAG36H10</code><a class="headerlink" href="#image.image.TAG36H10" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAG36H10 tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.TAG36H11">
+<code class="descclassname">image.</code><code class="descname">TAG36H11</code><a class="headerlink" href="#image.image.TAG36H11" title="Permalink to this definition">¶</a></dt>
+<dd><p>TAG36H11 tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.ARTOOLKIT">
+<code class="descclassname">image.</code><code class="descname">ARTOOLKIT</code><a class="headerlink" href="#image.image.ARTOOLKIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>ARTOOLKIT tag family bit mask enum. Used for AprilTags.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1807,7 +2104,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 22 Jan 2017.
+      Last updated on 02 Mar 2017.
 
     </p>
   </div>

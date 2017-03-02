@@ -91,16 +91,35 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">MicroPython tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.ADC.html">class ADC &#8211; analog to digital conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.CAN.html">class CAN &#8211; controller area network communication bus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.DAC.html">class DAC &#8211; digital to analog conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.ExtInt.html">class ExtInt &#8211; configure I/O pins to interrupt on external events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.LED.html">class LED &#8211; LED object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.Pin.html">class Pin &#8211; control I/O pins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.Servo.html">class Servo &#8211; 3-wire hobby servo driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.SPI.html">class SPI &#8211; a master-driven serial protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.Timer.html">class Timer &#8211; control internal timers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.Timer.html#class-timerchannel-setup-a-channel-for-a-timer">class TimerChannel &#8212; setup a channel for a timer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.UART.html">class UART &#8211; duplex serial communication bus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.USB_VCP.html">class USB_VCP &#8211; USB virtual comm port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.time.html"><code class="docutils literal"><span class="pre">time</span></code> &#8212; tracking elapsed time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.sensor.html"><code class="docutils literal"><span class="pre">sensor</span></code> &#8212; camera sensor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
@@ -112,6 +131,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machine.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
 </ul>
 </li>
 </ul>
@@ -186,7 +207,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt>
-<code class="descname">init(type=1):</code></dt>
+<code class="descname">lcd.init(type=1):</code></dt>
 <dd><p>Initializes an attached lcd shield using I/O pins P0, P2, P3, P6, P7, and P8.</p>
 <p><code class="docutils literal"><span class="pre">type</span></code> indicates the type of lcd shield (for future use possibly):</p>
 <blockquote>
@@ -204,13 +225,13 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 
 <dl class="function">
 <dt>
-<code class="descname">deinit():</code></dt>
+<code class="descname">lcd.deinit():</code></dt>
 <dd><p>Deinitializes the lcd shield freeing up I/O pins.</p>
 </dd></dl>
 
 <dl class="function">
 <dt>
-<code class="descname">width():</code></dt>
+<code class="descname">lcd.width():</code></dt>
 <dd><p>Returns the width (horizontal resolution) of the lcd shield.</p>
 <blockquote>
 <div><ul class="simple">
@@ -222,7 +243,7 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 
 <dl class="function">
 <dt>
-<code class="descname">height():</code></dt>
+<code class="descname">lcd.height():</code></dt>
 <dd><p>Returns the height (vertical resolution) of the lcd shield.</p>
 <blockquote>
 <div><ul class="simple">
@@ -234,7 +255,7 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 
 <dl class="function">
 <dt>
-<code class="descname">type():</code></dt>
+<code class="descname">lcd.type():</code></dt>
 <dd><p>Returns the type of the lcd shield (for future use possibly):</p>
 <blockquote>
 <div><ul class="simple">
@@ -246,7 +267,7 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 
 <dl class="function">
 <dt>
-<code class="descname">set_backlight(state):</code></dt>
+<code class="descname">lcd.set_backlight(state):</code></dt>
 <dd><p>Set the lcd shield backlight state (False for off - True for on). Turning
 off the backlight dramatically reduces the lcd shield&#8217;s current consumption.</p>
 <p>The lcd shield backlight pin is pulled up (on) by default. P6 which controls
@@ -259,14 +280,14 @@ This frees up P6 as long as you do not call this function.</p>
 
 <dl class="function">
 <dt>
-<code class="descname">get_backlight():</code></dt>
+<code class="descname">lcd.get_backlight():</code></dt>
 <dd><p>Returns the backlight state (False for off - True for on) if
 <code class="docutils literal"><span class="pre">set_backlight</span></code> had been called previously.</p>
 </dd></dl>
 
 <dl class="function">
 <dt>
-<code class="descname">display(image, roi=Auto):</code></dt>
+<code class="descname">lcd.display(image, roi=Auto):</code></dt>
 <dd><p>Displays an <code class="docutils literal"><span class="pre">image</span></code> (GRAYSCALE or RGB565) on the lcd screen.</p>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is a region-of-interest rectangle tuple (x, y, w, h). If not
 specified, it is equal to the image rectangle (0, 0, image.w, image.h).</p>
@@ -291,7 +312,7 @@ function call by writing <code class="docutils literal"><span class="pre">roi=</
 
 <dl class="function">
 <dt>
-<code class="descname">clear():</code></dt>
+<code class="descname">lcd.clear():</code></dt>
 <dd><p>Clears the lcd screen to black.</p>
 </dd></dl>
 
@@ -318,7 +339,7 @@ function call by writing <code class="docutils literal"><span class="pre">roi=</
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 07 Jan 2017.
+      Last updated on 02 Mar 2017.
 
     </p>
   </div>

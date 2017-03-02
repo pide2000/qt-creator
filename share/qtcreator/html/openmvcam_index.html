@@ -142,8 +142,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="openmvcam/quickref.html">Quick reference for the openmvcam</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#openmv-cam-m4">OpenMV Cam M4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#openmv-cam-m7">OpenMV Cam M7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#openmv-cam">OpenMV Cam</a></li>
 <li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#general-board-control">General board control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#leds">LEDs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="openmvcam/quickref.html#pins-and-gpio">Pins and GPIO</a></li>
@@ -179,7 +178,9 @@
 <li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#serial-terminal">3.7. Serial Terminal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#status-bar">3.8. Status Bar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#tools">3.9. Tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#options">3.10. Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#open-terminal">3.10. Open Terminal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#machine-vision">3.11. Machine Vision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="openmvcam/tutorial/openmvide_overview.html#options">3.12. Options</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="openmvcam/tutorial/more_information.html">4. More Information</a></li>
@@ -196,12 +197,6 @@
 <li class="toctree-l4"><a class="reference internal" href="library/math.html#constants">Constants</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/uos.html"><code class="docutils literal"><span class="pre">uos</span></code> &#8211; basic &#8220;operating system&#8221; services</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/uos.html#port-specifics">Port specifics</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/uos.html#functions">Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/uos.html#constants">Constants</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="library/select.html"><code class="docutils literal"><span class="pre">select</span></code> &#8211; wait for events on a set of streams</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="library/select.html#pyboard-and-openmv-cam-specifics">Pyboard and OpenMV Cam specifics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/select.html#functions">Functions</a></li>
@@ -211,17 +206,61 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/ustruct.html"><code class="docutils literal"><span class="pre">ustruct</span></code> &#8211; pack and unpack primitive data types</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/ustruct.html#functions">Functions</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="library/sys.html"><code class="docutils literal"><span class="pre">sys</span></code> &#8211; system specific functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="library/sys.html#functions">Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/sys.html#constants">Constants</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="library/ubinascii.html"><code class="docutils literal"><span class="pre">ubinascii</span></code> &#8211; binary/ASCII conversions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/ubinascii.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/uhashlib.html"><code class="docutils literal"><span class="pre">uhashlib</span></code> &#8211; hashing algorithm</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/uhashlib.html#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uhashlib.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/uio.html"><code class="docutils literal"><span class="pre">uio</span></code> &#8211; input/output streams</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/uio.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uio.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/ujson.html"><code class="docutils literal"><span class="pre">ujson</span></code> &#8211; JSON encoding and decoding</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/ujson.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/uos.html"><code class="docutils literal"><span class="pre">uos</span></code> &#8211; basic &#8220;operating system&#8221; services</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#port-specifics">Port specifics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/ure.html"><code class="docutils literal"><span class="pre">ure</span></code> &#8211; regular expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/ure.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/ure.html#regex-objects">Regex objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/ure.html#match-objects">Match objects</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/usocket.html"><code class="docutils literal"><span class="pre">usocket</span></code> &#8211; socket module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/usocket.html#socket-address-format-s">Socket address format(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/usocket.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/usocket.html#constants">Constants</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="library/usocket.html#class-socket">class socket</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="library/usocket.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/ustruct.html"><code class="docutils literal"><span class="pre">ustruct</span></code> &#8211; pack and unpack primitive data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/ustruct.html#functions">Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="library/utime.html"><code class="docutils literal"><span class="pre">utime</span></code> &#8211; time related functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="library/utime.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/uzlib.html"><code class="docutils literal"><span class="pre">uzlib</span></code> &#8211; zlib decompression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/uzlib.html#functions">Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -448,6 +487,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-image-image-object">class Image &#8211; Image object</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id4">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id5">Methods</a></li>
@@ -684,7 +724,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 22 Jan 2017.
+      Last updated on 02 Mar 2017.
 
     </p>
   </div>
