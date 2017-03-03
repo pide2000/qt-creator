@@ -222,7 +222,6 @@ private:
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;
     OpenMVPluginFB *m_frameBuffer;
-
     QComboBox *m_histogramColorSpace;
     OpenMVPluginHistogram *m_histogram;
 
@@ -257,11 +256,7 @@ private:
 
     typedef struct documentation
     {
-        QString id;
-        QString moduleName;
-        QString className;
-        QString itemName;
-        QString parameters;
+        QString name;
         QString text;
     }
     documentation_t;

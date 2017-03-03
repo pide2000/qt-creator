@@ -274,8 +274,8 @@ be explicitly invoked in the function call by writing <code class="docutils lite
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">fir.type():</code></dt>
+<dt id="fir.fir.type">
+<code class="descclassname">fir.</code><code class="descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fir.fir.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the type of the thermopile shield (for future use possibly):</p>
 <blockquote>
 <div><ul class="simple">
@@ -286,8 +286,8 @@ be explicitly invoked in the function call by writing <code class="docutils lite
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">fir.read_ta():</code></dt>
+<dt id="fir.fir.read_ta">
+<code class="descclassname">fir.</code><code class="descname">read_ta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fir.fir.read_ta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the ambient temperature (i.e. sensor temperature).</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ta</span> <span class="o">=</span> <span class="n">fir</span><span class="o">.</span><span class="n">read_ta</span><span class="p">()</span>
@@ -297,8 +297,8 @@ be explicitly invoked in the function call by writing <code class="docutils lite
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">fir.read_ir():</code></dt>
+<dt id="fir.fir.read_ir">
+<code class="descclassname">fir.</code><code class="descname">read_ir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fir.fir.read_ir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple containing the ambient temperature (i.e. sensor temperature),
 the temperature list (width * height), the minimum temperature seen, and
 the maximum temperature seen.</p>
@@ -314,8 +314,8 @@ the maximum temperature seen.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">fir.draw_ta(image, ta, alpha=128, scale=[-17.7778, 37.7778]):</code></dt>
+<dt id="fir.fir.draw_ta">
+<code class="descclassname">fir.</code><code class="descname">draw_ta</code><span class="sig-paren">(</span><em>image, ta, alpha=128, scale=[-17.7778, 37.7778]</em><span class="sig-paren">)</span><a class="headerlink" href="#fir.fir.draw_ta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws the ambient temperature (<code class="docutils literal"><span class="pre">ta</span></code>) on the <code class="docutils literal"><span class="pre">image</span></code> using a rainbow
 table color conversion.</p>
 <p><code class="docutils literal"><span class="pre">alpha</span></code> controls the transparency. 256 for an opaque overlay. 0 for none.</p>
@@ -336,7 +336,7 @@ invoked in the function call by writing <code class="docutils literal"><span cla
 
 <dl class="function">
 <dt>
-<code class="descname">fir.draw_ta(image, ir, alpha=128, scale=[auto, auto]):</code></dt>
+<code class="descclassname">fir.</code><code class="descname">draw_ta</code><span class="sig-paren">(</span><em>image, ir, alpha=128, scale=[auto, auto]</em><span class="sig-paren">)</span></dt>
 <dd><p>Draws the temperature list (<code class="docutils literal"><span class="pre">ir</span></code>) on the <code class="docutils literal"><span class="pre">image</span></code> using a rainbow
 table color conversion.</p>
 <p><code class="docutils literal"><span class="pre">alpha</span></code> controls the transparency. 256 for an opaque overlay. 0 for none.</p>
@@ -379,7 +379,7 @@ invoked in the function call by writing <code class="docutils literal"><span cla
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 02 Mar 2017.
+      Last updated on 03 Mar 2017.
 
     </p>
   </div>

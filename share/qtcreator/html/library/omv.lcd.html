@@ -206,8 +206,8 @@
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descname">lcd.init(type=1):</code></dt>
+<dt id="lcd.lcd.init">
+<code class="descclassname">lcd.</code><code class="descname">init</code><span class="sig-paren">(</span><em>type=1</em><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an attached lcd shield using I/O pins P0, P2, P3, P6, P7, and P8.</p>
 <p><code class="docutils literal"><span class="pre">type</span></code> indicates the type of lcd shield (for future use possibly):</p>
 <blockquote>
@@ -224,14 +224,14 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.deinit():</code></dt>
+<dt id="lcd.lcd.deinit">
+<code class="descclassname">lcd.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.deinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deinitializes the lcd shield freeing up I/O pins.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.width():</code></dt>
+<dt id="lcd.lcd.width">
+<code class="descclassname">lcd.</code><code class="descname">width</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the width (horizontal resolution) of the lcd shield.</p>
 <blockquote>
 <div><ul class="simple">
@@ -242,8 +242,8 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.height():</code></dt>
+<dt id="lcd.lcd.height">
+<code class="descclassname">lcd.</code><code class="descname">height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the height (vertical resolution) of the lcd shield.</p>
 <blockquote>
 <div><ul class="simple">
@@ -254,8 +254,8 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.type():</code></dt>
+<dt id="lcd.lcd.type">
+<code class="descclassname">lcd.</code><code class="descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the type of the lcd shield (for future use possibly):</p>
 <blockquote>
 <div><ul class="simple">
@@ -266,8 +266,8 @@ function call by writing <code class="docutils literal"><span class="pre">type=<
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.set_backlight(state):</code></dt>
+<dt id="lcd.lcd.set_backlight">
+<code class="descclassname">lcd.</code><code class="descname">set_backlight</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.set_backlight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the lcd shield backlight state (False for off - True for on). Turning
 off the backlight dramatically reduces the lcd shield&#8217;s current consumption.</p>
 <p>The lcd shield backlight pin is pulled up (on) by default. P6 which controls
@@ -279,15 +279,15 @@ This frees up P6 as long as you do not call this function.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.get_backlight():</code></dt>
+<dt id="lcd.lcd.get_backlight">
+<code class="descclassname">lcd.</code><code class="descname">get_backlight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.get_backlight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the backlight state (False for off - True for on) if
 <code class="docutils literal"><span class="pre">set_backlight</span></code> had been called previously.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.display(image, roi=Auto):</code></dt>
+<dt id="lcd.lcd.display">
+<code class="descclassname">lcd.</code><code class="descname">display</code><span class="sig-paren">(</span><em>image</em>, <em>roi=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.display" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays an <code class="docutils literal"><span class="pre">image</span></code> (GRAYSCALE or RGB565) on the lcd screen.</p>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is a region-of-interest rectangle tuple (x, y, w, h). If not
 specified, it is equal to the image rectangle (0, 0, image.w, image.h).</p>
@@ -311,8 +311,8 @@ function call by writing <code class="docutils literal"><span class="pre">roi=</
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descname">lcd.clear():</code></dt>
+<dt id="lcd.lcd.clear">
+<code class="descclassname">lcd.</code><code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd.lcd.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears the lcd screen to black.</p>
 </dd></dl>
 
@@ -339,7 +339,7 @@ function call by writing <code class="docutils literal"><span class="pre">roi=</
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 02 Mar 2017.
+      Last updated on 03 Mar 2017.
 
     </p>
   </div>
