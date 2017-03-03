@@ -100,7 +100,7 @@ void MessageManager::printData(const QByteArray &data)
 {
     if (!m_messageOutputWindow)
         return;
-    m_messageOutputWindow->append(QString::fromLatin1(data));
+    m_messageOutputWindow->append(QString::fromUtf8(data));
 }
 void MessageManager::grayOutOldContent()
 {

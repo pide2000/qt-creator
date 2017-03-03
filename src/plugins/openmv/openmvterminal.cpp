@@ -180,14 +180,16 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
             {
                 case 15:
                 case 17: // XON
-                case 18:
                 case 19: // XOFF
-                case 20:
                 case 23:
                 case 24:
                 case 25:
                 case 26:
                 case 27: // Escape - AnsiEscapeCodeHandler
+                case 28:
+                case 29:
+                case 30:
+                case 31:
                 {
                     break;
                 }
@@ -341,6 +343,24 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
                     break;
                 }
 
+                case 18: // Move to start of line.
+                {
+                    m_textCursor.insertText(string, text.format);
+                    m_textCursor.movePosition(QTextCursor::StartOfLine);
+                    string.clear();
+                    column = m_textCursor.columnNumber();
+                    break;
+                }
+
+                case 20: // Move to end of line.
+                {
+                    m_textCursor.insertText(string, text.format);
+                    m_textCursor.movePosition(QTextCursor::EndOfLine);
+                    string.clear();
+                    column = m_textCursor.columnNumber();
+                    break;
+                }
+
                 case 21: // Clear to start of line.
                 {
                     m_textCursor.insertText(string, text.format);
@@ -356,42 +376,6 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
                     m_textCursor.insertText(string, text.format);
                     m_textCursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
                     m_textCursor.removeSelectedText();
-                    string.clear();
-                    column = m_textCursor.columnNumber();
-                    break;
-                }
-
-                case 28: // Move to start of line.
-                {
-                    m_textCursor.insertText(string, text.format);
-                    m_textCursor.movePosition(QTextCursor::StartOfLine);
-                    string.clear();
-                    column = m_textCursor.columnNumber();
-                    break;
-                }
-
-                case 29: // Move to end of line.
-                {
-                    m_textCursor.insertText(string, text.format);
-                    m_textCursor.movePosition(QTextCursor::EndOfLine);
-                    string.clear();
-                    column = m_textCursor.columnNumber();
-                    break;
-                }
-
-                case 30: // Move to previous start of line.
-                {
-                    m_textCursor.insertText(string, text.format);
-                    m_textCursor.movePosition(QTextCursor::PreviousBlock);
-                    string.clear();
-                    column = m_textCursor.columnNumber();
-                    break;
-                }
-
-                case 31: // Move to next start of line.
-                {
-                    m_textCursor.insertText(string, text.format);
-                    m_textCursor.movePosition(QTextCursor::NextBlock);
                     string.clear();
                     column = m_textCursor.columnNumber();
                     break;

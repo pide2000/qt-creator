@@ -89,6 +89,8 @@ signals:
 
 private:
 
+    void pasrsePrintData(const QByteArray &data);
+
     OpenMVPluginSerialPort *m_port;
 
     QQueue<OpenMVPluginSerialPortCommand> m_postedQueue;

@@ -216,7 +216,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     }
                     else if(m_lineBuffer.size())
                     {
-                        emit printData(m_lineBuffer);
+                        emit pasrsePrintData(m_lineBuffer);
                         m_lineBuffer.clear();
                     }
 
@@ -230,7 +230,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
 
                     if(list.size())
                     {
-                        emit printData(list.join('\n') + '\n');
+                        emit pasrsePrintData(list.join('\n') + '\n');
                     }
 
                     break;
@@ -259,7 +259,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 {
                     if(m_lineBuffer.size())
                     {
-                        emit printData(m_lineBuffer);
+                        emit pasrsePrintData(m_lineBuffer);
                         m_lineBuffer.clear();
                     }
 
@@ -365,7 +365,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit printData(m_lineBuffer);
+                            emit pasrsePrintData(m_lineBuffer);
                             m_lineBuffer.clear();
                         }
 
@@ -375,7 +375,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit printData(m_lineBuffer);
+                            emit pasrsePrintData(m_lineBuffer);
                             m_lineBuffer.clear();
                         }
 
@@ -405,7 +405,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit printData(m_lineBuffer);
+                            emit pasrsePrintData(m_lineBuffer);
                             m_lineBuffer.clear();
                         }
 
@@ -684,4 +684,102 @@ void OpenMVPluginIO::close()
     m_postedQueue.enqueue(OpenMVPluginSerialPortCommand(QByteArray(), int(), int(), int()));
     m_completionQueue.enqueue(CLOSE_CPL);
     command();
+}
+
+void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
+{
+    enum
+    {
+        ASCII,
+        UTF_8,
+        EXIT_0,
+        EXIT_1
+    }
+    stateMachine = ASCII;
+
+    QByteArray shiftReg = QByteArray();
+
+    QByteArray buffer;
+
+    for(int i = 0, j = data.size(); i < j; i++)
+    {
+        if((stateMachine == UTF_8) && ((data.at(i) & 0xC0) != 0x80))
+        {
+            stateMachine = ASCII;
+        }
+
+        if((stateMachine == EXIT_0) && ((data.at(i) & 0xFF) != 0x00))
+        {
+            stateMachine = ASCII;
+        }
+
+        switch(stateMachine)
+        {
+            case ASCII:
+            {
+                if(((data.at(i) & 0xE0) == 0xC0)
+                || ((data.at(i) & 0xF0) == 0xE0)
+                || ((data.at(i) & 0xF8) == 0xF0)
+                || ((data.at(i) & 0xFC) == 0xF8)
+                || ((data.at(i) & 0xFE) == 0xFC)) // UTF_8
+                {
+                    shiftReg.clear();
+
+                    stateMachine = UTF_8;
+                }
+                else if((data.at(i) & 0xFF) == 0xFF)
+                {
+                    stateMachine = EXIT_0;
+                }
+                else if((data.at(i) & 0xC0) == 0x80)
+                {
+                    // Nothing for now.
+                }
+                else if((data.at(i) & 0xFF) == 0xFE)
+                {
+                    // Nothing for now.
+                }
+                else if((data.at(i) & 0x80) == 0x00) // ASCII
+                {
+                    buffer.append(data.at(i));
+                }
+
+                break;
+            }
+
+            case UTF_8:
+            {
+                if((((shiftReg.at(0) & 0xE0) == 0xC0) && (shiftReg.size() == 1))
+                || (((shiftReg.at(0) & 0xF0) == 0xE0) && (shiftReg.size() == 2))
+                || (((shiftReg.at(0) & 0xF8) == 0xF0) && (shiftReg.size() == 3))
+                || (((shiftReg.at(0) & 0xFC) == 0xF8) && (shiftReg.size() == 4))
+                || (((shiftReg.at(0) & 0xFE) == 0xFC) && (shiftReg.size() == 5)))
+                {
+                    buffer.append(shiftReg + data.at(i));
+
+                    stateMachine = ASCII;
+                }
+
+                break;
+            }
+
+            case EXIT_0:
+            {
+                stateMachine = EXIT_1;
+
+                break;
+            }
+
+            case EXIT_1:
+            {
+                stateMachine = ASCII;
+
+                break;
+            }
+        }
+
+        shiftReg = shiftReg.append(data.at(i)).right(5);
+    }
+
+    emit printData(buffer);
 }
