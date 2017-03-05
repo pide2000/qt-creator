@@ -38,6 +38,7 @@
 #include <QAction>
 #include <QScrollBar>
 //OPENMV-DIFF//
+#include <QApplication>
 #include <QRegularExpression>
 //OPENMV-DIFF//
 
