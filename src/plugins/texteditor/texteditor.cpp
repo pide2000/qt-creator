@@ -4680,6 +4680,9 @@ void TextEditorWidgetPrivate::drawFoldingMarker(QPainter *painter, const QPalett
         opt.rect.translate(-3, 0);
 #endif
 #endif
+#ifdef Q_OS_MAC
+        opt.rect.translate(-2, 0);
+#endif
         //OPENMV-DIFF//
 
         s->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, q);
