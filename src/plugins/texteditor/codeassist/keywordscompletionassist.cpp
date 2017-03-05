@@ -33,6 +33,7 @@
 #include <texteditor/texteditorsettings.h>
 #include <texteditor/texteditor.h>
 //OPENMV-DIFF//
+#include <QRegularExpression>
 #include <QStack>
 //OPENMV-DIFF//
 
@@ -330,6 +331,7 @@ IAssistProposal *KeywordsCompletionAssistProcessor::perform(const AssistInterfac
             cursor.setPosition(m_interface->position() - 2);
             cursor.select(QTextCursor::WordUnderCursor);
             if(cursor.selectedText().isEmpty()) return 0;
+            if(!cursor.selectedText().contains(QRegularExpression(QStringLiteral("[a-zA-Z_][a-zA-Z_0-9]*")))) return 0;
             m_startPosition = m_interface->position();
 
             QList<AssistProposalItemInterface *> items;
@@ -346,7 +348,8 @@ IAssistProposal *KeywordsCompletionAssistProcessor::perform(const AssistInterfac
             m_startPosition = m_interface->position() - cursor.selectedText().size() - 1;
 
             m_word = cursor.selectedText();
-            return new FunctionHintProposal(m_startPosition, new KeywordsFunctionHintModel(m_keywords.argsForFunction(m_word)));
+            return new FunctionHintProposal(m_startPosition,
+                new KeywordsFunctionHintModel((m_keywords.functions().count(m_word) > 1) ? QStringList() : m_keywords.argsForFunction(m_word)));
         }
         else if((chr == QLatin1Char(',')) && (in_stack.size() >= 1) && (in_stack.top().first == IN_PUSH_0))
         {
@@ -357,13 +360,15 @@ IAssistProposal *KeywordsCompletionAssistProcessor::perform(const AssistInterfac
             m_startPosition = in_stack.top().second - cursor.selectedText().size();
 
             m_word = cursor.selectedText();
-            return new FunctionHintProposal(m_startPosition, new KeywordsFunctionHintModel(m_keywords.argsForFunction(m_word)));
+            return new FunctionHintProposal(m_startPosition,
+                new KeywordsFunctionHintModel((m_keywords.functions().count(m_word) > 1) ? QStringList() : m_keywords.argsForFunction(m_word)));
         }
         else if(chr.isLetterOrNumber() || (chr == QLatin1Char('_')))
         {
             cursor.setPosition(m_interface->position() - 1);
             cursor.select(QTextCursor::WordUnderCursor);
             if(cursor.selectedText().isEmpty()) return 0;
+            if(!cursor.selectedText().contains(QRegularExpression(QStringLiteral("[a-zA-Z_][a-zA-Z_0-9]*")))) return 0;
             m_startPosition = m_interface->position() - cursor.selectedText().size();
 
             QList<AssistProposalItemInterface *> items;

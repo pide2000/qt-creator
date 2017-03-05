@@ -104,10 +104,18 @@ Highlighter::Highlighter(QTextDocument *parent) :
                    << C_ERROR             // Error
                    << C_FUNCTION          // Function
                    << C_TEXT              // RegionMarker
-                   << C_PREPROCESSOR      // BuiltIn
+                   //OPENMV-DIFF//
+                   //<< C_PREPROCESSOR      // BuiltIn
+                   //OPENMV-DIFF//
+                   << C_TYPE              // BuiltIn
+                   //OPENMV-DIFF//
                    << C_PRIMITIVE_TYPE    // Extension
                    << C_OPERATOR          // Operator
-                   << C_LOCAL             // Variable
+                   //OPENMV-DIFF//
+                   //<< C_LOCAL             // Variable
+                   //OPENMV-DIFF//
+                   << C_TYPE              // Variable
+                   //OPENMV-DIFF//
                    << C_LABEL             // Attribute
                    << C_TEXT              // Annotation
                    << C_COMMENT           // CommentVar
@@ -132,11 +140,7 @@ struct KateFormatMap
 KateFormatMap::KateFormatMap()
 {
     m_ids.insert(QLatin1String("dsNormal"), Highlighter::Normal);
-    //OPENMV-DIFF//
-    //m_ids.insert(QLatin1String("dsKeyword"), Highlighter::Keyword);
-    //OPENMV-DIFF//
-    m_ids.insert(QLatin1String("dsKeyword"), Highlighter::BuiltIn);
-    //OPENMV-DIFF//
+    m_ids.insert(QLatin1String("dsKeyword"), Highlighter::Keyword);
     m_ids.insert(QLatin1String("dsDataType"), Highlighter::DataType);
     m_ids.insert(QLatin1String("dsComment"), Highlighter::Comment);
     m_ids.insert(QLatin1String("dsDecVal"), Highlighter::Decimal);
@@ -151,13 +155,8 @@ KateFormatMap::KateFormatMap()
     m_ids.insert(QLatin1String("dsError"), Highlighter::Error);
     m_ids.insert(QLatin1String("dsFunction"), Highlighter::Function);
     m_ids.insert(QLatin1String("dsRegionMarker"), Highlighter::RegionMarker);
-    //OPENMV-DIFF//
-    //m_ids.insert(QLatin1String("dsBuiltIn"), Highlighter::BuiltIn);
-    //m_ids.insert(QLatin1String("dsExtension"), Highlighter::Extension);
-    //OPENMV-DIFF//
-    m_ids.insert(QLatin1String("dsBuiltIn"), Highlighter::Extension);
-    m_ids.insert(QLatin1String("dsExtension"), Highlighter::Normal);
-    //OPENMV-DIFF//
+    m_ids.insert(QLatin1String("dsBuiltIn"), Highlighter::BuiltIn);
+    m_ids.insert(QLatin1String("dsExtension"), Highlighter::Extension);
     m_ids.insert(QLatin1String("dsOperator"), Highlighter::Operator);
     m_ids.insert(QLatin1String("dsVariable"), Highlighter::Variable);
     m_ids.insert(QLatin1String("dsAttribute"), Highlighter::Attribute);
@@ -167,14 +166,14 @@ KateFormatMap::KateFormatMap()
     m_ids.insert(QLatin1String("dsOthers"), Highlighter::Others);
     m_ids.insert(QLatin1String("dsIdentifier"), Highlighter::Identifier);
     //OPENMV-DIFF//
-    m_ids.insert(QLatin1String("dsControlFlow"), Highlighter::BuiltIn);
-    m_ids.insert(QLatin1String("dsPreprocessor"), Highlighter::DataType);
+    m_ids.insert(QLatin1String("dsControlFlow"), Highlighter::Keyword);
+    m_ids.insert(QLatin1String("dsPreprocessor"), Highlighter::BuiltIn);
     m_ids.insert(QLatin1String("dsVerbatimString"), Highlighter::String);
-    m_ids.insert(QLatin1String("dsOpenMVModules"), Highlighter::DataType);
-    m_ids.insert(QLatin1String("dsOpenMVClasses"), Highlighter::Extension);
-    m_ids.insert(QLatin1String("dsOpenMVDatas"), Highlighter::Extension);
-    m_ids.insert(QLatin1String("dsOpenMVFunctions"), Highlighter::Extension);
-    m_ids.insert(QLatin1String("dsOpenMVMethods"), Highlighter::Extension);
+    m_ids.insert(QLatin1String("dsOpenMVModules"), Highlighter::Keyword);
+    m_ids.insert(QLatin1String("dsOpenMVClasses"), Highlighter::BuiltIn);
+    m_ids.insert(QLatin1String("dsOpenMVDatas"), Highlighter::BuiltIn);
+    m_ids.insert(QLatin1String("dsOpenMVFunctions"), Highlighter::BuiltIn);
+    m_ids.insert(QLatin1String("dsOpenMVMethods"), Highlighter::BuiltIn);
     m_ids.insert(QLatin1String("dsOpenMVArguments"), Highlighter::Attribute);
     //OPENMV-DIFF//
 }

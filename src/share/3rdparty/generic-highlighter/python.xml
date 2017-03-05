@@ -18,7 +18,9 @@
 		<list name="import">
 			<item> import </item>
 			<item> from </item>
-			<item> as </item>
+			<!--OPENMV-DIFF-->
+			<!--<item> as </item>-->
+			<!--OPENMV-DIFF-->
 		</list>
 		<list name="defs">
 			<item> class </item>
@@ -34,6 +36,9 @@
 			<item> is </item>
 			<item> not </item>
 			<item> or </item>
+			<!--OPENMV-DIFF-->
+			<item> as </item>
+			<!--OPENMV-DIFF-->
 		</list>
 		<list name="flow">
 			<item> assert </item>
@@ -343,6 +348,64 @@
 		</list>
 		<list name="listOpenMVMethods">
 			<item>OpenMVMethodsPlaceHolderKeyword</item>
+			<!--objarray-->
+			<item> append </item>
+			<item> extend </item>
+			<!--objdict-->
+			<item> clear </item>
+			<item> copy </item>
+			<item> fromkeys </item>
+			<item> get </item>
+			<item> items </item>
+			<item> keys </item>
+			<item> pop </item>
+			<item> popitem </item>
+			<item> setdefault </item>
+			<item> update </item>
+			<item> values </item>
+			<item> __getitem__ </item>
+			<item> __setitem__ </item>
+			<item> __delitem__ </item>
+			<!--objlist-->
+			<item> append </item>
+			<item> extend </item>
+			<item> insert </item>
+			<item> remove </item>
+			<item> pop </item>
+			<item> clear </item>
+			<item> index </item>
+			<item> count </item>
+			<item> sort </item>
+			<item> reverse </item>
+			<item> copy </item>
+			<!--objstr-->
+			<item> decode </item>
+			<item> encode </item>
+			<item> find </item>
+			<item> rfind </item>
+			<item> index </item>
+			<item> rindex </item>
+			<item> join </item>
+			<item> split </item>
+			<item> splitlines </item>
+			<item> rsplit </item>
+			<item> startswith </item>
+			<item> endswith </item>
+			<item> strip </item>
+			<item> lstrip </item>
+			<item> rstrip </item>
+			<item> format </item>
+			<item> replace </item>
+			<item> count </item>
+			<item> partition </item>
+			<item> rpartition </item>
+			<item> lower </item>
+			<item> upper </item>
+			<item> isspace </item>
+			<item> isalpha </item>
+			<item> isdigit </item>
+			<item> isupper </item>
+			<item> islower </item>
 		</list>
 		<list name="listOpenMVArguments">
 			<item>OpenMVArgumentsPlaceHolderKeyword</item>
@@ -350,6 +413,9 @@
 		<!--OPENMV-DIFF-->
 		<contexts>
 			<context name="Normal" attribute="Normal Text" lineEndContext="#stay">
+				<!--OPENMV-DIFF-->
+				<RegExpr attribute="Definition Keyword" String="(class|def)" context="ClassDefHighlight"/>
+				<!--OPENMV-DIFF-->
 				<keyword attribute="Import" String="import" context="#stay"/>
 				<keyword attribute="Definition Keyword" String="defs" context="#stay"/>
 				<keyword attribute="Operator Keyword" String="operators" context="#stay"/>
@@ -360,12 +426,8 @@
 				<keyword attribute="Exceptions" String="exceptions" context="#stay"/>
 				<keyword attribute="Overloaders" String="overloaders" context="#stay"/>
 				<!--OPENMV-DIFF-->
+				<RegExpr attribute="Normal Text" String="\.[a-zA-Z_][a-zA-Z_0-9]*" context="ClassDataFunctionMethodHighlight" lookAhead="true"/>
 				<keyword attribute="OpenMVModules" String="listOpenMVModules" context="#stay"/>
-				<keyword attribute="OpenMVClasses" String="listOpenMVClasses" context="#stay"/>
-				<keyword attribute="OpenMVDatas" String="listOpenMVDatas" context="#stay"/>
-				<keyword attribute="OpenMVFunctions" String="listOpenMVFunctions" context="#stay"/>
-				<keyword attribute="OpenMVMethods" String="listOpenMVMethods" context="#stay"/>
-				<keyword attribute="OpenMVArguments" String="listOpenMVArguments" context="#stay"/>
 				<!--OPENMV-DIFF-->
 				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]{2,}" context="#stay"/>
 
@@ -389,7 +451,37 @@
 
 				<RegExpr attribute="Decorator" String="@[_a-zA-Z][\._a-zA-Z0-9]*" firstNonSpace="true"/>
 				<AnyChar attribute="Operator" String="+*/%\|=;\!&lt;&gt;!^&amp;~-@" context="#stay"/>
+				<!--OPENMV-DIFF-->
+				<DetectChar attribute="Normal Text" char="," context="#stay"/>
+				<!--OPENMV-DIFF-->
 			</context>
+
+			<!--OPENMV-DIFF-->
+			<context name="ClassDefHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<RegExpr attribute="Special Variable" String="[a-zA-Z_][a-zA-Z_0-9]*" context="#pop"/>
+			</context>
+			<context name="ClassDataFunctionMethodHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<DetectChar attribute="Normal Text" char="." context="#stay"/>
+				<keyword attribute="OpenMVClasses" String="listOpenMVClasses" context="#stay"/>
+				<keyword attribute="OpenMVDatas" String="listOpenMVDatas" context="#stay"/>
+				<keyword attribute="OpenMVFunctions" String="listOpenMVFunctions" context="#stay"/>
+				<keyword attribute="OpenMVMethods" String="listOpenMVMethods" context="#stay"/>
+				<DetectChar attribute="Normal Text" char="(" context="ArgumentHighlight"/>
+			</context>
+			<context name="ArgumentHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]*\s*=" context="ArgumentHighlight2" lookAhead="true"/>
+				<DetectChar attribute="Normal Text" char=")" context="#pop"/>
+				<IncludeRules context="StringVariants" />
+				<IncludeRules context="Normal" />
+			</context>
+			<context name="ArgumentHighlight2" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<keyword attribute="OpenMVArguments" String="listOpenMVArguments" context="#stay"/>
+			</context>
+			<!--OPENMV-DIFF-->
 
 			<context name="#CheckForString" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
 				<DetectSpaces/>

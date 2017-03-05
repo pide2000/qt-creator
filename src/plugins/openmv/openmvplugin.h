@@ -256,6 +256,8 @@ private:
 
     typedef struct documentation
     {
+        QString moduleName;
+        QString className;
         QString name;
         QString text;
     }

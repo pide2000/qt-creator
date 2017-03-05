@@ -155,6 +155,9 @@ void TextTip::configure(const QPoint &pos, QWidget *w)
     if (tipWidth > maxDesiredWidth) {
         setWordWrap(true);
         tipWidth = sizeHint().width();
+        //OPENMV-DIFF//
+        if(tipWidth < maxDesiredWidth) tipWidth = maxDesiredWidth;
+        //OPENMV-DIFF//
         // If the width is still too large (maybe due to some extremely long word which prevents
         // wrapping), the tip is truncated according to the screen.
         if (tipWidth > screenWidth)

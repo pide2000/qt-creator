@@ -25,21 +25,12 @@
   <style name="Function" foreground="#ff8bff"/>
   <!--OPENMV-DIFF-->
   <style name="Keyword" foreground="#808bed"/>
-  <!--OPENMV-DIFF-->
-  <!--<style name="PrimitiveType" foreground="#808bed"/>-->
-  <!--OPENMV-DIFF-->
-  <style name="PrimitiveType" foreground="#0084ff"/>
-  <!--OPENMV-DIFF-->
+  <style name="PrimitiveType" foreground="#808bed"/>
   <style name="Label" foreground="#e76000"/>
   <style name="LineNumber" foreground="#8b8bcd" background="#2e2e2e"/>
   <style name="Link" foreground="#409090"/>
-  <!--OPENMV-DIFF-->
-  <!--<style name="Local"/>-->
-  <!--<style name="Number" foreground="#f0ad6d"/>-->
-  <!--OPENMV-DIFF-->
-  <style name="Local" foreground="#808bed"/>
-  <style name="Number" foreground="#ff5555"/>
-  <!--OPENMV-DIFF-->
+  <style name="Local"/>
+  <style name="Number" foreground="#f0ad6d"/>
   <style name="Occurrences" foreground="#000000" background="#616161"/>
   <style name="Occurrences.Rename" foreground="#000000" background="#ff6464"/>
   <style name="Occurrences.Unused" foreground="#808000"/>
@@ -48,26 +39,17 @@
   <style name="ParenthesesMismatch" background="#404040"/>
   <style name="Preprocessor" foreground="#409090"/>
   <style name="RemovedLine" foreground="#ff0000"/>
+  <style name="SearchResult" foreground="#000000" background="#ffef0b"/>
   <!--OPENMV-DIFF-->
-  <!--<style name="SearchResult" foreground="#000000" background="#ffef0b"/>-->
   <!--<style name="SearchScope" foreground="#000000" background="#f8fafc"/>-->
   <!--OPENMV-DIFF-->
-  <style name="SearchResult" foreground="#4e4e57" background="#5e5e67"/>
-  <style name="SearchScope" foreground="#2e2e37" background="#3e3e47"/>
+  <style name="SearchScope" foreground="#f8fafc" background="#1e1e27"/>
   <!--OPENMV-DIFF-->
   <style name="Selection" foreground="#ffffff" background="#4e4e8f"/>
   <style name="Static" foreground="#cb6ecb"/>
-  <!--OPENMV-DIFF-->
-  <!--<style name="String" foreground="#ffcd8b" background="#404040"/>-->
-  <!--OPENMV-DIFF-->
-  <style name="String" foreground="#00aa00"/>
-  <!--OPENMV-DIFF-->
+  <style name="String" foreground="#ffcd8b" background="#404040"/>
   <style name="Text" foreground="#cfbfad" background="#1e1e27"/>
-  <!--OPENMV-DIFF-->
-  <!--<style name="Type" foreground="#ff8bff"/>-->
-  <!--OPENMV-DIFF-->
-  <style name="Type" foreground="#8484f3"/>
-  <!--OPENMV-DIFF-->
+  <style name="Type" foreground="#ff8bff"/>
   <style name="VirtualMethod" italic="true"/>
   <style name="VisualWhitespace" foreground="#646482"/>
   <style name="QmlTypeId" foreground="#ff8bff"/>
