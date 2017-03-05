@@ -630,23 +630,23 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu;
 
-    menu.addAction(tr("Copy"), this, [this] {
+    connect(menu.addAction(tr("Copy")), &QAction::triggered, this, [this] {
         copy();
     });
 
-    menu.addAction(tr("Paste"), this, [this] {
+    connect(menu.addAction(tr("Paste")), &QAction::triggered, this, [this] {
         emit writeBytes(QApplication::clipboard()->text().toUtf8());
     });
 
     menu.addSeparator();
 
-    menu.addAction(tr("Select All"), this, [this] {
+    connect(menu.addAction(tr("Select All")), &QAction::triggered, this, [this] {
         selectAll();
     });
 
     menu.addSeparator();
 
-    menu.addAction(tr("Find"), this, [this] {
+    connect(menu.addAction(tr("Find")), &QAction::triggered, this, [this] {
         Core::ActionManager::command(Core::Constants::FIND_IN_DOCUMENT)->action()->trigger();
     });
 
@@ -838,9 +838,9 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_context->setWidget(this);
     Core::ICore::addContextObject(m_context);
 
-    Core::Command *overrideCtrlE = Core::ActionManager::registerAction(new QAction(), Core::Id("OpenMV.Terminal.Ctrl.E"), context);
+    Core::Command *overrideCtrlE = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.E"), context);
     overrideCtrlE->setDefaultKeySequence(tr("Ctrl+E"));
-    Core::Command *overrideCtrlR = Core::ActionManager::registerAction(new QAction(), Core::Id("OpenMV.Terminal.Ctrl.R"), context);
+    Core::Command *overrideCtrlR = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.R"), context);
     overrideCtrlR->setDefaultKeySequence(tr("Ctrl+R"));
 }
 
