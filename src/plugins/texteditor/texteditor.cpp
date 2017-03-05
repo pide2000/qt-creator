@@ -4413,8 +4413,24 @@ static void drawRectBox(QPainter *painter, const QRect &rect, bool start, bool e
     painter->setPen(outline);
     if (start)
         painter->drawLine(rect.topLeft() + QPoint(1, 0), rect.topRight() -  QPoint(1, 0));
+    //OPENMV-DIFF//
+    if (start) {
+        painter->setPen(QColor(30, 30, 39));
+        painter->drawPoint(rect.topLeft());
+        painter->drawPoint(rect.topRight());
+        painter->setPen(outline);
+    }
+    //OPENMV-DIFF//
     if (end)
         painter->drawLine(rect.bottomLeft() + QPoint(1, 0), rect.bottomRight() -  QPoint(1, 0));
+    //OPENMV-DIFF//
+    if (end) {
+        painter->setPen(QColor(30, 30, 39));
+        painter->drawPoint(rect.bottomLeft());
+        painter->drawPoint(rect.bottomRight());
+        painter->setPen(outline);
+    }
+    //OPENMV-DIFF//
 
     painter->drawLine(rect.topRight() + QPoint(0, start ? 1 : 0), rect.bottomRight() - QPoint(0, end ? 1 : 0));
     painter->drawLine(rect.topLeft() + QPoint(0, start ? 1 : 0), rect.bottomLeft() - QPoint(0, end ? 1 : 0));
@@ -4656,6 +4672,10 @@ void TextEditorWidgetPrivate::drawFoldingMarker(QPainter *painter, const QPalett
            opt.rect.translate(-2, 0);
         else if (!qstrcmp(s->metaObject()->className(), "QMacStyle"))
             opt.rect.translate(-1, 0);
+        //OPENMV-DIFF//
+        else
+            opt.rect.translate(1, 0);
+        //OPENMV-DIFF//
 
         s->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, q);
     }
