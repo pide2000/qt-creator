@@ -523,6 +523,146 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+    Core::EditorManager::restoreState(
+        settings->value(QStringLiteral(EDITOR_MANAGER_STATE)).toByteArray());
+    m_hsplitter->restoreState(
+        settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
+    m_vsplitter->restoreState(
+        settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
+    m_zoom->setChecked(
+        settings->value(QStringLiteral(ZOOM_STATE), m_zoom->isChecked()).toBool());
+    m_jpgCompress->setChecked(
+        settings->value(QStringLiteral(JPG_COMPRESS_STATE), m_jpgCompress->isChecked()).toBool());
+    m_disableFrameBuffer->setChecked(
+        settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE), m_disableFrameBuffer->isChecked()).toBool());
+    m_histogramColorSpace->setCurrentIndex(
+        settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
+    QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
+    font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
+    Core::MessageManager::outputWindow()->setBaseFont(font);
+    Core::MessageManager::outputWindow()->setWheelZoomEnabled(true);
+    Core::MessageManager::outputWindow()->setFontZoom(
+        settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
+    settings->endGroup();
+
+    m_openTerminalMenuData = QList<openTerminalMenuData_t>();
+
+    for(int i = 0, j = settings->beginReadArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP)); i < j; i++)
+    {
+        settings->setArrayIndex(i);
+        openTerminalMenuData_t data;
+        data.displayName = settings->value(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME)).toString();
+        data.optionIndex = settings->value(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX)).toInt();
+        data.commandStr = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_STR)).toString();
+        data.commandVal = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL)).toInt();
+        m_openTerminalMenuData.append(data);
+    }
+
+    settings->endArray();
+
+    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this] {
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+        settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
+            Core::EditorManager::saveState());
+        settings->setValue(QStringLiteral(HSPLITTER_STATE),
+            m_hsplitter->saveState());
+        settings->setValue(QStringLiteral(VSPLITTER_STATE),
+            m_vsplitter->saveState());
+        settings->setValue(QStringLiteral(ZOOM_STATE),
+            m_zoom->isChecked());
+        settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
+            m_jpgCompress->isChecked());
+        settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
+            m_disableFrameBuffer->isChecked());
+        settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
+            m_histogramColorSpace->currentIndex());
+        settings->setValue(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE),
+            Core::MessageManager::outputWindow()->fontZoom());
+        settings->endGroup();
+
+        settings->beginWriteArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP));
+
+        for(int i = 0, j = m_openTerminalMenuData.size(); i < j; i++)
+        {
+            settings->setArrayIndex(i);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME), m_openTerminalMenuData.at(i).displayName);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX), m_openTerminalMenuData.at(i).optionIndex);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_STR), m_openTerminalMenuData.at(i).commandStr);
+            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL), m_openTerminalMenuData.at(i).commandVal);
+        }
+
+        settings->endArray();
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    int major = settings->value(QStringLiteral(RESOURCES_MAJOR), 0).toInt();
+    int minor = settings->value(QStringLiteral(RESOURCES_MINOR), 0).toInt();
+    int patch = settings->value(QStringLiteral(RESOURCES_PATCH), 0).toInt();
+
+    if((major < OMV_IDE_VERSION_MAJOR)
+    || ((major == OMV_IDE_VERSION_MAJOR) && (minor < OMV_IDE_VERSION_MINOR))
+    || ((major == OMV_IDE_VERSION_MAJOR) && (minor == OMV_IDE_VERSION_MINOR) && (patch < OMV_IDE_VERSION_RELEASE)))
+    {
+        settings->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
+        settings->setValue(QStringLiteral(RESOURCES_MINOR), 0);
+        settings->setValue(QStringLiteral(RESOURCES_PATCH), 0);
+        settings->sync();
+
+        bool ok = true;
+
+        QString error;
+
+        if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QString(),
+                error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
+
+            QApplication::quit();
+            ok = false;
+        }
+        else
+        {
+            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html");
+
+            foreach(const QString &dir, list)
+            {
+                QString error;
+
+                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QLatin1Char('/') + dir),
+                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QLatin1Char('/') + dir),
+                                                      &error))
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        QString(),
+                        error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
+
+                    QApplication::quit();
+                    ok = false;
+                    break;
+                }
+            }
+        }
+
+        if(ok)
+        {
+            settings->setValue(QStringLiteral(RESOURCES_MAJOR), OMV_IDE_VERSION_MAJOR);
+            settings->setValue(QStringLiteral(RESOURCES_MINOR), OMV_IDE_VERSION_MINOR);
+            settings->setValue(QStringLiteral(RESOURCES_PATCH), OMV_IDE_VERSION_RELEASE);
+            settings->sync();
+        }
+    }
+
+    settings->endGroup();
+
+    ///////////////////////////////////////////////////////////////////////////
+
     QStringList providerVariables;
     QStringList providerFunctions;
     QMap<QString, QStringList> providerFunctionArgs;
@@ -874,146 +1014,6 @@ void OpenMVPlugin::extensionsInitialized()
             });
         }
     });
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-    Core::EditorManager::restoreState(
-        settings->value(QStringLiteral(EDITOR_MANAGER_STATE)).toByteArray());
-    m_hsplitter->restoreState(
-        settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
-    m_vsplitter->restoreState(
-        settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
-    m_zoom->setChecked(
-        settings->value(QStringLiteral(ZOOM_STATE), m_zoom->isChecked()).toBool());
-    m_jpgCompress->setChecked(
-        settings->value(QStringLiteral(JPG_COMPRESS_STATE), m_jpgCompress->isChecked()).toBool());
-    m_disableFrameBuffer->setChecked(
-        settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE), m_disableFrameBuffer->isChecked()).toBool());
-    m_histogramColorSpace->setCurrentIndex(
-        settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
-    QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
-    font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
-    Core::MessageManager::outputWindow()->setBaseFont(font);
-    Core::MessageManager::outputWindow()->setWheelZoomEnabled(true);
-    Core::MessageManager::outputWindow()->setFontZoom(
-        settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
-    settings->endGroup();
-
-    m_openTerminalMenuData = QList<openTerminalMenuData_t>();
-
-    for(int i = 0, j = settings->beginReadArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP)); i < j; i++)
-    {
-        settings->setArrayIndex(i);
-        openTerminalMenuData_t data;
-        data.displayName = settings->value(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME)).toString();
-        data.optionIndex = settings->value(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX)).toInt();
-        data.commandStr = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_STR)).toString();
-        data.commandVal = settings->value(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL)).toInt();
-        m_openTerminalMenuData.append(data);
-    }
-
-    settings->endArray();
-
-    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this] {
-        QSettings *settings = ExtensionSystem::PluginManager::settings();
-        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-        settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
-            Core::EditorManager::saveState());
-        settings->setValue(QStringLiteral(HSPLITTER_STATE),
-            m_hsplitter->saveState());
-        settings->setValue(QStringLiteral(VSPLITTER_STATE),
-            m_vsplitter->saveState());
-        settings->setValue(QStringLiteral(ZOOM_STATE),
-            m_zoom->isChecked());
-        settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
-            m_jpgCompress->isChecked());
-        settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
-            m_disableFrameBuffer->isChecked());
-        settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
-            m_histogramColorSpace->currentIndex());
-        settings->setValue(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE),
-            Core::MessageManager::outputWindow()->fontZoom());
-        settings->endGroup();
-
-        settings->beginWriteArray(QStringLiteral(OPEN_TERMINAL_SETTINGS_GROUP));
-
-        for(int i = 0, j = m_openTerminalMenuData.size(); i < j; i++)
-        {
-            settings->setArrayIndex(i);
-            settings->setValue(QStringLiteral(OPEN_TERMINAL_DISPLAY_NAME), m_openTerminalMenuData.at(i).displayName);
-            settings->setValue(QStringLiteral(OPEN_TERMINAL_OPTION_INDEX), m_openTerminalMenuData.at(i).optionIndex);
-            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_STR), m_openTerminalMenuData.at(i).commandStr);
-            settings->setValue(QStringLiteral(OPEN_TERMINAL_COMMAND_VAL), m_openTerminalMenuData.at(i).commandVal);
-        }
-
-        settings->endArray();
-    });
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-
-    int major = settings->value(QStringLiteral(RESOURCES_MAJOR), 0).toInt();
-    int minor = settings->value(QStringLiteral(RESOURCES_MINOR), 0).toInt();
-    int patch = settings->value(QStringLiteral(RESOURCES_PATCH), 0).toInt();
-
-    if((major < OMV_IDE_VERSION_MAJOR)
-    || ((major == OMV_IDE_VERSION_MAJOR) && (minor < OMV_IDE_VERSION_MINOR))
-    || ((major == OMV_IDE_VERSION_MAJOR) && (minor == OMV_IDE_VERSION_MINOR) && (patch < OMV_IDE_VERSION_RELEASE)))
-    {
-        settings->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
-        settings->setValue(QStringLiteral(RESOURCES_MINOR), 0);
-        settings->setValue(QStringLiteral(RESOURCES_PATCH), 0);
-        settings->sync();
-
-        bool ok = true;
-
-        QString error;
-
-        if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                QString(),
-                error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
-
-            QApplication::quit();
-            ok = false;
-        }
-        else
-        {
-            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html");
-
-            foreach(const QString &dir, list)
-            {
-                QString error;
-
-                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QLatin1Char('/') + dir),
-                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QLatin1Char('/') + dir),
-                                                      &error))
-                {
-                    QMessageBox::critical(Core::ICore::dialogParent(),
-                        QString(),
-                        error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
-
-                    QApplication::quit();
-                    ok = false;
-                    break;
-                }
-            }
-        }
-
-        if(ok)
-        {
-            settings->setValue(QStringLiteral(RESOURCES_MAJOR), OMV_IDE_VERSION_MAJOR);
-            settings->setValue(QStringLiteral(RESOURCES_MINOR), OMV_IDE_VERSION_MINOR);
-            settings->setValue(QStringLiteral(RESOURCES_PATCH), OMV_IDE_VERSION_RELEASE);
-            settings->sync();
-        }
-    }
-
-    settings->endGroup();
 
     ///////////////////////////////////////////////////////////////////////////
 
