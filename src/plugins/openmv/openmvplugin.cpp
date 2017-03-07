@@ -3086,7 +3086,7 @@ const int connectToTCPPortIndex = 2;
 void OpenMVPlugin::openTerminalAboutToShow()
 {
     m_openTerminalMenu->menu()->clear();
-    connect(m_openTerminalMenu->menu()->addAction(tr("New Terminal")), &QAction::triggered, this, [this] {
+    m_openTerminalMenu->menu()->addAction(tr("New Terminal"), this, [this] {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
@@ -3478,7 +3478,7 @@ void OpenMVPlugin::openTerminalAboutToShow()
     for(int i = 0, j = m_openTerminalMenuData.size(); i < j; i++)
     {
         openTerminalMenuData_t data = m_openTerminalMenuData.at(i);
-        connect(m_openTerminalMenu->menu()->addAction(data.displayName), &QAction::triggered, this, [this, data] {
+        m_openTerminalMenu->menu()->addAction(data.displayName, this, [this, data] {
             OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
             OpenMVTerminalPort *terminalDevice;
 
@@ -3569,7 +3569,7 @@ void OpenMVPlugin::openTerminalAboutToShow()
     if(m_openTerminalMenuData.size())
     {
         m_openTerminalMenu->menu()->addSeparator();
-        connect(m_openTerminalMenu->menu()->addAction(tr("Clear Menu")), &QAction::triggered, this, [this] {
+        m_openTerminalMenu->menu()->addAction(tr("Clear Menu"), this, [this] {
             m_openTerminalMenuData.clear();
         });
     }

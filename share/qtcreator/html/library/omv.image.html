@@ -1928,7 +1928,7 @@ function to compare two sets of keypoints to get the matching distance.</p>
 
 <dl class="method">
 <dt id="image.image.find_keypoints">
-<code class="descclassname">image.</code><code class="descname">find_keypoints</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>threshold=20</em>, <em>scale_factor=1.5</em>, <em>max_keypoints=100</em>, <em>corner_detector=CORNER_AGAST</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_keypoints" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">find_keypoints</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>threshold=20</em>, <em>normalized=False</em>, <em>scale_factor=1.5</em>, <em>max_keypoints=100</em>, <em>corner_detector=CORNER_AGAST</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_keypoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts ORB keypoints from the region-of-interest (x, y, w, h) tuple. You
 can then use then use the <code class="docutils literal"><span class="pre">image.match_descriptor</span></code> function to compare
 two sets of keypoints to get the matching areas. Returns None if no
@@ -1937,6 +1937,9 @@ keypoints were found.</p>
 extracted corners. For the default AGAST corner detector this should be
 around 20. FOr the FAST corner detector this should be around 60-80. The
 lower the threshold the more extracted corners you get.</p>
+<p><code class="docutils literal"><span class="pre">normalized</span></code> is a boolean value that if True turns off extracting
+keypoints at multiple resolutions. Set this to true if you don&#8217;t care
+about dealing with scaling issues and want the algorithm to run faster.</p>
 <p><code class="docutils literal"><span class="pre">scale_factor</span></code> is a float that must be greater than 1.0. A higher scale
 factor will run faster but will have much poorer image matches. A good
 value is between 1.35 and 1.5.</p>
@@ -1949,8 +1952,8 @@ keypoints from the image. It can be either <code class="docutils literal"><span 
 <p>Only for grayscale images.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">roi</span></code>, <code class="docutils literal"><span class="pre">threshold</span></code>, <code class="docutils literal"><span class="pre">scale_factor</span></code>, <code class="docutils literal"><span class="pre">max_keypoints</span></code>, and
-<code class="docutils literal"><span class="pre">corner_detector</span></code> are keyword argument which must be explicitly
+<p class="last"><code class="docutils literal"><span class="pre">roi</span></code>, <code class="docutils literal"><span class="pre">threshold</span></code>, <code class="docutils literal"><span class="pre">normalized``m</span> <span class="pre">``scale_factor</span></code>, <code class="docutils literal"><span class="pre">max_keypoints</span></code>,
+and <code class="docutils literal"><span class="pre">corner_detector</span></code> are keyword argument which must be explicitly
 invoked in the function call by writing <code class="docutils literal"><span class="pre">roi=</span></code>, <code class="docutils literal"><span class="pre">threshold=</span></code>, etc.</p>
 </div>
 </dd></dl>
@@ -2104,7 +2107,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 03 Mar 2017.
+      Last updated on 07 Mar 2017.
 
     </p>
   </div>
