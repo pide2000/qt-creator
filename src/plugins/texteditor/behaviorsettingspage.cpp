@@ -125,7 +125,9 @@ QWidget *BehaviorSettingsPage::widget()
         d->m_page->behaviorWidget->setCodeStyle(d->m_pageCodeStyle);
 
         TabSettingsWidget *tabSettingsWidget = d->m_page->behaviorWidget->tabSettingsWidget();
-        tabSettingsWidget->setCodingStyleWarningVisible(true);
+        //OPENMV-DIFF//
+        //tabSettingsWidget->setCodingStyleWarningVisible(true);
+        //OPENMV-DIFF//
         connect(tabSettingsWidget, &TabSettingsWidget::codingStyleLinkClicked,
                 this, &BehaviorSettingsPage::openCodingStylePreferences);
 

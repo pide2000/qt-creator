@@ -330,7 +330,11 @@ FontSettingsPage::FontSettingsPage(const FormatDescriptions &fd,
                                    Core::Id id,
                                    QObject *parent) :
     TextEditorOptionsPage(parent),
-    d_ptr(new FontSettingsPagePrivate(fd, id, tr("Font && Colors"), category().toString()))
+    //OPENMV-DIFF//
+    //d_ptr(new FontSettingsPagePrivate(fd, id, tr("Font && Colors"), category().toString()))
+    //OPENMV-DIFF//
+    d_ptr(new FontSettingsPagePrivate(fd, id, tr("Font"), category().toString()))
+    //OPENMV-DIFF//
 {
     setId(d_ptr->m_id);
     setDisplayName(d_ptr->m_displayName);
@@ -383,6 +387,11 @@ QWidget *FontSettingsPage::widget()
         updatePointSizes();
         refreshColorSchemeList();
         d_ptr->m_lastValue = d_ptr->m_value;
+        //OPENMV-DIFF//
+        d_ptr->m_ui->antialias->hide();
+        d_ptr->m_ui->colorSchemeGroupBox->hide();
+        d_ptr->m_ui->verticalLayout->addStretch(1);
+        //OPENMV-DIFF//
     }
     return d_ptr->m_widget;
 }

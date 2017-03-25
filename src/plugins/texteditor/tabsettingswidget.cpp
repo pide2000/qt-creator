@@ -50,6 +50,10 @@ TabSettingsWidget::TabSettingsWidget(QWidget *parent) :
             this, &TabSettingsWidget::slotSettingsChanged);
     connect(ui->continuationAlignBehavior, comboIndexChanged,
             this, &TabSettingsWidget::slotSettingsChanged);
+    //OPENMV-DIFF//
+    connect(ui->serialTerminalTabSize, spinValueChanged,
+            this, &TabSettingsWidget::slotSettingsChanged);
+    //OPENMV-DIFF//
 }
 
 TabSettingsWidget::~TabSettingsWidget()
@@ -64,6 +68,9 @@ void TabSettingsWidget::setTabSettings(const TextEditor::TabSettings& s)
     ui->tabSize->setValue(s.m_tabSize);
     ui->indentSize->setValue(s.m_indentSize);
     ui->continuationAlignBehavior->setCurrentIndex(s.m_continuationAlignBehavior);
+    //OPENMV-DIFF//
+    ui->serialTerminalTabSize->setValue(s.m_serialTerminalTabSize);
+    //OPENMV-DIFF//
     blockSignals(wasBlocked);
 }
 
@@ -75,6 +82,9 @@ TabSettings TabSettingsWidget::tabSettings() const
     set.m_tabSize = ui->tabSize->value();
     set.m_indentSize = ui->indentSize->value();
     set.m_continuationAlignBehavior = (TabSettings::ContinuationAlignBehavior)(ui->continuationAlignBehavior->currentIndex());
+    //OPENMV-DIFF//
+    set.m_serialTerminalTabSize = ui->serialTerminalTabSize->value();
+    //OPENMV-DIFF//
 
     return set;
 }

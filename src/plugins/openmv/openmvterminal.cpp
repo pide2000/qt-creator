@@ -11,13 +11,17 @@
 
 MyPlainTextEdit::MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent) : QPlainTextEdit(parent)
 {
-    m_tabWidth = 8; // TODO...
+    m_tabWidth = TextEditor::TextEditorSettings::codeStyle()->tabSettings().m_serialTerminalTabSize;
     m_textCursor = QTextCursor(document());
     m_stateMachine = ASCII;
     m_shiftReg = QByteArray();
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
+    connect(TextEditor::TextEditorSettings::codeStyle(), &TextEditor::ICodeStylePreferences::tabSettingsChanged,
+            this, [this] (const TextEditor::TabSettings &settings) {
+        m_tabWidth = settings.m_serialTerminalTabSize;
+    });
 
     setReadOnly(true);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -95,7 +99,7 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
                         temp.append((x >> 16) & 0xFF);
                     }
 
-                    if((size % 4) == 3) // 2 bytes -> 16-bits -> 18-bits sent
+                    if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
                     {
                         int x = 0;
                         x |= (m_frameBufferData.at(size - 3) & 0x3F) << 0;
@@ -105,7 +109,7 @@ void MyPlainTextEdit::readBytes(const QByteArray &data)
                         temp.append((x >> 8) & 0xFF);
                     }
 
-                    if((size % 4) == 2) // 1 byte -> 8-bits -> 12-bits sent
+                    if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
                     {
                         int x = 0;
                         x |= (m_frameBufferData.at(size - 2) & 0x3F) << 0;
@@ -429,7 +433,16 @@ void MyPlainTextEdit::clear()
 
 void MyPlainTextEdit::execute()
 {
-    emit writeBytes("\x05" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04");
+    // Write bytes slowly so as to not overload the MicroPython board.
+
+    QByteArray data = "\x05" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04";
+
+    for(int i = 0; i < data.size(); i++)
+    {
+        emit writeBytes(data.mid(i, 1));
+    }
+
+    // emit writeBytes("\x05" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04");
 }
 
 void MyPlainTextEdit::interrupt()
@@ -656,6 +669,7 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
 bool MyPlainTextEdit::focusNextPrevChild(bool next)
 {
     Q_UNUSED(next)
+
     return false;
 }
 

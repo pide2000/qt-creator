@@ -114,6 +114,14 @@ BehaviorSettingsWidget::BehaviorSettingsWidget(QWidget *parent)
             this, &BehaviorSettingsWidget::slotBehaviorSettingsChanged);
     connect(d->m_ui.smartSelectionChanging, &QAbstractButton::clicked,
             this, &BehaviorSettingsWidget::slotBehaviorSettingsChanged);
+    //OPENMV-DIFF//
+    d->m_ui.groupBoxEncodings->hide();
+    d->m_ui.mouseHiding->hide();
+    d->m_ui.mouseNavigation->hide();
+    d->m_ui.scrollWheelZooming->hide();
+    d->m_ui.camelCaseNavigation->hide();
+    d->m_ui.smartSelectionChanging->hide();
+    //OPENMV-DIFF//
 }
 
 BehaviorSettingsWidget::~BehaviorSettingsWidget()

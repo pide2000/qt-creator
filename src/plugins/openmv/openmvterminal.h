@@ -21,8 +21,10 @@
 #include <coreplugin/icore.h>
 #include <coreplugin/idocument.h>
 #include <coreplugin/minisplitter.h>
+#include <texteditor/icodestylepreferences.h>
 #include <texteditor/fontsettings.h>
 #include <texteditor/texteditorsettings.h>
+#include <texteditor/tabsettings.h>
 #include <texteditor/texteditor.h>
 
 #include "openmvpluginfb.h"

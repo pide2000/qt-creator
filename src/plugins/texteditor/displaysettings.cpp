@@ -56,7 +56,11 @@ DisplaySettings::DisplaySettings() :
     m_animateMatchingParentheses(true),
     m_highlightMatchingParentheses(true),
     m_markTextChanges(true),
-    m_autoFoldFirstComment(true),
+    //OPENMV-DIFF//
+    //m_autoFoldFirstComment(true),
+    //OPENMV-DIFF//
+    m_autoFoldFirstComment(false),
+    //OPENMV-DIFF//
     m_centerCursorOnScroll(false),
     m_openLinksInNextSplit(false),
     m_forceOpenLinksInNextSplit(false),

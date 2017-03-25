@@ -75,6 +75,11 @@ QWidget *DisplaySettingsPage::widget()
         d->m_page = new Internal::Ui::DisplaySettingsPage;
         d->m_page->setupUi(d->m_widget);
         settingsToUI();
+        //OPENMV-DIFF//
+        d->m_page->autoFoldFirstComment->hide();
+        d->m_page->openLinksInNextSplit->hide();
+        d->m_page->displayFileEncoding->hide();
+        //OPENMV-DIFF//
     }
     return d->m_widget;
 }

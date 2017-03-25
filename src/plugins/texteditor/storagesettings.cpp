@@ -40,7 +40,11 @@ static const char groupPostfix[] = "StorageSettings";
 
 StorageSettings::StorageSettings()
     : m_cleanWhitespace(true),
-      m_inEntireDocument(false),
+      //OPENMV-DIFF//
+      //m_inEntireDocument(false),
+      //OPENMV-DIFF//
+      m_inEntireDocument(true),
+      //OPENMV-DIFF//
       m_addFinalNewLine(true),
       m_cleanIndentation(true)
 {

@@ -478,8 +478,10 @@
 				<IncludeRules context="Normal" />
 			</context>
 			<context name="ArgumentHighlight2" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
 				<keyword attribute="OpenMVArguments" String="listOpenMVArguments" context="#pop"/>
-				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]" context="#pop"/>
+				<RegExpr attribute="OpenMVArguments" String="[a-zA-Z_][a-zA-Z_0-9]" context="#pop"/>
+				<DetectChar attribute="Normal Text" char="=" context="#pop"/>
 			</context>
 			<!--OPENMV-DIFF-->
 
