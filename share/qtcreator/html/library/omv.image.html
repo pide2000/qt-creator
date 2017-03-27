@@ -138,6 +138,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-image-image-object">class Image &#8211; Image object</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id4">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">Methods</a></li>
@@ -842,7 +843,7 @@ like <code class="docutils literal"><span class="pre">image.draw_rectangle</span
 <dl class="method">
 <dt id="image.qrcode.payload">
 <code class="descclassname">qrcode.</code><code class="descname">payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.qrcode.payload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the payload string of the qrcode.</p>
+<dd><p>Returns the payload string of the qrcode. E.g. the URL.</p>
 <p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
 </dd></dl>
 
@@ -1109,6 +1110,95 @@ rotating the camera while looking directly at the tag.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="class-barcode-barcode-object">
+<h1>class BarCode &#8211; BarCode object<a class="headerlink" href="#class-barcode-barcode-object" title="Permalink to this headline">¶</a></h1>
+<p>The barcode object is returned by <code class="docutils literal"><span class="pre">image.find_barcodes</span></code>.</p>
+<dl class="method">
+<dt id="image.barcode.rect">
+<code class="descclassname">barcode.</code><code class="descname">rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangle tuple (x, y, w, h) for use with other <code class="docutils literal"><span class="pre">image</span></code> methods
+like <code class="docutils literal"><span class="pre">image.draw_rectangle</span></code> of the barcode&#8217;s bounding box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.x">
+<code class="descclassname">barcode.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the barcode&#8217;s bounding box x coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.y">
+<code class="descclassname">barcode.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the barcode&#8217;s bounding box y coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.w">
+<code class="descclassname">barcode.</code><code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the barcode&#8217;s bounding box w coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.h">
+<code class="descclassname">barcode.</code><code class="descname">h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the barcode&#8217;s bounding box h coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.payload">
+<code class="descclassname">barcode.</code><code class="descname">payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the payload string of the barcode. E.g. The number.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.type">
+<code class="descclassname">barcode.</code><code class="descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the type enumeration of the barcode (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+<blockquote>
+<div><ul class="simple">
+<li>image.EAN2</li>
+<li>image.EAN5</li>
+<li>image.EAN8</li>
+<li>image.UPCE</li>
+<li>image.ISBN10</li>
+<li>image.UPCA</li>
+<li>image.EAN13</li>
+<li>image.ISBN13</li>
+<li>image.I25</li>
+<li>image.DATABAR</li>
+<li>image.DATABAR_EXP</li>
+<li>image.CODABAR</li>
+<li>image.CODE39</li>
+<li>image.PDF417 - Future (e.g. doesn&#8217;t work right now).</li>
+<li>image.CODE93</li>
+<li>image.CODE128</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.rotation">
+<code class="descclassname">barcode.</code><code class="descname">rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation of the barcode in radians (float).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[6]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.barcode.quality">
+<code class="descclassname">barcode.</code><code class="descname">quality</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.barcode.quality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of times this barcode was detected in the image (int).</p>
+<p>When scanning a barcode each new scanline can decode the same barcode. This
+value increments for a barcode each time that happens...</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="class-image-image-object">
 <h1>class Image &#8211; Image object<a class="headerlink" href="#class-image-image-object" title="Permalink to this headline">¶</a></h1>
 <p>The image object is the basic object for machine vision operations.</p>
@@ -1191,15 +1281,75 @@ invoked in the function call by writing <code class="docutils literal"><span cla
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.compressed">
-<code class="descclassname">image.</code><code class="descname">compressed</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compressed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a JPEG compressed image - the original image is untouched.</p>
+<dt id="image.image.compress">
+<code class="descclassname">image.</code><code class="descname">compress</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>JPEG compresses the image in place. Use this method versus <code class="docutils literal"><span class="pre">compressed</span></code>
+to save heap space and to use a higher <code class="docutils literal"><span class="pre">quality</span></code> for compression at the
+cost of destroying the original image.</p>
 <p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100) (int).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><code class="docutils literal"><span class="pre">quality</span></code> is a keyword argument which must be explicitly
 invoked in the function call by writing <code class="docutils literal"><span class="pre">quality=</span></code>.</p>
 </div>
+<p>Only call this on Grayscale and RGB565 images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.compress_for_ide">
+<code class="descclassname">image.</code><code class="descname">compress_for_ide</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compress_for_ide" title="Permalink to this definition">¶</a></dt>
+<dd><p>JPEG compresses the image in place. Use this method versus <code class="docutils literal"><span class="pre">compressed</span></code>
+to save heap space and to use a higher <code class="docutils literal"><span class="pre">quality</span></code> for compression at the
+cost of destroying the original image.</p>
+<p>This method JPEG compresses the image and then formats the JPEG data for
+transmission to OpenMV IDE to display by encoding every 6-bits as a byte
+valued between 128-191. This is done to prevent JPEG data from being
+misinterpreted as other text data in the byte stream.</p>
+<p>You need to use this method to format image data for display to terminal
+windows created via &#8220;Open Terminal&#8221; in OpenMV IDE.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100) (int).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">quality</span></code> is a keyword argument which must be explicitly
+invoked in the function call by writing <code class="docutils literal"><span class="pre">quality=</span></code>.</p>
+</div>
+<p>Only call this on Grayscale and RGB565 images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.compressed">
+<code class="descclassname">image.</code><code class="descname">compressed</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JPEG compressed image - the original image is untouched. However,
+this method requires a somewhat large allocation of heap space so the image
+compression quality must be low and the image resolution must be low.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100) (int).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">quality</span></code> is a keyword argument which must be explicitly
+invoked in the function call by writing <code class="docutils literal"><span class="pre">quality=</span></code>.</p>
+</div>
+<p>Only call this on Grayscale and RGB565 images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.compressed_for_ide">
+<code class="descclassname">image.</code><code class="descname">compressed_for_ide</code><span class="sig-paren">(</span><em>quality=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.compressed_for_ide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JPEG compressed image - the original image is untouched. However,
+this method requires a somewhat large allocation of heap space so the image
+compression quality must be low and the image resolution must be low.</p>
+<p>This method JPEG compresses the image and then formats the JPEG data for
+transmission to OpenMV IDE to display by encoding every 6-bits as a byte
+valued between 128-191. This is done to prevent JPEG data from being
+misinterpreted as other text data in the byte stream.</p>
+<p>You need to use this method to format image data for display to terminal
+windows created via &#8220;Open Terminal&#8221; in OpenMV IDE.</p>
+<p><code class="docutils literal"><span class="pre">quality</span></code> is the compression quality (0-100) (int).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">quality</span></code> is a keyword argument which must be explicitly
+invoked in the function call by writing <code class="docutils literal"><span class="pre">quality=</span></code>.</p>
+</div>
+<p>Only call this on Grayscale and RGB565 images.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1807,6 +1957,50 @@ writing <code class="docutils literal"><span class="pre">roi=</span></code>, <co
 </dd></dl>
 
 <dl class="method">
+<dt id="image.image.find_barcodes">
+<code class="descclassname">image.</code><code class="descname">find_barcodes</code><span class="sig-paren">(</span><em>roi=Auto</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_barcodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all 1D barcodes within the <code class="docutils literal"><span class="pre">roi</span></code> and returns a list of <code class="docutils literal"><span class="pre">barcode</span></code>
+objects. Please see the <code class="docutils literal"><span class="pre">barcode</span></code> object for more information.</p>
+<p>For best results use a 640 by 40/80/160 window. The lower the vertical res
+the faster everything will run. Since bar codes are linear 1D images you
+just need a lot of resolution in one direction and just a little resolution
+in the other direction. Note that this function scans both horizontally and
+vertically so use can use a 40/80/160 by 480 window if you want. Finally,
+make sure to adjust your lens so that the bar code is positioned where the
+focal length produces the sharpest image. Blurry bar codes can&#8217;t be decoded.</p>
+<p>This function supports all these 1D barcodes (basically all barcodes):</p>
+<blockquote>
+<div><ul class="simple">
+<li>image.EAN2</li>
+<li>image.EAN5</li>
+<li>image.EAN8</li>
+<li>image.UPCE</li>
+<li>image.ISBN10</li>
+<li>image.UPCA</li>
+<li>image.EAN13</li>
+<li>image.ISBN13</li>
+<li>image.I25</li>
+<li>image.DATABAR (RSS-14)</li>
+<li>image.DATABAR_EXP (RSS-Expanded)</li>
+<li>image.CODABAR</li>
+<li>image.CODE39</li>
+<li>image.PDF417</li>
+<li>image.CODE93</li>
+<li>image.CODE128</li>
+</ul>
+</div></blockquote>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">roi</span></code> is a keyword argument which must be explicitly invoked in the
+function call by writing <code class="docutils literal"><span class="pre">roi=</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="image.image.midpoint_pooled">
 <code class="descclassname">image.</code><code class="descname">midpoint_pooled</code><span class="sig-paren">(</span><em>x_div</em>, <em>y_div</em>, <em>bias=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.midpoint_pooled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the midpoint of <code class="docutils literal"><span class="pre">x_div</span></code> * <code class="docutils literal"><span class="pre">y_div</span></code> squares in the image and returns
@@ -2084,6 +2278,102 @@ on an image.</p>
 <dd><p>ARTOOLKIT tag family bit mask enum. Used for AprilTags.</p>
 </dd></dl>
 
+<dl class="data">
+<dt id="image.image.EAN2">
+<code class="descclassname">image.</code><code class="descname">EAN2</code><a class="headerlink" href="#image.image.EAN2" title="Permalink to this definition">¶</a></dt>
+<dd><p>EAN2 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.EAN5">
+<code class="descclassname">image.</code><code class="descname">EAN5</code><a class="headerlink" href="#image.image.EAN5" title="Permalink to this definition">¶</a></dt>
+<dd><p>EAN5 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.EAN8">
+<code class="descclassname">image.</code><code class="descname">EAN8</code><a class="headerlink" href="#image.image.EAN8" title="Permalink to this definition">¶</a></dt>
+<dd><p>EAN8 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.UPCE">
+<code class="descclassname">image.</code><code class="descname">UPCE</code><a class="headerlink" href="#image.image.UPCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>UPCE barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.ISBN10">
+<code class="descclassname">image.</code><code class="descname">ISBN10</code><a class="headerlink" href="#image.image.ISBN10" title="Permalink to this definition">¶</a></dt>
+<dd><p>ISBN10 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.UPCA">
+<code class="descclassname">image.</code><code class="descname">UPCA</code><a class="headerlink" href="#image.image.UPCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>UPCA barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.EAN13">
+<code class="descclassname">image.</code><code class="descname">EAN13</code><a class="headerlink" href="#image.image.EAN13" title="Permalink to this definition">¶</a></dt>
+<dd><p>EAN13 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.ISBN13">
+<code class="descclassname">image.</code><code class="descname">ISBN13</code><a class="headerlink" href="#image.image.ISBN13" title="Permalink to this definition">¶</a></dt>
+<dd><p>ISBN13 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.I25">
+<code class="descclassname">image.</code><code class="descname">I25</code><a class="headerlink" href="#image.image.I25" title="Permalink to this definition">¶</a></dt>
+<dd><p>I25 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.DATABAR">
+<code class="descclassname">image.</code><code class="descname">DATABAR</code><a class="headerlink" href="#image.image.DATABAR" title="Permalink to this definition">¶</a></dt>
+<dd><p>DATABAR barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.DATABAR_EXP">
+<code class="descclassname">image.</code><code class="descname">DATABAR_EXP</code><a class="headerlink" href="#image.image.DATABAR_EXP" title="Permalink to this definition">¶</a></dt>
+<dd><p>DATABAR_EXP barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.CODABAR">
+<code class="descclassname">image.</code><code class="descname">CODABAR</code><a class="headerlink" href="#image.image.CODABAR" title="Permalink to this definition">¶</a></dt>
+<dd><p>CODABAR barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.CODE39">
+<code class="descclassname">image.</code><code class="descname">CODE39</code><a class="headerlink" href="#image.image.CODE39" title="Permalink to this definition">¶</a></dt>
+<dd><p>CODE39 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.PDF417">
+<code class="descclassname">image.</code><code class="descname">PDF417</code><a class="headerlink" href="#image.image.PDF417" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDF417 barcode type enum - Future (e.g. doesn&#8217;t work right now).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.CODE93">
+<code class="descclassname">image.</code><code class="descname">CODE93</code><a class="headerlink" href="#image.image.CODE93" title="Permalink to this definition">¶</a></dt>
+<dd><p>CODE93 barcode type enum.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="image.image.CODE128">
+<code class="descclassname">image.</code><code class="descname">CODE128</code><a class="headerlink" href="#image.image.CODE128" title="Permalink to this definition">¶</a></dt>
+<dd><p>CODE128 barcode type enum.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -2107,7 +2397,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 07 Mar 2017.
+      Last updated on 27 Mar 2017.
 
     </p>
   </div>

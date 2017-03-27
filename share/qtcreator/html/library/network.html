@@ -193,11 +193,38 @@ the network build of firmware must be installed.</p>
 <h3>Constructors<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="network.WINC">
-<em class="property">class </em><code class="descclassname">network.</code><code class="descname">WINC</code><span class="sig-paren">(</span><em>enter_update_mode=0</em><span class="sig-paren">)</span><a class="headerlink" href="#network.WINC" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">network.</code><code class="descname">WINC</code><span class="sig-paren">(</span><em>mode=MODE_STATION</em><span class="sig-paren">)</span><a class="headerlink" href="#network.WINC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a winc driver object and connects to the wifi shield which uses
 I/O pins P0, P1, P2, P3, P6, P7, and P8.</p>
-<p>If <code class="docutils literal"><span class="pre">enter_update_mode</span></code> is true then the WINC chip is put into firmware
-update mode.</p>
+<p><code class="docutils literal"><span class="pre">mode</span></code> controls the mode the WINC module works in:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">network.WINC.MODE_STATION</p>
+<p>The module connects to an access point as a client. This is the default mode.</p>
+</li>
+<li><p class="first">network.WINC.MODE_AP</p>
+<p>The module will create an AP (Access Point) and
+accept connections from a client.</p>
+<p>Note1: The start_ap() function must be called after setting AP mode to configure the AP.</p>
+<p>Note2: The WINC1500 has some limitations in its AP implementation:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Only one client can connect at a time.</li>
+<li>Only OPEN or WEP security are supported.</li>
+<li>There&#8217;s a bug in the FW, when the client disconnects any bound sockets are lost (they just stop working). As a workaround, set a timeout for the server socket to force it to raise an exception and then reopen it (See the example script).</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">network.WINC.MODE_P2P</p>
+<p>Enable Peer-to-Peer mode, also known as WiFiDirect. This mode is similar to AP, it allows two devices to connect and exchange data directly.
+Note: This mode is Not implemented Yet.</p>
+</li>
+<li><p class="first">network.WINC.MODE_FIRMWARE:</p>
+<p>This mode enables WiFi module firmware update.
+Note: Do NOT use unless you know what you&#8217;re doing, modules are shipped with the latest FW update there&#8217;s No need to update the FW.</p>
+</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 </div>
@@ -205,7 +232,7 @@ update mode.</p>
 <h3>Methods<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <dl class="method">
 <dt id="network.winc.connect">
-<code class="descclassname">winc.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>ssid</em>, <em>key</em>, <em>security=WPA_PSK</em><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.connect" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">winc.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>ssid</em>, <em>key=None</em>, <em>security=WPA_PSK</em><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a wifi network with ssid <code class="docutils literal"><span class="pre">ssid</span></code> using key <code class="docutils literal"><span class="pre">key</span></code> with
 security <code class="docutils literal"><span class="pre">security</span></code>.</p>
 <p>After connecting to the network use the <code class="docutils literal"><span class="pre">usocket</span></code> module to open TCP/UDP
@@ -214,6 +241,21 @@ ports to send and receive data.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">This function takes a little while to return.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.start_ap">
+<code class="descclassname">winc.</code><code class="descname">start_ap</code><span class="sig-paren">(</span><em>SSID</em>, <em>key=None</em>, <em>security=OPEN</em>, <em>channel=1</em><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.start_ap" title="Permalink to this definition">¶</a></dt>
+<dd><p>When running in AP mode this function must be called after creating
+a WINC object to configure and start the AP .</p>
+<blockquote>
+<div><ul class="simple">
+<li>SSID: The AP SSID (must be set)</li>
+<li>Key: The AP encryption key. A Key is required only if security is WEP.</li>
+<li>security: AP security mode. (Only network.WINC.OPEN or network.WINC.WEP are supported).</li>
+<li>channel: WiFi channel, change this if you have another AP running at the same channel.</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -298,6 +340,18 @@ connected network.</p>
 &#8220;/firmware/m2m_aio_3a0.bin&#8221;.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="network.winc.connected_sta">
+<code class="descclassname">winc.</code><code class="descname">connected_sta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.connected_sta" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method returns the connected client IP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="network.winc.wait_for_sta">
+<code class="descclassname">winc.</code><code class="descname">wait_for_sta</code><span class="sig-paren">(</span><em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#network.winc.wait_for_sta" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function blocks and waits for a client to connect. If timeout is 0 this will block forever.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="id13">
 <h3>Constants<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
@@ -365,7 +419,7 @@ connected network.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 06 Mar 2017.
+      Last updated on 27 Mar 2017.
 
     </p>
   </div>
