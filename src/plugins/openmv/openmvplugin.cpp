@@ -1156,6 +1156,167 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
     }
 }
 
+void OpenMVPlugin::registerOpenMVCam(const QString board, const QString id)
+{
+    if(QMessageBox::warning(Core::ICore::dialogParent(),
+        tr("Unregistered OpenMV Cam Detected"),
+        tr("Your OpenMV Cam isn't registered. You need to register your custom OpenMV Cam (or clone OpenMV Cam) with OpenMV for unlimited use with OpenMV IDE without any interruptions.\n\n"
+           "Would you like to register your custom OpenMV Cam (or clone OpenMV Cam) now?"),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
+    == QMessageBox::Yes)
+    {
+        if(registerOpenMVCamDialog(board, id)) return;
+    }
+
+    if(QMessageBox::warning(Core::ICore::dialogParent(),
+        tr("Unregistered OpenMV Cam Detected"),
+        tr("Unregistered custom OpenMV Cams (or clone OpenMV Cams) hurt the open-source OpenMV ecosystem by undercutting offical OpenMV Cam sales which help fund OpenMV Cam software development.\n\n"
+           "Would you like to register your custom OpenMV Cam (or clone OpenMV Cam) now?"),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
+    == QMessageBox::Yes)
+    {
+        if(registerOpenMVCamDialog(board, id)) return;
+    }
+
+    if(QMessageBox::warning(Core::ICore::dialogParent(),
+        tr("Unregistered OpenMV Cam Detected"),
+        tr("OpenMV IDE will display these three messages boxes each time you connect until you register your custom (or clone) OpenMV Cam...\n\n"
+           "Would you like to register your custom OpenMV Cam (or clone OpenMV Cam) now?"),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes)
+    == QMessageBox::Yes)
+    {
+        if(registerOpenMVCamDialog(board, id)) return;
+    }
+}
+
+bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id)
+{
+    forever
+    {
+        QString text = QStringLiteral("#####-#####-#####-#####-#####");
+
+        bool boardKeyOk;
+        QString boardKey = QInputDialog::getText(Core::ICore::dialogParent(),
+            tr("Register OpenMV Cam"), tr("Please enter a board key to register your OpenMV Cam. If you do not have a board key you may purcahse one from OpenMV <a href=http://openmv.io/products/openmv-cam-board-key>here</a>."),
+            QLineEdit::Normal, text, &boardKeyOk,
+            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+        if(boardKeyOk)
+        {
+            QString chars;
+
+            for(int i = 0; i < boardKey.size(); i++)
+            {
+                if(boardKey.at(i).isLetterOrNumber())
+                {
+                    chars.append(boardKey.at(i).toUpper());
+
+                    if(chars.size() && (!(chars.size() % 5)))
+                    {
+                        chars.append(QLatin1Char('-'));
+                    }
+                }
+            }
+
+            if(QRegularExpression(QStringLiteral("^[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{5}-[0-9A-Z]{5}$")).match(chars).hasMatch())
+            {
+                QNetworkAccessManager manager(this);
+                QProgressDialog dialog(tr("Registering OpenMV Cam..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                QProgressDialog *dialogPtr = &dialog;
+
+                connect(&manager, &QNetworkAccessManager::finished, this, [this, dialogPtr] { dialogPtr->done(reinterpret_cast<int>(dialogPtr)); });
+
+                QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-register.php?board=%L1&id=%L2&id_key=%L3")).arg(board).arg(id).arg(boardKey)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
+                QNetworkReply *reply = manager.get(request);
+
+                if(reply)
+                {
+                    connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+
+                    bool wasCanceled = dialog.exec() != reinterpret_cast<int>(dialogPtr);
+
+                    QByteArray data = reply->readAll();
+
+                    QTimer::singleShot(0, reply, &QNetworkReply::deleteLater);
+
+                    if(wasCanceled)
+                    {
+                        if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
+                        {
+                            if(QString::fromUtf8(data).contains(QStringLiteral("Done")))
+                            {
+                                QMessageBox::information(Core::ICore::dialogParent(),
+                                    tr("Register OpenMV Cam"),
+                                    tr("Thank you for registering your OpenMV Cam!"));
+
+                                return true;
+                            }
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: Invalid ID Key!")))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Register OpenMV Cam"),
+                                    tr("Invalid Board Key!"));
+                            }
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: ID Key already used!")))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Register OpenMV Cam"),
+                                    tr("Board Key already used!"));
+                            }
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: Board and ID already registered!")))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Register OpenMV Cam"),
+                                    tr("Board and ID already registered!"));
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Register OpenMV Cam"),
+                                    tr("Database Error!"));
+                            }
+                        }
+                        else if(reply->error() != QNetworkReply::NoError)
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Register OpenMV Cam"),
+                                tr("Error: %L1!").arg(reply->error()));
+                        }
+                        else
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Register OpenMV Cam"),
+                                tr("GET Network error!"));
+                        }
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Register OpenMV Cam"),
+                        tr("GET network error!"));
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Register OpenMV Cam"),
+                    tr("Invalidly formatted Board Key!"));
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
 static bool removeRecursively(const Utils::FileName &path, QString *error)
 {
     return Utils::FileUtils::removeRecursively(path, error);
@@ -2256,6 +2417,79 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             }
         }
 
+        // Check ID ///////////////////////////////////////////////////////////
+
+        if(!((major2 < OLD_API_MAJOR)
+        || ((major2 == OLD_API_MAJOR) && (minor2 < OLD_API_MINOR))
+        || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 < OLD_API_PATCH))))
+        {
+            QString arch2 = QString();
+            QString *arch2Ptr = &arch2;
+
+            QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::archString,
+                this, [this, arch2Ptr] (const QString &arch) {
+                *arch2Ptr = arch;
+            });
+
+            QEventLoop loop;
+
+            connect(m_iodevice, &OpenMVPluginIO::archString,
+                    &loop, &QEventLoop::quit);
+
+            m_iodevice->getArchString();
+
+            loop.exec();
+
+            disconnect(conn);
+
+            if(!arch2.isEmpty())
+            {
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("[(.+?):(.+?)]")).match(arch2);
+
+                if(match.hasMatch())
+                {
+                    QString board = match.captured(1);
+                    QString id = match.captured(2);
+
+                    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+                    connect(manager, &QNetworkAccessManager::finished, this, [this, board, id] (QNetworkReply *reply) {
+
+                        QByteArray data = reply->readAll();
+
+                        QTimer::singleShot(0, reply, &QNetworkReply::deleteLater);
+
+                        if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
+                        {
+                            if(QString::fromUtf8(data).contains(QStringLiteral("No")))
+                            {
+                                registerOpenMVCam(board, id);
+                            }
+                        }
+                    });
+
+                    QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-check.php?board=%L1&id=%L2")).arg(board).arg(id)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
+                    QNetworkReply *reply = manager->get(request);
+
+                    if(reply)
+                    {
+                        connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+                    }
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Connect"),
+                    tr("Timeout error while getting board architecture!"));
+
+                CLOSE_CONNECT_END();
+            }
+        }
+
         // Stopping ///////////////////////////////////////////////////////////
 
         m_iodevice->scriptStop();
@@ -2335,8 +2569,6 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                 }
             }
         }
-
-        // Check ID ///////////////////////////////////////////////////////////
 
         ///////////////////////////////////////////////////////////////////////
 

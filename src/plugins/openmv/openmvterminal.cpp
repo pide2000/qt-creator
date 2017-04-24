@@ -18,6 +18,7 @@ MyPlainTextEdit::MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent) : QPlain
     m_frameBufferData = QByteArray();
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
+
     connect(TextEditor::TextEditorSettings::codeStyle(), &TextEditor::ICodeStylePreferences::tabSettingsChanged,
             this, [this] (const TextEditor::TabSettings &settings) {
         m_tabWidth = settings.m_serialTerminalTabSize;
@@ -592,7 +593,9 @@ void MyPlainTextEdit::keyPressEvent(QKeyEvent *event)
 
             if((data == "\r") || (data == "\r\n") || (data == "\n"))
             {
-                emit writeBytes("\r\n");
+                // emit writeBytes("\r\n");
+                emit writeBytes("\r");
+                emit writeBytes("\n");
             }
             else
             {
@@ -648,7 +651,16 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
     });
 
     connect(menu.addAction(tr("Paste")), &QAction::triggered, this, [this] {
-        emit writeBytes(QApplication::clipboard()->text().toUtf8());
+        // Write bytes slowly so as to not overload the MicroPython board.
+
+        QByteArray data = QApplication::clipboard()->text().toUtf8();
+
+        for(int i = 0; i < data.size(); i++)
+        {
+            emit writeBytes(data.mid(i, 1));
+        }
+
+        // emit writeBytes(QApplication::clipboard()->text().toUtf8());
     });
 
     menu.addSeparator();
@@ -939,6 +951,10 @@ void OpenMVTerminalSerialPort_private::writeBytes(const QByteArray &data)
             delete m_port;
             m_port = Q_NULLPTR;
         }
+        else
+        {
+            QThread::msleep(1); // Ensure small packets are broken up.
+        }
     }
 }
 
@@ -1013,6 +1029,10 @@ void OpenMVTerminalUDPPort_private::writeBytes(const QByteArray &data)
             delete m_port;
             m_port = Q_NULLPTR;
         }
+        else
+        {
+            QThread::msleep(1); // Ensure small packets are broken up.
+        }
     }
 }
 
@@ -1086,6 +1106,10 @@ void OpenMVTerminalTCPPort_private::writeBytes(const QByteArray &data)
         {
             delete m_port;
             m_port = Q_NULLPTR;
+        }
+        else
+        {
+            QThread::msleep(1); // Ensure small packets are broken up.
         }
     }
 }
