@@ -328,10 +328,12 @@ IAssistProposal *KeywordsCompletionAssistProcessor::perform(const AssistInterfac
         if(chr == QLatin1Char('.'))
         {
             if(!(m_interface->position() - 1)) return 0;
+            QChar chr2 = m_interface->characterAt(m_interface->position() - 2);
+            bool chr2IsBracket = (chr2 == QLatin1Char(')')) || (chr2 == QLatin1Char(']')) || (chr2 == QLatin1Char('}'));
             cursor.setPosition(m_interface->position() - 2);
             cursor.select(QTextCursor::WordUnderCursor);
-            if(cursor.selectedText().isEmpty()) return 0;
-            if(!cursor.selectedText().contains(QRegularExpression(QStringLiteral("[a-zA-Z_][a-zA-Z_0-9]*")))) return 0;
+            if((!chr2IsBracket) && (cursor.selectedText().isEmpty())) return 0;
+            if((!chr2IsBracket) && (!cursor.selectedText().contains(QRegularExpression(QStringLiteral("[a-zA-Z_][a-zA-Z_0-9]*"))))) return 0;
             m_startPosition = m_interface->position();
 
             QList<AssistProposalItemInterface *> items;

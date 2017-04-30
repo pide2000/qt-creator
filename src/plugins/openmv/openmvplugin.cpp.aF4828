@@ -1199,7 +1199,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
             Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
         dialog->setWindowTitle(tr("Register OpenMV Cam"));
-        QVBoxLayout *layout = new QVBoxLayout(dialog);
+        QHBoxLayout *layout = new QHBoxLayout(dialog);
 
         QLabel *label = new QLabel(tr("Please enter a board key to register your OpenMV Cam.<br/><br/>If you do not have a board key you may purchase one from OpenMV <a href=\"http://openmv.io/products/openmv-cam-board-key\">here</a>."));
         label->setOpenExternalLinks(true);
@@ -1220,20 +1220,18 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
 
         if(boardKeyOk)
         {
-            QString chars, chars2;
+            QString chars;
 
             for(int i = 0; i < boardKey.size(); i++)
             {
                 if(boardKey.at(i).isLetterOrNumber())
                 {
-                    if(chars2.size() && (!(chars2.size() % 5)))
+                    chars.append(boardKey.at(i).toUpper());
+
+                    if(chars.size() && (!(chars.size() % 5)))
                     {
                         chars.append(QLatin1Char('-'));
                     }
-
-                    QChar chr = boardKey.at(i).toUpper();
-                    chars.append(chr);
-                    chars2.append(chr);
                 }
             }
 
@@ -1263,7 +1261,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
 
                     QTimer::singleShot(0, reply, &QNetworkReply::deleteLater);
 
-                    if(!wasCanceled)
+                    if(wasCanceled)
                     {
                         if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
                         {
