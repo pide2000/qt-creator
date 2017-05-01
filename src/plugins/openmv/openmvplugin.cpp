@@ -1960,7 +1960,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     }
                                 }
 
-                                QString value = mappings.value(arch2.simplified().replace(QStringLiteral("_"), QStringLiteral(" ")));
+                                QString value = mappings.value(arch2.remove(QRegularExpression(QStringLiteral("\\[(.+?):(.+?)\\]"))).simplified().replace(QStringLiteral("_"), QStringLiteral(" ")));
 
                                 if(!value.isEmpty())
                                 {
