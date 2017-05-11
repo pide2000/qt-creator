@@ -465,3 +465,33 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWi
     changed();
     adjustSize();
 }
+
+void ThresholdEditor::setState(QList<QVariant> state)
+{
+    m_combo->setCurrentIndex(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_invert->setChecked(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_GMin->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_GMax->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_LMin->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_LMax->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_AMin->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_AMax->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_BMin->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    m_BMax->setValue(state.isEmpty() ? 0 : state.takeFirst().toInt());
+    changed();
+}
+
+QList<QVariant> ThresholdEditor::getState() const
+{
+    return QList<QVariant>()
+    << m_combo->currentIndex()
+    << m_invert->isChecked()
+    << m_GMin->value()
+    << m_GMax->value()
+    << m_LMin->value()
+    << m_LMax->value()
+    << m_AMin->value()
+    << m_AMax->value()
+    << m_BMin->value()
+    << m_BMax->value();
+}

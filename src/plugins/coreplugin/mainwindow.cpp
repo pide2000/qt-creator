@@ -225,20 +225,28 @@ MainWindow::MainWindow() :
 
 void MainWindow::setSidebarVisible(bool visible)
 {
-    if (NavigationWidgetPlaceHolder::current()) {
-        if (m_navigationWidget->isSuppressed() && visible) {
-            m_navigationWidget->setShown(true);
-            m_navigationWidget->setSuppressed(false);
-        } else {
-            m_navigationWidget->setShown(visible);
-        }
-    }
+    //OPENMV-DIFF//
+    //if (NavigationWidgetPlaceHolder::current()) {
+    //    if (m_navigationWidget->isSuppressed() && visible) {
+    //        m_navigationWidget->setShown(true);
+    //        m_navigationWidget->setSuppressed(false);
+    //    } else {
+    //        m_navigationWidget->setShown(visible);
+    //    }
+    //}
+    //OPENMV-DIFF//
+    Q_UNUSED(visible)
+    //OPENMV-DIFF//
 }
 
 void MainWindow::setSuppressNavigationWidget(bool suppress)
 {
-    if (NavigationWidgetPlaceHolder::current())
-        m_navigationWidget->setSuppressed(suppress);
+    //OPENMV-DIFF//
+    //if (NavigationWidgetPlaceHolder::current())
+    //    m_navigationWidget->setSuppressed(suppress);
+    //OPENMV-DIFF//
+    Q_UNUSED(suppress)
+    //OPENMV-DIFF//
 }
 
 void MainWindow::setOverrideColor(const QColor &color)
@@ -361,7 +369,9 @@ void MainWindow::extensionsInitialized()
     m_statusBarManager->extensionsInitalized();
     OutputPaneManager::instance()->init();
     m_vcsManager->extensionsInitialized();
-    m_navigationWidget->setFactories(PluginManager::getObjects<INavigationWidgetFactory>());
+    //OPENMV-DIFF//
+    //m_navigationWidget->setFactories(PluginManager::getObjects<INavigationWidgetFactory>());
+    //OPENMV-DIFF//
 
     readSettings();
     updateContext();
@@ -393,7 +403,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     writeSettings();
 
-    m_navigationWidget->closeSubWidgets();
+    //OPENMV-DIFF//
+    //m_navigationWidget->closeSubWidgets();
+    //OPENMV-DIFF//
 
     event->accept();
 }
@@ -983,7 +995,9 @@ void MainWindow::readSettings()
     settings->endGroup();
 
     EditorManagerPrivate::readSettings();
-    m_navigationWidget->restoreSettings(settings);
+    //OPENMV-DIFF//
+    //m_navigationWidget->restoreSettings(settings);
+    //OPENMV-DIFF//
     m_rightPaneWidget->readSettings(settings);
 }
 
@@ -1010,7 +1024,9 @@ void MainWindow::writeSettings()
     DocumentManager::saveSettings();
     ActionManager::saveSettings();
     EditorManagerPrivate::saveSettings();
-    m_navigationWidget->saveSettings(settings);
+    //OPENMV-DIFF//
+    //m_navigationWidget->saveSettings(settings);
+    //OPENMV-DIFF//
 }
 
 void MainWindow::updateAdditionalContexts(const Context &remove, const Context &add,

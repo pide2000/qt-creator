@@ -183,6 +183,8 @@ public slots: // private
     void openKeypointsEditor();
     void openAprilTagGenerator(apriltag_family_t *family);
     void openQRCodeGenerator();
+    void openDataMatrixGenerator();
+    void openBarcodeGenerator();
 
 signals:
 
@@ -216,6 +218,8 @@ private:
     Core::Command *m_tag36h11Command;
     Core::Command *m_tag36artoolkitCommand;
     Core::Command *m_QRCodeGeneratorCommand;
+    Core::Command *m_DataMatrixGeneratorCommand;
+    Core::Command *m_BarcodeGeneratorCommand;
 
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;

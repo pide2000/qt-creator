@@ -42,6 +42,65 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     timer->start(1);
 }
 
+typedef struct line {
+    int16_t x1;
+    int16_t y1;
+    int16_t x2;
+    int16_t y2;
+} line_t;
+
+// http://www.skytopia.com/project/articles/compsci/clipping.html
+bool lb_clip_line(line_t *l, int x, int y, int w, int h) // line is drawn if this returns true
+{
+    int xdelta = l->x2 - l->x1, ydelta = l->y2 - l->y1, p[4], q[4];
+    float umin = 0, umax = 1;
+
+    p[0] = -(xdelta);
+    p[1] = +(xdelta);
+    p[2] = +(ydelta); // inverted
+    p[3] = -(ydelta); // inverted
+
+    q[0] = l->x1 - (x);
+    q[1] = (x + w - 1) - l->x1;
+    q[2] = (y) - l->y1; // inverted
+    q[3] = l->y1 - (y + h - 1); // inverted
+
+    for (int i = 0; i < 4; i++) {
+        qDebug() << "loop";
+        if (p[i]) {
+            float u = ((float) q[i]) / ((float) p[i]);
+
+            qDebug() << p[i] << q[i] << u << umin << umax;
+
+            if (p[i] < 0) { // outside to inside
+                if (u > umax) return false;
+                if (u > umin) umin = u;
+            }
+
+            if (p[i] > 0) { // inside to outside
+                if (u < umin) return false;
+                if (u < umax) umax = u;
+            }
+
+        } else if (q[i] < 0) {
+            return false;
+        }
+    }
+
+    //if (umax < umin) return false;
+
+    int x1_c = l->x1 + (xdelta * umin);
+    int y1_c = l->y1 + (ydelta * umin);
+    int x2_c = l->x1 + (xdelta * umax);
+    int y2_c = l->y1 + (ydelta * umax);
+    l->x1 = x1_c;
+    l->y1 = y1_c;
+    l->x2 = x2_c;
+    l->y2 = y2_c;
+
+    return true;
+}
+
 bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments)
@@ -53,6 +112,25 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
             splashScreen, &QSplashScreen::deleteLater);
 
     splashScreen->show();
+
+    //
+
+//    {x1:69, y1:0, x2:161, y2:119, magnitude:0.286471, theta:142, rho:-54}
+//    {x1:4, y1:0, x2:52, y2:119, magnitude:0.297107, theta:158, rho:-4}
+//    {x1:0, y1:0, x2:58, y2:119, magnitude:0.295230, theta:154, rho:0}
+//    {x1:-5, y1:0, x2:59, y2:119, magnitude:0.514537, theta:152, rho:4}
+//    {x1:0, y1:50, x2:159, y2:-20, magnitude:0.317349, theta:66, rho:46}
+//    {x1:0, y1:137, x2:159, y2:37, magnitude:1.000000, theta:58, rho:116}
+
+    line_t l;
+
+    l.x1 = -5; l.y1 = 0; l.x2 = 59; l.y2 = 119;
+    qDebug() << lb_clip_line(&l, 0, 0, 160, 120) << l.x1 << l.y1 << l.x2 << l.y2;
+
+    l.x1 = 0; l.y1 = 50; l.x2 = 159; l.y2 = -20;
+    qDebug() << lb_clip_line(&l, 0, 0, 160, 120) << l.x1 << l.y1 << l.x2 << l.y2;
+
+    //
 
     return true;
 }

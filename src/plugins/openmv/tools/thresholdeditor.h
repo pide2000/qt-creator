@@ -12,6 +12,8 @@ class ThresholdEditor : public QDialog
 public:
 
     explicit ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    void setState(QList<QVariant> state);
+    QList<QVariant> getState() const;
 
 public slots:
 
