@@ -450,8 +450,14 @@ signals:
     void readOnlyChanged();
 
     void requestBlockUpdate(const QTextBlock &);
+    //OPENMV-DIFF//
+    void contextMenuEventCB(QMenu *menu, QString text);
+    //OPENMV-DIFF//
 
 protected:
+    //OPENMV-DIFF//
+    void contextMenuEvent(QContextMenuEvent *e) override;
+    //OPENMV-DIFF//
     QTextBlock blockForVisibleRow(int row) const;
     bool event(QEvent *e) override;
     void inputMethodEvent(QInputMethodEvent *e) override;

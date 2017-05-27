@@ -179,7 +179,7 @@ public slots: // private
     void updateCam();
     void setPortPath(bool silent = false);
     void openTerminalAboutToShow();
-    void openThresholdEditor();
+    QList<int> openThresholdEditor(const QVariant parameters = QVariant());
     void openKeypointsEditor();
     void openAprilTagGenerator(apriltag_family_t *family);
     void openQRCodeGenerator();

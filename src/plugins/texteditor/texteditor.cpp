@@ -7444,6 +7444,14 @@ void TextEditorWidget::inSnippetMode(bool *active)
     *active = d->m_snippetOverlay->isVisible();
 }
 
+//OPENMV-DIFF//
+void TextEditorWidget::contextMenuEvent(QContextMenuEvent *e)
+{
+    QMenu *menu = createStandardContextMenu();
+    emit contextMenuEventCB(menu, selectedText());
+    menu->exec(e->globalPos());
+}
+//OPENMV-DIFF//
 QTextBlock TextEditorWidget::blockForVisibleRow(int row) const
 {
     const int count = rowCount();

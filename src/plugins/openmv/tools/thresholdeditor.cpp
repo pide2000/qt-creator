@@ -142,7 +142,7 @@ void ThresholdEditor::showEvent(QShowEvent *event)
     QDialog::showEvent(event);
 }
 
-ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
+ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWidget *parent, Qt::WindowFlags f, const QString &altMessage) : QDialog(parent, f)
 {
     m_geometry = geometry;
     setWindowTitle(tr("Threhsold Editor"));
@@ -293,6 +293,13 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWi
         m_GOut = new QLineEdit(QStringLiteral("(0, 255)"));
         m_GOut->setReadOnly(true);
         v_layout->addRow(tr("Grayscale Threshold"), m_GOut);
+
+        if(!altMessage.isEmpty())
+        {
+            v_layout->itemAt(v_layout->rowCount() - 1, QFormLayout::LabelRole)->widget()->hide();
+            v_layout->itemAt(v_layout->rowCount() - 1, QFormLayout::FieldRole)->widget()->hide();
+            m_combo->hide();
+        }
 
         layout->addWidget(m_paneG);
         if(m_combo->currentIndex()) m_paneG->hide();
@@ -446,13 +453,20 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWi
         m_LABOut->setReadOnly(true);
         v_layout->addRow(tr("LAB Threshold"), m_LABOut);
 
+        if(!altMessage.isEmpty())
+        {
+            v_layout->itemAt(v_layout->rowCount() - 1, QFormLayout::LabelRole)->widget()->hide();
+            v_layout->itemAt(v_layout->rowCount() - 1, QFormLayout::FieldRole)->widget()->hide();
+            m_combo->hide();
+        }
+
         layout->addWidget(m_paneLAB);
         if(!m_combo->currentIndex()) m_paneLAB->hide();
     }
 
     QHBoxLayout *b_layout = new QHBoxLayout();
     b_layout->setMargin(0);
-    b_layout->addWidget(new QLabel(tr("Copy the threshold above before closing.")));
+    b_layout->addWidget(new QLabel(altMessage.isEmpty() ? tr("Copy the threshold above before closing.") : altMessage));
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close);
     b_layout->addWidget(box);
     QWidget *b_widget = new QWidget();
