@@ -57,6 +57,9 @@ void OpenMVPluginFB::enableFitInView(bool enable)
 
         // Broadcast the new pixmap
         emit pixmapUpdate(getPixmap());
+
+        if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
+        else emit resolutionAndROIUpdate(QSize(), QRect());
     }
 }
 
@@ -71,6 +74,9 @@ void OpenMVPluginFB::frameBufferData(const QPixmap &data)
 
     // Broadcast the new pixmap
     emit pixmapUpdate(getPixmap());
+
+    if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
+    else emit resolutionAndROIUpdate(QSize(), QRect());
 }
 
 void OpenMVPluginFB::mousePressEvent(QMouseEvent *event)
@@ -84,6 +90,9 @@ void OpenMVPluginFB::mousePressEvent(QMouseEvent *event)
 
         // Broadcast the new pixmap
         emit pixmapUpdate(getPixmap());
+
+        if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
+        else emit resolutionAndROIUpdate(QSize(), QRect());
     }
 
     QGraphicsView::mousePressEvent(event);
@@ -98,6 +107,9 @@ void OpenMVPluginFB::mouseMoveEvent(QMouseEvent *event)
 
         // Broadcast the new pixmap
         emit pixmapUpdate(getPixmap());
+
+        if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
+        else emit resolutionAndROIUpdate(QSize(), QRect());
     }
 
     QGraphicsView::mouseMoveEvent(event);
@@ -159,9 +171,17 @@ void OpenMVPluginFB::resizeEvent(QResizeEvent *event)
 
         // Broadcast the new pixmap
         emit pixmapUpdate(getPixmap());
+
+        if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
+        else emit resolutionAndROIUpdate(QSize(), QRect());
     }
 
     QGraphicsView::resizeEvent(event);
+}
+
+QRect OpenMVPluginFB::getROI()
+{
+    return m_band->geometry().isValid() ? m_pixmap->mapFromScene(mapToScene(m_band->geometry())).boundingRect().toRect() : QRect();
 }
 
 QPixmap OpenMVPluginFB::getPixmap(bool pointValid, const QPoint &point, bool *cropped, QRect *croppedRect)
@@ -178,7 +198,7 @@ QPixmap OpenMVPluginFB::getPixmap(bool pointValid, const QPoint &point, bool *cr
         *cropped = crop;
     }
 
-    QRect rect = m_pixmap->mapFromScene(mapToScene(m_band->geometry())).boundingRect().toRect();
+    QRect rect = getROI();
 
     if(croppedRect)
     {

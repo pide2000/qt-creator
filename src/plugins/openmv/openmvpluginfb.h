@@ -25,6 +25,7 @@ public slots:
 signals:
 
     void pixmapUpdate(const QPixmap &data);
+    void resolutionAndROIUpdate(const QSize &res, const QRect &roi);
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
@@ -39,6 +40,7 @@ protected:
 
 private:
 
+    QRect getROI();
     QPixmap getPixmap(bool pointValid = false, const QPoint &point = QPoint(), bool *cropped = Q_NULLPTR, QRect *croppedRect = Q_NULLPTR);
     void myFitInView();
 

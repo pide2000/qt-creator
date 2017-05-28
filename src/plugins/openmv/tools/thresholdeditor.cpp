@@ -467,7 +467,7 @@ ThresholdEditor::ThresholdEditor(const QPixmap &pixmap, QByteArray geometry, QWi
     QHBoxLayout *b_layout = new QHBoxLayout();
     b_layout->setMargin(0);
     b_layout->addWidget(new QLabel(altMessage.isEmpty() ? tr("Copy the threshold above before closing.") : altMessage));
-    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close);
+    QDialogButtonBox *box = new QDialogButtonBox(altMessage.isEmpty() ? QDialogButtonBox::Close : (QDialogButtonBox::Ok | QDialogButtonBox::Cancel));
     b_layout->addWidget(box);
     QWidget *b_widget = new QWidget();
     b_widget->setLayout(b_layout);

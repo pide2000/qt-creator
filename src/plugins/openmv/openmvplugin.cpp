@@ -361,12 +361,14 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
+    Utils::ElidingLabel *FBText = new Utils::ElidingLabel(tr("Frame Buffer"));
+    FBText->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     Utils::StyledBar *styledBar0 = new Utils::StyledBar;
     QHBoxLayout *styledBar0Layout = new QHBoxLayout;
     styledBar0Layout->setMargin(0);
     styledBar0Layout->setSpacing(0);
     styledBar0Layout->addSpacing(4);
-    styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
+    styledBar0Layout->addWidget(FBText);
     styledBar0Layout->addSpacing(6);
     styledBar0->setLayout(styledBar0Layout);
 
@@ -425,6 +427,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     m_frameBuffer = new OpenMVPluginFB;
     QLabel *disableLabel = new Utils::ElidingLabel(tr("Frame Buffer Disabled - click the disable button again to enable (top right)"));
+    disableLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     disableLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     disableLabel->setAlignment(Qt::AlignCenter);
     disableLabel->setVisible(m_disableFrameBuffer->isChecked());
@@ -442,6 +445,23 @@ void OpenMVPlugin::extensionsInitialized()
     connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, &OpenMVPlugin::saveImage);
     connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate, this, &OpenMVPlugin::saveTemplate);
     connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor, this, &OpenMVPlugin::saveDescriptor);
+    connect(m_frameBuffer, &OpenMVPluginFB::resolutionAndROIUpdate, this, [this, FBText] (const QSize &res, const QRect &roi) {
+        if(res.isValid())
+        {
+            if(roi.isValid())
+            {
+                FBText->setText(tr("Frame Buffer - Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()));
+            }
+            else
+            {
+                FBText->setText(tr("Frame Buffer - Res (w:%1, h:%2)").arg(res.width()).arg(res.height()));
+            }
+        }
+        else
+        {
+            FBText->setText(tr("Frame Buffer"));
+        }
+    });
 
     Utils::StyledBar *styledBar1 = new Utils::StyledBar;
     QHBoxLayout *styledBar1Layout = new QHBoxLayout;
@@ -3956,18 +3976,21 @@ QList<int> OpenMVPlugin::openThresholdEditor(const QVariant parameters)
                 }
             }
 
-            editor.exec();
-            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
-            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE "_2"), editor.getState());
-            result = QList<int>()
-            << editor.getGMin()
-            << editor.getGMax()
-            << editor.getLMin()
-            << editor.getLMax()
-            << editor.getAMin()
-            << editor.getAMax()
-            << editor.getBMin()
-            << editor.getBMax();
+            // In normal mode exec always return rejected... the second statement below lets the if pass in this case.
+            if((editor.exec() == QDialog::Accepted) || parameters.toList().isEmpty())
+            {
+                settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
+                settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE "_2"), editor.getState());
+                result = QList<int>()
+                << editor.getGMin()
+                << editor.getGMax()
+                << editor.getLMin()
+                << editor.getLMax()
+                << editor.getAMin()
+                << editor.getAMax()
+                << editor.getBMin()
+                << editor.getBMax();
+            }
         }
         else
         {
@@ -4024,19 +4047,22 @@ QList<int> OpenMVPlugin::openThresholdEditor(const QVariant parameters)
                 }
             }
 
-            editor.exec();
-            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
-            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE "_2"), editor.getState());
-            settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_PATH), path);
-            result = QList<int>()
-            << editor.getGMin()
-            << editor.getGMax()
-            << editor.getLMin()
-            << editor.getLMax()
-            << editor.getAMin()
-            << editor.getAMax()
-            << editor.getBMin()
-            << editor.getBMax();
+            // In normal mode exec always return rejected... the second statement below lets the if pass in this case.
+            if((editor.exec() == QDialog::Accepted) || parameters.toList().isEmpty())
+            {
+                settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE), editor.saveGeometry());
+                settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_STATE "_2"), editor.getState());
+                settings->setValue(QStringLiteral(LAST_THRESHOLD_EDITOR_PATH), path);
+                result = QList<int>()
+                << editor.getGMin()
+                << editor.getGMax()
+                << editor.getLMin()
+                << editor.getLMax()
+                << editor.getAMin()
+                << editor.getAMax()
+                << editor.getBMin()
+                << editor.getBMax();
+            }
         }
     }
 
