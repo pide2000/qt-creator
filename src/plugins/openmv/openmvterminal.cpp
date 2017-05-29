@@ -19,8 +19,7 @@ MyPlainTextEdit::MyPlainTextEdit(qreal fontPointSizeF, QWidget *parent) : QPlain
     m_handler = Utils::AnsiEscapeCodeHandler();
     m_lastChar = QChar();
 
-    connect(TextEditor::TextEditorSettings::codeStyle(), &TextEditor::ICodeStylePreferences::tabSettingsChanged,
-            this, [this] (const TextEditor::TabSettings &settings) {
+    connect(TextEditor::TextEditorSettings::codeStyle(), &TextEditor::ICodeStylePreferences::tabSettingsChanged, this, [this] (const TextEditor::TabSettings &settings) {
         m_tabWidth = settings.m_serialTerminalTabSize;
     });
 
@@ -831,7 +830,23 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout2->addWidget(new Core::FindToolBarPlaceHolder(this));
     tempWidget2->setLayout(tempLayout2);
 
-    m_hsplitter = new Core::MiniSplitter(Qt::Horizontal);
+    QWidget *tempWidget3 = new QWidget;
+    QVBoxLayout *tempLayout3 = new QVBoxLayout;
+    tempLayout3->setMargin(0);
+    tempLayout3->setSpacing(0);
+
+    Utils::StyledBar *topBar = new Utils::StyledBar;
+    topBar->setSingleRow(true);
+    QHBoxLayout *topBarLayout = new QHBoxLayout;
+    topBarLayout->setMargin(0);
+    topBarLayout->setSpacing(0);
+    m_topDrawer = new QToolButton;
+    m_topDrawer->setArrowType(Qt::DownArrow);
+    m_topDrawer->setMinimumWidth(160);
+    topBarLayout->addWidget(m_topDrawer);
+    topBar->setLayout(topBarLayout);
+    tempLayout3->addWidget(topBar);
+
     m_vsplitter = new Core::MiniSplitter(Qt::Vertical);
     m_vsplitter->insertWidget(0, tempWidget0);
     m_vsplitter->insertWidget(1, tempWidget1);
@@ -839,17 +854,93 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_vsplitter->setStretchFactor(1, 1);
     m_vsplitter->setCollapsible(0, true);
     m_vsplitter->setCollapsible(1, true);
+    tempLayout3->addWidget(m_vsplitter);
+
+    Utils::StyledBar *bottomBar = new Utils::StyledBar;
+    bottomBar->setSingleRow(true);
+    QHBoxLayout *bottomBarLayout = new QHBoxLayout;
+    bottomBarLayout->setMargin(0);
+    bottomBarLayout->setSpacing(0);
+    m_bottomDrawer = new QToolButton;
+    m_bottomDrawer->setArrowType(Qt::UpArrow);
+    m_bottomDrawer->setMinimumWidth(160);
+    bottomBarLayout->addWidget(m_bottomDrawer);
+    bottomBar->setLayout(bottomBarLayout);
+    tempLayout3->addWidget(bottomBar);
+
+    tempWidget3->setLayout(tempLayout3);
+    m_hsplitter = new Core::MiniSplitter(Qt::Horizontal);
     m_hsplitter->insertWidget(0, tempWidget2);
-    m_hsplitter->insertWidget(1, m_vsplitter);
+    m_hsplitter->insertWidget(1, tempWidget3);
     m_hsplitter->setStretchFactor(0, 1);
     m_hsplitter->setStretchFactor(1, 0);
     m_hsplitter->setCollapsible(0, true);
     m_hsplitter->setCollapsible(1, true);
 
-    QGridLayout *layout = new QGridLayout();
+    QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
+    layout->setSpacing(1);
+
+    Utils::StyledBar *leftBar = new Utils::StyledBar;
+    leftBar->setSingleRow(false);
+    QVBoxLayout *leftBarLayout = new QVBoxLayout;
+    leftBarLayout->setMargin(0);
+    leftBarLayout->setSpacing(0);
+    m_leftDrawer = new QToolButton;
+    m_leftDrawer->setArrowType(Qt::RightArrow);
+    m_leftDrawer->setMinimumHeight(160);
+    leftBarLayout->addSpacing(22);
+    leftBarLayout->addWidget(m_leftDrawer);
+    leftBarLayout->addSpacing(160);
+    leftBar->setLayout(leftBarLayout);
+    layout->addWidget(leftBar);
+
     layout->addWidget(m_hsplitter);
+
+    Utils::StyledBar *rightBar = new Utils::StyledBar;
+    rightBar->setSingleRow(false);
+    QVBoxLayout *rightBarLayout = new QVBoxLayout;
+    rightBarLayout->setMargin(0);
+    rightBarLayout->setSpacing(0);
+    m_rightDrawer = new QToolButton;
+    m_rightDrawer->setArrowType(Qt::LeftArrow);
+    m_rightDrawer->setMinimumHeight(160);
+    rightBarLayout->addSpacing(22);
+    rightBarLayout->addWidget(m_rightDrawer);
+    rightBarLayout->addSpacing(160);
+    rightBar->setLayout(rightBarLayout);
+    layout->addWidget(rightBar);
+
     setLayout(layout);
+
+    connect(m_leftDrawer, &QToolButton::clicked, this, [this] {
+        m_hsplitter->setSizes(QList<int>() << 1 << m_hsplitter->sizes().at(1));
+        m_leftDrawer->parentWidget()->hide();
+    });
+    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
+    });
+    connect(m_rightDrawer, &QToolButton::clicked, this, [this] {
+        m_hsplitter->setSizes(QList<int>() << m_hsplitter->sizes().at(0) << 1);
+        m_rightDrawer->parentWidget()->hide();
+    });
+    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
+    });
+    connect(m_topDrawer, &QToolButton::clicked, this, [this] {
+        m_vsplitter->setSizes(QList<int>() << 1 <<  m_vsplitter->sizes().at(1));
+        m_topDrawer->parentWidget()->hide();
+    });
+    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
+    });
+    connect(m_bottomDrawer, &QToolButton::clicked, this, [this] {
+        m_vsplitter->setSizes(QList<int>() << m_vsplitter->sizes().at(0) << 1);
+        m_bottomDrawer->parentWidget()->hide();
+    });
+    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
+    });
 
     QMainWindow *mainWindow = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
@@ -860,6 +951,11 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
         if(widget)
         {
             setStyleSheet(widget->styleSheet());
+
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, widget->palette().color(QPalette::Background));
+            setAutoFillBackground(true);
+            setPalette(pal);
         }
     }
 
@@ -877,6 +973,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 OpenMVTerminal::~OpenMVTerminal()
 {
     Core::ICore::removeContextObject(m_context);
+
     delete m_context;
 }
 
@@ -896,6 +993,11 @@ void OpenMVTerminal::showEvent(QShowEvent *event)
     {
         m_vsplitter->restoreState(m_settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
     }
+
+    m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
+    m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
+    m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
+    m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
 
     QWidget::showEvent(event);
 }

@@ -103,6 +103,10 @@ private:
     QSettings *m_settings;
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;
+    QToolButton *m_topDrawer;
+    QToolButton *m_bottomDrawer;
+    QToolButton *m_leftDrawer;
+    QToolButton *m_rightDrawer;
     QToolButton *m_zoom;
     QComboBox *m_histogramColorSpace;
     MyPlainTextEdit *m_edit;

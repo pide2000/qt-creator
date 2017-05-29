@@ -495,9 +495,9 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     m_hsplitter->insertWidget(0, tempWidget);
 
     QWidget *tempWidget2 = new QWidget;
-    QVBoxLayout *tempWidget2Layout = new QVBoxLayout;
-    tempWidget2Layout->setMargin(0);
-    tempWidget2Layout->setSpacing(0);
+    QVBoxLayout *tempLayout2 = new QVBoxLayout;
+    tempLayout2->setMargin(0);
+    tempLayout2->setSpacing(0);
 
     Utils::StyledBar *topBar = new Utils::StyledBar;
     topBar->setSingleRow(true);
@@ -506,12 +506,12 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     topBarLayout->setSpacing(0);
     m_topDrawer = new QToolButton;
     m_topDrawer->setArrowType(Qt::DownArrow);
-    m_topDrawer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_topDrawer->setMinimumWidth(160);
     topBarLayout->addWidget(m_topDrawer);
     topBar->setLayout(topBarLayout);
-    tempWidget2Layout->addWidget(topBar);
+    tempLayout2->addWidget(topBar);
 
-    tempWidget2Layout->addWidget(m_vsplitter);
+    tempLayout2->addWidget(m_vsplitter);
 
     Utils::StyledBar *bottomBar = new Utils::StyledBar;
     bottomBar->setSingleRow(true);
@@ -520,12 +520,12 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     bottomBarLayout->setSpacing(0);
     m_bottomDrawer = new QToolButton;
     m_bottomDrawer->setArrowType(Qt::UpArrow);
-    m_bottomDrawer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_bottomDrawer->setMinimumWidth(160);
     bottomBarLayout->addWidget(m_bottomDrawer);
     bottomBar->setLayout(bottomBarLayout);
-    tempWidget2Layout->addWidget(bottomBar);
+    tempLayout2->addWidget(bottomBar);
 
-    tempWidget2->setLayout(tempWidget2Layout);
+    tempWidget2->setLayout(tempLayout2);
     m_hsplitter->insertWidget(1, tempWidget2);
 
     m_hsplitter->setStretchFactor(0, 1);
@@ -540,13 +540,15 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
 
     Utils::StyledBar *leftBar = new Utils::StyledBar;
     leftBar->setSingleRow(false);
-    QHBoxLayout *leftBarLayout = new QHBoxLayout;
+    QVBoxLayout *leftBarLayout = new QVBoxLayout;
     leftBarLayout->setMargin(0);
     leftBarLayout->setSpacing(0);
     m_leftDrawer = new QToolButton;
     m_leftDrawer->setArrowType(Qt::RightArrow);
-    m_leftDrawer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    m_leftDrawer->setMinimumHeight(160);
+    leftBarLayout->addSpacing(22);
     leftBarLayout->addWidget(m_leftDrawer);
+    leftBarLayout->addSpacing(160);
     leftBar->setLayout(leftBarLayout);
     tempLayout3->addWidget(leftBar);
 
@@ -554,13 +556,15 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
 
     Utils::StyledBar *rightBar = new Utils::StyledBar;
     rightBar->setSingleRow(false);
-    QHBoxLayout *rightBarLayout = new QHBoxLayout;
+    QVBoxLayout *rightBarLayout = new QVBoxLayout;
     rightBarLayout->setMargin(0);
     rightBarLayout->setSpacing(0);
     m_rightDrawer = new QToolButton;
     m_rightDrawer->setArrowType(Qt::LeftArrow);
-    m_rightDrawer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    m_rightDrawer->setMinimumHeight(160);
+    rightBarLayout->addSpacing(22);
     rightBarLayout->addWidget(m_rightDrawer);
+    rightBarLayout->addSpacing(160);
     rightBar->setLayout(rightBarLayout);
     tempLayout3->addWidget(rightBar);
 
@@ -575,7 +579,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     //OPENMV-DIFF//
     setStyleSheet(QStringLiteral("QAbstractScrollArea::corner{background-color:#404244;}"
     "QScrollBar:vertical{margin-top:17px;margin-right:0px;margin-bottom:17px;margin-left:0px;background-color:#404244;}"
-    "QScrollBar::sub-line:vertical{subcontrol-origin:margin;subcontrol-position:top;height:17px;background-color:#404244;}"
+    "QScrollBar::sub-line:vertical{subcontrol-origin:margin;subcontrol-position:top;height:17px;background-color:#404244;border-top:1px solid #2E2E2E;}"
     "QScrollBar::add-line:vertical{subcontrol-origin:margin;subcontrol-position:bottom;height:17px;background-color:#404244;}"
     "QScrollBar::up-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowup.png);}"
     "QScrollBar::down-arrow:vertical{margin-left:1px;margin-right:1px;border-image:url(:/core/images/scroll-arrowdown.png);}"

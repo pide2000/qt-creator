@@ -465,7 +465,7 @@
 				<keyword attribute="OpenMVClasses" String="listOpenMVClasses" context="ClassFunctionMethodHighlight2"/>
 				<keyword attribute="OpenMVFunctions" String="listOpenMVFunctions" context="ClassFunctionMethodHighlight2"/>
 				<keyword attribute="OpenMVMethods" String="listOpenMVMethods" context="ClassFunctionMethodHighlight2"/>
-				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]*\s*\(" context="#pop"/>
+				<RegExpr attribute="OpenMVMethods" String="[a-zA-Z_][a-zA-Z_0-9]*" context="ClassFunctionMethodHighlight2"/>
 			</context>
 			<context name="ClassFunctionMethodHighlight2" attribute="Normal Text" lineEndContext="#pop#pop" fallthrough="true" fallthroughContext="#pop#pop">
 				<DetectSpaces/>
