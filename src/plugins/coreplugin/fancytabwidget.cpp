@@ -489,15 +489,84 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     //OPENMV-DIFF//
     m_hsplitter = new MiniSplitter;
     m_vsplitter = new MiniSplitter(Qt::Vertical);
+
     QWidget *tempWidget = new QWidget;
     tempWidget->setLayout(m_modesStack);
     m_hsplitter->insertWidget(0, tempWidget);
-    m_hsplitter->insertWidget(1, m_vsplitter);
+
+    QWidget *tempWidget2 = new QWidget;
+    QVBoxLayout *tempWidget2Layout = new QVBoxLayout;
+    tempWidget2Layout->setMargin(0);
+    tempWidget2Layout->setSpacing(0);
+
+    Utils::StyledBar *topBar = new Utils::StyledBar;
+    topBar->setSingleRow(true);
+    QHBoxLayout *topBarLayout = new QHBoxLayout;
+    topBarLayout->setMargin(0);
+    topBarLayout->setSpacing(0);
+    m_topDrawer = new QToolButton;
+    m_topDrawer->setArrowType(Qt::DownArrow);
+    m_topDrawer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    topBarLayout->addWidget(m_topDrawer);
+    topBar->setLayout(topBarLayout);
+    tempWidget2Layout->addWidget(topBar);
+
+    tempWidget2Layout->addWidget(m_vsplitter);
+
+    Utils::StyledBar *bottomBar = new Utils::StyledBar;
+    bottomBar->setSingleRow(true);
+    QHBoxLayout *bottomBarLayout = new QHBoxLayout;
+    bottomBarLayout->setMargin(0);
+    bottomBarLayout->setSpacing(0);
+    m_bottomDrawer = new QToolButton;
+    m_bottomDrawer->setArrowType(Qt::UpArrow);
+    m_bottomDrawer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    bottomBarLayout->addWidget(m_bottomDrawer);
+    bottomBar->setLayout(bottomBarLayout);
+    tempWidget2Layout->addWidget(bottomBar);
+
+    tempWidget2->setLayout(tempWidget2Layout);
+    m_hsplitter->insertWidget(1, tempWidget2);
+
     m_hsplitter->setStretchFactor(0, 1);
     m_hsplitter->setStretchFactor(1, 0);
     m_hsplitter->setCollapsible(0, true);
     m_hsplitter->setCollapsible(1, true);
-    vlayout->insertWidget(0, m_hsplitter);
+
+    QWidget *tempWidget3 = new QWidget;
+    QHBoxLayout *tempLayout3 = new QHBoxLayout;
+    tempLayout3->setMargin(0);
+    tempLayout3->setSpacing(0);
+
+    Utils::StyledBar *leftBar = new Utils::StyledBar;
+    leftBar->setSingleRow(false);
+    QHBoxLayout *leftBarLayout = new QHBoxLayout;
+    leftBarLayout->setMargin(0);
+    leftBarLayout->setSpacing(0);
+    m_leftDrawer = new QToolButton;
+    m_leftDrawer->setArrowType(Qt::RightArrow);
+    m_leftDrawer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    leftBarLayout->addWidget(m_leftDrawer);
+    leftBar->setLayout(leftBarLayout);
+    tempLayout3->addWidget(leftBar);
+
+    tempLayout3->addWidget(m_hsplitter);
+
+    Utils::StyledBar *rightBar = new Utils::StyledBar;
+    rightBar->setSingleRow(false);
+    QHBoxLayout *rightBarLayout = new QHBoxLayout;
+    rightBarLayout->setMargin(0);
+    rightBarLayout->setSpacing(0);
+    m_rightDrawer = new QToolButton;
+    m_rightDrawer->setArrowType(Qt::LeftArrow);
+    m_rightDrawer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    rightBarLayout->addWidget(m_rightDrawer);
+    rightBar->setLayout(rightBarLayout);
+    tempLayout3->addWidget(rightBar);
+
+    tempWidget3->setLayout(tempLayout3);
+    vlayout->insertWidget(0, tempWidget3);
+
     //OPENMV-DIFF//
     mainLayout->addLayout(vlayout);
     setLayout(mainLayout);
@@ -524,6 +593,11 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     "QScrollBar::up-arrow:hover,QScrollBar::right-arrow:hover,QScrollBar::down-arrow:hover,QScrollBar::left-arrow:hover,QScrollBar::handle:hover{background-color:#595b5d;}"
     "QScrollBar::up-arrow:pressed,QScrollBar::right-arrow:pressed,QScrollBar::down-arrow:pressed,QScrollBar::left-arrow:pressed,QScrollBar::handle:pressed{background-color:#262829;}"
     "QPlainTextEdit{background-color:#1E1E27;}"));
+
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, QColor(QStringLiteral("#404244")));
+    setAutoFillBackground(true);
+    setPalette(pal);
     //OPENMV-DIFF//
 }
 
@@ -570,9 +644,11 @@ void FancyTabWidget::paintEvent(QPaintEvent *event)
         painter.setPen(StyleHelper::borderColor());
         painter.drawLine(boderRect.topRight(), boderRect.bottomRight());
 
-        QColor light = StyleHelper::sidebarHighlight();
-        painter.setPen(light);
-        painter.drawLine(boderRect.bottomLeft(), boderRect.bottomRight());
+        //OPENMV-DIFF//
+        //QColor light = StyleHelper::sidebarHighlight();
+        //painter.setPen(light);
+        //painter.drawLine(boderRect.bottomLeft(), boderRect.bottomRight());
+        //OPENMV-DIFF//
     }
 }
 

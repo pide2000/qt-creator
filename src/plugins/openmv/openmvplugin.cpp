@@ -503,6 +503,35 @@ void OpenMVPlugin::extensionsInitialized()
     m_vsplitter->setCollapsible(0, true);
     m_vsplitter->setCollapsible(1, true);
 
+    connect(widget->m_leftDrawer, &QToolButton::clicked, this, [this, widget] {
+        m_hsplitter->setSizes(QList<int>() << 1 << m_hsplitter->sizes().at(1));
+        widget->m_leftDrawer->parentWidget()->hide();
+    });
+    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
+    });
+    connect(widget->m_rightDrawer, &QToolButton::clicked, this, [this, widget] {
+        m_hsplitter->setSizes(QList<int>() << m_hsplitter->sizes().at(0) << 1);
+        widget->m_rightDrawer->parentWidget()->hide();
+    });
+    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
+    });
+    connect(widget->m_topDrawer, &QToolButton::clicked, this, [this, widget] {
+        m_vsplitter->setSizes(QList<int>() << 1 <<  m_vsplitter->sizes().at(1));
+        widget->m_topDrawer->parentWidget()->hide();
+    });
+    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
+    });
+    connect(widget->m_bottomDrawer, &QToolButton::clicked, this, [this, widget] {
+        m_vsplitter->setSizes(QList<int>() << m_vsplitter->sizes().at(0) << 1);
+        widget->m_bottomDrawer->parentWidget()->hide();
+    });
+    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
+    });
+
     connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
     connect(m_iodevice, &OpenMVPluginIO::printData, this, &OpenMVPlugin::errorFilter);
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData, this, [this] {
@@ -582,6 +611,11 @@ void OpenMVPlugin::extensionsInitialized()
     Core::MessageManager::outputWindow()->setFontZoom(
         settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
     settings->endGroup();
+
+    widget->m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
+    widget->m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
+    widget->m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
+    widget->m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
 
     m_openTerminalMenuData = QList<openTerminalMenuData_t>();
 

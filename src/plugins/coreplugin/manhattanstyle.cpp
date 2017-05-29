@@ -536,6 +536,10 @@ void ManhattanStyle::drawPrimitive(PrimitiveElement element, const QStyleOption 
                 painter->restore();
             } else {
                 painter->fillRect(rect, StyleHelper::baseColor());
+                //OPENMV-DIFF//
+                painter->setPen(QColor(32, 33, 34));
+                painter->drawLine(rect.x(), rect.y(), rect.x() + rect.width() - 1, rect.y());
+                //OPENMV-DIFF//
             }
         }
         break;

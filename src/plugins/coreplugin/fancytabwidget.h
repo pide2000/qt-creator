@@ -29,6 +29,7 @@
 //OPENMV-DIFF//
 #include "core_global.h"
 #include "minisplitter.h"
+#include <QToolButton>
 //OPENMV-DIFF//
 
 #include <QIcon>
@@ -197,6 +198,10 @@ private:
 public:
     MiniSplitter *m_hsplitter;
     MiniSplitter *m_vsplitter;
+    QToolButton *m_topDrawer;
+    QToolButton *m_bottomDrawer;
+    QToolButton *m_leftDrawer;
+    QToolButton *m_rightDrawer;
 //OPENMV-DIFF//
 };
 

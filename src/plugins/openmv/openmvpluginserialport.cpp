@@ -3,6 +3,8 @@
 #define OPENMVCAM_BAUD_RATE 12000000
 #define OPENMVCAM_BAUD_RATE_2 921600
 
+#define WRITE_LOOPS 3
+#define WRITE_DELAY 100
 #define WRITE_TIMEOUT 3000
 #define READ_TIMEOUT 5000
 #define READ_STALL_TIMEOUT 1000
@@ -89,42 +91,76 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
 {
     if(m_port)
     {
-        if(startWait)
-        {
-            QThread::msleep(startWait);
-        }
+        QString portName = m_port->portName();
 
-        m_port->clearError();
-
-        if((m_port->write(data) != data.size()) || (!m_port->flush()))
+        for(int i = 0; i < WRITE_LOOPS; i++)
         {
-            delete m_port;
-            m_port = Q_NULLPTR;
-        }
-        else
-        {
-            QElapsedTimer elaspedTimer;
-            elaspedTimer.start();
-
-            while(m_port->bytesToWrite())
+            if(!m_port)
             {
-                m_port->waitForBytesWritten(1);
+                m_port = new QSerialPort(portName, this);
 
-                if(m_port->bytesToWrite() && elaspedTimer.hasExpired(timeout))
+                if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
+                || (!m_port->open(QIODevice::ReadWrite)))
                 {
-                    break;
+                    delete m_port;
+                    m_port = new QSerialPort(portName, this);
+
+                    if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
+                    || (!m_port->open(QIODevice::ReadWrite)))
+                    {
+                        delete m_port;
+                        m_port = Q_NULLPTR;
+                    }
                 }
             }
 
-            if(m_port->bytesToWrite())
+            if(m_port)
             {
-                delete m_port;
-                m_port = Q_NULLPTR;
+                if(startWait)
+                {
+                    QThread::msleep(startWait);
+                }
+
+                m_port->clearError();
+
+                if((m_port->write(data) != data.size()) || (!m_port->flush()))
+                {
+                    delete m_port;
+                    m_port = Q_NULLPTR;
+                }
+                else
+                {
+                    QElapsedTimer elaspedTimer;
+                    elaspedTimer.start();
+
+                    while(m_port->bytesToWrite())
+                    {
+                        m_port->waitForBytesWritten(1);
+
+                        if(m_port->bytesToWrite() && elaspedTimer.hasExpired(timeout))
+                        {
+                            break;
+                        }
+                    }
+
+                    if(m_port->bytesToWrite())
+                    {
+                        delete m_port;
+                        m_port = Q_NULLPTR;
+                    }
+                    else if(stopWait)
+                    {
+                        QThread::msleep(stopWait);
+                    }
+                }
             }
-            else if(stopWait)
+
+            if(m_port)
             {
-                QThread::msleep(stopWait);
+                break;
             }
+
+            QThread::msleep(WRITE_DELAY);
         }
     }
 }

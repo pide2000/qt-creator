@@ -102,11 +102,11 @@
 #define OLD_API_PATCH 0
 #define OLD_API_BOARD "OMV2"
 
-#define FRAME_SIZE_DUMP_SPACING     10 // in ms
+#define FRAME_SIZE_DUMP_SPACING     5 // in ms
 #define GET_SCRIPT_RUNNING_SPACING  100 // in ms
-#define GET_TX_BUFFER_SPACING       10 // in ms
+#define GET_TX_BUFFER_SPACING       5 // in ms
 
-#define FPS_AVERAGE_BUFFER_DEPTH    10 // in samples
+#define FPS_AVERAGE_BUFFER_DEPTH    100 // in samples
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
 #define FPS_TIMER_EXPIRATION_TIME   2000 // in milliseconds
 
