@@ -1089,7 +1089,7 @@ void OpenMVPlugin::extensionsInitialized()
                 if(grayscaleMatch.hasMatch())
                 {
                     menu->addSeparator();
-                    QAction *action = new QAction(tr("Edit Grayscale threshold with Threshold Editor"));
+                    QAction *action = new QAction(tr("Edit Grayscale threshold with Threshold Editor"), menu);
                     connect(action, &QAction::triggered, this, [this, textEditor, grayscaleMatch] {
                         QList<int> list = openThresholdEditor(QList<QVariant>()
                         << grayscaleMatch.captured(1).toInt()
@@ -1110,7 +1110,7 @@ void OpenMVPlugin::extensionsInitialized()
                 if(labMatch.hasMatch())
                 {
                     menu->addSeparator();
-                    QAction *action = new QAction(tr("Edit LAB threshold with Threshold Editor"));
+                    QAction *action = new QAction(tr("Edit LAB threshold with Threshold Editor"), menu);
                     connect(action, &QAction::triggered, this, [this, textEditor, labMatch] {
                         QList<int> list = openThresholdEditor(QList<QVariant>()
                         << labMatch.captured(1).toInt()
