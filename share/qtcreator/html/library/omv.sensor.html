@@ -122,9 +122,12 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-kptmatch-keypoint-object">class kptmatch &#8211; Keypoint Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
@@ -247,9 +250,18 @@ the function call by writing <code class="docutils literal"><span class="pre">li
 
 <dl class="function">
 <dt id="sensor.sensor.skip_frames">
-<code class="descclassname">sensor.</code><code class="descname">skip_frames</code><span class="sig-paren">(</span><em>n=10</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.skip_frames" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">sensor.</code><code class="descname">skip_frames</code><span class="sig-paren">(</span><span class="optional">[</span><em>n</em>, <em>time</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.skip_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes <code class="docutils literal"><span class="pre">n</span></code> number of snapshots to let the camera image stabilize after
+changing camera settings. <code class="docutils literal"><span class="pre">n</span></code> is passed as normal argument, e.g.
+<code class="docutils literal"><span class="pre">skip_frames(10)</span></code> to skip 10 frames. You should call this function after
 changing camera settings.</p>
+<p>Alternatively, you can pass the keyword argument <code class="docutils literal"><span class="pre">time</span></code> to skip frames
+for some number of milliseconds, e.g. <code class="docutils literal"><span class="pre">skip_frames(time</span> <span class="pre">=</span> <span class="pre">2000)</span></code> to skip
+frames for 2000 milliseconds.</p>
+<p>If neither <code class="docutils literal"><span class="pre">n</span></code> nor <code class="docutils literal"><span class="pre">time</span></code> is specified this method skips frames for
+300 milliseconds.</p>
+<p>If both are specified this method skips <code class="docutils literal"><span class="pre">n</span></code> number of frames but will
+timeout after <code class="docutils literal"><span class="pre">time</span></code> milliseconds.</p>
 </dd></dl>
 
 <dl class="function">
@@ -300,20 +312,34 @@ then <code class="docutils literal"><span class="pre">None</span></code> is retu
 <dd><p>Sets the frame size for the camera module.</p>
 <blockquote>
 <div><ul class="simple">
-<li>sensor.B40X30: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
-<li>sensor.B64X32: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
-<li>sensor.B64X64: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
-<li>sensor.QQVGA: 160x120</li>
-<li>sensor.QQVGA2: 128x160 (for use with the lcd shield)</li>
-<li>sensor.HQVGA: 220x160</li>
-<li>sensor.QVGA: 320x120</li>
-<li>sensor.VGA: 640x480 (only on the OpenMV Cam M7 in Grayscale)</li>
-<li>sensor.SVGA: 800x600 (only in JPEG mode for the OV2640 sensor)</li>
-<li>sensor.SXGA: 1280x1024 (only in JPEG mode for the OV2640 sensor)</li>
-<li>sensor.UXGA: 1600x1200 (only in JPEG mode for the OV2640 sensor)</li>
+<li>sensor.QQQQCIF: 22x18</li>
+<li>sensor.QQQCIF: 44x36</li>
 <li>sensor.QQCIF: 88x72</li>
 <li>sensor.QCIF: 176x144</li>
 <li>sensor.CIF: 352x288</li>
+<li>sensor.QQQQSIF: 22x15</li>
+<li>sensor.QQQSIF: 44x30</li>
+<li>sensor.QQSIF: 88x60</li>
+<li>sensor.QSIF: 176x120</li>
+<li>sensor.SIF: 352x240</li>
+<li>sensor.QQQQVGA: 40x30</li>
+<li>sensor.QQQVGA: 80x60</li>
+<li>sensor.QQVGA: 160x120</li>
+<li>sensor.QVGA: 320x240</li>
+<li>sensor.VGA: 640x480</li>
+<li>sensor.HQQQQVGA: 40x20</li>
+<li>sensor.HQQQVGA: 80x40</li>
+<li>sensor.HQQVGA: 160x80</li>
+<li>sensor.HQVGA: 240x160</li>
+<li>sensor.HVGA: 480x320</li>
+<li>sensor.LCD: 128x160 (for use with the lcd shield)</li>
+<li>sensor.QQVGA2: 128x160 (for use with the lcd shield)</li>
+<li>sensor.B40x30: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
+<li>sensor.B64x32: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
+<li>sensor.B64x64: 160x120 (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>)</li>
+<li>sensor.SVGA: 800x600 (only in JPEG mode for the OV2640 sensor)</li>
+<li>sensor.SXGA: 1280x1024 (only in JPEG mode for the OV2640 sensor)</li>
+<li>sensor.UXGA: 1600x1200 (only in JPEG mode for the OV2640 sensor)</li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -467,6 +493,14 @@ function call by writing <code class="docutils literal"><span class="pre">value=
 </dd></dl>
 
 <dl class="function">
+<dt id="sensor.sensor.set_vsync_output">
+<code class="descclassname">sensor.</code><code class="descname">set_vsync_output</code><span class="sig-paren">(</span><em>pin_object</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_vsync_output" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">pin_object</span></code> created with <code class="docutils literal"><span class="pre">pyb.Pin</span></code>. The VSYNC signal from the camera
+will be generated on this pin to power FSIN on another OpenMV Cam to sync
+both camera image streams for stereo vision applications...</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sensor.sensor.__write_reg">
 <code class="descclassname">sensor.</code><code class="descname">__write_reg</code><span class="sig-paren">(</span><em>address</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.__write_reg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <code class="docutils literal"><span class="pre">value</span></code> (int) to camera register at <code class="docutils literal"><span class="pre">address</span></code> (int).</p>
@@ -537,52 +571,15 @@ grayscale images.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="sensor.sensor.B40X30">
-<code class="descclassname">sensor.</code><code class="descname">B40X30</code><a class="headerlink" href="#sensor.sensor.B40X30" title="Permalink to this definition">¶</a></dt>
-<dd><p>40x30 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
+<dt id="sensor.sensor.QQQQCIF">
+<code class="descclassname">sensor.</code><code class="descname">QQQQCIF</code><a class="headerlink" href="#sensor.sensor.QQQQCIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>22x18 resolution for the camera sensor.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="sensor.sensor.B64X32">
-<code class="descclassname">sensor.</code><code class="descname">B64X32</code><a class="headerlink" href="#sensor.sensor.B64X32" title="Permalink to this definition">¶</a></dt>
-<dd><p>64x32 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.B64X64">
-<code class="descclassname">sensor.</code><code class="descname">B64X64</code><a class="headerlink" href="#sensor.sensor.B64X64" title="Permalink to this definition">¶</a></dt>
-<dd><p>64x64 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.QQVGA">
-<code class="descclassname">sensor.</code><code class="descname">QQVGA</code><a class="headerlink" href="#sensor.sensor.QQVGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>160x120 resolution for the camera sensor.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.QQVGA2">
-<code class="descclassname">sensor.</code><code class="descname">QQVGA2</code><a class="headerlink" href="#sensor.sensor.QQVGA2" title="Permalink to this definition">¶</a></dt>
-<dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.QVGA">
-<code class="descclassname">sensor.</code><code class="descname">QVGA</code><a class="headerlink" href="#sensor.sensor.QVGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>320x120 resolution for the camera sensor.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.HQVGA">
-<code class="descclassname">sensor.</code><code class="descname">HQVGA</code><a class="headerlink" href="#sensor.sensor.HQVGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>220x160 resolution for the camera sensor.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.VGA">
-<code class="descclassname">sensor.</code><code class="descname">VGA</code><a class="headerlink" href="#sensor.sensor.VGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>640x480 resolution for the camera sensor.
-Only works for the OV2640 camera or the OpenMV Cam M7.</p>
+<dt id="sensor.sensor.QQQCIF">
+<code class="descclassname">sensor.</code><code class="descname">QQQCIF</code><a class="headerlink" href="#sensor.sensor.QQQCIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>44x36 resolution for the camera sensor.</p>
 </dd></dl>
 
 <dl class="data">
@@ -604,24 +601,143 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sensor.sensor.QQQQSIF">
+<code class="descclassname">sensor.</code><code class="descname">QQQQSIF</code><a class="headerlink" href="#sensor.sensor.QQQQSIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>22x15 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQQSIF">
+<code class="descclassname">sensor.</code><code class="descname">QQQSIF</code><a class="headerlink" href="#sensor.sensor.QQQSIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>44x30 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQSIF">
+<code class="descclassname">sensor.</code><code class="descname">QQSIF</code><a class="headerlink" href="#sensor.sensor.QQSIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>88x60 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QSIF">
+<code class="descclassname">sensor.</code><code class="descname">QSIF</code><a class="headerlink" href="#sensor.sensor.QSIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>176x120 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.SIF">
+<code class="descclassname">sensor.</code><code class="descname">SIF</code><a class="headerlink" href="#sensor.sensor.SIF" title="Permalink to this definition">¶</a></dt>
+<dd><p>352x240 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQQQVGA">
+<code class="descclassname">sensor.</code><code class="descname">QQQQVGA</code><a class="headerlink" href="#sensor.sensor.QQQQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>40x30 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQQVGA">
+<code class="descclassname">sensor.</code><code class="descname">QQQVGA</code><a class="headerlink" href="#sensor.sensor.QQQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>80x60 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQVGA">
+<code class="descclassname">sensor.</code><code class="descname">QQVGA</code><a class="headerlink" href="#sensor.sensor.QQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>160x120 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QVGA">
+<code class="descclassname">sensor.</code><code class="descname">QVGA</code><a class="headerlink" href="#sensor.sensor.QVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>320x120 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.VGA">
+<code class="descclassname">sensor.</code><code class="descname">VGA</code><a class="headerlink" href="#sensor.sensor.VGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>640x480 resolution for the camera sensor.
+Only works for the OV2640 camera or the OpenMV Cam M7.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.HQQQQVGA">
+<code class="descclassname">sensor.</code><code class="descname">HQQQQVGA</code><a class="headerlink" href="#sensor.sensor.HQQQQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>30x20 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.HQQQVGA">
+<code class="descclassname">sensor.</code><code class="descname">HQQQVGA</code><a class="headerlink" href="#sensor.sensor.HQQQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>60x40 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.HQQVGA">
+<code class="descclassname">sensor.</code><code class="descname">HQQVGA</code><a class="headerlink" href="#sensor.sensor.HQQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>120x80 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.HQVGA">
+<code class="descclassname">sensor.</code><code class="descname">HQVGA</code><a class="headerlink" href="#sensor.sensor.HQVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>240x160 resolution for the camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.HVGA">
+<code class="descclassname">sensor.</code><code class="descname">HVGA</code><a class="headerlink" href="#sensor.sensor.HVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>480x320 resolution for the camera sensor.
+Only works for the OV2640 camera or the OpenMV Cam M7.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.LCD">
+<code class="descclassname">sensor.</code><code class="descname">LCD</code><a class="headerlink" href="#sensor.sensor.LCD" title="Permalink to this definition">¶</a></dt>
+<dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.QQVGA2">
+<code class="descclassname">sensor.</code><code class="descname">QQVGA2</code><a class="headerlink" href="#sensor.sensor.QQVGA2" title="Permalink to this definition">¶</a></dt>
+<dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B40x30">
+<code class="descclassname">sensor.</code><code class="descname">B40x30</code><a class="headerlink" href="#sensor.sensor.B40x30" title="Permalink to this definition">¶</a></dt>
+<dd><p>40x30 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B64x32">
+<code class="descclassname">sensor.</code><code class="descname">B64x32</code><a class="headerlink" href="#sensor.sensor.B64x32" title="Permalink to this definition">¶</a></dt>
+<dd><p>64x32 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B64x64">
+<code class="descclassname">sensor.</code><code class="descname">B64x64</code><a class="headerlink" href="#sensor.sensor.B64x64" title="Permalink to this definition">¶</a></dt>
+<dd><p>64x64 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sensor.sensor.SVGA">
 <code class="descclassname">sensor.</code><code class="descname">SVGA</code><a class="headerlink" href="#sensor.sensor.SVGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>800x600 resolution for the camera sensor.
-Only works for the OV2640 camera.</p>
+<dd><p>800x600 resolution for the camera sensor. Only works for the OV2640 camera.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sensor.sensor.SXGA">
 <code class="descclassname">sensor.</code><code class="descname">SXGA</code><a class="headerlink" href="#sensor.sensor.SXGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>1280x1024 resolution for the camera sensor.
-Only works for the OV2640 camera.</p>
+<dd><p>1280x1024 resolution for the camera sensor. Only works for the OV2640 camera.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sensor.sensor.UXGA">
 <code class="descclassname">sensor.</code><code class="descname">UXGA</code><a class="headerlink" href="#sensor.sensor.UXGA" title="Permalink to this definition">¶</a></dt>
-<dd><p>1600x1200 resolution for the camera sensor.
-Only works for the OV2640 camera.</p>
+<dd><p>1600x1200 resolution for the camera sensor. Only works for the OV2640 camera.</p>
 </dd></dl>
 
 <dl class="data">
@@ -659,7 +775,7 @@ Only works for the OV2640 camera.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 27 Mar 2017.
+      Last updated on 29 May 2017.
 
     </p>
   </div>

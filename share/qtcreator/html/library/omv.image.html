@@ -136,9 +136,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#id3">Methods</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#class-line-line-object">class Line &#8211; Line object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-kptmatch-keypoint-object">class kptmatch &#8211; Keypoint Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-image-image-object">class Image &#8211; Image object</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id4">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id5">Methods</a></li>
@@ -276,20 +279,7 @@ values goes between 0-255.</p>
 difference between the two descriptors. You may then threshold/compare this
 distance metric as necessary. The distance is a measure of similarity. The
 closer it is to zero the better the LBP keypoint match.</p>
-<p>For ORB descriptors this function returns a tuple containing the following
-values:</p>
-<blockquote>
-<div><ul class="simple">
-<li>[0] - X Centroid (int)</li>
-<li>[1] - Y Centroid (int)</li>
-<li>[2] - Bounding Box X (int)</li>
-<li>[3] - Bounding Box Y (int)</li>
-<li>[4] - Bounding Box W (int)</li>
-<li>[5] - Bounding Box H (int)</li>
-<li>[6] - Number of keypoints matched (int)</li>
-<li>[7] - Estimated angle of rotation between keypoints in degrees.</li>
-</ul>
-</div></blockquote>
+<p>For ORB descriptors this function returns the <code class="docutils literal"><span class="pre">kptmatch</span></code> object. See above.</p>
 <p><code class="docutils literal"><span class="pre">threshold</span></code> is used for ORB keypoints to filter ambiguous matches. A lower
 <code class="docutils literal"><span class="pre">threshold</span></code> value tightens the keypoint matching algorithm. <code class="docutils literal"><span class="pre">threshold</span></code>
 may be between 0-100 (int). Defaults to 70.</p>
@@ -802,6 +792,73 @@ the lock on the object isn&#8217;t very good.</p>
 
 </div>
 </div>
+<div class="section" id="class-line-line-object">
+<h1>class Line &#8211; Line object<a class="headerlink" href="#class-line-line-object" title="Permalink to this headline">¶</a></h1>
+<p>The line object is returned by <code class="docutils literal"><span class="pre">image.find_lines</span></code> or <code class="docutils literal"><span class="pre">image.find_line_segments</span></code>.</p>
+<dl class="method">
+<dt id="image.line.line">
+<code class="descclassname">line.</code><code class="descname">line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a line tuple (x1, y1, x2, y2) for use with other <code class="docutils literal"><span class="pre">image</span></code> methods
+like <code class="docutils literal"><span class="pre">image.draw_line</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.x1">
+<code class="descclassname">line.</code><code class="descname">x1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.x1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line&#8217;s p1 x component.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.y1">
+<code class="descclassname">line.</code><code class="descname">y1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.y1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line&#8217;s p1 y component.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.x2">
+<code class="descclassname">line.</code><code class="descname">x2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.x2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line&#8217;s p2 x component.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.y2">
+<code class="descclassname">line.</code><code class="descname">y2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.y2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line&#8217;s p2 y component.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.length">
+<code class="descclassname">line.</code><code class="descname">length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line&#8217;s length - sqrt(((x2-x1)^2) + ((y2-y1)^2).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.magnitude">
+<code class="descclassname">line.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the magnitude of the line from the hough transform.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.theta">
+<code class="descclassname">line.</code><code class="descname">theta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the angle of the line from the hough transform - (0 - 179) degrees.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.line.rho">
+<code class="descclassname">line.</code><code class="descname">rho</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.line.rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the the rho value for the line from the hough transform.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[8]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="class-qrcode-qrcode-object">
 <h1>class QRCode &#8211; QRCode object<a class="headerlink" href="#class-qrcode-qrcode-object" title="Permalink to this headline">¶</a></h1>
 <p>The qrcode object is returned by <code class="docutils literal"><span class="pre">image.find_qrcodes</span></code>.</p>
@@ -1110,6 +1167,87 @@ rotating the camera while looking directly at the tag.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="class-datamatrix-datamatrix-object">
+<h1>class DataMatrix &#8211; DataMatrix object<a class="headerlink" href="#class-datamatrix-datamatrix-object" title="Permalink to this headline">¶</a></h1>
+<p>The datamatrix object is returned by <code class="docutils literal"><span class="pre">image.find_datamatrices</span></code>.</p>
+<dl class="method">
+<dt id="image.datamatrix.rect">
+<code class="descclassname">datamatrix.</code><code class="descname">rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangle tuple (x, y, w, h) for use with other <code class="docutils literal"><span class="pre">image</span></code> methods
+like <code class="docutils literal"><span class="pre">image.draw_rectangle</span></code> of the datamatrix&#8217;s bounding box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.x">
+<code class="descclassname">datamatrix.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the datamatrix&#8217;s bounding box x coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.y">
+<code class="descclassname">datamatrix.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the datamatrix&#8217;s bounding box y coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.w">
+<code class="descclassname">datamatrix.</code><code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the datamatrix&#8217;s bounding box w coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.h">
+<code class="descclassname">datamatrix.</code><code class="descname">h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the datamatrix&#8217;s bounding box h coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.payload">
+<code class="descclassname">datamatrix.</code><code class="descname">payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the payload string of the datamatrix. E.g. The string.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.rotation">
+<code class="descclassname">datamatrix.</code><code class="descname">rotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotation of the datamatrix in radians (float).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.rows">
+<code class="descclassname">datamatrix.</code><code class="descname">rows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of rows in the data matrix (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[6]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.columns">
+<code class="descclassname">datamatrix.</code><code class="descname">columns</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of columns in the data matrix (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.capacity">
+<code class="descclassname">datamatrix.</code><code class="descname">capacity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.capacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns how many characters could fit in this data matrix.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[8]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.datamatrix.padding">
+<code class="descclassname">datamatrix.</code><code class="descname">padding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.datamatrix.padding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns how many unused characters are in this data matrix.</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[9]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="class-barcode-barcode-object">
 <h1>class BarCode &#8211; BarCode object<a class="headerlink" href="#class-barcode-barcode-object" title="Permalink to this headline">¶</a></h1>
 <p>The barcode object is returned by <code class="docutils literal"><span class="pre">image.find_barcodes</span></code>.</p>
@@ -1195,6 +1333,73 @@ like <code class="docutils literal"><span class="pre">image.draw_rectangle</span
 <dd><p>Returns the number of times this barcode was detected in the image (int).</p>
 <p>When scanning a barcode each new scanline can decode the same barcode. This
 value increments for a barcode each time that happens...</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="class-kptmatch-keypoint-object">
+<h1>class kptmatch &#8211; Keypoint Object<a class="headerlink" href="#class-kptmatch-keypoint-object" title="Permalink to this headline">¶</a></h1>
+<p>The kptmatch object is returned by <code class="docutils literal"><span class="pre">image.match_descriptor</span></code> for keypoint matches.</p>
+<dl class="method">
+<dt id="image.kptmatch.rect">
+<code class="descclassname">kptmatch.</code><code class="descname">rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangle tuple (x, y, w, h) for use with other <code class="docutils literal"><span class="pre">image</span></code> methods
+like <code class="docutils literal"><span class="pre">image.draw_rectangle</span></code> of the kptmatch&#8217;s bounding box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.cx">
+<code class="descclassname">kptmatch.</code><code class="descname">cx</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.cx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the centroid x position of the kptmatch (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.cy">
+<code class="descclassname">kptmatch.</code><code class="descname">cy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.cy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the centroid y position of the kptmatch (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.x">
+<code class="descclassname">kptmatch.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the kptmatch&#8217;s bounding box x coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.y">
+<code class="descclassname">kptmatch.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the kptmatch&#8217;s bounding box y coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.w">
+<code class="descclassname">kptmatch.</code><code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the kptmatch&#8217;s bounding box w coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.h">
+<code class="descclassname">kptmatch.</code><code class="descname">h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the kptmatch&#8217;s bounding box h coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.match">
+<code class="descclassname">kptmatch.</code><code class="descname">match</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of keypoints matched (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[6]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.kptmatch.theta">
+<code class="descclassname">kptmatch.</code><code class="descname">theta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#image.kptmatch.theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the estimated angle of rotation for the keypoint (int).</p>
 <p>You may also get this value doing <code class="docutils literal"><span class="pre">[7]</span></code> on the object.</p>
 </dd></dl>
 
@@ -1817,24 +2022,32 @@ two values - a min grayscale value and a max grayscale value. Only pixel
 regions that fall between these thresholds will be considered. For RGB565
 images each tuple needs to have six values (l_lo, l_hi, a_lo, a_hi, b_lo,
 b_hi) - which are minimums and maximums for the LAB L, A, and B channels
-respectively. To easy usage this function will automatically fix swapped
-min and max values. Additionally, a tuple is larger than six values the
+respectively. For easy usage this function will automatically fix swapped
+min and max values. Additionally, if a tuple is larger than six values the
 rest are ignored. Conversely, if the tuple is too short the rest of the
 thresholds are assumed to be zero.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To get the thresholds for the object you want to track just select (click
-and drag) on the object you want to track. The histogram will then update
-to just be in that area. Then just write down where the color
-distribution starts and falls off in each histogram channel. These will
-be your low and high values for <code class="docutils literal"><span class="pre">thresholds</span></code>. It&#8217;s best to manually
-determine the thresholds versus using the upper and lower quartile
-statistics because they are too tight.</p>
+<p>To get the thresholds for the object you want to track just select (click
+and drag) on the object you want to track in the IDE frame buffer. The
+histogram will then update to just be in that area. Then just write down
+where the color distribution starts and falls off in each histogram channel.
+These will be your low and high values for <code class="docutils literal"><span class="pre">thresholds</span></code>. It&#8217;s best to
+manually determine the thresholds versus using the upper and lower
+quartile statistics because they are too tight.</p>
+<p class="last">The latest version of OpenMV IDE features a threshold editor to help make
+picking thresholds easer. It lets you control the threshold with sliders
+so you can see what the thresholds are segmenting.</p>
 </div>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
 specified, it is equal to the image rectangle. Only pixels within the
 <code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
-<p><code class="docutils literal"><span class="pre">x_stride</span></code> is the number of pixels to skip when searching for</p>
+<p><code class="docutils literal"><span class="pre">x_stride</span></code> is the number of x pixels to skip when searching for a blob.
+Once a blob is found the line fill algorithm will be pixel accurate.
+Increase <code class="docutils literal"><span class="pre">x_stride</span></code> to speed up finding blobs if blobs are know to be large.</p>
+<p><code class="docutils literal"><span class="pre">y_stride</span></code> is the number of y pixels to skip when searching for a blob.
+Once a blob is found the line fill algorithm will be pixel accurate.
+Increase <code class="docutils literal"><span class="pre">y_stride</span></code> to speed up finding blobs if blobs are know to be large.</p>
 <p><code class="docutils literal"><span class="pre">invert</span></code> inverts the thresholding operation such that instead of matching
 pixels inside of some known color bounds pixels are matched that are outside
 of the known color bounds.</p>
@@ -1872,6 +2085,75 @@ return True to merge the blobs or False to prevent merging the blobs.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">All the arguments except <code class="docutils literal"><span class="pre">thresholds</span></code> are keyword arguments and must
 be explicitly invoked with their name and an equal sign.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_lines">
+<code class="descclassname">image.</code><code class="descname">find_lines</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>x_stride=2</em>, <em>y_stride=1</em>, <em>threshold=1000</em>, <em>theta_margin=25</em>, <em>rho_margin=25</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all infinite lines in the image using the hough transform. Returns a list
+of <code class="docutils literal"><span class="pre">line</span></code> objects (see above).</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p><code class="docutils literal"><span class="pre">x_stride</span></code> is the number of x pixels to skip when doing the hough transform.
+Only increase this if lines you are searching for are large and bulky.</p>
+<p><code class="docutils literal"><span class="pre">y_stride</span></code> is the number of y pixels to skip when doing the hough transform.
+Only increase this if lines you are searching for are large and bulky.</p>
+<p><code class="docutils literal"><span class="pre">threshold</span></code> controls what lines are detected from the hough transform. Only
+lines with a magnitude greater than or equal to <code class="docutils literal"><span class="pre">threshold</span></code> are returned. The
+right value of <code class="docutils literal"><span class="pre">threshold</span></code> for your application is image dependent. Note that
+the magnitude of a line is the sum of all sobel filter magnitudes of pixels
+that make up that line.</p>
+<p><code class="docutils literal"><span class="pre">theta_margin</span></code> controls the merging of detected lines. Lines which are
+<code class="docutils literal"><span class="pre">theta_margin</span></code> degrees apart and <code class="docutils literal"><span class="pre">rho_margin</span></code> rho apart are merged.</p>
+<p><code class="docutils literal"><span class="pre">rho_margin</span></code> controls the merging of detected lines. Lines which are
+<code class="docutils literal"><span class="pre">theta_margin</span></code> degrees apart and <code class="docutils literal"><span class="pre">rho_margin</span></code> rho apart are merged.</p>
+<p>This method working by running the sobel filter over the image and taking
+the magnitude and gradient responses from the sobel filter to feed a hough
+transform. It does not require any preprocessing on the image first. However,
+my cleaning up the image filter you may get more stable results.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All the arguments are keyword arguments and must be explicitly invoked
+with their name and an equal sign.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_line_segments">
+<code class="descclassname">image.</code><code class="descname">find_line_segments</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>x_stride=2</em>, <em>y_stride=1</em>, <em>threshold=1000</em>, <em>theta_margin=25</em>, <em>rho_margin=25</em>, <em>segment_threshold=100</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_line_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds line segments in the image using the hough transform. Returns a list
+of <code class="docutils literal"><span class="pre">line</span></code> objects (see above).</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p><code class="docutils literal"><span class="pre">x_stride</span></code> is the number of x pixels to skip when doing the hough transform.
+Only increase this if lines you are searching for are large and bulky.</p>
+<p><code class="docutils literal"><span class="pre">y_stride</span></code> is the number of y pixels to skip when doing the hough transform.
+Only increase this if lines you are searching for are large and bulky.</p>
+<p><code class="docutils literal"><span class="pre">threshold</span></code> controls what lines are detected from the hough transform. Only
+lines with a magnitude greater than or equal to <code class="docutils literal"><span class="pre">threshold</span></code> are returned. The
+right value of <code class="docutils literal"><span class="pre">threshold</span></code> for your application is image dependent. Note that
+the magnitude of a line is the sum of all sobel filter magnitudes of pixels
+that make up that line.</p>
+<p><code class="docutils literal"><span class="pre">theta_margin</span></code> controls the merging of detected lines. Lines which are
+<code class="docutils literal"><span class="pre">theta_margin</span></code> degrees apart and <code class="docutils literal"><span class="pre">rho_margin</span></code> rho apart are merged.</p>
+<p><code class="docutils literal"><span class="pre">rho_margin</span></code> controls the merging of detected lines. Lines which are
+<code class="docutils literal"><span class="pre">theta_margin</span></code> degrees apart and <code class="docutils literal"><span class="pre">rho_margin</span></code> rho apart are merged.</p>
+<p><code class="docutils literal"><span class="pre">segment_threshold</span></code> controls what pixels are added to line segments. This
+is a threshold check on the magnitude of each pixel under an infinite line
+before it is added to a line segment under an infinite line.</p>
+<p>This method works by calling <code class="docutils literal"><span class="pre">find_lines</span></code> internally and then walking
+each line found and checking the magnitude (using the sobel filter). If
+the magnitude passes the threshold check and if the pixel&#8217;s gradient direction
+points in the same direction as the line then the pixel is added to a line
+segment under that line. All line segments are then merged repeatedly to
+create nice clean line segments.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All the arguments are keyword arguments and must be explicitly invoked
+with their name and an equal sign.</p>
 </div>
 </dd></dl>
 
@@ -1953,6 +2235,38 @@ camera sensor pixels in the Y direction (for the OV7725 camera).</p>
 <p class="last"><code class="docutils literal"><span class="pre">roi</span></code>, <code class="docutils literal"><span class="pre">families</span></code>, <code class="docutils literal"><span class="pre">fx</span></code>, <code class="docutils literal"><span class="pre">fy</span></code>, <code class="docutils literal"><span class="pre">cx</span></code>, and <code class="docutils literal"><span class="pre">cy</span></code> are keyword
 arguments which must be explicitly invoked in the function call by
 writing <code class="docutils literal"><span class="pre">roi=</span></code>, <code class="docutils literal"><span class="pre">families=</span></code>, <code class="docutils literal"><span class="pre">fx=</span></code>, <code class="docutils literal"><span class="pre">fy=</span></code>, <code class="docutils literal"><span class="pre">cx=</span></code>, and <code class="docutils literal"><span class="pre">cy=</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.find_datamatrices">
+<code class="descclassname">image.</code><code class="descname">find_datamatrices</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>effort=200</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_datamatrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all datamatrices within the <code class="docutils literal"><span class="pre">roi</span></code> and returns a list of <code class="docutils literal"><span class="pre">datamatrix</span></code>
+objects. Please see the <code class="docutils literal"><span class="pre">datamatrix</span></code> object for more information.</p>
+<p>Data Matrices need to be relatively flat in the image for this method to work.
+You can achieve a flatter image that is not effected by lens distortion by
+either using the <code class="docutils literal"><span class="pre">sensor.set_windowing</span></code> function to zoom in the on the
+center of the lens, <code class="docutils literal"><span class="pre">image.lens_corr</span></code> to undo lens barrel distortion, or
+by just changing out the lens for something with a narrower fields of view.
+There are machine vision lenses available which do not cause barrel
+distortion but they are much more expensive to than the standard lenses
+supplied by OpenMV so we don&#8217;t stock them (since they wouldn&#8217;t sell).</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p><code class="docutils literal"><span class="pre">effort</span></code> controls how much time to spend trying to find data matrix matches.
+The default value of 200 should be good for all use-cases. However, you may
+increase the effort, at a cost of the frame rate, to increase detection. You
+may also lower the effort to increase the frame rate, but, at a cost of
+detections... note that when <code class="docutils literal"><span class="pre">effort</span></code> is set to below 160 or so you will
+not detect anything anymore. Also note that you can make <code class="docutils literal"><span class="pre">effort</span></code> as high
+as you like. But, any values above 240 or so do not result in much increase
+in the detection rate.</p>
+<p>Not supported on compressed images.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">roi</span></code> and <code class="docutils literal"><span class="pre">effort</span></code> are keyword arguments which must be explicitly
+invoked in the function call by writing <code class="docutils literal"><span class="pre">roi=</span></code> and/or <code class="docutils literal"><span class="pre">effort=</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -2153,8 +2467,8 @@ invoked in the function call by writing <code class="docutils literal"><span cla
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.find_lines">
-<code class="descclassname">image.</code><code class="descname">find_lines</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>threshold=50</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_lines" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">image.</code><code class="descname">find_lines</code><span class="sig-paren">(</span><em>roi=Auto</em>, <em>threshold=50</em><span class="sig-paren">)</span></dt>
 <dd><p>For grayscale images only. Finds the lines in a edge detected image using
 the Hough Transform. Returns a list of line tuples (x0, y0, x1, y1).</p>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle (x, y, w, h) to work in.
@@ -2397,7 +2711,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 27 Mar 2017.
+      Last updated on 29 May 2017.
 
     </p>
   </div>
