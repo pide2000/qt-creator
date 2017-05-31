@@ -1365,9 +1365,9 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
                 QProgressDialog dialog(tr("Registering OpenMV Cam..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
                     Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
                     (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                QProgressDialog *dialogPtr = &dialog;
 
-                connect(&manager, &QNetworkAccessManager::finished, this, [this, dialogPtr] { dialogPtr->done(reinterpret_cast<qint64>(dialogPtr)); });
+                connect(&dialog, &QProgressDialog::canceled, &dialog, &QProgressDialog::reject);
+                connect(&manager, &QNetworkAccessManager::finished, &dialog, &QProgressDialog::accept);
 
                 QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-register.php?board=%L1&id=%L2&id_key=%L3")).arg(board).arg(id).arg(boardKey)));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
@@ -1379,7 +1379,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
                 {
                     connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
 
-                    bool wasCanceled = dialog.exec() != reinterpret_cast<qint64>(dialogPtr);
+                    bool wasCanceled = dialog.exec() != QDialog::Accepted;
 
                     QByteArray data = reply->readAll();
 
