@@ -119,8 +119,8 @@ tmp/
 
 # Binaries
 # --------
-*.dll
-*.exe
+#*.dll
+#*.exe
 /bin/buildoutputparser
 /bin/clangbackend
 /bin/cpaster
