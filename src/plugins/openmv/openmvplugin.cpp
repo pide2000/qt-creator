@@ -612,10 +612,10 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
     settings->endGroup();
 
-    widget->m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
-    widget->m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
-    widget->m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
-    widget->m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
+    widget->m_leftDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(0)) : false);
+    widget->m_rightDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(1)) : false);
+    widget->m_topDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(0)) : false);
+    widget->m_bottomDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(1)) : false);
 
     m_openTerminalMenuData = QList<openTerminalMenuData_t>();
 

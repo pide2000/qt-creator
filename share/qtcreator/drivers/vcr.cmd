@@ -1,5 +1,4 @@
 @echo off
-echo Installing VCR Driver...
 
 if DEFINED PROCESSOR_ARCHITEW6432 goto :install_wow
 

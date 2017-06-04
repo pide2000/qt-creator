@@ -994,10 +994,10 @@ void OpenMVTerminal::showEvent(QShowEvent *event)
         m_vsplitter->restoreState(m_settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
     }
 
-    m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
-    m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
-    m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
-    m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
+    m_leftDrawer->parentWidget()->setVisible(m_settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(0)) : false);
+    m_rightDrawer->parentWidget()->setVisible(m_settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(1)) : false);
+    m_topDrawer->parentWidget()->setVisible(m_settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(0)) : false);
+    m_bottomDrawer->parentWidget()->setVisible(m_settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(1)) : false);
 
     QWidget::showEvent(event);
 }
