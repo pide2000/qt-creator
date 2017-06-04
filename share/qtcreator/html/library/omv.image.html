@@ -1727,9 +1727,9 @@ pixels go to 0 (black).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.nand">
-<code class="descclassname">image.</code><code class="descname">nand</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.nand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logically NANDs this image with another image.</p>
+<dt id="image.image.b_and">
+<code class="descclassname">image.</code><code class="descname">b_and</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_and" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically ANDs this image with another image.</p>
 <p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
 file (bmp/pgm/ppm).</p>
 <p>Both images must be the same size and the same type (grayscale/rgb).</p>
@@ -1737,9 +1737,9 @@ file (bmp/pgm/ppm).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.nor">
-<code class="descclassname">image.</code><code class="descname">nor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.nor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logically NORs this image with another image.</p>
+<dt id="image.image.b_or">
+<code class="descclassname">image.</code><code class="descname">b_or</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically ORs this image with another image.</p>
 <p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
 file (bmp/pgm/ppm).</p>
 <p>Both images must be the same size and the same type (grayscale/rgb).</p>
@@ -1747,9 +1747,10 @@ file (bmp/pgm/ppm).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.xor">
-<code class="descclassname">image.</code><code class="descname">xor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.xor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logically XORs this image with another image.</p>
+<dt id="image.image.b_nand">
+<code class="descclassname">image.</code><code class="descname">b_nand</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_nand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically NANDs this image with another image. You can also invoke this
+method by using <code class="docutils literal"><span class="pre">image.nand</span></code>.</p>
 <p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
 file (bmp/pgm/ppm).</p>
 <p>Both images must be the same size and the same type (grayscale/rgb).</p>
@@ -1757,9 +1758,32 @@ file (bmp/pgm/ppm).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="image.image.xnor">
-<code class="descclassname">image.</code><code class="descname">xnor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.xnor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logically XNORs this image with another image.</p>
+<dt id="image.image.b_nor">
+<code class="descclassname">image.</code><code class="descname">b_nor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_nor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically NORs this image with another image. You can also invoke this
+method by using <code class="docutils literal"><span class="pre">image.nor</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.b_xor">
+<code class="descclassname">image.</code><code class="descname">b_xor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically XORs this image with another image. You can also invoke this
+method by using <code class="docutils literal"><span class="pre">image.xor</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
+file (bmp/pgm/ppm).</p>
+<p>Both images must be the same size and the same type (grayscale/rgb).</p>
+<p>Not supported on compressed images.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="image.image.b_xnor">
+<code class="descclassname">image.</code><code class="descname">b_xnor</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="headerlink" href="#image.image.b_xnor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logically XNORs this image with another image. You can also invoke this
+method by using <code class="docutils literal"><span class="pre">image.xnor</span></code>.</p>
 <p><code class="docutils literal"><span class="pre">image</span></code> can either be an image object or a path to an uncompressed image
 file (bmp/pgm/ppm).</p>
 <p>Both images must be the same size and the same type (grayscale/rgb).</p>
@@ -2711,7 +2735,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 29 May 2017.
+      Last updated on 04 Jun 2017.
 
     </p>
   </div>

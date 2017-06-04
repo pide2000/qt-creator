@@ -413,10 +413,12 @@
 		<!--OPENMV-DIFF-->
 		<contexts>
 			<context name="Normal" attribute="Normal Text" lineEndContext="#stay">
+				<!--OPENMV-DIFF-->
+				<string attribute="Import" String="import" context="ImportHighlight"/>
+				<string attribute="Import" String="from" context="FromHighlight"/>
+				<RegExpr attribute="Definition Keyword" String="(class|def)\s+" context="ClassDefHighlight"/>
+				<!--OPENMV-DIFF-->
 				<keyword attribute="Import" String="import" context="#stay"/>
-				<!--OPENMV-DIFF-->
-				<RegExpr attribute="Definition Keyword" String="(class|def)" context="ClassDefHighlight"/>
-				<!--OPENMV-DIFF-->
 				<keyword attribute="Definition Keyword" String="defs" context="#stay"/>
 				<keyword attribute="Operator Keyword" String="operators" context="#stay"/>
 				<keyword attribute="Flow Control Keyword" String="flow" context="#stay"/>
@@ -455,6 +457,16 @@
 			</context>
 
 			<!--OPENMV-DIFF-->
+			<context name="ImportHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<DetectChar attribute="Normal Text" char="," context="#stay"/>
+				<keyword attribute="OpenMVModules" String="listOpenMVModules" context="#stay"/>
+				<keyword attribute="OpenMVModules" String="listOpenMVClasses" context="#stay"/>
+			</context>
+			<context name="FromHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+				<DetectSpaces/>
+				<keyword attribute="OpenMVModules" String="listOpenMVModules" context="#stay"/>
+			</context>
 			<context name="ClassDefHighlight" attribute="Normal Text" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
 				<DetectSpaces/>
 				<RegExpr attribute="Special Variable" String="[a-zA-Z_][a-zA-Z_0-9]*" context="#pop"/>

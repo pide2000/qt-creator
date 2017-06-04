@@ -1714,7 +1714,7 @@ void OpenMVPlugin::bootloaderClicked()
             settings->endGroup();
             delete dialog;
 
-            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)) ? QMessageBox::Yes : QMessageBox::No);
+            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)));
         }
         else
         {
@@ -1769,7 +1769,7 @@ do { \
     return; \
 } while(0)
 
-void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePath, int forceFlashFSErase)
+void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePath, bool forceFlashFSErase)
 {
     if(!m_working)
     {
@@ -1861,7 +1861,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
                                 {
                                     forceBootloader = true;
-                                    forceFlashFSErase = answer;
+                                    forceFlashFSErase = answer == QMessageBox::Yes;
                                     forceBootloaderBricked = true;
                                     firmwarePath = Core::ICore::userResourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
                                 }
@@ -3233,7 +3233,7 @@ void OpenMVPlugin::updateCam()
 
                             if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
                             {
-                                connectClicked(true, QString(), answer);
+                                connectClicked(true, QString(), answer == QMessageBox::Yes);
                             }
                         }
                     }
@@ -3261,7 +3261,7 @@ void OpenMVPlugin::updateCam()
 
                             if(pluginSpec()->state() != ExtensionSystem::PluginSpec::Stopped)
                             {
-                                connectClicked(true, QString(), answer);
+                                connectClicked(true, QString(), answer == QMessageBox::Yes);
                             }
                         }
                     }

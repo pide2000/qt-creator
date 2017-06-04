@@ -166,7 +166,7 @@ public slots: // private
     bool registerOpenMVCamDialog(const QString board, const QString id);
     void packageUpdate();
     void bootloaderClicked();
-    void connectClicked(bool forceBootloader = false, QString forceFirmwarePath = QString(), int forceFlashFSErase = int());
+    void connectClicked(bool forceBootloader = false, QString forceFirmwarePath = QString(), bool forceFlashFSErase = false);
     void disconnectClicked(bool reset = false);
     void startClicked();
     void stopClicked();
