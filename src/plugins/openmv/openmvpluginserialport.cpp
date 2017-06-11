@@ -7,7 +7,7 @@
 #define WRITE_DELAY 0 // disabled
 #define WRITE_TIMEOUT 3000
 #define READ_TIMEOUT 5000
-#define READ_STALL_TIMEOUT 40
+#define READ_STALL_TIMEOUT 1000
 #define BOOTLOADER_WRITE_TIMEOUT 6
 #define BOOTLOADER_READ_TIMEOUT 10
 #define BOOTLOADER_READ_STALL_TIMEOUT 2
@@ -65,12 +65,14 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     }
 
     m_port = new QSerialPort(portName, this);
+    m_port->setReadBufferSize(1000000);
 
     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
     || (!m_port->open(QIODevice::ReadWrite)))
     {
         delete m_port;
         m_port = new QSerialPort(portName, this);
+        m_port->setReadBufferSize(1000000);
 
         if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
         || (!m_port->open(QIODevice::ReadWrite)))
@@ -98,12 +100,14 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
             if(!m_port)
             {
                 m_port = new QSerialPort(portName, this);
+                m_port->setReadBufferSize(1000000);
 
                 if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
                 || (!m_port->open(QIODevice::ReadWrite)))
                 {
                     delete m_port;
                     m_port = new QSerialPort(portName, this);
+                    m_port->setReadBufferSize(1000000);
 
                     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
                     || (!m_port->open(QIODevice::ReadWrite)))
@@ -287,12 +291,14 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
             }
 
             m_port = new QSerialPort(portName, this);
+            m_port->setReadBufferSize(1000000);
 
             if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
             || (!m_port->open(QIODevice::ReadWrite)))
             {
                 delete m_port;
                 m_port = new QSerialPort(portName, this);
+                m_port->setReadBufferSize(1000000);
 
                 if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
                 || (!m_port->open(QIODevice::ReadWrite)))
