@@ -15,6 +15,7 @@
 #include <coreplugin/fancyactionbar.h>
 #include <coreplugin/fancytabwidget.h>
 #include <coreplugin/icore.h>
+#include <coreplugin/mainwindow.h>
 #include <coreplugin/messagemanager.h>
 #include <coreplugin/outputwindow.h>
 #include <texteditor/codeassist/completionassistprovider.h>
@@ -27,6 +28,7 @@
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
+#include <utils/appmainwindow.h>
 #include <utils/elidinglabel.h>
 #include <utils/environment.h>
 #include <utils/pathchooser.h>

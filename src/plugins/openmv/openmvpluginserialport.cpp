@@ -65,6 +65,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     }
 
     m_port = new QSerialPort(portName, this);
+    // QSerialPort is buggy unless this is set.
     m_port->setReadBufferSize(1000000);
 
     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
@@ -72,6 +73,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     {
         delete m_port;
         m_port = new QSerialPort(portName, this);
+        // QSerialPort is buggy unless this is set.
         m_port->setReadBufferSize(1000000);
 
         if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
@@ -100,6 +102,7 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
             if(!m_port)
             {
                 m_port = new QSerialPort(portName, this);
+                // QSerialPort is buggy unless this is set.
                 m_port->setReadBufferSize(1000000);
 
                 if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
@@ -107,6 +110,7 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
                 {
                     delete m_port;
                     m_port = new QSerialPort(portName, this);
+                    // QSerialPort is buggy unless this is set.
                     m_port->setReadBufferSize(1000000);
 
                     if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))
@@ -291,6 +295,7 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
             }
 
             m_port = new QSerialPort(portName, this);
+            // QSerialPort is buggy unless this is set.
             m_port->setReadBufferSize(1000000);
 
             if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE))
@@ -298,6 +303,7 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
             {
                 delete m_port;
                 m_port = new QSerialPort(portName, this);
+                // QSerialPort is buggy unless this is set.
                 m_port->setReadBufferSize(1000000);
 
                 if((!m_port->setBaudRate(OPENMVCAM_BAUD_RATE_2))

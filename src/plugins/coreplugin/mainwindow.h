@@ -75,7 +75,11 @@ class WindowSupport;
 class SystemEditor;
 class SystemSettings;
 
-class MainWindow : public Utils::AppMainWindow
+//OPENMV-DIFF//
+class CORE_EXPORT MainWindow : public Utils::AppMainWindow
+//OPENMV-DIFF//
+//class MainWindow : public Utils::AppMainWindow
+//OPENMV-DIFF//
 {
     Q_OBJECT
 
@@ -113,6 +117,9 @@ public:
     void addPreCloseListener(const std::function<bool()> &listener);
 
 signals:
+    //OPENMV-DIFF//
+    void showEventSignal();
+    //OPENMV-DIFF//
     void newItemDialogRunningChanged();
 
 public slots:
@@ -127,6 +134,9 @@ public slots:
                                 QWidget *parent = 0);
 
 protected:
+    //OPENMV-DIFF//
+    virtual void showEvent(QShowEvent *event) { emit showEventSignal(); Utils::AppMainWindow::showEvent(event); }
+    //OPENMV-DIFF//
     virtual void closeEvent(QCloseEvent *event);
 
 private:

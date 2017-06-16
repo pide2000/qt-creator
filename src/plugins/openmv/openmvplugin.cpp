@@ -592,10 +592,6 @@ void OpenMVPlugin::extensionsInitialized()
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
     Core::EditorManager::restoreState(
         settings->value(QStringLiteral(EDITOR_MANAGER_STATE)).toByteArray());
-    m_hsplitter->restoreState(
-        settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
-    m_vsplitter->restoreState(
-        settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
     m_zoom->setChecked(
         settings->value(QStringLiteral(ZOOM_STATE), m_zoom->isChecked()).toBool());
     m_jpgCompress->setChecked(
@@ -612,10 +608,16 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
     settings->endGroup();
 
-    widget->m_leftDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(0)) : false);
-    widget->m_rightDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(1)) : false);
-    widget->m_topDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(0)) : false);
-    widget->m_bottomDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(1)) : false);
+    connect(q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow())), &Core::Internal::MainWindow::showEventSignal, this, [this, widget, settings] {
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+        if(settings->contains(QStringLiteral(HSPLITTER_STATE))) m_hsplitter->restoreState(settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
+        if(settings->contains(QStringLiteral(VSPLITTER_STATE))) m_vsplitter->restoreState(settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
+        widget->m_leftDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(0)) : false);
+        widget->m_rightDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(1)) : false);
+        widget->m_topDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(0)) : false);
+        widget->m_bottomDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(1)) : false);
+        settings->endGroup();
+    });
 
     m_openTerminalMenuData = QList<openTerminalMenuData_t>();
 

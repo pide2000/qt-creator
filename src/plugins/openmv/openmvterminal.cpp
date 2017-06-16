@@ -1027,6 +1027,7 @@ void OpenMVTerminalSerialPort_private::open(const QString &portName, int buadRat
     }
 
     m_port = new QSerialPort(portName, this);
+    // QSerialPort is buggy unless this is set.
     m_port->setReadBufferSize(1000000);
 
     connect(m_port, &QSerialPort::readyRead, this, [this] {
@@ -1035,8 +1036,7 @@ void OpenMVTerminalSerialPort_private::open(const QString &portName, int buadRat
 
     if((!m_port->setBaudRate(buadRate))
     || (!m_port->open(QIODevice::ReadWrite))
-    || (!m_port->setDataTerminalReady(true))
-    || (!m_port->setRequestToSend(true)))
+    || (!m_port->setDataTerminalReady(true)))
     {
         emit openResult(m_port->errorString());
         delete m_port;
