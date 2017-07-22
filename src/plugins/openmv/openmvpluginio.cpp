@@ -1,29 +1,36 @@
 #include "openmvpluginio.h"
 
-#define USBDBG_FW_VERSION_CPL 0
-#define USBDBG_FRAME_SIZE_CPL 1
-#define USBDBG_FRAME_DUMP_CPL 2
-#define USBDBG_ARCH_STR_CPL 3
-#define USBDBG_SCRIPT_EXEC_CPL_0 4
-#define USBDBG_SCRIPT_EXEC_CPL_1 5
-#define USBDBG_SCRIPT_STOP_CPL 6
-#define USBDBG_SCRIPT_RUNNING_CPL 7
-#define USBDBG_TEMPLATE_SAVE_CPL_0 8
-#define USBDBG_TEMPLATE_SAVE_CPL_1 9
-#define USBDBG_DESCRIPTOR_SAVE_CPL_0 10
-#define USBDBG_DESCRIPTOR_SAVE_CPL_1 11
-#define USBDBG_ATTR_READ_CPL 12
-#define USBDBG_ATTR_WRITE_CPL 13
-#define USBDBG_SYS_RESET_CPL 14
-#define USBDBG_FB_ENABLE_CPL 15
-#define USBDBG_JPEG_ENABLE_CPL 16
-#define USBDBG_TX_BUF_LEN_CPL 17
-#define USBDBG_TX_BUF_CPL 18
-#define BOOTLDR_START_CPL 19
-#define BOOTLDR_RESET_CPL 20
-#define BOOTLDR_ERASE_CPL 21
-#define BOOTLDR_WRITE_CPL 22
-#define CLOSE_CPL 23
+#define MTU_DEFAULT_SIZE (16 * 1024 * 1024)
+
+enum
+{
+    USBDBG_FW_VERSION_CPL,
+    USBDBG_FRAME_SIZE_CPL,
+    USBDBG_FRAME_DUMP_CPL,
+    USBDBG_ARCH_STR_CPL,
+    USBDBG_LEARN_MTU_CPL,
+    USBDBG_SCRIPT_EXEC_CPL_0,
+    USBDBG_SCRIPT_EXEC_CPL_1,
+    USBDBG_SCRIPT_STOP_CPL,
+    USBDBG_SCRIPT_RUNNING_CPL,
+    USBDBG_SCRIPT_SAVE_CPL,
+    USBDBG_TEMPLATE_SAVE_CPL_0,
+    USBDBG_TEMPLATE_SAVE_CPL_1,
+    USBDBG_DESCRIPTOR_SAVE_CPL_0,
+    USBDBG_DESCRIPTOR_SAVE_CPL_1,
+    USBDBG_ATTR_READ_CPL,
+    USBDBG_ATTR_WRITE_CPL,
+    USBDBG_SYS_RESET_CPL,
+    USBDBG_FB_ENABLE_CPL,
+    USBDBG_JPEG_ENABLE_CPL,
+    USBDBG_TX_BUF_LEN_CPL,
+    USBDBG_TX_BUF_CPL,
+    BOOTLDR_START_CPL,
+    BOOTLDR_RESET_CPL,
+    BOOTLDR_ERASE_CPL,
+    BOOTLDR_WRITE_CPL,
+    CLOSE_CPL
+};
 
 #define IS_JPG(bpp)     ((bpp) >= 3)
 #define IS_RGB(bpp)     ((bpp) == 2)
@@ -57,6 +64,8 @@ OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : 
     m_frameSizeW = int();
     m_frameSizeH = int();
     m_frameSizeBPP = int();
+    m_mtu = MTU_DEFAULT_SIZE;
+    m_pixelBuffer = QByteArray();
     m_lineBuffer = QByteArray();
     m_timeout = bool();
 }
@@ -102,12 +111,17 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
 
                         if(size)
                         {
-                            QByteArray buffer;
-                            serializeByte(buffer, __USBDBG_CMD);
-                            serializeByte(buffer, __USBDBG_FRAME_DUMP);
-                            serializeLong(buffer, size);
-                            m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, size, FRAME_DUMP_START_DELAY, FRAME_DUMP_END_DELAY));
-                            m_completionQueue.insert(1, USBDBG_FRAME_DUMP_CPL);
+                            for(int i = 0, j = (size + m_mtu - 1) / m_mtu; i < j; i++)
+                            {
+                                int new_size = qMin(size - ((j - 1 - i) * m_mtu), m_mtu);
+                                QByteArray buffer;
+                                serializeByte(buffer, __USBDBG_CMD);
+                                serializeByte(buffer, __USBDBG_FRAME_DUMP);
+                                serializeLong(buffer, new_size);
+                                m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, new_size, FRAME_DUMP_START_DELAY, FRAME_DUMP_END_DELAY));
+                                m_completionQueue.insert(1 + i, USBDBG_FRAME_DUMP_CPL);
+                            }
+
                             m_frameSizeW = w;
                             m_frameSizeH = h;
                             m_frameSizeBPP = bpp;
@@ -118,65 +132,78 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 }
                 case USBDBG_FRAME_DUMP_CPL:
                 {
-                    QPixmap pixmap = QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
-                    ? QImage::fromData(data, "JPG")
-                    : QImage(reinterpret_cast<const uchar *>(byteSwap(data,
-                        IS_RGB(m_frameSizeBPP)).constData()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW + 31) / 32) : (m_frameSizeW * m_frameSizeBPP),
-                        IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : (IS_GS(m_frameSizeBPP) ? QImage::Format_Grayscale8 : QImage::Format_MonoLSB)));
+                    m_pixelBuffer.append(data);
 
-                    if(pixmap.isNull() && IS_JPG(m_frameSizeBPP))
+                    if(m_pixelBuffer.size() == (IS_JPG(m_frameSizeBPP) ? m_frameSizeBPP : ((IS_RGB(m_frameSizeBPP) || IS_GS(m_frameSizeBPP)) ? (m_frameSizeW * m_frameSizeH * m_frameSizeBPP) : (IS_BINARY(m_frameSizeBPP) ? (((m_frameSizeW + 31) / 32) * m_frameSizeH) : int()))))
                     {
-                        data = data.mid(1, data.size() - 2);
+                        QPixmap pixmap = QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
+                        ? QImage::fromData(m_pixelBuffer, "JPG")
+                        : QImage(reinterpret_cast<const uchar *>(byteSwap(m_pixelBuffer,
+                            IS_RGB(m_frameSizeBPP)).constData()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW + 31) / 32) : (m_frameSizeW * m_frameSizeBPP),
+                            IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : (IS_GS(m_frameSizeBPP) ? QImage::Format_Grayscale8 : (IS_BINARY(m_frameSizeBPP) ? QImage::Format_MonoLSB : QImage::Format_Invalid))));
 
-                        int size = data.size();
-                        QByteArray temp;
-
-                        for(int i = 0, j = (size / 4) * 4; i < j; i += 4)
+                        if(pixmap.isNull() && IS_JPG(m_frameSizeBPP))
                         {
-                            int x = 0;
-                            x |= (data.at(i + 0) & 0x3F) << 0;
-                            x |= (data.at(i + 1) & 0x3F) << 6;
-                            x |= (data.at(i + 2) & 0x3F) << 12;
-                            x |= (data.at(i + 3) & 0x3F) << 18;
-                            temp.append((x >> 0) & 0xFF);
-                            temp.append((x >> 8) & 0xFF);
-                            temp.append((x >> 16) & 0xFF);
+                            m_pixelBuffer = m_pixelBuffer.mid(1, m_pixelBuffer.size() - 2);
+
+                            int size = m_pixelBuffer.size();
+                            QByteArray temp;
+
+                            for(int i = 0, j = (size / 4) * 4; i < j; i += 4)
+                            {
+                                int x = 0;
+                                x |= (m_pixelBuffer.at(i + 0) & 0x3F) << 0;
+                                x |= (m_pixelBuffer.at(i + 1) & 0x3F) << 6;
+                                x |= (m_pixelBuffer.at(i + 2) & 0x3F) << 12;
+                                x |= (m_pixelBuffer.at(i + 3) & 0x3F) << 18;
+                                temp.append((x >> 0) & 0xFF);
+                                temp.append((x >> 8) & 0xFF);
+                                temp.append((x >> 16) & 0xFF);
+                            }
+
+                            if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
+                            {
+                                int x = 0;
+                                x |= (m_pixelBuffer.at(size - 3) & 0x3F) << 0;
+                                x |= (m_pixelBuffer.at(size - 2) & 0x3F) << 6;
+                                x |= (m_pixelBuffer.at(size - 1) & 0x0F) << 12;
+                                temp.append((x >> 0) & 0xFF);
+                                temp.append((x >> 8) & 0xFF);
+                            }
+
+                            if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
+                            {
+                                int x = 0;
+                                x |= (m_pixelBuffer.at(size - 2) & 0x3F) << 0;
+                                x |= (m_pixelBuffer.at(size - 1) & 0x03) << 6;
+                                temp.append((x >> 0) & 0xFF);
+                            }
+
+                            pixmap = QPixmap::fromImage(QImage::fromData(temp, "JPG"));
                         }
 
-                        if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
+                        if(!pixmap.isNull())
                         {
-                            int x = 0;
-                            x |= (data.at(size - 3) & 0x3F) << 0;
-                            x |= (data.at(size - 2) & 0x3F) << 6;
-                            x |= (data.at(size - 1) & 0x0F) << 12;
-                            temp.append((x >> 0) & 0xFF);
-                            temp.append((x >> 8) & 0xFF);
+                            emit frameBufferData(pixmap);
                         }
 
-                        if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
-                        {
-                            int x = 0;
-                            x |= (data.at(size - 2) & 0x3F) << 0;
-                            x |= (data.at(size - 1) & 0x03) << 6;
-                            temp.append((x >> 0) & 0xFF);
-                        }
-
-                        pixmap = QPixmap::fromImage(QImage::fromData(temp, "JPG"));
+                        m_frameSizeW = int();
+                        m_frameSizeH = int();
+                        m_frameSizeBPP = int();
+                        m_pixelBuffer.clear();
                     }
 
-                    if(!pixmap.isNull())
-                    {
-                        emit frameBufferData(pixmap);
-                    }
-
-                    m_frameSizeW = int();
-                    m_frameSizeH = int();
-                    m_frameSizeBPP = int();
                     break;
                 }
                 case USBDBG_ARCH_STR_CPL:
                 {
                     emit archString(QString::fromUtf8(data));
+                    break;
+                }
+                case USBDBG_LEARN_MTU_CPL:
+                {
+                    m_mtu = deserializeLong(data);
+                    emit learnedMTU(true);
                     break;
                 }
                 case USBDBG_SCRIPT_EXEC_CPL_0:
@@ -247,16 +274,20 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
 
                     if(len)
                     {
-                        QByteArray buffer;
-                        serializeByte(buffer, __USBDBG_CMD);
-                        serializeByte(buffer, __USBDBG_TX_BUF);
-                        serializeLong(buffer, len);
-                        m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, len, TX_BUF_START_DELAY, TX_BUF_END_DELAY));
-                        m_completionQueue.insert(1, USBDBG_TX_BUF_CPL);
+                        for(int i = 0, j = (len + m_mtu - 1) / m_mtu; i < j; i++)
+                        {
+                            int new_len = qMin(len - ((j - 1 - i) * m_mtu), m_mtu);
+                            QByteArray buffer;
+                            serializeByte(buffer, __USBDBG_CMD);
+                            serializeByte(buffer, __USBDBG_TX_BUF);
+                            serializeLong(buffer, new_len);
+                            m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, new_len, TX_BUF_START_DELAY, TX_BUF_END_DELAY));
+                            m_completionQueue.insert(1 + i, USBDBG_TX_BUF_CPL);
+                        }
                     }
                     else if(m_lineBuffer.size())
                     {
-                        emit pasrsePrintData(m_lineBuffer);
+                        emit printData(pasrsePrintData(m_lineBuffer));
                         m_lineBuffer.clear();
                     }
 
@@ -268,9 +299,16 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     QByteArrayList list = m_lineBuffer.split('\n');
                     m_lineBuffer = list.takeLast();
 
-                    if(list.size())
+                    QByteArray out;
+
+                    for(int i = 0, j = list.size(); i < j; i++)
                     {
-                        emit pasrsePrintData(list.join('\n') + '\n');
+                        out.append(pasrsePrintData(list.at(i) + '\n'));
+                    }
+
+                    if(!out.isEmpty())
+                    {
+                        emit printData(out);
                     }
 
                     break;
@@ -299,7 +337,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 {
                     if(m_lineBuffer.size())
                     {
-                        emit pasrsePrintData(m_lineBuffer);
+                        emit printData(pasrsePrintData(m_lineBuffer));
                         m_lineBuffer.clear();
                     }
 
@@ -332,11 +370,18 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                         m_frameSizeW = int();
                         m_frameSizeH = int();
                         m_frameSizeBPP = int();
+                        m_pixelBuffer.clear();
                         break;
                     }
                     case USBDBG_ARCH_STR_CPL:
                     {
                         emit archString(QString());
+                        break;
+                    }
+                    case USBDBG_LEARN_MTU_CPL:
+                    {
+                        m_mtu = MTU_DEFAULT_SIZE;
+                        emit learnedMTU(false);
                         break;
                     }
                     case USBDBG_SCRIPT_EXEC_CPL_0:
@@ -405,7 +450,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit pasrsePrintData(m_lineBuffer);
+                            emit printData(pasrsePrintData(m_lineBuffer));
                             m_lineBuffer.clear();
                         }
 
@@ -415,7 +460,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit pasrsePrintData(m_lineBuffer);
+                            emit printData(pasrsePrintData(m_lineBuffer));
                             m_lineBuffer.clear();
                         }
 
@@ -445,7 +490,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     {
                         if(m_lineBuffer.size())
                         {
-                            emit pasrsePrintData(m_lineBuffer);
+                            emit printData(pasrsePrintData(m_lineBuffer));
                             m_lineBuffer.clear();
                         }
 
@@ -532,6 +577,13 @@ void OpenMVPluginIO::getArchString()
     serializeLong(buffer, ARCH_STR_RESPONSE_LEN);
     m_postedQueue.enqueue(OpenMVPluginSerialPortCommand(buffer, ARCH_STR_RESPONSE_LEN, ARCH_STR_START_DELAY, ARCH_STR_END_DELAY));
     m_completionQueue.enqueue(USBDBG_ARCH_STR_CPL);
+    command();
+}
+
+void OpenMVPluginIO::learnMTU()
+{
+    m_postedQueue.enqueue(OpenMVPluginSerialPortCommand(QByteArray(), sizeof(int), LEARN_MTU_START_DELAY, LEARN_MTU_END_DELAY));
+    m_completionQueue.enqueue(USBDBG_LEARN_MTU_CPL);
     command();
 }
 
@@ -726,7 +778,7 @@ void OpenMVPluginIO::close()
     command();
 }
 
-void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
+QByteArray OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
 {
     enum
     {
@@ -735,25 +787,25 @@ void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
         EXIT_0,
         EXIT_1
     }
-    stateMachine = ASCII;
-
-    QByteArray shiftReg = QByteArray();
+    int_stateMachine = ASCII;
+    QByteArray int_shiftReg = QByteArray();
+    QByteArray int_frameBufferData = QByteArray();
 
     QByteArray buffer;
 
     for(int i = 0, j = data.size(); i < j; i++)
     {
-        if((stateMachine == UTF_8) && ((data.at(i) & 0xC0) != 0x80))
+        if((int_stateMachine == UTF_8) && ((data.at(i) & 0xC0) != 0x80))
         {
-            stateMachine = ASCII;
+            int_stateMachine = ASCII;
         }
 
-        if((stateMachine == EXIT_0) && ((data.at(i) & 0xFF) != 0x00))
+        if((int_stateMachine == EXIT_0) && ((data.at(i) & 0xFF) != 0x00))
         {
-            stateMachine = ASCII;
+            int_stateMachine = ASCII;
         }
 
-        switch(stateMachine)
+        switch(int_stateMachine)
         {
             case ASCII:
             {
@@ -763,21 +815,61 @@ void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
                 || ((data.at(i) & 0xFC) == 0xF8)
                 || ((data.at(i) & 0xFE) == 0xFC)) // UTF_8
                 {
-                    shiftReg.clear();
+                    int_shiftReg.clear();
 
-                    stateMachine = UTF_8;
+                    int_stateMachine = UTF_8;
                 }
                 else if((data.at(i) & 0xFF) == 0xFF)
                 {
-                    stateMachine = EXIT_0;
+                    int_stateMachine = EXIT_0;
                 }
                 else if((data.at(i) & 0xC0) == 0x80)
                 {
-                    // Nothing for now.
+                    int_frameBufferData.append(data.at(i));
                 }
                 else if((data.at(i) & 0xFF) == 0xFE)
                 {
-                    // Nothing for now.
+                    int size = int_frameBufferData.size();
+                    QByteArray temp;
+
+                    for(int k = 0, l = (size / 4) * 4; k < l; k += 4)
+                    {
+                        int x = 0;
+                        x |= (int_frameBufferData.at(k + 0) & 0x3F) << 0;
+                        x |= (int_frameBufferData.at(k + 1) & 0x3F) << 6;
+                        x |= (int_frameBufferData.at(k + 2) & 0x3F) << 12;
+                        x |= (int_frameBufferData.at(k + 3) & 0x3F) << 18;
+                        temp.append((x >> 0) & 0xFF);
+                        temp.append((x >> 8) & 0xFF);
+                        temp.append((x >> 16) & 0xFF);
+                    }
+
+                    if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
+                    {
+                        int x = 0;
+                        x |= (int_frameBufferData.at(size - 3) & 0x3F) << 0;
+                        x |= (int_frameBufferData.at(size - 2) & 0x3F) << 6;
+                        x |= (int_frameBufferData.at(size - 1) & 0x0F) << 12;
+                        temp.append((x >> 0) & 0xFF);
+                        temp.append((x >> 8) & 0xFF);
+                    }
+
+                    if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
+                    {
+                        int x = 0;
+                        x |= (int_frameBufferData.at(size - 2) & 0x3F) << 0;
+                        x |= (int_frameBufferData.at(size - 1) & 0x03) << 6;
+                        temp.append((x >> 0) & 0xFF);
+                    }
+
+                    QPixmap pixmap = QPixmap::fromImage(QImage::fromData(temp, "JPG"));
+
+                    if(!pixmap.isNull())
+                    {
+                        emit frameBufferData(pixmap);
+                    }
+
+                    int_frameBufferData.clear();
                 }
                 else if((data.at(i) & 0x80) == 0x00) // ASCII
                 {
@@ -789,15 +881,15 @@ void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
 
             case UTF_8:
             {
-                if((((shiftReg.at(0) & 0xE0) == 0xC0) && (shiftReg.size() == 1))
-                || (((shiftReg.at(0) & 0xF0) == 0xE0) && (shiftReg.size() == 2))
-                || (((shiftReg.at(0) & 0xF8) == 0xF0) && (shiftReg.size() == 3))
-                || (((shiftReg.at(0) & 0xFC) == 0xF8) && (shiftReg.size() == 4))
-                || (((shiftReg.at(0) & 0xFE) == 0xFC) && (shiftReg.size() == 5)))
+                if((((int_shiftReg.at(0) & 0xE0) == 0xC0) && (int_shiftReg.size() == 1))
+                || (((int_shiftReg.at(0) & 0xF0) == 0xE0) && (int_shiftReg.size() == 2))
+                || (((int_shiftReg.at(0) & 0xF8) == 0xF0) && (int_shiftReg.size() == 3))
+                || (((int_shiftReg.at(0) & 0xFC) == 0xF8) && (int_shiftReg.size() == 4))
+                || (((int_shiftReg.at(0) & 0xFE) == 0xFC) && (int_shiftReg.size() == 5)))
                 {
-                    buffer.append(shiftReg + data.at(i));
+                    buffer.append(int_shiftReg + data.at(i));
 
-                    stateMachine = ASCII;
+                    int_stateMachine = ASCII;
                 }
 
                 break;
@@ -805,21 +897,21 @@ void OpenMVPluginIO::pasrsePrintData(const QByteArray &data)
 
             case EXIT_0:
             {
-                stateMachine = EXIT_1;
+                int_stateMachine = EXIT_1;
 
                 break;
             }
 
             case EXIT_1:
             {
-                stateMachine = ASCII;
+                int_stateMachine = ASCII;
 
                 break;
             }
         }
 
-        shiftReg = shiftReg.append(data.at(i)).right(5);
+        int_shiftReg = int_shiftReg.append(data.at(i)).right(5);
     }
 
-    emit printData(buffer);
+    return buffer;
 }

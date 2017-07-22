@@ -2639,9 +2639,41 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         // Stopping ///////////////////////////////////////////////////////////
 
         m_iodevice->scriptStop();
-
         m_iodevice->jpegEnable(m_jpgCompress->isChecked());
         m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
+
+        if(!((major2 < LEARN_MTU_ADDED_MAJOR)
+        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 < LEARN_MTU_ADDED_MINOR))
+        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 == LEARN_MTU_ADDED_MINOR) && (patch2 < LEARN_MTU_ADDED_PATCH))))
+        {
+            bool ok2 = bool();
+            bool *ok2Ptr = &ok2;
+
+            QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
+                this, [this, ok2Ptr] (bool ok) {
+                *ok2Ptr = ok;
+            });
+
+            QEventLoop loop;
+
+            connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
+                    &loop, &QEventLoop::quit);
+
+            m_iodevice->learnMTU();
+
+            loop.exec();
+
+            disconnect(conn);
+
+            if(!ok2)
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    tr("Connect"),
+                    tr("Timeout error while learning MTU!"));
+
+                CLOSE_CONNECT_END();
+            }
+        }
 
         Core::MessageManager::grayOutOldContent();
 

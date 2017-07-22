@@ -11,6 +11,11 @@
 #define BOOTLOADER_WRITE_TIMEOUT 6
 #define BOOTLOADER_READ_TIMEOUT 10
 #define BOOTLOADER_READ_STALL_TIMEOUT 2
+#define LEARN_MTU_WRITE_TIMEOUT 30
+#define LEATN_MTU_READ_TIMEOUT 50
+
+#define LEARN_MTU_MAX 4096
+#define LEARN_MTU_MIN 64
 
 void serializeByte(QByteArray &buffer, int value) // LittleEndian
 {
@@ -177,13 +182,72 @@ void OpenMVPluginSerialPort_private::command(const OpenMVPluginSerialPortCommand
 {
     if(command.m_data.isEmpty())
     {
-        if(m_port)
+        if(!command.m_responseLen) // close
         {
-            delete m_port;
-            m_port = Q_NULLPTR;
-        }
+            if(m_port)
+            {
+                delete m_port;
+                m_port = Q_NULLPTR;
+            }
 
-        emit commandResult(OpenMVPluginSerialPortCommandResult(true, QByteArray()));
+            emit commandResult(OpenMVPluginSerialPortCommandResult(true, QByteArray()));
+        }
+        else if(m_port) // learn
+        {
+            bool ok = false;
+
+            for(int i = LEARN_MTU_MAX; i >= LEARN_MTU_MIN; i /= 2)
+            {
+                QByteArray learnMTU;
+                serializeByte(learnMTU, __USBDBG_CMD);
+                serializeByte(learnMTU, __USBDBG_LEARN_MTU);
+                serializeLong(learnMTU, i - 1);
+
+                write(learnMTU, LEARN_MTU_START_DELAY, LEARN_MTU_END_DELAY, LEARN_MTU_WRITE_TIMEOUT);
+
+                if(!m_port)
+                {
+                    break;
+                }
+                else
+                {
+                    QByteArray response;
+                    QElapsedTimer elaspedTimer;
+                    elaspedTimer.start();
+
+                    do
+                    {
+                        m_port->waitForReadyRead(1);
+                        response.append(m_port->readAll());
+                    }
+                    while((response.size() < (i - 1)) && (!elaspedTimer.hasExpired(LEATN_MTU_READ_TIMEOUT)));
+
+                    if(response.size() >= (i - 1))
+                    {
+                        QByteArray temp;
+                        serializeLong(temp, (i - 1));
+                        emit commandResult(OpenMVPluginSerialPortCommandResult(true, temp));
+                        ok = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!ok)
+            {
+                if(m_port)
+                {
+                    delete m_port;
+                    m_port = Q_NULLPTR;
+                }
+
+                emit commandResult(OpenMVPluginSerialPortCommandResult(false, QByteArray()));
+            }
+        }
+        else
+        {
+            emit commandResult(OpenMVPluginSerialPortCommandResult(false, QByteArray()));
+        }
     }
     else if(m_port)
     {

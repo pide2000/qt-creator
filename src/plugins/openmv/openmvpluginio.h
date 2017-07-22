@@ -43,6 +43,7 @@ public slots:
     void getFirmwareVersion();
     void frameSizeDump();
     void getArchString();
+    void learnMTU();
     void scriptExec(const QByteArray &data);
     void scriptStop();
     void getScriptRunning();
@@ -70,6 +71,7 @@ signals:
     void firmwareVersion(int major, int minor, int patch);
     void frameBufferData(const QPixmap &data);
     void archString(const QString &arch);
+    void learnedMTU(bool ok);
     void scriptExecDone();
     void scriptStopDone();
     void scriptRunning(bool running);
@@ -89,16 +91,14 @@ signals:
 
 private:
 
-    void pasrsePrintData(const QByteArray &data);
+    QByteArray pasrsePrintData(const QByteArray &data);
 
     OpenMVPluginSerialPort *m_port;
 
     QQueue<OpenMVPluginSerialPortCommand> m_postedQueue;
     QQueue<int> m_completionQueue;
-    int m_frameSizeW;
-    int m_frameSizeH;
-    int m_frameSizeBPP;
-    QByteArray m_lineBuffer;
+    int m_frameSizeW, m_frameSizeH, m_frameSizeBPP, m_mtu;
+    QByteArray m_pixelBuffer, m_lineBuffer;
     bool m_timeout;
 };
 

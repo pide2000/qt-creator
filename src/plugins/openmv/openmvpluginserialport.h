@@ -18,8 +18,10 @@
 #define __USBDBG_FRAME_SIZE             0x81
 #define __USBDBG_FRAME_DUMP             0x82
 #define __USBDBG_ARCH_STR               0x83
+#define __USBDBG_LEARN_MTU              0x84
 #define __USBDBG_SCRIPT_EXEC            0x05
 #define __USBDBG_SCRIPT_STOP            0x06
+#define __USBDBG_SCRIPT_SAVE            0x07
 #define __USBDBG_SCRIPT_RUNNING         0x87
 #define __USBDBG_TEMPLATE_SAVE          0x08
 #define __USBDBG_DESCRIPTOR_SAVE        0x09
@@ -53,12 +55,16 @@
 #define FRAME_DUMP_END_DELAY            0
 #define ARCH_STR_START_DELAY            0
 #define ARCH_STR_END_DELAY              0
+#define LEARN_MTU_START_DELAY           0
+#define LEARN_MTU_END_DELAY             0
 #define SCRIPT_EXEC_START_DELAY         0
 #define SCRIPT_EXEC_END_DELAY           0
 #define SCRIPT_EXEC_2_START_DELAY       0
 #define SCRIPT_EXEC_2_END_DELAY         0
 #define SCRIPT_STOP_START_DELAY         50
 #define SCRIPT_STOP_END_DELAY           50
+#define SCRIPT_SAVE_START_DELAY         0
+#define SCRIPT_SAVE_END_DELAY           0
 #define SCRIPT_RUNNING_START_DELAY      0
 #define SCRIPT_RUNNING_END_DELAY        0
 #define TEMPLATE_SAVE_START_DELAY       0
