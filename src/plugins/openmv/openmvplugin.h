@@ -36,6 +36,11 @@
 #include <utils/synchronousprocess.h>
 #include <utils/tooltip/tooltip.h>
 
+#if defined(Q_OS_WIN)
+    #include "openmveject.h"
+#else
+    #include <sys/mount.h>
+#endif
 #include "openmvpluginserialport.h"
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"

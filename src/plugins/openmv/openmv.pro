@@ -1,6 +1,7 @@
 include(../../qtcreatorplugin.pri)
 QT += concurrent gui-private network printsupport serialport
 HEADERS += openmvplugin.h \
+           openmveject.h \
            openmvpluginserialport.h \
            openmvpluginio.h \
            openmvpluginfb.h \
@@ -16,6 +17,7 @@ HEADERS += openmvplugin.h \
            tools/tag36artoolkit.h \
            qcustomplot/qcustomplot.h
 SOURCES += openmvplugin.cpp \
+           openmveject.cpp \
            openmvpluginserialport.cpp \
            openmvpluginio.cpp \
            openmvpluginfb.cpp  \

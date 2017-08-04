@@ -2642,38 +2642,38 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_iodevice->jpegEnable(m_jpgCompress->isChecked());
         m_iodevice->fbEnable(!m_disableFrameBuffer->isChecked());
 
-        if(!((major2 < LEARN_MTU_ADDED_MAJOR)
-        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 < LEARN_MTU_ADDED_MINOR))
-        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 == LEARN_MTU_ADDED_MINOR) && (patch2 < LEARN_MTU_ADDED_PATCH))))
-        {
-            bool ok2 = bool();
-            bool *ok2Ptr = &ok2;
+//        if(!((major2 < LEARN_MTU_ADDED_MAJOR)
+//        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 < LEARN_MTU_ADDED_MINOR))
+//        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 == LEARN_MTU_ADDED_MINOR) && (patch2 < LEARN_MTU_ADDED_PATCH))))
+//        {
+//            bool ok2 = bool();
+//            bool *ok2Ptr = &ok2;
 
-            QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
-                this, [this, ok2Ptr] (bool ok) {
-                *ok2Ptr = ok;
-            });
+//            QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
+//                this, [this, ok2Ptr] (bool ok) {
+//                *ok2Ptr = ok;
+//            });
 
-            QEventLoop loop;
+//            QEventLoop loop;
 
-            connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
-                    &loop, &QEventLoop::quit);
+//            connect(m_iodevice, &OpenMVPluginIO::learnedMTU,
+//                    &loop, &QEventLoop::quit);
 
-            m_iodevice->learnMTU();
+//            m_iodevice->learnMTU();
 
-            loop.exec();
+//            loop.exec();
 
-            disconnect(conn);
+//            disconnect(conn);
 
-            if(!ok2)
-            {
-                QMessageBox::critical(Core::ICore::dialogParent(),
-                    tr("Connect"),
-                    tr("Timeout error while learning MTU!"));
+//            if(!ok2)
+//            {
+//                QMessageBox::critical(Core::ICore::dialogParent(),
+//                    tr("Connect"),
+//                    tr("Timeout error while learning MTU!"));
 
-                CLOSE_CONNECT_END();
-            }
-        }
+//                CLOSE_CONNECT_END();
+//            }
+//        }
 
         Core::MessageManager::grayOutOldContent();
 
@@ -2762,6 +2762,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
     }
 }
 
+// https://support.microsoft.com/en-us/help/165721/how-to-ejecting-removable-media-in-windows-nt-windows-2000-windows-xp
+
+
+
 void OpenMVPlugin::disconnectClicked(bool reset)
 {
     if(m_connected)
@@ -2779,6 +2783,28 @@ void OpenMVPlugin::disconnectClicked(bool reset)
 
                 if(reset)
                 {
+                    if(!m_portPath.isEmpty())
+                    {
+#if defined(Q_OS_WIN)
+                        wchar_t driveLetter[m_portPath.size()];
+                        m_portPath.toWCharArray(driveLetter);
+
+                        if(!ejectVolume(driveLetter[0]))
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Disconnect"),
+                                tr("Failed to eject \"%L1\"!").arg(m_portPath));
+                        }
+#else
+                        if(unmount(m_portPath.toUtf8().constData()) < 0)
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Disconnect"),
+                                tr("Failed to eject \"%L1\"!").arg(m_portPath));
+                        }
+#endif
+                    }
+
                     m_iodevice->sysReset();
                 }
                 else
