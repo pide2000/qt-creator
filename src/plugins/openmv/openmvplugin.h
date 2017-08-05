@@ -38,11 +38,13 @@
 
 #if defined(Q_OS_WIN)
     #include "openmveject.h"
-#else
+#elif defined(Q_OS_LINUX)
     #include <dirent.h>
-    #include <fcntl.h>
+    #include <unistd.h>
+#elif defined(Q_OS_MAC)
     #include <unistd.h>
 #endif
+
 #include "openmvpluginserialport.h"
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"

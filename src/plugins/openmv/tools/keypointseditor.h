@@ -5,6 +5,8 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include <utils/fileutils.h>
+
 #define KEYPOINT_DATA_SIZE 32
 
 class Keypoint : public QObject

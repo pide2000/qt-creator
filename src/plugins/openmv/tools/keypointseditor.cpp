@@ -85,9 +85,9 @@ void Keypoints::mergeKeypoints(const QString &path)
 
 bool Keypoints::saveKeypoints(const QString &path)
 {
-    QFile file(path);
+    Utils::FileSaver file(path);
 
-    if(file.open(QIODevice::WriteOnly))
+    if(!file.hasError())
     {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
@@ -108,7 +108,7 @@ bool Keypoints::saveKeypoints(const QString &path)
             stream.writeRawData(k->m_data, KEYPOINT_DATA_SIZE);
         }
 
-        return file.write(data) == data.size();
+        return file.write(data) && file.finalize();
     }
 
     return false;

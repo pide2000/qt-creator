@@ -174,6 +174,6 @@ bool ejectVolume(wchar_t driveLetter)
     return EjectVolume(driveLetter);
 #else
     Q_UNUSED(driveLetter)
-    return true;
+    return false;
 #endif
 }

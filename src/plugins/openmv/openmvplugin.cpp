@@ -2791,15 +2791,14 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                                 tr("Disconnect"),
                                 tr("Failed to eject \"%L1\"!").arg(m_portPath));
                         }
-#else
+#elif defined(Q_OS_LINUX)
                         bool ok = false;
+
                         DIR *dirp = opendir(m_portPath.toUtf8().constData());
 
                         if(dirp)
                         {
-                            int fd = dirfd(dirp);
-
-                            if((fd >= 0) && (syncfs(fd) >= 0))
+                            if(syncfs(dirfd(dirp)) >= 0)
                             {
                                 ok = true;
                             }
@@ -2811,6 +2810,13 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                         }
 
                         if(!ok)
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Disconnect"),
+                                tr("Failed to eject \"%L1\"!").arg(m_portPath));
+                        }
+#elif defined(Q_OS_MAC)
+                        if(sync_volume_np(m_portPath.toUtf8().constData(), SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) < 0)
                         {
                             QMessageBox::critical(Core::ICore::dialogParent(),
                                 tr("Disconnect"),
@@ -3098,9 +3104,9 @@ void OpenMVPlugin::saveScript()
 
         if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
         {
-            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.py"));
+            Utils::FileSaver file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.py"));
 
-            if(file.open(QIODevice::WriteOnly))
+            if(!file.hasError())
             {
                 QByteArray contents = Core::EditorManager::currentEditor()->document()->contents();
 
@@ -3114,7 +3120,7 @@ void OpenMVPlugin::saveScript()
                     contents = bytes.toUtf8();
                 }
 
-                if(file.write(contents) != contents.size())
+                if((!file.write(contents)) || (!file.finalize()))
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Script"),
