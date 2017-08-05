@@ -39,7 +39,9 @@
 #if defined(Q_OS_WIN)
     #include "openmveject.h"
 #else
-    #include <sys/mount.h>
+    #include <dirent.h>
+    #include <fcntl.h>
+    #include <unistd.h>
 #endif
 #include "openmvpluginserialport.h"
 #include "openmvpluginio.h"

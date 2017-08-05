@@ -2792,7 +2792,25 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                                 tr("Failed to eject \"%L1\"!").arg(m_portPath));
                         }
 #else
-                        if(unmount(m_portPath.toUtf8().constData()) < 0)
+                        bool ok = false;
+                        DIR *dirp = opendir(m_portPath.toUtf8().constData());
+
+                        if(dirp)
+                        {
+                            int fd = dirfd(dirp);
+
+                            if((fd >= 0) && (syncfs(fd) >= 0))
+                            {
+                                ok = true;
+                            }
+
+                            if(closedir(dirp) < 0)
+                            {
+                                ok = false;
+                            }
+                        }
+
+                        if(!ok)
                         {
                             QMessageBox::critical(Core::ICore::dialogParent(),
                                 tr("Disconnect"),
@@ -2982,7 +3000,7 @@ void OpenMVPlugin::processEvents()
     {
         if(m_iodevice->getTimeout())
         {
-            disconnectClicked(true);
+            disconnectClicked();
         }
         else
         {
@@ -3080,7 +3098,7 @@ void OpenMVPlugin::saveScript()
 
         if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
         {
-            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("main.py"));
+            QFile file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.py"));
 
             if(file.open(QIODevice::WriteOnly))
             {
