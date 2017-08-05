@@ -157,12 +157,10 @@ BOOL EjectVolume(TCHAR cDriveLetter)
         return FALSE;
 
     if (fAutoEject)
-        printf("Media in Drive %c has been ejected safely.\n",
-               cDriveLetter);
+        cDriveLetter = cDriveLetter;
     else {
         if (fRemoveSafely)
-            printf("Media in Drive %c can be safely removed.\n",
-            cDriveLetter);
+            cDriveLetter = cDriveLetter;
     }
 
     return TRUE;
