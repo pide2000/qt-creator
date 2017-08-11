@@ -123,11 +123,15 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-circle-circle-object">class Circle &#8211; Circle object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-rect-rectangle-object">class Rect &#8211; Rectangle Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-kptmatch-keypoint-object">class kptmatch &#8211; Keypoint Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
@@ -216,6 +220,14 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="sensor.sensor.flush">
+<code class="descclassname">sensor.</code><code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies whatever was in the frame buffer to the IDE. You should call this
+method to display the last image your OpenMV Cam takes if it&#8217;s not running
+a script with an infinite loop.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sensor.sensor.snapshot">
 <code class="descclassname">sensor.</code><code class="descname">snapshot</code><span class="sig-paren">(</span><em>line_filter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.snapshot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a picture using the camera and returns an <code class="docutils literal"><span class="pre">image</span></code> object.</p>
@@ -262,6 +274,18 @@ frames for 2000 milliseconds.</p>
 300 milliseconds.</p>
 <p>If both are specified this method skips <code class="docutils literal"><span class="pre">n</span></code> number of frames but will
 timeout after <code class="docutils literal"><span class="pre">time</span></code> milliseconds.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.width">
+<code class="descclassname">sensor.</code><code class="descname">width</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sensor resolution width.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.height">
+<code class="descclassname">sensor.</code><code class="descname">height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sensor resolution height.</p>
 </dd></dl>
 
 <dl class="function">
@@ -775,7 +799,7 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 04 Jun 2017.
+      Last updated on 10 Aug 2017.
 
     </p>
   </div>
