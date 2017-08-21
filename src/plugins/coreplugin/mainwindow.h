@@ -177,7 +177,9 @@ private:
     VcsManager *m_vcsManager;
     StatusBarManager *m_statusBarManager;
     ModeManager *m_modeManager;
-    HelpManager *m_helpManager;
+    //OPENMV-DIFF//
+    //HelpManager *m_helpManager;
+    //OPENMV-DIFF//
     FancyTabWidget *m_modeStack;
     NavigationWidget *m_navigationWidget;
     RightPaneWidget *m_rightPaneWidget;

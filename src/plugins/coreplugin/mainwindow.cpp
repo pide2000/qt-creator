@@ -32,7 +32,9 @@
 #include "fancytabwidget.h"
 #include "documentmanager.h"
 #include "generalsettings.h"
-#include "helpmanager.h"
+//OPENMV-DIFF//
+//#include "helpmanager.h"
+//OPENMV-DIFF//
 #include "idocumentfactory.h"
 #include "messagemanager.h"
 #include "modemanager.h"
@@ -120,7 +122,9 @@ MainWindow::MainWindow() :
     m_vcsManager(new VcsManager),
     m_statusBarManager(0),
     m_modeManager(0),
-    m_helpManager(new HelpManager),
+    //OPENMV-DIFF//
+    //m_helpManager(new HelpManager),
+    //OPENMV-DIFF//
     m_modeStack(new FancyTabWidget(this)),
     m_navigationWidget(0),
     m_rightPaneWidget(0),
@@ -328,8 +332,10 @@ MainWindow::~MainWindow()
     delete m_modeManager;
     m_modeManager = 0;
 
-    delete m_helpManager;
-    m_helpManager = 0;
+    //OPENMV-DIFF//
+    //delete m_helpManager;
+    //m_helpManager = 0;
+    //OPENMV-DIFF//
     delete m_jsExpander;
     m_jsExpander = 0;
 }

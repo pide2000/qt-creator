@@ -27,7 +27,9 @@
 #include "designmode.h"
 #include "editmode.h"
 #include "idocument.h"
-#include "helpmanager.h"
+//OPENMV-DIFF//
+//#include "helpmanager.h"
+//OPENMV-DIFF//
 #include "mainwindow.h"
 #include "modemanager.h"
 #include "infobar.h"
