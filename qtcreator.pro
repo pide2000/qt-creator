@@ -143,7 +143,7 @@ isEmpty(INSTALLER_ARCHIVE_FROM_ENV) {
 #bindist.commands = 7z a -mx9 $$OUT_PWD/$${BASENAME}.7z \"$$BINDIST_SOURCE\"
 #OPENMV-DIFF#
 bindist.depends = deployqt
-bindist.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_INSTALLER_SOURCE\" && cp -r \"$$BINDIST_SOURCE\" \"$$IDE_BUILD_TREE\"/openmvide && tar -zcvf $$OUT_PWD/$${BASENAME}.tar.gz -C \"$$IDE_BUILD_TREE\" \"$$IDE_BUILD_TREE\"/openmvide
+bindist.commands = python -u $$PWD/scripts/sign.py \"$$BINDIST_INSTALLER_SOURCE\" && mkdir -p \"$$IDE_BUILD_TREE\"/tar.gz/openmvide && cp -r \"$$BINDIST_SOURCE\"/* \"$$IDE_BUILD_TREE\"/tar.gz/openmvide && tar -zcvf $$OUT_PWD/$${BASENAME}.tar.gz -C \"$$IDE_BUILD_TREE\"/tar.gz openmvide
 #OPENMV-DIFF#
 #OPENMV-DIFF#
 ##bindist_installer.depends = deployqt
