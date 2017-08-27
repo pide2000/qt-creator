@@ -54,6 +54,9 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QTemporaryDir>
+//OPENMV-DIFF//
+#include <QtGlobal>
+//OPENMV-DIFF//
 
 #ifdef ENABLE_QT_BREAKPAD
 #include <qtsystemexceptionhandler.h>
@@ -303,8 +306,37 @@ static inline QSettings *userSettings()
 static const char *SHARE_PATH =
         Utils::HostOsInfo::isMacHost() ? "/../Resources" : "/../share/qtcreator";
 
+//OPENMV-DIFF//
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QByteArray localMsg = msg.toLocal8Bit();
+    switch (type) {
+    case QtDebugMsg:
+        fprintf(stderr, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        break;
+    case QtInfoMsg:
+        fprintf(stderr, "Info: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        break;
+    case QtWarningMsg:
+        if(msg.compare(QLatin1String("JIT is disabled for QML. Property bindings and animations will be "
+                                     "very slow. Visit https://wiki.qt.io/V4 to learn about possible "
+                                     "solutions for your platform.")) == 0) break;
+        fprintf(stderr, "Warning: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        break;
+    case QtCriticalMsg:
+        fprintf(stderr, "Critical: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        break;
+    case QtFatalMsg:
+        fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        abort();
+    }
+}
+//OPENMV-DIFF//
 int main(int argc, char **argv)
 {
+    //OPENMV-DIFF//
+    qInstallMessageHandler(myMessageOutput);
+    //OPENMV-DIFF//
     const char *highDpiEnvironmentVariable = setHighDpiEnvironmentVariable();
 
     QLoggingCategory::setFilterRules(QLatin1String("qtc.*.debug=false"));
