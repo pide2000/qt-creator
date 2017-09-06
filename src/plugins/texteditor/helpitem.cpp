@@ -98,6 +98,7 @@ QString HelpItem::extractContent(bool extended) const
         //OPENMV-DIFF//
         //const QString html = QString::fromUtf8(Core::HelpManager::fileData(url));
         //OPENMV-DIFF//
+        Q_UNUSED(url)
         const QString html = QString();
         //OPENMV-DIFF//
         switch (m_category) {

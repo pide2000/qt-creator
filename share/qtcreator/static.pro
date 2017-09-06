@@ -33,8 +33,12 @@ DATA_DIRS = \
     html \
     styles \
     themes
-win32: DATA_DIRS += drivers dfuse
+win32: DATA_DIRS += drivers dfuse ffmpeg/windows
 else: DATA_DIRS += pydfu
+macx: DATA_DIRS += ffmpeg/mac
+linux-*:equals(ARCHITECTURE, "x86"): DATA_DIRS += ffmpeg/linux-x86
+linux-*:equals(ARCHITECTURE, "x86_64"): DATA_DIRS += ffmpeg/linux-x86_64
+linux-*:equals(ARCHITECTURE, "arm"): DATA_DIRS += ffmpeg/linux-arm
 #OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {
