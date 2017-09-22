@@ -90,8 +90,8 @@ static QByteArray addMJPEG(int *frames, int *bytes, const QPixmap &pixmap)
 
     QByteArray data;
     QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    pixmap.save(&buffer, "JPG");
+    buffer.open(QIODevice::WriteOnly); // always return true
+    pixmap.save(&buffer, "JPG"); // always return true
     buffer.close();
 
     int pad = (((data.size() + 3) / 4) * 4) - data.size();
@@ -167,9 +167,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, int *f
     QDataStream stream(imageWriterFile);
     stream.setByteOrder(QDataStream::LittleEndian);
 
-    uint64_t time_counter = 0;
-
-    while(!stream.atEnd())
+    for(long long time_counter = 0; !stream.atEnd(); time_counter += 0)
     {
         progress.setValue(imageWriterFile->pos());
 
@@ -188,12 +186,24 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, int *f
 
             return false;
         }
+
         int size = getImageSize(W, H, BPP);
+
         QByteArray data(size, 0);
-        if(stream.readRawData(data.data(), size) != size) return false;
-        QPixmap pixmap = getImageFromData(data, W, H, BPP).scaled(maxW, maxH, Qt::KeepAspectRatio);
+
+        if(stream.readRawData(data.data(), size) != size)
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("Transcoding File"),
+                QObject::tr("File is corrupt!"));
+
+            return false;
+        }
+
+        QPixmap pixmap = getImageFromData(data, W, H, BPP);
 
         size = 16 - (size % 16);
+
         if((size != 16) && (stream.skipRawData(size) != size))
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
@@ -204,27 +214,49 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, int *f
         }
 
         QPixmap image(maxW, maxH);
+
         image.fill(Qt::black);
+
         QPainter painter;
-        if(!painter.begin(&image)) return false;
-        painter.drawPixmap((maxW - pixmap.width()) / 2, (maxH - pixmap.height()) / 2, pixmap);
-        if(!painter.end()) return false;
 
-        uint64_t time_counter_2 = time_counter + M;
+        if(!painter.begin(&image))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("Transcoding File"),
+                QObject::tr("Painter Failed!"));
 
-        do
+            return false;
+        }
+
+        painter.drawPixmap((maxW - pixmap.width()) / 2, (maxH - pixmap.height()) / 2, pixmap.scaled(maxW, maxH, Qt::KeepAspectRatio));
+
+        if(!painter.end())
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("Transcoding File"),
+                QObject::tr("Painter Failed!"));
+
+            return false;
+        }
+
+        for(long long time_counter_2 = time_counter + M; time_counter < time_counter_2; time_counter += minM)
         {
             QByteArray jpeg = addMJPEG(frames, bytes, image);
-            if(mjpegVideoFile->write(jpeg) != jpeg.size()) return false;
+
+            if(mjpegVideoFile->write(jpeg) != jpeg.size())
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    QObject::tr("Transcoding File"),
+                    QObject::tr("Failed to write!"));
+
+                return false;
+            }
 
             if(progress.wasCanceled())
             {
                 return false;
             }
-
-            time_counter += minM;
         }
-        while(time_counter < time_counter_2);
     }
 
     return true;
@@ -255,29 +287,61 @@ static QString handleImageWriterFiles(const QString &path)
                     {
                         int minM = INT32_MAX, maxW = 0, maxH = 0;
 
-                        if(getMaxSizeAndMinMsDelta(&file, &minM, &maxW, &maxH) && file.seek(16))
+                        if(getMaxSizeAndMinMsDelta(&file, &minM, &maxW, &maxH))
                         {
-                            QByteArray header = getMJPEGHeader(maxW, maxH, 0, 0, 0);
-
-                            if(tempFile.write(header) == header.size())
+                            if(file.seek(16))
                             {
-                                int frames = 0, bytes = 0;
+                                QByteArray header = getMJPEGHeader(maxW, maxH, 0, 0, 0);
 
-                                if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, minM, maxW, maxH) && tempFile.seek(0))
+                                if(tempFile.write(header) == header.size())
                                 {
-                                    header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / minM);
+                                    int frames = 0, bytes = 0;
 
-                                    if(tempFile.write(header) == header.size())
+                                    if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, minM, maxW, maxH))
                                     {
-                                        return QFileInfo(tempFile).filePath();
+                                        if(tempFile.seek(0))
+                                        {
+                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / minM);
+
+                                            if(tempFile.write(header) == header.size())
+                                            {
+                                                return QFileInfo(tempFile).canonicalFilePath();
+                                            }
+                                            else
+                                            {
+                                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                                    QObject::tr("Transcoder"),
+                                                    QObject::tr("Failed to write header again!"));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                                QObject::tr("Transcoder"),
+                                                QObject::tr("Seek failed!"));
+                                        }
                                     }
                                 }
+                                else
+                                {
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        QObject::tr("Transcoder"),
+                                        QObject::tr("Failed to write header!"));
+                                }
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    QObject::tr("Transcoder"),
+                                    QObject::tr("Seek failed!"));
                             }
                         }
-                        else
-                        {
-                            return QString();
-                        }
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            QObject::tr("Transcoder"),
+                            QObject::tr("Error: %L1!").arg(tempFile.errorString()));
                     }
                 }
                 else
@@ -285,14 +349,32 @@ static QString handleImageWriterFiles(const QString &path)
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         QObject::tr("Transcoder"),
                         QObject::tr("Unsupported OpenMV ImageWriter File version!"));
-
-                    return QString();
                 }
             }
+            else
+            {
+                return path; // Not an ImageWriter file.
+            }
+        }
+        else if(file.error() != QFile::NoError)
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("Transcoder"),
+                QObject::tr("Error: %L1!").arg(file.errorString()));
+        }
+        else
+        {
+            return path; // Not an ImageWriter file.
         }
     }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QObject::tr("Transcoder"),
+            QObject::tr("Error: %L1!").arg(file.errorString()));
+    }
 
-    return path;
+    return QString();
 }
 
 static QString getInputFormats()
@@ -361,7 +443,7 @@ static QString getInputFormats()
     }
     else
     {
-        QMessageBox box(QMessageBox::Critical, QObject::tr("Get Input Formats"), QObject::tr("Query failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
+        QMessageBox box(QMessageBox::Warning, QObject::tr("Get Input Formats"), QObject::tr("Query failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
             Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
         box.setDetailedText(response.stdOut);
@@ -439,7 +521,7 @@ static QString getOutputFormats()
     }
     else
     {
-        QMessageBox box(QMessageBox::Critical, QObject::tr("Get Input Formats"), QObject::tr("Query failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
+        QMessageBox box(QMessageBox::Warning, QObject::tr("Get Input Formats"), QObject::tr("Query failed!"), QMessageBox::Ok, Core::ICore::dialogParent(),
             Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
         box.setDetailedText(response.stdOut);
@@ -520,7 +602,7 @@ bool convertVideoFile(const QString &dst, const QString &src)
     }
     else if(Utils::HostOsInfo::isMacHost())
     {
-    result = QProcess::startDetached(QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg"))), QStringList()
+        result = QProcess::startDetached(QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg"))), QStringList()
                 << QStringLiteral("-hide_banner")
                 << QStringLiteral("-i")
                 << QDir::cleanPath(QDir::toNativeSeparators(src))
