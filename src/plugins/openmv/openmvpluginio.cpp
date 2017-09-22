@@ -32,11 +32,6 @@ enum
     CLOSE_CPL
 };
 
-#define IS_JPG(bpp)     ((bpp) >= 3)
-#define IS_RGB(bpp)     ((bpp) == 2)
-#define IS_GS(bpp)      ((bpp) == 1)
-#define IS_BINARY(bpp)  ((bpp) == 0)
-
 static QByteArray byteSwap(QByteArray buffer, bool ok)
 {
     if(ok)
@@ -50,6 +45,63 @@ static QByteArray byteSwap(QByteArray buffer, bool ok)
     }
 
     return buffer;
+}
+
+int getImageSize(int w, int h, int bpp)
+{
+    return IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (IS_BINARY(bpp) ? (((w + 31) / 32) * h) : int()));
+}
+
+QPixmap getImageFromData(QByteArray data, int w, int h, int bpp)
+{
+    QPixmap pixmap = getImageSize(w, h, bpp) ? (QPixmap::fromImage(IS_JPG(bpp)
+        ? QImage::fromData(data, "JPG")
+        : QImage(reinterpret_cast<const uchar *>(byteSwap(data,
+            IS_RGB(bpp)).constData()), w, h, IS_BINARY(bpp) ? ((w + 31) / 32) : (w * bpp),
+            IS_RGB(bpp) ? QImage::Format_RGB16 : (IS_GS(bpp) ? QImage::Format_Grayscale8 : (IS_BINARY(bpp) ? QImage::Format_MonoLSB : QImage::Format_Invalid)))))
+    : QPixmap();
+
+    if(pixmap.isNull() && IS_JPG(bpp))
+    {
+        data = data.mid(1, data.size() - 2);
+
+        int size = data.size();
+        QByteArray temp;
+
+        for(int i = 0, j = (size / 4) * 4; i < j; i += 4)
+        {
+            int x = 0;
+            x |= (data.at(i + 0) & 0x3F) << 0;
+            x |= (data.at(i + 1) & 0x3F) << 6;
+            x |= (data.at(i + 2) & 0x3F) << 12;
+            x |= (data.at(i + 3) & 0x3F) << 18;
+            temp.append((x >> 0) & 0xFF);
+            temp.append((x >> 8) & 0xFF);
+            temp.append((x >> 16) & 0xFF);
+        }
+
+        if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
+        {
+            int x = 0;
+            x |= (data.at(size - 3) & 0x3F) << 0;
+            x |= (data.at(size - 2) & 0x3F) << 6;
+            x |= (data.at(size - 1) & 0x0F) << 12;
+            temp.append((x >> 0) & 0xFF);
+            temp.append((x >> 8) & 0xFF);
+        }
+
+        if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
+        {
+            int x = 0;
+            x |= (data.at(size - 2) & 0x3F) << 0;
+            x |= (data.at(size - 1) & 0x03) << 6;
+            temp.append((x >> 0) & 0xFF);
+        }
+
+        pixmap = QPixmap::fromImage(QImage::fromData(temp, "JPG"));
+    }
+
+    return pixmap;
 }
 
 OpenMVPluginIO::OpenMVPluginIO(OpenMVPluginSerialPort *port, QObject *parent) : QObject(parent)
@@ -107,7 +159,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
 
                     if(w)
                     {
-                        int size = IS_JPG(bpp) ? bpp : ((IS_RGB(bpp) || IS_GS(bpp)) ? (w * h * bpp) : (IS_BINARY(bpp) ? (((w + 31) / 32) * h) : int()));
+                        int size = getImageSize(w, h, bpp);
 
                         if(size)
                         {
@@ -134,53 +186,9 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 {
                     m_pixelBuffer.append(data);
 
-                    if(m_pixelBuffer.size() == (IS_JPG(m_frameSizeBPP) ? m_frameSizeBPP : ((IS_RGB(m_frameSizeBPP) || IS_GS(m_frameSizeBPP)) ? (m_frameSizeW * m_frameSizeH * m_frameSizeBPP) : (IS_BINARY(m_frameSizeBPP) ? (((m_frameSizeW + 31) / 32) * m_frameSizeH) : int()))))
+                    if(m_pixelBuffer.size() == getImageSize(m_frameSizeW, m_frameSizeH, m_frameSizeBPP))
                     {
-                        QPixmap pixmap = QPixmap::fromImage(IS_JPG(m_frameSizeBPP)
-                        ? QImage::fromData(m_pixelBuffer, "JPG")
-                        : QImage(reinterpret_cast<const uchar *>(byteSwap(m_pixelBuffer,
-                            IS_RGB(m_frameSizeBPP)).constData()), m_frameSizeW, m_frameSizeH, IS_BINARY(m_frameSizeBPP) ? ((m_frameSizeW + 31) / 32) : (m_frameSizeW * m_frameSizeBPP),
-                            IS_RGB(m_frameSizeBPP) ? QImage::Format_RGB16 : (IS_GS(m_frameSizeBPP) ? QImage::Format_Grayscale8 : (IS_BINARY(m_frameSizeBPP) ? QImage::Format_MonoLSB : QImage::Format_Invalid))));
-
-                        if(pixmap.isNull() && IS_JPG(m_frameSizeBPP))
-                        {
-                            m_pixelBuffer = m_pixelBuffer.mid(1, m_pixelBuffer.size() - 2);
-
-                            int size = m_pixelBuffer.size();
-                            QByteArray temp;
-
-                            for(int i = 0, j = (size / 4) * 4; i < j; i += 4)
-                            {
-                                int x = 0;
-                                x |= (m_pixelBuffer.at(i + 0) & 0x3F) << 0;
-                                x |= (m_pixelBuffer.at(i + 1) & 0x3F) << 6;
-                                x |= (m_pixelBuffer.at(i + 2) & 0x3F) << 12;
-                                x |= (m_pixelBuffer.at(i + 3) & 0x3F) << 18;
-                                temp.append((x >> 0) & 0xFF);
-                                temp.append((x >> 8) & 0xFF);
-                                temp.append((x >> 16) & 0xFF);
-                            }
-
-                            if((size % 4) == 3) // 2 bytes -> 16-bits -> 24-bits sent
-                            {
-                                int x = 0;
-                                x |= (m_pixelBuffer.at(size - 3) & 0x3F) << 0;
-                                x |= (m_pixelBuffer.at(size - 2) & 0x3F) << 6;
-                                x |= (m_pixelBuffer.at(size - 1) & 0x0F) << 12;
-                                temp.append((x >> 0) & 0xFF);
-                                temp.append((x >> 8) & 0xFF);
-                            }
-
-                            if((size % 4) == 2) // 1 byte -> 8-bits -> 16-bits sent
-                            {
-                                int x = 0;
-                                x |= (m_pixelBuffer.at(size - 2) & 0x3F) << 0;
-                                x |= (m_pixelBuffer.at(size - 1) & 0x03) << 6;
-                                temp.append((x >> 0) & 0xFF);
-                            }
-
-                            pixmap = QPixmap::fromImage(QImage::fromData(temp, "JPG"));
-                        }
+                        QPixmap pixmap = getImageFromData(m_pixelBuffer, m_frameSizeW, m_frameSizeH, m_frameSizeBPP);
 
                         if(!pixmap.isNull())
                         {

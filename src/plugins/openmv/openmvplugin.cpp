@@ -200,6 +200,21 @@ void OpenMVPlugin::extensionsInitialized()
     m_machineVisionToolsMenu->addAction(m_BarcodeGeneratorCommand);
     connect(BarcodeGeneratorCommand, &QAction::triggered, this, &OpenMVPlugin::openBarcodeGenerator);
 
+    m_videoToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.VideoTools"));
+    m_videoToolsMenu->menu()->setTitle(tr("Video Tools"));
+    m_videoToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    toolsMenu->addMenu(m_videoToolsMenu);
+
+    QAction *convertVideoFileCommand = new QAction(tr("Convert Video File"), this);
+    m_convertVideoFileCommand = Core::ActionManager::registerAction(convertVideoFileCommand, Core::Id("OpenMV.ConvertVideoFile"));
+    m_videoToolsMenu->addAction(m_convertVideoFileCommand);
+    connect(convertVideoFileCommand, &QAction::triggered, this, [this] {convertVideoFileAction(m_portPath);});
+
+    QAction *playVideoFileCommand = new QAction(tr("Play Video File"), this);
+    m_playVideoFileCommand = Core::ActionManager::registerAction(playVideoFileCommand, Core::Id("OpenMV.PlayVideoFile"));
+    if(!Utils::HostOsInfo::isLinuxHost()) m_videoToolsMenu->addAction(m_playVideoFileCommand);
+    connect(playVideoFileCommand, &QAction::triggered, this, [this] {playVideoFileAction(m_portPath);});
+
     QAction *docsCommand = new QAction(tr("OpenMV Docs"), this);
     m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
     helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);

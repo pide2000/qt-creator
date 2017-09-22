@@ -58,6 +58,7 @@
 #include "tools/tag36h10.h"
 #include "tools/tag36h11.h"
 #include "tools/tag36artoolkit.h"
+#include "tools/videotools.h"
 
 #define ICON_PATH ":/openmv/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv/openmv-media/splash/openmv-splash-slate/splash-small.png"
@@ -222,6 +223,7 @@ private:
     Core::Command *m_stopCommand;
     Core::ActionContainer *m_openTerminalMenu;
     Core::ActionContainer *m_machineVisionToolsMenu;
+    Core::ActionContainer *m_videoToolsMenu;
     Core::Command *m_thresholdEditorCommand;
     Core::Command *m_keypointsEditorCommand;
     Core::ActionContainer *m_AprilTagGeneratorSubmenu;
@@ -234,6 +236,8 @@ private:
     Core::Command *m_QRCodeGeneratorCommand;
     Core::Command *m_DataMatrixGeneratorCommand;
     Core::Command *m_BarcodeGeneratorCommand;
+    Core::Command *m_convertVideoFileCommand;
+    Core::Command *m_playVideoFileCommand;
 
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;

@@ -24,6 +24,14 @@
 #define FLASH_ERASE_DELAY               2000
 #define FLASH_WRITE_DELAY               1
 
+#define IS_JPG(bpp)                     ((bpp) >= 3)
+#define IS_RGB(bpp)                     ((bpp) == 2)
+#define IS_GS(bpp)                      ((bpp) == 1)
+#define IS_BINARY(bpp)                  ((bpp) == 0)
+
+int getImageSize(int w, int h, int bpp);
+QPixmap getImageFromData(QByteArray data, int w, int h, int bpp);
+
 class OpenMVPluginIO : public QObject
 {
     Q_OBJECT

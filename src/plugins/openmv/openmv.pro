@@ -15,6 +15,7 @@ HEADERS += openmvplugin.h \
            tools/tag36h10.h \
            tools/tag36h11.h \
            tools/tag36artoolkit.h \
+           tools/videotools.h \
            qcustomplot/qcustomplot.h
 SOURCES += openmvplugin.cpp \
            openmveject.cpp \
@@ -34,6 +35,7 @@ SOURCES += openmvplugin.cpp \
            tools/tag36h10.c \
            tools/tag36h11.c \
            tools/tag36artoolkit.c \
+           tools/videotools.cpp \
            qcustomplot/qcustomplot.cpp
 FORMS += histogram/openmvpluginhistogram.ui
 RESOURCES += openmv.qrc
