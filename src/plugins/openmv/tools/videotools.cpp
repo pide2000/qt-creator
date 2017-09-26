@@ -213,7 +213,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
             return false;
         }
 
-        QPixmap pixmap = getImageFromData(data, W, H, BPP);
+        QPixmap pixmap = getImageFromData(data, W, H, BPP).scaled(maxW, maxH, Qt::KeepAspectRatio);
 
         size = 16 - (size % 16);
 
@@ -241,7 +241,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
             return false;
         }
 
-        painter.drawPixmap((maxW - pixmap.width()) / 2, (maxH - pixmap.height()) / 2, pixmap.scaled(maxW, maxH, Qt::KeepAspectRatio));
+        painter.drawPixmap((maxW - pixmap.width()) / 2, (maxH - pixmap.height()) / 2, pixmap);
 
         if(!painter.end())
         {
@@ -673,10 +673,19 @@ void convertVideoFileAction(const QString &drivePath)
         {
             QString tempSrc = handleImageWriterFiles(src);
 
-            if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+            if((!QFile(dst).exists()) || QFile::remove(dst))
             {
-                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), src);
-                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), dst);
+                if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+                {
+                    settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), src);
+                    settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), dst);
+                }
+            }
+            else
+            {
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    QString(),
+                    QObject::tr("Unable to overwrite output file!"));
             }
         }
     }
@@ -721,9 +730,18 @@ void saveVideoFile(const QString &srcPath)
     {
         QString tempSrc = handleImageWriterFiles(srcPath);
 
-        if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+        if((!QFile(dst).exists()) || QFile::remove(dst))
         {
-            settings->setValue(QStringLiteral(LAST_SAVE_VIDEO_PATH), dst);
+            if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+            {
+                settings->setValue(QStringLiteral(LAST_SAVE_VIDEO_PATH), dst);
+            }
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QString(),
+                QObject::tr("Unable to overwrite output file!"));
         }
     }
 

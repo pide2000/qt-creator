@@ -398,7 +398,6 @@ void OpenMVPlugin::extensionsInitialized()
     m_record = new QToolButton;
     m_record->setText(tr("Record"));
     m_record->setToolTip(tr("Record the Frame Buffer"));
-    m_record->setVisible(true);
     m_record->setEnabled(false);
     styledBar0Layout->addWidget(m_record);
 
@@ -464,7 +463,6 @@ void OpenMVPlugin::extensionsInitialized()
 
     m_frameBuffer = new OpenMVPluginFB;
     QLabel *disableLabel = new Utils::ElidingLabel(tr("Frame Buffer Disabled - click the disable button again to enable (top right)"));
-    disableLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
     disableLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     disableLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     disableLabel->setAlignment(Qt::AlignCenter);
