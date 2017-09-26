@@ -32,10 +32,10 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     m_timer = new QTimer(this);
     m_tempFile = Q_NULLPTR;
     m_elaspedTimer = QElapsedTimer();
-    m_previousElaspedTimer = qint64();
+    m_previousElaspedTimers = QQueue<qint64>();
 
-    connect(m_timer, &QTimer::timeout,
-            this, &OpenMVPluginFB::private_timerCallBack);
+    m_timer->setTimerType(Qt::PreciseTimer);
+    connect(m_timer, &QTimer::timeout, this, &OpenMVPluginFB::private_timerCallBack);
 }
 
 bool OpenMVPluginFB::pixmapValid() const
@@ -86,7 +86,7 @@ void OpenMVPluginFB::endImageWriter()
     m_timer->stop();
     m_tempFile->close();
     m_elaspedTimer = QElapsedTimer();
-    m_previousElaspedTimer = qint64();
+    m_previousElaspedTimers = QQueue<qint64>();
 
     saveVideoFile(QFileInfo(*m_tempFile).canonicalFilePath());
 
@@ -135,8 +135,21 @@ void OpenMVPluginFB::frameBufferData(const QPixmap &data)
 
 void OpenMVPluginFB::private_timerCallBack()
 {
-    qint64 elapsed = m_elaspedTimer.elapsed() - m_previousElaspedTimer;
-    m_previousElaspedTimer += elapsed;
+    m_previousElaspedTimers.push_back(m_elaspedTimer.elapsed());
+
+    if(m_previousElaspedTimers.size() > 11)
+    {
+        m_previousElaspedTimers.pop_front();
+    }
+
+    qint64 average = 0;
+
+    for(int i = 1; i < m_previousElaspedTimers.size(); i++)
+    {
+        average += m_previousElaspedTimers.at(i) - m_previousElaspedTimers.at(i - 1);
+    }
+
+    average /= m_previousElaspedTimers.size();
 
     QByteArray jpeg;
     QBuffer buffer(&jpeg);
@@ -145,7 +158,7 @@ void OpenMVPluginFB::private_timerCallBack()
     buffer.close();
 
     QByteArray data;
-    serializeLong(data, static_cast<int>(elapsed));
+    serializeLong(data, static_cast<int>(m_previousElaspedTimers.last() - ((m_previousElaspedTimers.size() > 1) ? m_previousElaspedTimers.at(m_previousElaspedTimers.size() - 2) : 0)));
     serializeLong(data, m_pixmap->pixmap().width());
     serializeLong(data, m_pixmap->pixmap().height());
     serializeLong(data, jpeg.size());
@@ -156,26 +169,47 @@ void OpenMVPluginFB::private_timerCallBack()
 
     if(m_tempFile->write(data) == data.size())
     {
-        qint64 milliseconds = m_previousElaspedTimer % 1000;
-        qint64 seconds = (m_previousElaspedTimer / 1000) % 60;
-        qint64 minutes = ((m_previousElaspedTimer / 1000) / 60) % 60;
-        qint64 hours = ((m_previousElaspedTimer / 1000) / 60) / 60;
+        qint64 milliseconds = m_previousElaspedTimers.last() % 1000;
+        qint64 seconds = (m_previousElaspedTimers.last() / 1000) % 60;
+        qint64 minutes = ((m_previousElaspedTimers.last() / 1000) / 60) % 60;
+        qint64 hours = ((m_previousElaspedTimers.last() / 1000) / 60) / 60;
 
-        emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms").arg(hours).arg(minutes).arg(seconds).arg(milliseconds));
+        int kilobyte = 1024;
+        int megabyte = kilobyte * kilobyte;
+        int gigabyte = kilobyte * kilobyte * kilobyte;
+
+        if(m_tempFile->size() < kilobyte)
+        {
+            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 B - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size()).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+        }
+        else if(m_tempFile->size() < megabyte)
+        {
+            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 KB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(kilobyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+        }
+        else if(m_tempFile->size() < gigabyte)
+        {
+            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 MB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(megabyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+        }
+        else
+        {
+            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 GB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(gigabyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+        }
     }
     else
     {
         m_timer->stop();
-        delete m_tempFile;
-        m_tempFile = Q_NULLPTR;
+        m_tempFile->close();
         m_elaspedTimer = QElapsedTimer();
-        m_previousElaspedTimer = qint64();
+        m_previousElaspedTimers = QQueue<qint64>();
 
         QMessageBox::critical(Core::ICore::dialogParent(),
             QObject::tr("Video Recorder"),
             QObject::tr("Failed to write frame!"));
 
         emit imageWriterShutdown();
+
+        delete m_tempFile;
+        m_tempFile = Q_NULLPTR;
     }
 }
 

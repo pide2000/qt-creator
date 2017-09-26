@@ -98,7 +98,7 @@ static QByteArray addMJPEG(uint32_t *frames, uint32_t *bytes, const QPixmap &pix
     return fp;
 }
 
-static bool getMaxSizeAndMinMsDelta(QFile *imageWriterFile, int *minM, int *maxW, int *maxH)
+static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW, int *maxH)
 {
     QProgressDialog progress(QObject::tr("Reading File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
@@ -107,6 +107,15 @@ static bool getMaxSizeAndMinMsDelta(QFile *imageWriterFile, int *minM, int *maxW
 
     QDataStream stream(imageWriterFile);
     stream.setByteOrder(QDataStream::LittleEndian);
+
+    if(stream.atEnd())
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QObject::tr("Reading File"),
+            QObject::tr("No frames found!"));
+
+        return false;
+    }
 
     while(!stream.atEnd())
     {
@@ -139,7 +148,7 @@ static bool getMaxSizeAndMinMsDelta(QFile *imageWriterFile, int *minM, int *maxW
             return false;
         }
 
-        *minM = qMin(*minM, M);
+        *avgM = (*avgM != -1) ? ((*avgM + M) / 2) : M;
         *maxW = qMax(*maxW, W);
         *maxH = qMax(*maxH, H);
 
@@ -152,7 +161,7 @@ static bool getMaxSizeAndMinMsDelta(QFile *imageWriterFile, int *minM, int *maxW
     return true;
 }
 
-static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int minM, int maxW, int maxH)
+static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int avgM, int maxW, int maxH)
 {
     QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
@@ -161,6 +170,15 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
 
     QDataStream stream(imageWriterFile);
     stream.setByteOrder(QDataStream::LittleEndian);
+
+    if(stream.atEnd())
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QObject::tr("Transcoding File"),
+            QObject::tr("No frames found!"));
+
+        return false;
+    }
 
     for(long long time_counter = 0; !stream.atEnd(); time_counter += 0)
     {
@@ -234,7 +252,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
             return false;
         }
 
-        for(long long time_counter_2 = time_counter + M; time_counter < time_counter_2; time_counter += minM)
+        for(long long time_counter_2 = time_counter + avgM; time_counter < time_counter_2; time_counter += M)
         {
             QByteArray jpeg = addMJPEG(frames, bytes, image);
 
@@ -280,9 +298,9 @@ static QString handleImageWriterFiles(const QString &path)
 
                     if(tempFile.open(QIODevice::WriteOnly))
                     {
-                        int minM = INT32_MAX, maxW = 0, maxH = 0;
+                        int avgM = -1, maxW = 0, maxH = 0;
 
-                        if(getMaxSizeAndMinMsDelta(&file, &minM, &maxW, &maxH))
+                        if(getMaxSizeAndAvgMsDelta(&file, &avgM, &maxW, &maxH))
                         {
                             if(file.seek(16))
                             {
@@ -292,11 +310,11 @@ static QString handleImageWriterFiles(const QString &path)
                                 {
                                     uint32_t frames = 0, bytes = 0;
 
-                                    if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, minM, maxW, maxH))
+                                    if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, avgM, maxW, maxH))
                                     {
                                         if(tempFile.seek(0))
                                         {
-                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / minM);
+                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / avgM);
 
                                             if(tempFile.write(header) == header.size())
                                             {

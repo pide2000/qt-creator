@@ -63,7 +63,7 @@ private:
     QTimer *m_timer;
     QTemporaryFile *m_tempFile;
     QElapsedTimer m_elaspedTimer;
-    qint64 m_previousElaspedTimer;
+    QQueue<qint64> m_previousElaspedTimers;
 };
 
 #endif // OPENMVPLUGINFB_H

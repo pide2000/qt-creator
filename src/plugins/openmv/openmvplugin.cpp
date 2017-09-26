@@ -116,11 +116,11 @@ void OpenMVPlugin::extensionsInitialized()
     connect(bootloaderCommand, &QAction::triggered, this, &OpenMVPlugin::bootloaderClicked);
     toolsMenu->addSeparator();
 
-    QAction *configureSettings = new QAction(tr("Configure OpenMV Cam settings file"), this);
-    m_configureSettingsCommand = Core::ActionManager::registerAction(configureSettings, Core::Id("OpenMV.Settings"));
+    QAction *configureSettingsCommand = new QAction(tr("Configure OpenMV Cam settings file"), this);
+    m_configureSettingsCommand = Core::ActionManager::registerAction(configureSettingsCommand, Core::Id("OpenMV.Settings"));
     toolsMenu->addAction(m_configureSettingsCommand);
-    configureSettings->setEnabled(false);
-    connect(configureSettings, &QAction::triggered, this, &OpenMVPlugin::configureSettings);
+    configureSettingsCommand->setEnabled(false);
+    connect(configureSettingsCommand, &QAction::triggered, this, &OpenMVPlugin::configureSettings);
 
     QAction *saveCommand = new QAction(tr("Save open script to OpenMV Cam"), this);
     m_saveCommand = Core::ActionManager::registerAction(saveCommand, Core::Id("OpenMV.Save"));
@@ -464,12 +464,14 @@ void OpenMVPlugin::extensionsInitialized()
 
     m_frameBuffer = new OpenMVPluginFB;
     QLabel *disableLabel = new Utils::ElidingLabel(tr("Frame Buffer Disabled - click the disable button again to enable (top right)"));
+    disableLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
     disableLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     disableLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     disableLabel->setAlignment(Qt::AlignCenter);
     disableLabel->setVisible(m_disableFrameBuffer->isChecked());
     connect(m_disableFrameBuffer, &QToolButton::toggled, disableLabel, &QLabel::setVisible);
-    QLabel *recordingLabel = new Utils::ElidingLabel();
+    QLabel *recordingLabel = new Utils::ElidingLabel;
+    recordingLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
     recordingLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     recordingLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     recordingLabel->setAlignment(Qt::AlignCenter);
@@ -3169,93 +3171,93 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
 
 void OpenMVPlugin::configureSettings()
 {
-    QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
-        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-    dialog->setWindowTitle(tr("OpenMV Cam Settings"));
-    QVBoxLayout *layout = new QVBoxLayout(dialog);
+//    QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
+//        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+//        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+//    dialog->setWindowTitle(tr("OpenMV Cam Settings"));
+//    QVBoxLayout *layout = new QVBoxLayout(dialog);
 
-    QGroupBox *box = new QGroupBox(tr("WiFi Settings"));
-    layout->addWidget(box);
+//    QGroupBox *box = new QGroupBox(tr("WiFi Settings"));
+//    layout->addWidget(box);
 
-    QFormLayout *formLayout = new QFormLayout(box);
+//    QFormLayout *formLayout = new QFormLayout(box);
 
-    QCheckBox *enableWiFi = new QCheckBox(tr("Turn on WiFi Shield on startup"));
-    formLayout->addWidget(enableWiFi);
+//    QCheckBox *enableWiFi = new QCheckBox(tr("Turn on WiFi Shield on startup"));
+//    formLayout->addWidget(enableWiFi);
 
-    QCheckBox *
+//    QCheckBox *
 
 
-    Utils::PathChooser *pathChooser = new Utils::PathChooser();
-    pathChooser->setExpectedKind(Utils::PathChooser::File);
-    pathChooser->setPromptDialogTitle(tr("Firmware Path"));
-    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
-    pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
-    layout->addRow(tr("Firmware Path"), pathChooser);
-    layout->addItem(new QSpacerItem(0, 6));
+//    Utils::PathChooser *pathChooser = new Utils::PathChooser();
+//    pathChooser->setExpectedKind(Utils::PathChooser::File);
+//    pathChooser->setPromptDialogTitle(tr("Firmware Path"));
+//    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
+//    pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
+//    layout->addRow(tr("Firmware Path"), pathChooser);
+//    layout->addItem(new QSpacerItem(0, 6));
 
-    QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
-    checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
-    checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-    layout->addRow(checkBox);
-    QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
-    checkBox2->setChecked(true);
-    checkBox2->setEnabled(false);
-    checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-    layout->addRow(checkBox2);
-    layout->addItem(new QSpacerItem(0, 6));
+//    QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
+//    checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
+//    checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
+//    layout->addRow(checkBox);
+//    QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
+//    checkBox2->setChecked(true);
+//    checkBox2->setEnabled(false);
+//    checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
+//    layout->addRow(checkBox2);
+//    layout->addItem(new QSpacerItem(0, 6));
 
-    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
-    QPushButton *run = new QPushButton(tr("Run"));
-    run->setEnabled(pathChooser->isValid());
-    box->addButton(run, QDialogButtonBox::AcceptRole);
-    layout->addRow(box);
+//    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
+//    QPushButton *run = new QPushButton(tr("Run"));
+//    run->setEnabled(pathChooser->isValid());
+//    box->addButton(run, QDialogButtonBox::AcceptRole);
+//    layout->addRow(box);
 
-    connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
-    connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
-    connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
-    connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
-        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
-        {
-            checkBox->setVisible(false);
-            checkBox2->setVisible(true);
-        }
-        else
-        {
-            checkBox->setVisible(true);
-            checkBox2->setVisible(false);
+//    connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
+//    connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+//    connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
+//    connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
+//        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
+//        {
+//            checkBox->setVisible(false);
+//            checkBox2->setVisible(true);
+//        }
+//        else
+//        {
+//            checkBox->setVisible(true);
+//            checkBox2->setVisible(false);
 
-        }
-        dialog->adjustSize();
-    });
+//        }
+//        dialog->adjustSize();
+//    });
 
-    if(dialog->exec() == QDialog::Accepted)
-    {
-        QString forceFirmwarePath = pathChooser->path();
-        bool flashFSErase = checkBox->isChecked();
+//    if(dialog->exec() == QDialog::Accepted)
+//    {
+//        QString forceFirmwarePath = pathChooser->path();
+//        bool flashFSErase = checkBox->isChecked();
 
-        if(QFileInfo(forceFirmwarePath).isFile())
-        {
-            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
-            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
-            settings->endGroup();
-            delete dialog;
+//        if(QFileInfo(forceFirmwarePath).isFile())
+//        {
+//            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
+//            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
+//            settings->endGroup();
+//            delete dialog;
 
-            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)));
-        }
-        else
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                tr("Bootloader"),
-                tr("\"%L1\" is not a file!").arg(forceFirmwarePath));
+//            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)));
+//        }
+//        else
+//        {
+//            QMessageBox::critical(Core::ICore::dialogParent(),
+//                tr("Bootloader"),
+//                tr("\"%L1\" is not a file!").arg(forceFirmwarePath));
 
-            delete dialog;
-        }
-    }
-    else
-    {
-        delete dialog;
-    }
+//            delete dialog;
+//        }
+//    }
+//    else
+//    {
+//        delete dialog;
+//    }
 }
 
 void OpenMVPlugin::saveScript()
