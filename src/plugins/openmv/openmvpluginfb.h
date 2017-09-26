@@ -5,6 +5,8 @@
 #include <QtGui>
 #include <QtWidgets>
 
+#include "tools/videotools.h"
+
 class OpenMVPluginFB : public QGraphicsView
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ public:
     explicit OpenMVPluginFB(QWidget *parent = Q_NULLPTR);
     bool pixmapValid() const;
     QPixmap pixmap() const;
+    bool beginImageWriter();
+    void endImageWriter();
 
 public slots:
 
@@ -21,6 +25,7 @@ public slots:
     void frameBufferData(const QPixmap &data);
     void enableSaveTemplate(bool enable) { m_enableSaveTemplate = enable; }
     void enableSaveDescriptor(bool enable) { m_enableSaveDescriptor = enable; }
+    void private_timerCallBack();
 
 signals:
 
@@ -29,6 +34,8 @@ signals:
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
+    void imageWriterTick(const QString &text);
+    void imageWriterShutdown();
 
 protected:
 
@@ -52,6 +59,11 @@ private:
     bool m_unlocked;
     QPoint m_origin;
     QRubberBand *m_band;
+
+    QTimer *m_timer;
+    QTemporaryFile *m_tempFile;
+    QElapsedTimer m_elaspedTimer;
+    qint64 m_previousElaspedTimer;
 };
 
 #endif // OPENMVPLUGINFB_H

@@ -28,6 +28,14 @@ OpenMVPluginFB::OpenMVPluginFB(QWidget *parent) : QGraphicsView(parent)
     m_band = new QRubberBand(QRubberBand::Rectangle, this);
     m_band->setGeometry(QRect());
     m_band->hide();
+
+    m_timer = new QTimer(this);
+    m_tempFile = Q_NULLPTR;
+    m_elaspedTimer = QElapsedTimer();
+    m_previousElaspedTimer = qint64();
+
+    connect(m_timer, &QTimer::timeout,
+            this, &OpenMVPluginFB::private_timerCallBack);
 }
 
 bool OpenMVPluginFB::pixmapValid() const
@@ -38,6 +46,52 @@ bool OpenMVPluginFB::pixmapValid() const
 QPixmap OpenMVPluginFB::pixmap() const
 {
     return m_pixmap ? m_pixmap->pixmap() : QPixmap();
+}
+
+bool OpenMVPluginFB::beginImageWriter()
+{
+    m_tempFile = new QTemporaryFile(this);
+
+    if(m_tempFile->open())
+    {
+        if(m_tempFile->write("OMV IMG STR V1.0") == 16)
+        {
+            m_timer->start(1000 / VIDEO_RECORDER_FRAME_RATE);
+            m_elaspedTimer.start();
+
+            return true;
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Video Record"),
+                tr("Error: %L1!").arg(m_tempFile->errorString()));
+        }
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Video Record"),
+            tr("Error: %L1!").arg(m_tempFile->errorString()));
+    }
+
+    delete m_tempFile;
+    m_tempFile = Q_NULLPTR;
+
+    return false;
+}
+
+void OpenMVPluginFB::endImageWriter()
+{
+    m_timer->stop();
+    m_tempFile->close();
+    m_elaspedTimer = QElapsedTimer();
+    m_previousElaspedTimer = qint64();
+
+    saveVideoFile(QFileInfo(*m_tempFile).canonicalFilePath());
+
+    delete m_tempFile;
+    m_tempFile = Q_NULLPTR;
 }
 
 void OpenMVPluginFB::enableFitInView(bool enable)
@@ -77,6 +131,52 @@ void OpenMVPluginFB::frameBufferData(const QPixmap &data)
 
     if(m_pixmap) emit resolutionAndROIUpdate(m_pixmap->pixmap().size(), getROI());
     else emit resolutionAndROIUpdate(QSize(), QRect());
+}
+
+void OpenMVPluginFB::private_timerCallBack()
+{
+    qint64 elapsed = m_elaspedTimer.elapsed() - m_previousElaspedTimer;
+    m_previousElaspedTimer += elapsed;
+
+    QByteArray jpeg;
+    QBuffer buffer(&jpeg);
+    buffer.open(QIODevice::WriteOnly); // always return true
+    m_pixmap->pixmap().save(&buffer, "JPG"); // always return true
+    buffer.close();
+
+    QByteArray data;
+    serializeLong(data, static_cast<int>(elapsed));
+    serializeLong(data, m_pixmap->pixmap().width());
+    serializeLong(data, m_pixmap->pixmap().height());
+    serializeLong(data, jpeg.size());
+    data.append(jpeg);
+
+    int size = 16 - (jpeg.size() % 16);
+    if(size != 16) data.append(size, 0);
+
+    if(m_tempFile->write(data) == data.size())
+    {
+        qint64 milliseconds = m_previousElaspedTimer % 1000;
+        qint64 seconds = (m_previousElaspedTimer / 1000) % 60;
+        qint64 minutes = ((m_previousElaspedTimer / 1000) / 60) % 60;
+        qint64 hours = ((m_previousElaspedTimer / 1000) / 60) / 60;
+
+        emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms").arg(hours).arg(minutes).arg(seconds).arg(milliseconds));
+    }
+    else
+    {
+        m_timer->stop();
+        delete m_tempFile;
+        m_tempFile = Q_NULLPTR;
+        m_elaspedTimer = QElapsedTimer();
+        m_previousElaspedTimer = qint64();
+
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            QObject::tr("Video Recorder"),
+            QObject::tr("Failed to write frame!"));
+
+        emit imageWriterShutdown();
+    }
 }
 
 void OpenMVPluginFB::mousePressEvent(QMouseEvent *event)

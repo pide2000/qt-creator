@@ -7,13 +7,21 @@
 
 #include <coreplugin/icore.h>
 #include <extensionsystem/pluginmanager.h>
+#include <utils/hostosinfo.h>
 #include <utils/synchronousprocess.h>
 
 #include "../openmvpluginio.h"
 
+#define VIDEO_SETTINGS_GROUP "OpenMVFFMPEG"
+#define LAST_CONVERT_VIDEO_SRC_PATH "LastConvertSrcPath"
+#define LAST_CONVERT_VIDEO_DST_PATH "LastConvertDstPath"
+#define LAST_PLAY_VIDEO_PATH "LastPlayVideoPath"
+#define LAST_SAVE_VIDEO_PATH "LastSaveVideoPath"
+
+#define VIDEO_RECORDER_FRAME_RATE 30
+
 void convertVideoFileAction(const QString &drivePath);
 void playVideoFileAction(const QString &drivePath);
-bool convertVideoFile(const QString &dst, const QString &src);
-bool playVideoFile(const QString &path);
+void saveVideoFile(const QString &srcPath);
 
 #endif // VIDEOTOOLS_H

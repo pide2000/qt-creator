@@ -6,6 +6,7 @@ HEADERS += openmvplugin.h \
            openmvpluginio.h \
            openmvpluginfb.h \
            openmvterminal.h \
+           openmvcamerasettings.h \
            histogram/openmvpluginhistogram.h \
            tools/thresholdeditor.h \
            tools/keypointseditor.h \
@@ -23,6 +24,7 @@ SOURCES += openmvplugin.cpp \
            openmvpluginio.cpp \
            openmvpluginfb.cpp  \
            openmvterminal.cpp \
+           openmvcamerasettings.cpp \
            histogram/openmvpluginhistogram.cpp \
            histogram/rgb2rgb_tab.c \
            histogram/lab_tab.c \
@@ -37,5 +39,5 @@ SOURCES += openmvplugin.cpp \
            tools/tag36artoolkit.c \
            tools/videotools.cpp \
            qcustomplot/qcustomplot.cpp
-FORMS += histogram/openmvpluginhistogram.ui
+FORMS += openmvcamerasettings.ui histogram/openmvpluginhistogram.ui
 RESOURCES += openmv.qrc

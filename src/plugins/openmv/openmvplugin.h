@@ -187,6 +187,7 @@ public slots: // private
     void stopClicked();
     void processEvents();
     void errorFilter(const QByteArray &data);
+    void configureSettings();
     void saveScript();
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
@@ -211,6 +212,7 @@ private:
     QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
 
     Core::Command *m_bootloaderCommand;
+    Core::Command *m_configureSettingsCommand;
     Core::Command *m_saveCommand;
     Core::Command *m_resetCommand;
     Core::Command *m_docsCommand;
@@ -242,6 +244,8 @@ private:
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;
 
+    QToolButton *m_record;
+    QToolButton *m_stop;
     QToolButton *m_zoom;
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;

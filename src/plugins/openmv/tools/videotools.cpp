@@ -1,13 +1,8 @@
 #include "videotools.h"
 
-#define VIDEO_SETTINGS_GROUP "OpenMVFFMPEG"
-#define LAST_CONVERT_VIDEO_SRC_PATH "LastConvertSrcPath"
-#define LAST_CONVERT_VIDEO_DST_PATH "LastConvertDstPath"
-#define LAST_PLAY_VIDEO_PATH "LastPlayVideoPath"
-
 #define serializeData(fp, data, size) fp.append(data, size)
 
-static QByteArray getMJPEGHeader(int width, int height, int frames, int bytes, float fps)
+static QByteArray getMJPEGHeader(int width, int height, uint32_t frames, uint32_t bytes, float fps)
 {
     QByteArray fp;
 
@@ -81,7 +76,7 @@ static QByteArray getMJPEGHeader(int width, int height, int frames, int bytes, f
     return fp;
 }
 
-static QByteArray addMJPEG(int *frames, int *bytes, const QPixmap &pixmap)
+static QByteArray addMJPEG(uint32_t *frames, uint32_t *bytes, const QPixmap &pixmap)
 {
     QByteArray fp;
 
@@ -157,7 +152,7 @@ static bool getMaxSizeAndMinMsDelta(QFile *imageWriterFile, int *minM, int *maxW
     return true;
 }
 
-static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, int *frames, int *bytes, QFile *imageWriterFile, int minM, int maxW, int maxH)
+static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int minM, int maxW, int maxH)
 {
     QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
@@ -295,7 +290,7 @@ static QString handleImageWriterFiles(const QString &path)
 
                                 if(tempFile.write(header) == header.size())
                                 {
-                                    int frames = 0, bytes = 0;
+                                    uint32_t frames = 0, bytes = 0;
 
                                     if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, minM, maxW, maxH))
                                     {
@@ -533,62 +528,7 @@ static QString getOutputFormats()
     }
 }
 
-void convertVideoFileAction(const QString &drivePath)
-{
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(VIDEO_SETTINGS_GROUP));
-
-    QString src =
-        QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Source"),
-            settings->value(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
-            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
-
-    if(!src.isEmpty())
-    {
-        QString dst =
-            QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Output"),
-                settings->value(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
-                QObject::tr("Video Files (*.*);;") + getOutputFormats());
-
-        if(!dst.isEmpty())
-        {
-            QString tempSrc = handleImageWriterFiles(src);
-
-            if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
-            {
-                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), src);
-                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), dst);
-            }
-        }
-    }
-
-    settings->endGroup();
-}
-
-void playVideoFileAction(const QString &drivePath)
-{
-    QSettings *settings = ExtensionSystem::PluginManager::settings();
-    settings->beginGroup(QStringLiteral(VIDEO_SETTINGS_GROUP));
-
-    QString path =
-        QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Play Video"),
-            settings->value(QStringLiteral(LAST_PLAY_VIDEO_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
-            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
-
-    if(!path.isEmpty())
-    {
-        QString tempPath = handleImageWriterFiles(path);
-
-        if((!tempPath.isEmpty()) && playVideoFile(tempPath))
-        {
-            settings->setValue(QStringLiteral(LAST_PLAY_VIDEO_PATH), path);
-        }
-    }
-
-    settings->endGroup();
-}
-
-bool convertVideoFile(const QString &dst, const QString &src)
+static bool convertVideoFile(const QString &dst, const QString &src)
 {
     bool result;
 
@@ -646,7 +586,7 @@ bool convertVideoFile(const QString &dst, const QString &src)
     return result;
 }
 
-bool playVideoFile(const QString &path)
+static bool playVideoFile(const QString &path)
 {
     bool result;
 
@@ -692,4 +632,82 @@ bool playVideoFile(const QString &path)
     }
 
     return result;
+}
+
+void convertVideoFileAction(const QString &drivePath)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(VIDEO_SETTINGS_GROUP));
+
+    QString src =
+        QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Source"),
+            settings->value(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+
+    if(!src.isEmpty())
+    {
+        QString dst =
+            QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Output"),
+                settings->value(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), QDir::homePath()).toString(),
+                QObject::tr("Video Files (*.*);;") + getOutputFormats());
+
+        if(!dst.isEmpty())
+        {
+            QString tempSrc = handleImageWriterFiles(src);
+
+            if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+            {
+                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), src);
+                settings->setValue(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), dst);
+            }
+        }
+    }
+
+    settings->endGroup();
+}
+
+void playVideoFileAction(const QString &drivePath)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(VIDEO_SETTINGS_GROUP));
+
+    QString path =
+        QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Play Video"),
+            settings->value(QStringLiteral(LAST_PLAY_VIDEO_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+
+    if(!path.isEmpty())
+    {
+        QString tempPath = handleImageWriterFiles(path);
+
+        if((!tempPath.isEmpty()) && playVideoFile(tempPath))
+        {
+            settings->setValue(QStringLiteral(LAST_PLAY_VIDEO_PATH), path);
+        }
+    }
+
+    settings->endGroup();
+}
+
+void saveVideoFile(const QString &srcPath)
+{
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(VIDEO_SETTINGS_GROUP));
+
+    QString dst =
+        QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Save Video"),
+            settings->value(QStringLiteral(LAST_SAVE_VIDEO_PATH), QDir::homePath()).toString(),
+            QObject::tr("Video Files (*.*);;") + getOutputFormats());
+
+    if(!dst.isEmpty())
+    {
+        QString tempSrc = handleImageWriterFiles(srcPath);
+
+        if((!tempSrc.isEmpty()) && convertVideoFile(dst, tempSrc))
+        {
+            settings->setValue(QStringLiteral(LAST_SAVE_VIDEO_PATH), dst);
+        }
+    }
+
+    settings->endGroup();
 }

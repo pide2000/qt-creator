@@ -116,6 +116,12 @@ void OpenMVPlugin::extensionsInitialized()
     connect(bootloaderCommand, &QAction::triggered, this, &OpenMVPlugin::bootloaderClicked);
     toolsMenu->addSeparator();
 
+    QAction *configureSettings = new QAction(tr("Configure OpenMV Cam settings file"), this);
+    m_configureSettingsCommand = Core::ActionManager::registerAction(configureSettings, Core::Id("OpenMV.Settings"));
+    toolsMenu->addAction(m_configureSettingsCommand);
+    configureSettings->setEnabled(false);
+    connect(configureSettings, &QAction::triggered, this, &OpenMVPlugin::configureSettings);
+
     QAction *saveCommand = new QAction(tr("Save open script to OpenMV Cam"), this);
     m_saveCommand = Core::ActionManager::registerAction(saveCommand, Core::Id("OpenMV.Save"));
     toolsMenu->addAction(m_saveCommand);
@@ -308,6 +314,7 @@ void OpenMVPlugin::extensionsInitialized()
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, [this] (Core::IEditor *editor) {
         if(m_connected)
         {
+            m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
             m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!m_running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!m_running);
@@ -327,6 +334,7 @@ void OpenMVPlugin::extensionsInitialized()
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
+            m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
             m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setEnabled((!running) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
             m_startCommand->action()->setVisible(!running);
@@ -386,6 +394,20 @@ void OpenMVPlugin::extensionsInitialized()
     styledBar0Layout->addWidget(FBText);
     styledBar0Layout->addSpacing(6);
     styledBar0->setLayout(styledBar0Layout);
+
+    m_record = new QToolButton;
+    m_record->setText(tr("Record"));
+    m_record->setToolTip(tr("Record the Frame Buffer"));
+    m_record->setVisible(true);
+    m_record->setEnabled(false);
+    styledBar0Layout->addWidget(m_record);
+
+    m_stop = new QToolButton;
+    m_stop->setText(tr("Stop"));
+    m_stop->setToolTip(tr("Stop recording"));
+    m_stop->setVisible(false);
+    m_stop->setEnabled(false);
+    styledBar0Layout->addWidget(m_stop);
 
     m_zoom = new QToolButton;
     m_zoom->setText(tr("Zoom"));
@@ -447,6 +469,11 @@ void OpenMVPlugin::extensionsInitialized()
     disableLabel->setAlignment(Qt::AlignCenter);
     disableLabel->setVisible(m_disableFrameBuffer->isChecked());
     connect(m_disableFrameBuffer, &QToolButton::toggled, disableLabel, &QLabel::setVisible);
+    QLabel *recordingLabel = new Utils::ElidingLabel();
+    recordingLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    recordingLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
+    recordingLabel->setAlignment(Qt::AlignCenter);
+    recordingLabel->setVisible(false);
     QWidget *tempWidget0 = new QWidget;
     QVBoxLayout *tempLayout0 = new QVBoxLayout;
     tempLayout0->setMargin(0);
@@ -454,6 +481,7 @@ void OpenMVPlugin::extensionsInitialized()
     tempLayout0->addWidget(styledBar0);
     tempLayout0->addWidget(disableLabel);
     tempLayout0->addWidget(m_frameBuffer);
+    tempLayout0->addWidget(recordingLabel);
     tempWidget0->setLayout(tempLayout0);
     connect(m_zoom, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
@@ -476,6 +504,35 @@ void OpenMVPlugin::extensionsInitialized()
         {
             FBText->setText(tr("Frame Buffer"));
         }
+    });
+
+    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, this, [this] {
+        m_record->setEnabled(true);
+        m_stop->setEnabled(true);
+    });
+
+    connect(m_record, &QToolButton::clicked, this, [this, recordingLabel] {
+        if(m_frameBuffer->beginImageWriter())
+        {
+            m_record->setVisible(false);
+            m_stop->setVisible(true);
+            recordingLabel->setVisible(true);
+        }
+    });
+
+    connect(m_stop, &QToolButton::clicked, this, [this, recordingLabel] {
+        m_frameBuffer->endImageWriter();
+        m_record->setVisible(true);
+        m_stop->setVisible(false);
+        recordingLabel->setVisible(false);
+    });
+
+    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterTick, recordingLabel, &QLabel::setText);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterShutdown, this, [this, recordingLabel] {
+        m_record->setVisible(true);
+        m_stop->setVisible(false);
+        recordingLabel->setVisible(false);
     });
 
     Utils::StyledBar *styledBar1 = new Utils::StyledBar;
@@ -2712,6 +2769,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_errorFilterString = QString();
 
         m_bootloaderCommand->action()->setEnabled(false);
+        m_configureSettingsCommand->action()->setEnabled(false);
         m_saveCommand->action()->setEnabled(false);
         m_resetCommand->action()->setEnabled(true);
         m_connectCommand->action()->setEnabled(false);
@@ -2872,6 +2930,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_errorFilterString = QString();
 
             m_bootloaderCommand->action()->setEnabled(true);
+            m_configureSettingsCommand->action()->setEnabled(true);
             m_saveCommand->action()->setEnabled(false);
             m_resetCommand->action()->setEnabled(false);
             m_connectCommand->action()->setEnabled(true);
@@ -3106,6 +3165,97 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
     }
 
     m_errorFilterString = m_errorFilterString.right(ERROR_FILTER_MAX_SIZE);
+}
+
+void OpenMVPlugin::configureSettings()
+{
+    QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+    dialog->setWindowTitle(tr("OpenMV Cam Settings"));
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+
+    QGroupBox *box = new QGroupBox(tr("WiFi Settings"));
+    layout->addWidget(box);
+
+    QFormLayout *formLayout = new QFormLayout(box);
+
+    QCheckBox *enableWiFi = new QCheckBox(tr("Turn on WiFi Shield on startup"));
+    formLayout->addWidget(enableWiFi);
+
+    QCheckBox *
+
+
+    Utils::PathChooser *pathChooser = new Utils::PathChooser();
+    pathChooser->setExpectedKind(Utils::PathChooser::File);
+    pathChooser->setPromptDialogTitle(tr("Firmware Path"));
+    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
+    pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
+    layout->addRow(tr("Firmware Path"), pathChooser);
+    layout->addItem(new QSpacerItem(0, 6));
+
+    QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
+    checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
+    checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
+    layout->addRow(checkBox);
+    QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
+    checkBox2->setChecked(true);
+    checkBox2->setEnabled(false);
+    checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
+    layout->addRow(checkBox2);
+    layout->addItem(new QSpacerItem(0, 6));
+
+    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
+    QPushButton *run = new QPushButton(tr("Run"));
+    run->setEnabled(pathChooser->isValid());
+    box->addButton(run, QDialogButtonBox::AcceptRole);
+    layout->addRow(box);
+
+    connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
+    connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+    connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
+    connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
+        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
+        {
+            checkBox->setVisible(false);
+            checkBox2->setVisible(true);
+        }
+        else
+        {
+            checkBox->setVisible(true);
+            checkBox2->setVisible(false);
+
+        }
+        dialog->adjustSize();
+    });
+
+    if(dialog->exec() == QDialog::Accepted)
+    {
+        QString forceFirmwarePath = pathChooser->path();
+        bool flashFSErase = checkBox->isChecked();
+
+        if(QFileInfo(forceFirmwarePath).isFile())
+        {
+            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
+            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
+            settings->endGroup();
+            delete dialog;
+
+            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)));
+        }
+        else
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                tr("Bootloader"),
+                tr("\"%L1\" is not a file!").arg(forceFirmwarePath));
+
+            delete dialog;
+        }
+    }
+    else
+    {
+        delete dialog;
+    }
 }
 
 void OpenMVPlugin::saveScript()
@@ -3461,6 +3611,7 @@ void OpenMVPlugin::setPortPath(bool silent)
         m_pathButton->setText((!m_portPath.isEmpty()) ? tr("Drive: %L1").arg(m_portPath) : tr("Drive:"));
 
         Core::IEditor *editor = Core::EditorManager::currentEditor();
+        m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
         m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
 
         m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
