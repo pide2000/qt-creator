@@ -161,7 +161,7 @@ static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW
     return true;
 }
 
-static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int avgM, int maxW, int maxH)
+static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int maxW, int maxH)
 {
     QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
@@ -180,7 +180,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
         return false;
     }
 
-    for(long long time_counter = 0; !stream.atEnd(); time_counter += 0)
+    while(!stream.atEnd())
     {
         progress.setValue(imageWriterFile->pos());
 
@@ -200,11 +200,9 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
             return false;
         }
 
-        int size = getImageSize(W, H, BPP);
+        QByteArray data(getImageSize(W, H, BPP), 0);
 
-        QByteArray data(size, 0);
-
-        if(stream.readRawData(data.data(), size) != size)
+        if(stream.readRawData(data.data(), data.size()) != data.size())
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("Transcoding File"),
@@ -215,7 +213,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
 
         QPixmap pixmap = getImageFromData(data, W, H, BPP).scaled(maxW, maxH, Qt::KeepAspectRatio);
 
-        size = 16 - (size % 16);
+        int size = 16 - (data.size() % 16);
 
         if((size != 16) && (stream.skipRawData(size) != size))
         {
@@ -227,7 +225,6 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
         }
 
         QPixmap image(maxW, maxH);
-
         image.fill(Qt::black);
 
         QPainter painter;
@@ -252,23 +249,20 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
             return false;
         }
 
-        for(long long time_counter_2 = time_counter + avgM; time_counter < time_counter_2; time_counter += M)
+        QByteArray jpeg = addMJPEG(frames, bytes, image);
+
+        if(mjpegVideoFile->write(jpeg) != jpeg.size())
         {
-            QByteArray jpeg = addMJPEG(frames, bytes, image);
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                QObject::tr("Transcoding File"),
+                QObject::tr("Failed to write!"));
 
-            if(mjpegVideoFile->write(jpeg) != jpeg.size())
-            {
-                QMessageBox::critical(Core::ICore::dialogParent(),
-                    QObject::tr("Transcoding File"),
-                    QObject::tr("Failed to write!"));
+            return false;
+        }
 
-                return false;
-            }
-
-            if(progress.wasCanceled())
-            {
-                return false;
-            }
+        if(progress.wasCanceled())
+        {
+            return false;
         }
     }
 
@@ -310,11 +304,11 @@ static QString handleImageWriterFiles(const QString &path)
                                 {
                                     uint32_t frames = 0, bytes = 0;
 
-                                    if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, avgM, maxW, maxH))
+                                    if(convertImageWriterFileToMjpegVideoFile(&tempFile, &frames, &bytes, &file, maxW, maxH))
                                     {
                                         if(tempFile.seek(0))
                                         {
-                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / avgM);
+                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, avgM ? (1000.0 / avgM) : 0.0);
 
                                             if(tempFile.write(header) == header.size())
                                             {
