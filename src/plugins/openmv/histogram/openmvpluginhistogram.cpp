@@ -398,6 +398,14 @@ OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent),
     m_ui->C0Plot->yAxis->setPadding(2);
     m_ui->C0Plot->yAxis->setLabelPadding(3);
     m_channel0 = m_ui->C0Plot->addGraph();
+    m_ui->C0MeanValue->setMinimumWidth(m_ui->C0MeanValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0MedianValue->setMinimumWidth(m_ui->C0MedianValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0ModeValue->setMinimumWidth(m_ui->C0ModeValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0StDevValue->setMinimumWidth(m_ui->C0StDevValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0MinValue->setMinimumWidth(m_ui->C0MinValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0MaxValue->setMinimumWidth(m_ui->C0MaxValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0LQValue->setMinimumWidth(m_ui->C0LQValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C0UQValue->setMinimumWidth(m_ui->C0UQValue->fontMetrics().width(QStringLiteral("-00000")));
 
     m_ui->C1Plot->installEventFilter(this);
     m_ui->C1Plot->setAutoAddPlottableToLegend(false);
@@ -419,6 +427,14 @@ OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent),
     m_ui->C1Plot->yAxis->setPadding(2);
     m_ui->C1Plot->yAxis->setLabelPadding(3);
     m_channel1 = m_ui->C1Plot->addGraph();
+    m_ui->C1MeanValue->setMinimumWidth(m_ui->C1MeanValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1MedianValue->setMinimumWidth(m_ui->C1MedianValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1ModeValue->setMinimumWidth(m_ui->C1ModeValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1StDevValue->setMinimumWidth(m_ui->C1StDevValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1MinValue->setMinimumWidth(m_ui->C1MinValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1MaxValue->setMinimumWidth(m_ui->C1MaxValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1LQValue->setMinimumWidth(m_ui->C1LQValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C1UQValue->setMinimumWidth(m_ui->C1UQValue->fontMetrics().width(QStringLiteral("-00000")));
 
     m_ui->C2Plot->installEventFilter(this);
     m_ui->C2Plot->setAutoAddPlottableToLegend(false);
@@ -440,6 +456,14 @@ OpenMVPluginHistogram::OpenMVPluginHistogram(QWidget *parent) : QWidget(parent),
     m_ui->C2Plot->yAxis->setPadding(2);
     m_ui->C2Plot->yAxis->setLabelPadding(3);
     m_channel2 = m_ui->C2Plot->addGraph();
+    m_ui->C2MeanValue->setMinimumWidth(m_ui->C2MeanValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2MedianValue->setMinimumWidth(m_ui->C2MedianValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2ModeValue->setMinimumWidth(m_ui->C2ModeValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2StDevValue->setMinimumWidth(m_ui->C2StDevValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2MinValue->setMinimumWidth(m_ui->C2MinValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2MaxValue->setMinimumWidth(m_ui->C2MaxValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2LQValue->setMinimumWidth(m_ui->C2LQValue->fontMetrics().width(QStringLiteral("-00000")));
+    m_ui->C2UQValue->setMinimumWidth(m_ui->C2UQValue->fontMetrics().width(QStringLiteral("-00000")));
 
     setAttribute(Qt::WA_StyledBackground);
     setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#FFFFFF"));

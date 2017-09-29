@@ -384,36 +384,33 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
-    Utils::ElidingLabel *FBText = new Utils::ElidingLabel(tr("Frame Buffer"));
-    FBText->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     Utils::StyledBar *styledBar0 = new Utils::StyledBar;
     QHBoxLayout *styledBar0Layout = new QHBoxLayout;
     styledBar0Layout->setMargin(0);
     styledBar0Layout->setSpacing(0);
     styledBar0Layout->addSpacing(4);
-    styledBar0Layout->addWidget(FBText);
+    styledBar0Layout->addWidget(new QLabel(tr("Frame Buffer")));
     styledBar0Layout->addSpacing(6);
     styledBar0->setLayout(styledBar0Layout);
 
-    m_record = new QToolButton;
-    m_record->setText(tr("Record"));
-    m_record->setToolTip(tr("Record the Frame Buffer"));
-    m_record->setEnabled(false);
-    styledBar0Layout->addWidget(m_record);
+    QToolButton *beginRecordingButton = new QToolButton;
+    beginRecordingButton->setText(tr("Record"));
+    beginRecordingButton->setToolTip(tr("Record the Frame Buffer"));
+    beginRecordingButton->setEnabled(false);
+    styledBar0Layout->addWidget(beginRecordingButton);
 
-    m_stop = new QToolButton;
-    m_stop->setText(tr("Stop"));
-    m_stop->setToolTip(tr("Stop recording"));
-    m_stop->setVisible(false);
-    m_stop->setEnabled(false);
-    styledBar0Layout->addWidget(m_stop);
+    QToolButton *endRecordingButton = new QToolButton;
+    endRecordingButton->setText(tr("Stop"));
+    endRecordingButton->setToolTip(tr("Stop recording"));
+    endRecordingButton->setVisible(false);
+    styledBar0Layout->addWidget(endRecordingButton);
 
-    m_zoom = new QToolButton;
-    m_zoom->setText(tr("Zoom"));
-    m_zoom->setToolTip(tr("Zoom to fit"));
-    m_zoom->setCheckable(true);
-    m_zoom->setChecked(false);
-    styledBar0Layout->addWidget(m_zoom);
+    QToolButton *zoomButton = new QToolButton;
+    zoomButton->setText(tr("Zoom"));
+    zoomButton->setToolTip(tr("Zoom to fit"));
+    zoomButton->setCheckable(true);
+    zoomButton->setChecked(false);
+    styledBar0Layout->addWidget(zoomButton);
 
     m_jpgCompress = new QToolButton;
     m_jpgCompress->setText(tr("JPG"));
@@ -461,19 +458,21 @@ void OpenMVPlugin::extensionsInitialized()
         }
     });
 
-    m_frameBuffer = new OpenMVPluginFB;
-    QLabel *disableLabel = new Utils::ElidingLabel(tr("Frame Buffer Disabled - click the disable button again to enable (top right)"));
+    Utils::ElidingLabel *disableLabel = new Utils::ElidingLabel(tr("Frame Buffer Disabled - click the disable button again to enable (top right)"));
     disableLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     disableLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     disableLabel->setAlignment(Qt::AlignCenter);
     disableLabel->setVisible(m_disableFrameBuffer->isChecked());
     connect(m_disableFrameBuffer, &QToolButton::toggled, disableLabel, &QLabel::setVisible);
-    QLabel *recordingLabel = new Utils::ElidingLabel;
-    recordingLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
+
+    Utils::ElidingLabel *recordingLabel = new Utils::ElidingLabel(tr("Elapsed: 0h:00m:00s:000ms - Size: 0 B - FPS: 0"));
     recordingLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     recordingLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
     recordingLabel->setAlignment(Qt::AlignCenter);
     recordingLabel->setVisible(false);
+    recordingLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
+
+    m_frameBuffer = new OpenMVPluginFB;
     QWidget *tempWidget0 = new QWidget;
     QVBoxLayout *tempLayout0 = new QVBoxLayout;
     tempLayout0->setMargin(0);
@@ -483,55 +482,37 @@ void OpenMVPlugin::extensionsInitialized()
     tempLayout0->addWidget(m_frameBuffer);
     tempLayout0->addWidget(recordingLabel);
     tempWidget0->setLayout(tempLayout0);
-    connect(m_zoom, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
+
+    connect(zoomButton, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
     connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, &OpenMVPlugin::saveImage);
     connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate, this, &OpenMVPlugin::saveTemplate);
     connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor, this, &OpenMVPlugin::saveDescriptor);
-    connect(m_frameBuffer, &OpenMVPluginFB::resolutionAndROIUpdate, this, [this, FBText] (const QSize &res, const QRect &roi) {
-        if(res.isValid())
-        {
-            if(roi.isValid())
-            {
-                FBText->setText(tr("Frame Buffer - Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()));
-            }
-            else
-            {
-                FBText->setText(tr("Frame Buffer - Res (w:%1, h:%2)").arg(res.width()).arg(res.height()));
-            }
-        }
-        else
-        {
-            FBText->setText(tr("Frame Buffer"));
-        }
+    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterTick, recordingLabel, &Utils::ElidingLabel::setText);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, this, [this, beginRecordingButton] {
+        beginRecordingButton->setEnabled(true);
     });
 
-    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, this, [this] {
-        m_record->setEnabled(true);
-        m_stop->setEnabled(true);
-    });
-
-    connect(m_record, &QToolButton::clicked, this, [this, recordingLabel] {
+    connect(beginRecordingButton, &QToolButton::clicked, this, [this, beginRecordingButton, endRecordingButton, recordingLabel] {
         if(m_frameBuffer->beginImageWriter())
         {
-            m_record->setVisible(false);
-            m_stop->setVisible(true);
+            beginRecordingButton->setVisible(false);
+            endRecordingButton->setVisible(true);
             recordingLabel->setVisible(true);
         }
     });
 
-    connect(m_stop, &QToolButton::clicked, this, [this, recordingLabel] {
+    connect(endRecordingButton, &QToolButton::clicked, this, [this, beginRecordingButton, endRecordingButton, recordingLabel] {
         m_frameBuffer->endImageWriter();
-        m_record->setVisible(true);
-        m_stop->setVisible(false);
+        beginRecordingButton->setVisible(true);
+        endRecordingButton->setVisible(false);
         recordingLabel->setVisible(false);
     });
 
-    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterTick, recordingLabel, &QLabel::setText);
-
-    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterShutdown, this, [this, recordingLabel] {
-        m_record->setVisible(true);
-        m_stop->setVisible(false);
+    connect(m_frameBuffer, &OpenMVPluginFB::imageWriterShutdown, this, [this, beginRecordingButton, endRecordingButton, recordingLabel] {
+        beginRecordingButton->setVisible(true);
+        endRecordingButton->setVisible(false);
         recordingLabel->setVisible(false);
     });
 
@@ -544,16 +525,21 @@ void OpenMVPlugin::extensionsInitialized()
     styledBar1Layout->addSpacing(6);
     styledBar1->setLayout(styledBar1Layout);
 
-    m_histogramColorSpace = new QComboBox;
-    m_histogramColorSpace->setProperty("hideborder", true);
-    m_histogramColorSpace->setProperty("drawleftborder", false);
-    m_histogramColorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
-    m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
-    m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
-    m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
-    m_histogramColorSpace->setCurrentIndex(RGB_COLOR_SPACE);
-    m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
-    styledBar1Layout->addWidget(m_histogramColorSpace);
+    QComboBox *colorSpace = new QComboBox;
+    colorSpace->setProperty("hideborder", true);
+    colorSpace->setProperty("drawleftborder", false);
+    colorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
+    colorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
+    colorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
+    colorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
+    colorSpace->setCurrentIndex(RGB_COLOR_SPACE);
+    colorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
+    styledBar1Layout->addWidget(colorSpace);
+
+    Utils::ElidingLabel *resLabel = new Utils::ElidingLabel(tr("Res - No Image"));
+    resLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    resLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#FFFFFF;padding:4px;"));
+    resLabel->setAlignment(Qt::AlignCenter);
 
     m_histogram = new OpenMVPluginHistogram;
     QWidget *tempWidget1 = new QWidget;
@@ -561,10 +547,30 @@ void OpenMVPlugin::extensionsInitialized()
     tempLayout1->setMargin(0);
     tempLayout1->setSpacing(0);
     tempLayout1->addWidget(styledBar1);
+    tempLayout1->addWidget(resLabel);
     tempLayout1->addWidget(m_histogram);
     tempWidget1->setLayout(tempLayout1);
-    connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+
+    connect(colorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
     connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
+
+    connect(m_frameBuffer, &OpenMVPluginFB::resolutionAndROIUpdate, this, [this, resLabel] (const QSize &res, const QRect &roi) {
+        if(res.isValid())
+        {
+            if(roi.isValid())
+            {
+                resLabel->setText(tr("Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()));
+            }
+            else
+            {
+                resLabel->setText(tr("Res (w:%1, h:%2)").arg(res.width()).arg(res.height()));
+            }
+        }
+        else
+        {
+            resLabel->setText(tr("Res - No Image"));
+        }
+    });
 
     m_hsplitter = widget->m_hsplitter;
     m_vsplitter = widget->m_vsplitter;
@@ -579,33 +585,41 @@ void OpenMVPlugin::extensionsInitialized()
         m_hsplitter->setSizes(QList<int>() << 1 << m_hsplitter->sizes().at(1));
         widget->m_leftDrawer->parentWidget()->hide();
     });
+
     connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) widget->m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
     });
+
     connect(widget->m_rightDrawer, &QToolButton::clicked, this, [this, widget] {
         m_hsplitter->setSizes(QList<int>() << m_hsplitter->sizes().at(0) << 1);
         widget->m_rightDrawer->parentWidget()->hide();
     });
+
     connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) widget->m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
     });
+
     connect(widget->m_topDrawer, &QToolButton::clicked, this, [this, widget] {
         m_vsplitter->setSizes(QList<int>() << 1 <<  m_vsplitter->sizes().at(1));
         widget->m_topDrawer->parentWidget()->hide();
     });
+
     connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) widget->m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
     });
+
     connect(widget->m_bottomDrawer, &QToolButton::clicked, this, [this, widget] {
         m_vsplitter->setSizes(QList<int>() << m_vsplitter->sizes().at(0) << 1);
         widget->m_bottomDrawer->parentWidget()->hide();
     });
+
     connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) widget->m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
     });
 
     connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
     connect(m_iodevice, &OpenMVPluginIO::printData, this, &OpenMVPlugin::errorFilter);
+
     connect(m_iodevice, &OpenMVPluginIO::frameBufferData, this, [this] {
         m_queue.push_back(m_timer.restart());
 
@@ -631,7 +645,6 @@ void OpenMVPlugin::extensionsInitialized()
     m_versionButton = new Utils::ElidingToolButton;
     m_versionButton->setText(tr("Firmware Version:"));
     m_versionButton->setToolTip(tr("Camera firmware version"));
-    m_versionButton->setCheckable(false);
     m_versionButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_versionButton);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
@@ -646,7 +659,6 @@ void OpenMVPlugin::extensionsInitialized()
     m_pathButton = new Utils::ElidingToolButton;
     m_pathButton->setText(tr("Drive:"));
     m_pathButton->setToolTip(tr("Drive associated with port"));
-    m_pathButton->setCheckable(false);
     m_pathButton->setDisabled(true);
     Core::ICore::statusBar()->addPermanentWidget(m_pathButton);
     Core::ICore::statusBar()->addPermanentWidget(new QLabel());
@@ -664,14 +676,14 @@ void OpenMVPlugin::extensionsInitialized()
     settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
     Core::EditorManager::restoreState(
         settings->value(QStringLiteral(EDITOR_MANAGER_STATE)).toByteArray());
-    m_zoom->setChecked(
-        settings->value(QStringLiteral(ZOOM_STATE), m_zoom->isChecked()).toBool());
+    zoomButton->setChecked(
+        settings->value(QStringLiteral(ZOOM_STATE), zoomButton->isChecked()).toBool());
     m_jpgCompress->setChecked(
         settings->value(QStringLiteral(JPG_COMPRESS_STATE), m_jpgCompress->isChecked()).toBool());
     m_disableFrameBuffer->setChecked(
         settings->value(QStringLiteral(DISABLE_FRAME_BUFFER_STATE), m_disableFrameBuffer->isChecked()).toBool());
-    m_histogramColorSpace->setCurrentIndex(
-        settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex()).toInt());
+    colorSpace->setCurrentIndex(
+        settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), colorSpace->currentIndex()).toInt());
     QFont font = TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily();
     font.setPointSize(TextEditor::TextEditorSettings::fontSettings().defaultFontSize());
     Core::MessageManager::outputWindow()->setBaseFont(font);
@@ -706,7 +718,7 @@ void OpenMVPlugin::extensionsInitialized()
 
     settings->endArray();
 
-    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this] {
+    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this, zoomButton, colorSpace] {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
         settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
@@ -716,13 +728,13 @@ void OpenMVPlugin::extensionsInitialized()
         settings->setValue(QStringLiteral(VSPLITTER_STATE),
             m_vsplitter->saveState());
         settings->setValue(QStringLiteral(ZOOM_STATE),
-            m_zoom->isChecked());
+            zoomButton->isChecked());
         settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
             m_jpgCompress->isChecked());
         settings->setValue(QStringLiteral(DISABLE_FRAME_BUFFER_STATE),
             m_disableFrameBuffer->isChecked());
         settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE),
-            m_histogramColorSpace->currentIndex());
+            colorSpace->currentIndex());
         settings->setValue(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE),
             Core::MessageManager::outputWindow()->fontZoom());
         settings->endGroup();
@@ -1212,6 +1224,8 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     ///////////////////////////////////////////////////////////////////////////
+
+    // TODO : Move this to delayed init.
 
     Core::IEditor *editor = Core::EditorManager::currentEditor();
 

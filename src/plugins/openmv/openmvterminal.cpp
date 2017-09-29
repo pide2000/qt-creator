@@ -706,23 +706,44 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     styledBar0Layout->addSpacing(6);
     styledBar0->setLayout(styledBar0Layout);
 
+    QToolButton *beginRecordingButton = new QToolButton;
+    beginRecordingButton->setText(tr("Record"));
+    beginRecordingButton->setToolTip(tr("Record the Frame Buffer"));
+    beginRecordingButton->setEnabled(false);
+    styledBar0Layout->addWidget(beginRecordingButton);
+
+    QToolButton *endRecordingButton = new QToolButton;
+    endRecordingButton->setText(tr("Stop"));
+    endRecordingButton->setToolTip(tr("Stop recording"));
+    endRecordingButton->setVisible(false);
+    styledBar0Layout->addWidget(endRecordingButton);
+
     m_zoom = new QToolButton;
     m_zoom->setText(tr("Zoom"));
     m_zoom->setToolTip(tr("Zoom to fit"));
     m_zoom->setCheckable(true);
     styledBar0Layout->addWidget(m_zoom);
 
-    OpenMVPluginFB *m_frameBuffer = new OpenMVPluginFB;
+    Utils::ElidingLabel *recordingLabel = new Utils::ElidingLabel(tr("Elapsed: 0h:00m:00s:000ms - Size: 0 B - FPS: 0"));
+    recordingLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    recordingLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#909090;padding:4px;"));
+    recordingLabel->setAlignment(Qt::AlignCenter);
+    recordingLabel->setVisible(false);
+    recordingLabel->setFont(TextEditor::TextEditorSettings::fontSettings().defaultFixedFontFamily());
+
+    OpenMVPluginFB *frameBuffer = new OpenMVPluginFB;
     QWidget *tempWidget0 = new QWidget;
     QVBoxLayout *tempLayout0 = new QVBoxLayout;
     tempLayout0->setMargin(0);
     tempLayout0->setSpacing(0);
     tempLayout0->addWidget(styledBar0);
-    tempLayout0->addWidget(m_frameBuffer);
+    tempLayout0->addWidget(frameBuffer);
+    tempLayout0->addWidget(recordingLabel);
     tempWidget0->setLayout(tempLayout0);
-    connect(m_zoom, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
+
+    connect(m_zoom, &QToolButton::toggled, frameBuffer, &OpenMVPluginFB::enableFitInView);
     m_zoom->setChecked(m_settings->value(QStringLiteral(ZOOM_STATE), false).toBool());
-    connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, [this] (const QPixmap &data) {
+    connect(frameBuffer, &OpenMVPluginFB::saveImage, this, [this] (const QPixmap &data) {
         QString path =
             QFileDialog::getSaveFileName(this, tr("Save Image"),
                 m_settings->value(QStringLiteral(LAST_SAVE_IMAGE_PATH), QDir::homePath()).toString(),
@@ -741,6 +762,34 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
                     tr("Failed to save the image file for an unknown reason!"));
             }
         }
+    });
+
+    connect(frameBuffer, &OpenMVPluginFB::imageWriterTick, recordingLabel, &Utils::ElidingLabel::setText);
+
+    connect(frameBuffer, &OpenMVPluginFB::pixmapUpdate, this, [this, beginRecordingButton] {
+        beginRecordingButton->setEnabled(true);
+    });
+
+    connect(beginRecordingButton, &QToolButton::clicked, this, [this, beginRecordingButton, endRecordingButton, recordingLabel, frameBuffer] {
+        if(frameBuffer->beginImageWriter())
+        {
+            beginRecordingButton->setVisible(false);
+            endRecordingButton->setVisible(true);
+            recordingLabel->setVisible(true);
+        }
+    });
+
+    connect(endRecordingButton, &QToolButton::clicked, this, [this, beginRecordingButton, endRecordingButton, recordingLabel, frameBuffer] {
+        frameBuffer->endImageWriter();
+        beginRecordingButton->setVisible(true);
+        endRecordingButton->setVisible(false);
+        recordingLabel->setVisible(false);
+    });
+
+    connect(frameBuffer, &OpenMVPluginFB::imageWriterShutdown, this, [this, beginRecordingButton, endRecordingButton, recordingLabel] {
+        beginRecordingButton->setVisible(true);
+        endRecordingButton->setVisible(false);
+        recordingLabel->setVisible(false);
     });
 
     Utils::StyledBar *styledBar1 = new Utils::StyledBar;
@@ -762,17 +811,41 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
     styledBar1Layout->addWidget(m_histogramColorSpace);
 
-    OpenMVPluginHistogram *m_histogram = new OpenMVPluginHistogram;
+    Utils::ElidingLabel *resLabel = new Utils::ElidingLabel(tr("Res - No Image"));
+    resLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
+    resLabel->setStyleSheet(QStringLiteral("background-color:#1E1E27;color:#FFFFFF;padding:4px;"));
+    resLabel->setAlignment(Qt::AlignCenter);
+
+    OpenMVPluginHistogram *histogram = new OpenMVPluginHistogram;
     QWidget *tempWidget1 = new QWidget;
     QVBoxLayout *tempLayout1 = new QVBoxLayout;
     tempLayout1->setMargin(0);
     tempLayout1->setSpacing(0);
     tempLayout1->addWidget(styledBar1);
-    tempLayout1->addWidget(m_histogram);
+    tempLayout1->addWidget(resLabel);
+    tempLayout1->addWidget(histogram);
     tempWidget1->setLayout(tempLayout1);
-    connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), m_histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+
+    connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), histogram, &OpenMVPluginHistogram::colorSpaceChanged);
     m_histogramColorSpace->setCurrentIndex(m_settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), RGB_COLOR_SPACE).toInt());
-    connect(m_frameBuffer, &OpenMVPluginFB::pixmapUpdate, m_histogram, &OpenMVPluginHistogram::pixmapUpdate);
+    connect(frameBuffer, &OpenMVPluginFB::pixmapUpdate, histogram, &OpenMVPluginHistogram::pixmapUpdate);
+    connect(frameBuffer, &OpenMVPluginFB::resolutionAndROIUpdate, this, [this, resLabel] (const QSize &res, const QRect &roi) {
+        if(res.isValid())
+        {
+            if(roi.isValid())
+            {
+                resLabel->setText(tr("Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()));
+            }
+            else
+            {
+                resLabel->setText(tr("Res (w:%1, h:%2)").arg(res.width()).arg(res.height()));
+            }
+        }
+        else
+        {
+            resLabel->setText(tr("Res - No Image"));
+        }
+    });
 
     Utils::StyledBar *styledBar2 = new Utils::StyledBar;
     QHBoxLayout *styledBar2Layout = new QHBoxLayout;
@@ -811,7 +884,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_edit = new MyPlainTextEdit(m_settings->value(QStringLiteral(FONT_ZOOM_STATE), TextEditor::TextEditorSettings::fontSettings().defaultFontSize()).toReal());
     connect(this, &OpenMVTerminal::readBytes, m_edit, &MyPlainTextEdit::readBytes);
     connect(m_edit, &MyPlainTextEdit::writeBytes, this, &OpenMVTerminal::writeBytes);
-    connect(m_edit, &MyPlainTextEdit::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
+    connect(m_edit, &MyPlainTextEdit::frameBufferData, frameBuffer, &OpenMVPluginFB::frameBufferData);
     connect(clearButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::clear);
     connect(executeButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::execute);
     connect(interruptButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::interrupt);
@@ -842,7 +915,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     topBarLayout->setSpacing(0);
     m_topDrawer = new QToolButton;
     m_topDrawer->setArrowType(Qt::DownArrow);
-    m_topDrawer->setMinimumWidth(160);
+    m_topDrawer->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     topBarLayout->addWidget(m_topDrawer);
     topBar->setLayout(topBarLayout);
     tempLayout3->addWidget(topBar);
@@ -863,7 +936,7 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     bottomBarLayout->setSpacing(0);
     m_bottomDrawer = new QToolButton;
     m_bottomDrawer->setArrowType(Qt::UpArrow);
-    m_bottomDrawer->setMinimumWidth(160);
+    m_bottomDrawer->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     bottomBarLayout->addWidget(m_bottomDrawer);
     bottomBar->setLayout(bottomBarLayout);
     tempLayout3->addWidget(bottomBar);

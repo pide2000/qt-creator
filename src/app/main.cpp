@@ -531,6 +531,9 @@ int main(int argc, char **argv)
 
     bool isBlock = foundAppOptions.contains(QLatin1String(BLOCK_OPTION));
     if (app.isRunning() && (pid != -1 || isBlock
+                            //OPENMV-DIFF//
+                            || true
+                            //OPENMV-DIFF//
                             || foundAppOptions.contains(QLatin1String(CLIENT_OPTION)))) {
         app.setBlock(isBlock);
         if (app.sendMessage(PluginManager::serializedArguments(), 5000 /*timeout*/, pid))
@@ -569,5 +572,8 @@ int main(int argc, char **argv)
     // shutdown plugin manager on the exit
     QObject::connect(&app, SIGNAL(aboutToQuit()), &pluginManager, SLOT(shutdown()));
 
+    //OPENMV-DIFF//
+    pluginManager.remoteArguments(PluginManager::serializedArguments(), Q_NULLPTR);
+    //OPENMV-DIFF//
     return app.exec();
 }

@@ -100,8 +100,8 @@ static QByteArray addMJPEG(uint32_t *frames, uint32_t *bytes, const QPixmap &pix
 
 static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW, int *maxH)
 {
-    QProgressDialog progress(QObject::tr("Reading File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
-        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+    QProgressDialog progress(QObject::tr("Reading File..."), QObject::tr("Cancel"), imageWriterFile->pos() / 1024, imageWriterFile->size() / 1024, Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint | // Dividing by 1024 above makes sure that a 4GB max file size fits in an int.
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
     progress.setWindowModality(Qt::ApplicationModal);
 
@@ -119,7 +119,7 @@ static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW
 
     while(!stream.atEnd())
     {
-        progress.setValue(imageWriterFile->pos());
+        progress.setValue(imageWriterFile->pos() / 1024); // Dividing by 1024 makes sure that a 4GB max file size fits in an int.
 
         int M, W, H, BPP;
 
@@ -128,7 +128,7 @@ static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW
         stream >> H;
         stream >> BPP;
 
-        if((M < 0) || (W < 0) || (H < 0) || (BPP < 0))
+        if((M <= 0) || (M > 8388607) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > 8388607)) // Sane limits.
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("Reading File"),
@@ -163,8 +163,8 @@ static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW
 
 static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32_t *frames, uint32_t *bytes, QFile *imageWriterFile, int maxW, int maxH)
 {
-    QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), imageWriterFile->pos(), imageWriterFile->size(), Core::ICore::dialogParent(),
-        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+    QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), imageWriterFile->pos() / 1024, imageWriterFile->size() / 1024, Core::ICore::dialogParent(),
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint | // Dividing by 1024 above makes sure that a 4GB max file size fits in an int.
         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
     progress.setWindowModality(Qt::ApplicationModal);
 
@@ -182,7 +182,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
 
     while(!stream.atEnd())
     {
-        progress.setValue(imageWriterFile->pos());
+        progress.setValue(imageWriterFile->pos() / 1024); // Dividing by 1024 makes sure that a 4GB max file size fits in an int.
 
         int M, W, H, BPP;
 
@@ -191,7 +191,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
         stream >> H;
         stream >> BPP;
 
-        if((M < 0) || (W < 0) || (H < 0) || (BPP < 0))
+        if((M <= 0) || (M > 8388607) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > 8388607)) // Sane limits.
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("Transcoding File"),
@@ -308,7 +308,7 @@ static QString handleImageWriterFiles(const QString &path)
                                     {
                                         if(tempFile.seek(0))
                                         {
-                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, avgM ? (1000.0 / avgM) : 0.0);
+                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / avgM);
 
                                             if(tempFile.write(header) == header.size())
                                             {
@@ -654,14 +654,14 @@ void convertVideoFileAction(const QString &drivePath)
     QString src =
         QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Source"),
             settings->value(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
-            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
 
     if(!src.isEmpty())
     {
         QString dst =
             QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Output"),
                 settings->value(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), QDir::homePath()).toString(),
-                QObject::tr("Video Files (*.*);;") + getOutputFormats());
+                QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
 
         if(!dst.isEmpty())
         {
@@ -695,7 +695,7 @@ void playVideoFileAction(const QString &drivePath)
     QString path =
         QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Play Video"),
             settings->value(QStringLiteral(LAST_PLAY_VIDEO_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
-            QObject::tr("Video Files (*.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
 
     if(!path.isEmpty())
     {
@@ -718,7 +718,7 @@ void saveVideoFile(const QString &srcPath)
     QString dst =
         QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Save Video"),
             settings->value(QStringLiteral(LAST_SAVE_VIDEO_PATH), QDir::homePath()).toString(),
-            QObject::tr("Video Files (*.*);;") + getOutputFormats());
+            QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
 
     if(!dst.isEmpty())
     {

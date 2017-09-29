@@ -244,13 +244,9 @@ private:
     Core::MiniSplitter *m_hsplitter;
     Core::MiniSplitter *m_vsplitter;
 
-    QToolButton *m_record;
-    QToolButton *m_stop;
-    QToolButton *m_zoom;
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;
     OpenMVPluginFB *m_frameBuffer;
-    QComboBox *m_histogramColorSpace;
     OpenMVPluginHistogram *m_histogram;
 
     Utils::ElidingToolButton *m_versionButton;

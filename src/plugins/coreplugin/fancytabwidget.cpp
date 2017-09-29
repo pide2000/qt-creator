@@ -506,7 +506,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     topBarLayout->setSpacing(0);
     m_topDrawer = new QToolButton;
     m_topDrawer->setArrowType(Qt::DownArrow);
-    m_topDrawer->setMinimumWidth(160);
+    m_topDrawer->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     topBarLayout->addWidget(m_topDrawer);
     topBar->setLayout(topBarLayout);
     tempLayout2->addWidget(topBar);
@@ -520,7 +520,7 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     bottomBarLayout->setSpacing(0);
     m_bottomDrawer = new QToolButton;
     m_bottomDrawer->setArrowType(Qt::UpArrow);
-    m_bottomDrawer->setMinimumWidth(160);
+    m_bottomDrawer->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
     bottomBarLayout->addWidget(m_bottomDrawer);
     bottomBar->setLayout(bottomBarLayout);
     tempLayout2->addWidget(bottomBar);

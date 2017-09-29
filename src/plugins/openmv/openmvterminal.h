@@ -9,6 +9,7 @@
 
 #include <aggregation/aggregate.h>
 #include <utils/ansiescapecodehandler.h>
+#include <utils/elidinglabel.h>
 #include <utils/fadingindicator.h>
 #include <utils/icon.h>
 #include <utils/styledbar.h>

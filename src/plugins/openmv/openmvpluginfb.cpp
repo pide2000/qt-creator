@@ -180,19 +180,43 @@ void OpenMVPluginFB::private_timerCallBack()
 
         if(m_tempFile->size() < kilobyte)
         {
-            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 B - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size()).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+            emit imageWriterTick(QStringLiteral("Elapsed: ") +
+                                 QString(QStringLiteral("%1h:")).arg(hours) +
+                                 QString(QStringLiteral("%1m:")).arg(minutes, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1s:")).arg(seconds, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1ms")).arg(milliseconds, 3, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral(" - Size: %1 B")).arg(m_tempFile->size()) +
+                                 QString(QStringLiteral(" - FPS: %1")).arg(average ? (1000 / double(average)) : 0, 5, 'f', 1));
         }
         else if(m_tempFile->size() < megabyte)
         {
-            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 KB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(kilobyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+            emit imageWriterTick(QStringLiteral("Elapsed: ") +
+                                 QString(QStringLiteral("%1h:")).arg(hours) +
+                                 QString(QStringLiteral("%1m:")).arg(minutes, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1s:")).arg(seconds, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1ms")).arg(milliseconds, 3, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral(" - Size: %1 KB")).arg(m_tempFile->size() / double(kilobyte), 5, 'f', 3) +
+                                 QString(QStringLiteral(" - FPS: %1")).arg(average ? (1000 / double(average)) : 0, 5, 'f', 1));
         }
         else if(m_tempFile->size() < gigabyte)
         {
-            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 MB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(megabyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+            emit imageWriterTick(QStringLiteral("Elapsed: ") +
+                                 QString(QStringLiteral("%1h:")).arg(hours) +
+                                 QString(QStringLiteral("%1m:")).arg(minutes, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1s:")).arg(seconds, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1ms")).arg(milliseconds, 3, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral(" - Size: %1 MB")).arg(m_tempFile->size() / double(megabyte), 5, 'f', 3) +
+                                 QString(QStringLiteral(" - FPS: %1")).arg(average ? (1000 / double(average)) : 0, 5, 'f', 1));
         }
         else
         {
-            emit imageWriterTick(tr("Recording: %1h:%2m:%3s:%4ms - %5 GB - %6 FPS").arg(hours).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')).arg(milliseconds, 3, 10, QLatin1Char('0')).arg(m_tempFile->size() / double(gigabyte), 0, 'f', 3).arg(average ? (1000 / double(average)) : 0, 4, 'f', 1));
+            emit imageWriterTick(QStringLiteral("Elapsed: ") +
+                                 QString(QStringLiteral("%1h:")).arg(hours) +
+                                 QString(QStringLiteral("%1m:")).arg(minutes, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1s:")).arg(seconds, 2, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral("%1ms")).arg(milliseconds, 3, 10, QLatin1Char('0')) +
+                                 QString(QStringLiteral(" - Size: %1 GB")).arg(m_tempFile->size() / double(gigabyte), 5, 'f', 3) +
+                                 QString(QStringLiteral(" - FPS: %1")).arg(average ? (1000 / double(average)) : 0, 5, 'f', 1));
         }
     }
     else
