@@ -49,6 +49,7 @@
 #include "openmvpluginio.h"
 #include "openmvpluginfb.h"
 #include "openmvterminal.h"
+#include "openmvcamerasettings.h"
 #include "histogram/openmvpluginhistogram.h"
 #include "tools/thresholdeditor.h"
 #include "tools/keypointseditor.h"
@@ -173,6 +174,7 @@ public:
     explicit OpenMVPlugin();
     bool initialize(const QStringList &arguments, QString *errorMessage);
     void extensionsInitialized();
+    bool delayedInitialize();
     ExtensionSystem::IPlugin::ShutdownFlag aboutToShutdown();
 
 public slots: // private
@@ -204,8 +206,8 @@ public slots: // private
 
 signals:
 
-    void workingDone();
-    void disconnectDone();
+    void workingDone(); // private
+    void disconnectDone(); // private
 
 private:
 
@@ -293,6 +295,18 @@ private:
     QList<documentation_t> m_functions;
     QList<documentation_t> m_methods;
     QSet<QString> m_arguments;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    typedef struct wifiPort
+    {
+        QString addressAndPort;
+        QString name;
+        QTime time;
+    }
+    wifiPort_t;
+
+    QList<wifiPort_t> m_availableWifiPorts;
 
     ///////////////////////////////////////////////////////////////////////////
 

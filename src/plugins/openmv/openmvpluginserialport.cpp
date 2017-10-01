@@ -56,6 +56,226 @@ int deserializeLong(QByteArray &buffer) // LittleEndian
     return r;
 }
 
+OpenMVPluginSerialPort_thing::OpenMVPluginSerialPort_thing(const QString &name, QObject *parent) : QObject(parent)
+{
+    if(QSerialPortInfo(name).isValid())
+    {
+        m_serialPort = new QSerialPort(name, this);
+        m_tcpSocket = Q_NULLPTR;
+    }
+    else
+    {
+        m_serialPort = Q_NULLPTR;
+        m_tcpSocket = new QTcpSocket(this);
+        m_tcpSocket->setProperty("name", name);
+    }
+}
+
+QString OpenMVPluginSerialPort_thing::portName()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->portName();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->property("name").toString();
+    }
+
+    return QString();
+}
+
+void OpenMVPluginSerialPort_thing::setReadBufferSize(qint64 size)
+{
+    if(m_serialPort)
+    {
+        m_serialPort->setReadBufferSize(size);
+    }
+
+    if(m_tcpSocket)
+    {
+        m_tcpSocket->setReadBufferSize(size);
+    }
+}
+
+bool OpenMVPluginSerialPort_thing::setBaudRate(qint32 baudRate)
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->setBaudRate(baudRate);
+    }
+
+    if(m_tcpSocket)
+    {
+        return true;
+    }
+
+    return bool();
+}
+
+bool OpenMVPluginSerialPort_thing::open(QIODevice::OpenMode mode)
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->open(mode);
+    }
+
+    if(m_tcpSocket)
+    {
+        QStringList list = m_tcpSocket->property("name").toString().split(QLatin1Char(':'));
+
+        if(list.size() != 3)
+        {
+            return false;
+        }
+
+        QString hostName = list.at(1);
+        QString port = list.at(2);
+
+        bool portNumberOkay;
+        quint16 portNumber = port.toUInt(&portNumberOkay);
+
+        if(!portNumberOkay)
+        {
+            return false;
+        }
+
+        m_tcpSocket->connectToHost(hostName, portNumber, mode);
+        return m_tcpSocket->waitForConnected();
+    }
+
+    return bool();
+}
+
+bool OpenMVPluginSerialPort_thing::flush()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->flush();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->flush();
+    }
+
+    return bool();
+}
+
+QString OpenMVPluginSerialPort_thing::errorString()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->errorString();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->errorString();
+    }
+
+    return QString();
+}
+
+void OpenMVPluginSerialPort_thing::clearError()
+{
+    if(m_serialPort)
+    {
+        m_serialPort->clearError();
+    }
+}
+
+QByteArray OpenMVPluginSerialPort_thing::readAll()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->readAll();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->readAll();
+    }
+
+    return QByteArray();
+}
+
+qint64 OpenMVPluginSerialPort_thing::write(const QByteArray &data)
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->write(data);
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->write(data);
+    }
+
+    return qint64();
+}
+
+qint64 OpenMVPluginSerialPort_thing::bytesAvailable()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->bytesAvailable();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->bytesAvailable();
+    }
+
+    return qint64();
+}
+
+qint64 OpenMVPluginSerialPort_thing::bytesToWrite()
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->bytesToWrite();
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->bytesToWrite();
+    }
+
+    return qint64();
+}
+
+bool OpenMVPluginSerialPort_thing::waitForReadyRead(int msecs)
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->waitForReadyRead(msecs);
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->waitForReadyRead(msecs);
+    }
+
+    return bool();
+}
+
+bool OpenMVPluginSerialPort_thing::waitForBytesWritten(int msecs)
+{
+    if(m_serialPort)
+    {
+        return m_serialPort->waitForBytesWritten(msecs);
+    }
+
+    if(m_tcpSocket)
+    {
+        return m_tcpSocket->waitForBytesWritten(msecs);
+    }
+
+    return bool();
+}
+
 OpenMVPluginSerialPort_private::OpenMVPluginSerialPort_private(QObject *parent) : QObject(parent)
 {
     m_port = Q_NULLPTR;
@@ -69,7 +289,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
         delete m_port;
     }
 
-    m_port = new QSerialPort(portName, this);
+    m_port = new OpenMVPluginSerialPort_thing(portName, this);
     // QSerialPort is buggy unless this is set.
     m_port->setReadBufferSize(1000000);
 
@@ -77,7 +297,7 @@ void OpenMVPluginSerialPort_private::open(const QString &portName)
     || (!m_port->open(QIODevice::ReadWrite)))
     {
         delete m_port;
-        m_port = new QSerialPort(portName, this);
+        m_port = new OpenMVPluginSerialPort_thing(portName, this);
         // QSerialPort is buggy unless this is set.
         m_port->setReadBufferSize(1000000);
 
@@ -106,7 +326,7 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
         {
             if(!m_port)
             {
-                m_port = new QSerialPort(portName, this);
+                m_port = new OpenMVPluginSerialPort_thing(portName, this);
                 // QSerialPort is buggy unless this is set.
                 m_port->setReadBufferSize(1000000);
 
@@ -114,7 +334,7 @@ void OpenMVPluginSerialPort_private::write(const QByteArray &data, int startWait
                 || (!m_port->open(QIODevice::ReadWrite)))
                 {
                     delete m_port;
-                    m_port = new QSerialPort(portName, this);
+                    m_port = new OpenMVPluginSerialPort_thing(portName, this);
                     // QSerialPort is buggy unless this is set.
                     m_port->setReadBufferSize(1000000);
 
@@ -358,7 +578,7 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
                 delete m_port;
             }
 
-            m_port = new QSerialPort(portName, this);
+            m_port = new OpenMVPluginSerialPort_thing(portName, this);
             // QSerialPort is buggy unless this is set.
             m_port->setReadBufferSize(1000000);
 
@@ -366,7 +586,7 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
             || (!m_port->open(QIODevice::ReadWrite)))
             {
                 delete m_port;
-                m_port = new QSerialPort(portName, this);
+                m_port = new OpenMVPluginSerialPort_thing(portName, this);
                 // QSerialPort is buggy unless this is set.
                 m_port->setReadBufferSize(1000000);
 

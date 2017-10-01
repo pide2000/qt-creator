@@ -3,11 +3,14 @@
 
 #include <QtCore>
 #include <QtSerialPort>
+#include <QtNetwork>
 
 #include <utils/hostosinfo.h>
 
 #define OPENMVCAM_VID 0x1209
 #define OPENMVCAM_PID 0xABD1
+
+#define OPENMVCAM_BROADCAST_PORT 0xABD1
 
 #define TABOO_PACKET_SIZE 64
 
@@ -129,6 +132,39 @@ public:
     QByteArray m_data;
 };
 
+class OpenMVPluginSerialPort_thing : public QObject
+{
+    Q_OBJECT
+
+public:
+
+    explicit OpenMVPluginSerialPort_thing(const QString &name, QObject *parent = Q_NULLPTR);
+    QString portName();
+
+    void setReadBufferSize(qint64 size);
+    bool setBaudRate(qint32 baudRate);
+
+    bool open(QIODevice::OpenMode mode);
+    bool flush();
+
+    QString errorString();
+    void clearError();
+
+    QByteArray readAll();
+    qint64 write(const QByteArray &data);
+
+    qint64 bytesAvailable();
+    qint64 bytesToWrite();
+
+    bool waitForReadyRead(int msecs);
+    bool waitForBytesWritten(int msecs);
+
+private:
+
+    QSerialPort *m_serialPort;
+    QTcpSocket *m_tcpSocket;
+};
+
 class OpenMVPluginSerialPort_private : public QObject
 {
     Q_OBJECT
@@ -159,7 +195,7 @@ private:
 
     void write(const QByteArray &data, int startWait, int stopWait, int timeout);
 
-    QSerialPort *m_port;
+    OpenMVPluginSerialPort_thing *m_port;
     bool m_bootloaderStop;
 };
 

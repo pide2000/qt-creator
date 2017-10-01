@@ -1334,6 +1334,74 @@ void OpenMVPlugin::extensionsInitialized()
     });
 }
 
+bool OpenMVPlugin::delayedInitialize()
+{
+    QUdpSocket *socket = new QUdpSocket(this);
+
+    connect(socket, &QUdpSocket::readyRead, this, [this, socket] {
+        while(socket->hasPendingDatagrams())
+        {
+            QByteArray datagram(socket->pendingDatagramSize(), 0);
+            QHostAddress address;
+            quint16 port;
+
+            if((socket->readDatagram(datagram.data(), datagram.size(), &address, &port) == datagram.size()) && (port == OPENMVCAM_BROADCAST_PORT))
+            {
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+):(.+)")).match(QString::fromUtf8(datagram));
+
+                if(match.hasMatch())
+                {
+                    QHostAddress hostAddress = QHostAddress(match.captured(1));
+                    bool hostPortOk;
+                    quint16 hostPort = match.captured(2).toUInt(&hostPortOk);
+                    QString hostName = match.captured(3).remove(QLatin1Char(':'));
+
+                    if((address == hostAddress) && hostPortOk && (!hostName.isEmpty()))
+                    {
+                        wifiPort_t wifiPort;
+                        wifiPort.addressAndPort = QString(QStringLiteral("%1:%2")).arg(hostAddress.toString()).arg(hostPort);
+                        wifiPort.name = hostName;
+                        wifiPort.time = QTime::currentTime();
+                        m_availableWifiPorts.append(wifiPort);
+                    }
+                }
+            }
+        }
+    });
+
+    QTimer *timer = new QTimer(this);
+
+    connect(timer, &QTimer::timeout, this, [this] {
+        QTime currentTime = QTime::currentTime();
+        QMutableListIterator<wifiPort_t> i(m_availableWifiPorts);
+
+        while(i.hasNext())
+        {
+            if(qAbs(i.next().time.secsTo(currentTime)) >= 60)
+            {
+                i.remove();
+            }
+        }
+    });
+
+    if(socket->bind(OPENMVCAM_BROADCAST_PORT))
+    {
+        timer->start(1000);
+    }
+    else
+    {
+        delete socket;
+        delete timer;
+
+        QMessageBox::warning(Core::ICore::dialogParent(),
+            tr("WiFi Programming Disabled!"),
+            tr("Another application is using the OpenMV Cam broadcast discovery port. "
+               "Please close that application and restart OpenMV IDE to enable WiFi programming."));
+    }
+
+    return true;
+}
+
 ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
 {
     if(!m_connected)
@@ -1344,7 +1412,7 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
         }
         else
         {
-            connect(this, &OpenMVPlugin::workingDone, this, [this] {disconnectClicked();});
+            connect(this, &OpenMVPlugin::workingDone, this, [this] { disconnectClicked(); });
             connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
             return ExtensionSystem::IPlugin::AsynchronousShutdown;
         }
@@ -1354,12 +1422,12 @@ ExtensionSystem::IPlugin::ShutdownFlag OpenMVPlugin::aboutToShutdown()
         if(!m_working)
         {
             connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
-            QTimer::singleShot(0, this, [this] {disconnectClicked();});
+            QTimer::singleShot(0, this, [this] { disconnectClicked(); });
             return ExtensionSystem::IPlugin::AsynchronousShutdown;
         }
         else
         {
-            connect(this, &OpenMVPlugin::workingDone, this, [this] {disconnectClicked();});
+            connect(this, &OpenMVPlugin::workingDone, this, [this] { disconnectClicked(); });
             connect(this, &OpenMVPlugin::disconnectDone, this, &OpenMVPlugin::asynchronousShutdownFinished);
             return ExtensionSystem::IPlugin::AsynchronousShutdown;
         }
@@ -1877,6 +1945,11 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         if(Utils::HostOsInfo::isMacHost())
         {
             stringList = stringList.filter(QStringLiteral("cu"), Qt::CaseInsensitive);
+        }
+
+        foreach(wifiPort_t port, m_availableWifiPorts)
+        {
+            stringList.append(QString(QStringLiteral("%1:%2")).arg(port.name).arg(port.addressAndPort));
         }
 
         QSettings *settings = ExtensionSystem::PluginManager::settings();
@@ -3183,93 +3256,16 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
 
 void OpenMVPlugin::configureSettings()
 {
-//    QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
-//        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-//        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-//    dialog->setWindowTitle(tr("OpenMV Cam Settings"));
-//    QVBoxLayout *layout = new QVBoxLayout(dialog);
-
-//    QGroupBox *box = new QGroupBox(tr("WiFi Settings"));
-//    layout->addWidget(box);
-
-//    QFormLayout *formLayout = new QFormLayout(box);
-
-//    QCheckBox *enableWiFi = new QCheckBox(tr("Turn on WiFi Shield on startup"));
-//    formLayout->addWidget(enableWiFi);
-
-//    QCheckBox *
-
-
-//    Utils::PathChooser *pathChooser = new Utils::PathChooser();
-//    pathChooser->setExpectedKind(Utils::PathChooser::File);
-//    pathChooser->setPromptDialogTitle(tr("Firmware Path"));
-//    pathChooser->setPromptDialogFilter(tr("Firmware Binary (*.bin *.dfu)"));
-//    pathChooser->setFileName(Utils::FileName::fromString(settings->value(QStringLiteral(LAST_FIRMWARE_PATH), QDir::homePath()).toString()));
-//    layout->addRow(tr("Firmware Path"), pathChooser);
-//    layout->addItem(new QSpacerItem(0, 6));
-
-//    QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
-//    checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
-//    checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-//    layout->addRow(checkBox);
-//    QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
-//    checkBox2->setChecked(true);
-//    checkBox2->setEnabled(false);
-//    checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-//    layout->addRow(checkBox2);
-//    layout->addItem(new QSpacerItem(0, 6));
-
-//    QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
-//    QPushButton *run = new QPushButton(tr("Run"));
-//    run->setEnabled(pathChooser->isValid());
-//    box->addButton(run, QDialogButtonBox::AcceptRole);
-//    layout->addRow(box);
-
-//    connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
-//    connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
-//    connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
-//    connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
-//        if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
-//        {
-//            checkBox->setVisible(false);
-//            checkBox2->setVisible(true);
-//        }
-//        else
-//        {
-//            checkBox->setVisible(true);
-//            checkBox2->setVisible(false);
-
-//        }
-//        dialog->adjustSize();
-//    });
-
-//    if(dialog->exec() == QDialog::Accepted)
-//    {
-//        QString forceFirmwarePath = pathChooser->path();
-//        bool flashFSErase = checkBox->isChecked();
-
-//        if(QFileInfo(forceFirmwarePath).isFile())
-//        {
-//            settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
-//            settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
-//            settings->endGroup();
-//            delete dialog;
-
-//            connectClicked(true, forceFirmwarePath, (flashFSErase || forceFirmwarePath.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive)));
-//        }
-//        else
-//        {
-//            QMessageBox::critical(Core::ICore::dialogParent(),
-//                tr("Bootloader"),
-//                tr("\"%L1\" is not a file!").arg(forceFirmwarePath));
-
-//            delete dialog;
-//        }
-//    }
-//    else
-//    {
-//        delete dialog;
-//    }
+    if(!m_working)
+    {
+        OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.ini")).exec();
+    }
+    else
+    {
+        QMessageBox::critical(Core::ICore::dialogParent(),
+            tr("Configure Settings"),
+            tr("Busy... please wait..."));
+    }
 }
 
 void OpenMVPlugin::saveScript()
