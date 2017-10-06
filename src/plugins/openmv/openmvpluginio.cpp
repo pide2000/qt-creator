@@ -1,6 +1,6 @@
 #include "openmvpluginio.h"
 
-#define MTU_DEFAULT_SIZE (16 * 1024 * 1024)
+#define MTU_DEFAULT_SIZE (1024 * 1024 * 1024)
 
 enum
 {
@@ -157,7 +157,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     int h = deserializeLong(data);
                     int bpp = deserializeLong(data);
 
-                    if(w)
+                    if((0 < w) && (w < 32768) && (0 < h) && (h < 32768) && (0 <= bpp) && (bpp <= (1024 * 1024 * 1024)))
                     {
                         int size = getImageSize(w, h, bpp);
 
@@ -171,7 +171,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                                 serializeByte(buffer, __USBDBG_FRAME_DUMP);
                                 serializeLong(buffer, new_size);
                                 m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, new_size, FRAME_DUMP_START_DELAY, FRAME_DUMP_END_DELAY));
-                                m_completionQueue.insert(1 + i, USBDBG_FRAME_DUMP_CPL);
+                                m_completionQueue.insert(1, USBDBG_FRAME_DUMP_CPL);
                             }
 
                             m_frameSizeW = w;
@@ -290,7 +290,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                             serializeByte(buffer, __USBDBG_TX_BUF);
                             serializeLong(buffer, new_len);
                             m_postedQueue.push_front(OpenMVPluginSerialPortCommand(buffer, new_len, TX_BUF_START_DELAY, TX_BUF_END_DELAY));
-                            m_completionQueue.insert(1 + i, USBDBG_TX_BUF_CPL);
+                            m_completionQueue.insert(1, USBDBG_TX_BUF_CPL);
                         }
                     }
                     else if(m_lineBuffer.size())

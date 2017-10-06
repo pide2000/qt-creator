@@ -128,7 +128,7 @@ static bool getMaxSizeAndAvgMsDelta(QFile *imageWriterFile, int *avgM, int *maxW
         stream >> H;
         stream >> BPP;
 
-        if((M <= 0) || (M > 8388607) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > 8388607)) // Sane limits.
+        if((M <= 0) || (M > (1000 * 60 * 60 * 24)) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > (1024 * 1204 * 1024))) // Sane limits.
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("Reading File"),
@@ -191,7 +191,7 @@ static bool convertImageWriterFileToMjpegVideoFile(QFile *mjpegVideoFile, uint32
         stream >> H;
         stream >> BPP;
 
-        if((M <= 0) || (M > 8388607) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > 8388607)) // Sane limits.
+        if((M <= 0) || (M > (1000 * 60 * 60 * 24)) || (W <= 0) || (W > 32767) || (H <= 0) || (H > 32767) || (BPP < 0) || (BPP > (1024 * 1204 * 1024))) // Sane limits.
         {
             QMessageBox::critical(Core::ICore::dialogParent(),
                 QObject::tr("Transcoding File"),
@@ -308,7 +308,7 @@ static QString handleImageWriterFiles(const QString &path)
                                     {
                                         if(tempFile.seek(0))
                                         {
-                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, 1000.0 / avgM);
+                                            header = getMJPEGHeader(maxW, maxH, frames, bytes, avgM ? (1000.0 / avgM) : 0.0);
 
                                             if(tempFile.write(header) == header.size())
                                             {
