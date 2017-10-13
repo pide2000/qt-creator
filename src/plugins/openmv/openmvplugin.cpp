@@ -1347,7 +1347,7 @@ bool OpenMVPlugin::delayedInitialize()
 
             if((socket->readDatagram(datagram.data(), datagram.size(), &address, &port) == datagram.size()) && (port == OPENMVCAM_BROADCAST_PORT))
             {
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+):(.+)")).match(QString::fromUtf8(datagram));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("^(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+):(.+)$")).match(QString::fromUtf8(datagram).trimmed());
 
                 if(match.hasMatch())
                 {
@@ -1471,19 +1471,17 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
 {
     forever
     {
-        QString text = QStringLiteral("#####-#####-#####-#####-#####");
-
         QDialog *dialog = new QDialog(Core::ICore::dialogParent(),
             Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
         dialog->setWindowTitle(tr("Register OpenMV Cam"));
         QVBoxLayout *layout = new QVBoxLayout(dialog);
 
-        QLabel *label = new QLabel(tr("Please enter a board key to register your OpenMV Cam.<br/><br/>If you do not have a board key you may purchase one from OpenMV <a href=\"http://openmv.io/products/openmv-cam-board-key\">here</a>."));
+        QLabel *label = new QLabel(tr("Please enter a board key to register your OpenMV Cam.<br/><br/>If you do not have a board key you may purchase one from OpenMV <a href=\"https://openmv.io/products/openmv-cam-board-key\">here</a>."));
         label->setOpenExternalLinks(true);
         layout->addWidget(label);
 
-        QLineEdit *edit = new QLineEdit(text);
+        QLineEdit *edit = new QLineEdit(QStringLiteral("#####-#####-#####-#####-#####"));
         layout->addWidget(edit);
 
         QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -1525,7 +1523,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
                 connect(&dialog, &QProgressDialog::canceled, &dialog, &QProgressDialog::reject);
                 connect(&manager, &QNetworkAccessManager::finished, &dialog, &QProgressDialog::accept);
 
-                QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-register.php?board=%L1&id=%L2&id_key=%L3")).arg(board).arg(id).arg(boardKey)));
+                QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-register.php?board=%1&id=%2&id_key=%3")).arg(board).arg(id).arg(boardKey)));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
                 request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -1655,134 +1653,138 @@ void OpenMVPlugin::packageUpdate()
 
         if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
         {
-            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
+            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("^(\\d+)\\.(\\d+)\\.(\\d+)$")).match(QString::fromUtf8(data).trimmed());
 
-            int new_major = match.captured(1).toInt();
-            int new_minor = match.captured(2).toInt();
-            int new_patch = match.captured(3).toInt();
-
-            QSettings *settings = ExtensionSystem::PluginManager::settings();
-            settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-
-            int old_major = settings->value(QStringLiteral(RESOURCES_MAJOR)).toInt();
-            int old_minor = settings->value(QStringLiteral(RESOURCES_MINOR)).toInt();
-            int old_patch = settings->value(QStringLiteral(RESOURCES_PATCH)).toInt();
-
-            settings->endGroup();
-
-            if((old_major < new_major)
-            || ((old_major == new_major) && (old_minor < new_minor))
-            || ((old_major == new_major) && (old_minor == new_minor) && (old_patch < new_patch)))
+            if(match.hasMatch())
             {
-                QMessageBox box(QMessageBox::Information, tr("Update Available"), tr("New OpenMV IDE reources are available (e.g. examples, firmware, documentation, etc.)."), QMessageBox::Cancel, Core::ICore::dialogParent(),
-                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                QPushButton *button = box.addButton(tr("Install"), QMessageBox::AcceptRole);
-                box.setDefaultButton(button);
-                box.setEscapeButton(QMessageBox::Cancel);
-                box.exec();
+                int new_major = match.captured(1).toInt();
+                int new_minor = match.captured(2).toInt();
+                int new_patch = match.captured(3).toInt();
 
-                if(box.clickedButton() == button)
+                QSettings *settings = ExtensionSystem::PluginManager::settings();
+                settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+                int old_major = settings->value(QStringLiteral(RESOURCES_MAJOR)).toInt();
+                int old_minor = settings->value(QStringLiteral(RESOURCES_MINOR)).toInt();
+                int old_patch = settings->value(QStringLiteral(RESOURCES_PATCH)).toInt();
+
+                settings->endGroup();
+
+                if((old_major < new_major)
+                || ((old_major == new_major) && (old_minor < new_minor))
+                || ((old_major == new_major) && (old_minor == new_minor) && (old_patch < new_patch)))
                 {
-                    QProgressDialog *dialog = new QProgressDialog(tr("Installing..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                    dialog->setWindowModality(Qt::ApplicationModal);
-                    dialog->setAttribute(Qt::WA_ShowWithoutActivating);
-                    dialog->setCancelButton(Q_NULLPTR);
+                    QMessageBox box(QMessageBox::Information, tr("Update Available"), tr("New OpenMV IDE reources are available (e.g. examples, firmware, documentation, etc.)."), QMessageBox::Cancel, Core::ICore::dialogParent(),
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                    QPushButton *button = box.addButton(tr("Install"), QMessageBox::AcceptRole);
+                    box.setDefaultButton(button);
+                    box.setEscapeButton(QMessageBox::Cancel);
+                    box.exec();
 
-                    QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
+                    if(box.clickedButton() == button)
+                    {
+                        QProgressDialog *dialog = new QProgressDialog(tr("Installing..."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                        dialog->setWindowModality(Qt::ApplicationModal);
+                        dialog->setAttribute(Qt::WA_ShowWithoutActivating);
+                        dialog->setCancelButton(Q_NULLPTR);
 
-                    connect(manager2, &QNetworkAccessManager::finished, this, [this, new_major, new_minor, new_patch, dialog] (QNetworkReply *reply2) {
+                        QNetworkAccessManager *manager2 = new QNetworkAccessManager(this);
 
-                        QByteArray data2 = reply2->readAll();
+                        connect(manager2, &QNetworkAccessManager::finished, this, [this, new_major, new_minor, new_patch, dialog] (QNetworkReply *reply2) {
 
-                        if((reply2->error() == QNetworkReply::NoError) && (!data2.isEmpty()))
-                        {
-                            QSettings *settings2 = ExtensionSystem::PluginManager::settings();
-                            settings2->beginGroup(QStringLiteral(SETTINGS_GROUP));
+                            QByteArray data2 = reply2->readAll();
 
-                            settings2->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
-                            settings2->setValue(QStringLiteral(RESOURCES_MINOR), 0);
-                            settings2->setValue(QStringLiteral(RESOURCES_PATCH), 0);
-                            settings2->sync();
-
-                            bool ok = true;
-
-                            QString error;
-
-                            if(!removeRecursivelyWrapper(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
+                            if((reply2->error() == QNetworkReply::NoError) && (!data2.isEmpty()))
                             {
-                                QMessageBox::critical(Core::ICore::dialogParent(),
-                                    QString(),
-                                    error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
+                                QSettings *settings2 = ExtensionSystem::PluginManager::settings();
+                                settings2->beginGroup(QStringLiteral(SETTINGS_GROUP));
 
-                                QApplication::quit();
-                                ok = false;
-                            }
-                            else
-                            {
-                                if(!extractAllWrapper(&data2, Core::ICore::userResourcePath()))
+                                settings2->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
+                                settings2->setValue(QStringLiteral(RESOURCES_MINOR), 0);
+                                settings2->setValue(QStringLiteral(RESOURCES_PATCH), 0);
+                                settings2->sync();
+
+                                bool ok = true;
+
+                                QString error;
+
+                                if(!removeRecursivelyWrapper(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
                                 {
                                     QMessageBox::critical(Core::ICore::dialogParent(),
                                         QString(),
-                                        tr("Please close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
+                                        error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
 
                                     QApplication::quit();
                                     ok = false;
                                 }
-                            }
+                                else
+                                {
+                                    if(!extractAllWrapper(&data2, Core::ICore::userResourcePath()))
+                                    {
+                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                            QString(),
+                                            tr("Please close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
 
-                            if(ok)
+                                        QApplication::quit();
+                                        ok = false;
+                                    }
+                                }
+
+                                if(ok)
+                                {
+                                    settings2->setValue(QStringLiteral(RESOURCES_MAJOR), new_major);
+                                    settings2->setValue(QStringLiteral(RESOURCES_MINOR), new_minor);
+                                    settings2->setValue(QStringLiteral(RESOURCES_PATCH), new_patch);
+                                    settings2->sync();
+
+                                    QMessageBox::information(Core::ICore::dialogParent(),
+                                        QString(),
+                                        tr("Installation Sucessful! Please restart OpenMV IDE."));
+
+                                    QApplication::quit();
+                                }
+
+                                settings2->endGroup();
+                            }
+                            else if(reply2->error() != QNetworkReply::NoError)
                             {
-                                settings2->setValue(QStringLiteral(RESOURCES_MAJOR), new_major);
-                                settings2->setValue(QStringLiteral(RESOURCES_MINOR), new_minor);
-                                settings2->setValue(QStringLiteral(RESOURCES_PATCH), new_patch);
-                                settings2->sync();
-
-                                QMessageBox::information(Core::ICore::dialogParent(),
-                                    QString(),
-                                    tr("Installation Sucessful! Please restart OpenMV IDE."));
-
-                                QApplication::quit();
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Package Update"),
+                                    tr("Error: %L1!").arg(reply2->errorString()));
+                            }
+                            else
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Package Update"),
+                                    tr("Cannot open the resources file \"%L1\"!").arg(reply2->request().url().toString()));
                             }
 
-                            settings2->endGroup();
-                        }
-                        else if(reply2->error() != QNetworkReply::NoError)
+                            reply2->deleteLater();
+
+                            delete dialog;
+                        });
+
+                        QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://upload.openmv.io/openmv-ide-resources-%1.%2.%3/openmv-ide-resources-%1.%2.%3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                        request2.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
+                        QNetworkReply *reply2 = manager2->get(request2);
+
+                        if(reply2)
                         {
-                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("Package Update"),
-                                tr("Error: %L1!").arg(reply2->errorString()));
+                            connect(reply2, &QNetworkReply::sslErrors, reply2, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+
+                            dialog->show();
                         }
                         else
                         {
                             QMessageBox::critical(Core::ICore::dialogParent(),
                                 tr("Package Update"),
-                                tr("Cannot open the resources file \"%L1\"!").arg(reply2->request().url().toString()));
+                                tr("Network request failed \"%L1\"!").arg(request2.url().toString()));
                         }
-
-                        reply2->deleteLater();
-
-                        delete dialog;
-                    });
-
-                    QNetworkRequest request2 = QNetworkRequest(QUrl(QStringLiteral("http://upload.openmv.io/openmv-ide-resources-%L1.%L2.%L3/openmv-ide-resources-%L1.%L2.%L3.zip").arg(new_major).arg(new_minor).arg(new_patch)));
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-                    request2.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-#endif
-                    QNetworkReply *reply2 = manager2->get(request2);
-
-                    if(reply2)
-                    {
-                        connect(reply2, &QNetworkReply::sslErrors, reply2, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
-                        dialog->show();
-                    }
-                    else
-                    {
-                        QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Package Update"),
-                            tr("Network request failed \"%L1\"!").arg(request2.url().toString()));
                     }
                 }
             }
