@@ -126,11 +126,18 @@ int SearchResultTreeItemDelegate::drawLineNumber(QPainter *painter, const QStyle
 
     painter->fillRect(lineNumberAreaRect, QBrush(isSelected ?
         option.palette.brush(cg, QPalette::Highlight) :
-        option.palette.color(cg, QPalette::Base).darker(111)));
+        //OPENMV-DIFF//
+        //option.palette.color(cg, QPalette::Base).darker(111)));
+        //OPENMV-DIFF//
+        QColor(QStringLiteral("#2E2E2E"))));
+        //OPENMV-DIFF//
 
     QStyleOptionViewItem opt = option;
     opt.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
-    opt.palette.setColor(cg, QPalette::Text, Qt::darkGray);
+    //OPENMV-DIFF//
+    //opt.palette.setColor(cg, QPalette::Text, Qt::darkGray);
+    //OPENMV-DIFF//
+    opt.palette.setColor(cg, QPalette::Text, QColor(QStringLiteral("#8B8BCD")));
 
     const QStyle *style = QApplication::style();
     const int textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, 0) + 1;
@@ -157,7 +164,13 @@ void SearchResultTreeItemDelegate::drawText(QPainter *painter,
     const int searchTermStart = index.model()->data(index, ItemDataRoles::SearchTermStartRole).toInt();
     int searchTermLength = index.model()->data(index, ItemDataRoles::SearchTermLengthRole).toInt();
     if (searchTermStart < 0 || searchTermStart >= text.length() || searchTermLength < 1) {
-        QItemDelegate::drawDisplay(painter, option, rect, text.replace(QLatin1Char('\t'), m_tabString));
+        //OPENMV-DIFF//
+        //QItemDelegate::drawDisplay(painter, option, rect, text.replace(QLatin1Char('\t'), m_tabString));
+        //OPENMV-DIFF//
+        QStyleOptionViewItem opt = option;
+        opt.palette.setColor(QPalette::Text, QColor(QStringLiteral("#EEEEF7")));
+        QItemDelegate::drawDisplay(painter, opt, rect, text.replace(QLatin1Char('\t'), m_tabString));
+        //OPENMV-DIFF//
         return;
     }
 
