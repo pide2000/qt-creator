@@ -697,6 +697,8 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     m_settings->beginGroup(QStringLiteral(TERMINAL_SETTINGS_GROUP));
     m_settings->beginGroup(displayName);
 
+    ///////////////////////////////////////////////////////////////////////////
+
     Utils::StyledBar *styledBar0 = new Utils::StyledBar;
     QHBoxLayout *styledBar0Layout = new QHBoxLayout;
     styledBar0Layout->setMargin(0);
@@ -718,11 +720,11 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     endRecordingButton->setVisible(false);
     styledBar0Layout->addWidget(endRecordingButton);
 
-    m_zoom = new QToolButton;
-    m_zoom->setText(tr("Zoom"));
-    m_zoom->setToolTip(tr("Zoom to fit"));
-    m_zoom->setCheckable(true);
-    styledBar0Layout->addWidget(m_zoom);
+    m_zoomButton = new QToolButton;
+    m_zoomButton->setText(tr("Zoom"));
+    m_zoomButton->setToolTip(tr("Zoom to fit"));
+    m_zoomButton->setCheckable(true);
+    styledBar0Layout->addWidget(m_zoomButton);
 
     Utils::ElidingLabel *recordingLabel = new Utils::ElidingLabel(tr("Elapsed: 0h:00m:00s:000ms - Size: 0 B - FPS: 0"));
     recordingLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
@@ -741,8 +743,9 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout0->addWidget(recordingLabel);
     tempWidget0->setLayout(tempLayout0);
 
-    connect(m_zoom, &QToolButton::toggled, frameBuffer, &OpenMVPluginFB::enableFitInView);
-    m_zoom->setChecked(m_settings->value(QStringLiteral(ZOOM_STATE), false).toBool());
+    connect(m_zoomButton, &QToolButton::toggled, frameBuffer, &OpenMVPluginFB::enableFitInView);
+    m_zoomButton->setChecked(m_settings->value(QStringLiteral(ZOOM_STATE), false).toBool());
+
     connect(frameBuffer, &OpenMVPluginFB::saveImage, this, [this] (const QPixmap &data) {
         QString path =
             QFileDialog::getSaveFileName(this, tr("Save Image"),
@@ -801,15 +804,15 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     styledBar1Layout->addSpacing(6);
     styledBar1->setLayout(styledBar1Layout);
 
-    m_histogramColorSpace = new QComboBox;
-    m_histogramColorSpace->setProperty("hideborder", true);
-    m_histogramColorSpace->setProperty("drawleftborder", false);
-    m_histogramColorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
-    m_histogramColorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
-    m_histogramColorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
-    m_histogramColorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
-    m_histogramColorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
-    styledBar1Layout->addWidget(m_histogramColorSpace);
+    m_colorSpace = new QComboBox;
+    m_colorSpace->setProperty("hideborder", true);
+    m_colorSpace->setProperty("drawleftborder", false);
+    m_colorSpace->insertItem(RGB_COLOR_SPACE, tr("RGB Color Space"));
+    m_colorSpace->insertItem(GRAYSCALE_COLOR_SPACE, tr("Grayscale Color Space"));
+    m_colorSpace->insertItem(LAB_COLOR_SPACE, tr("LAB Color Space"));
+    m_colorSpace->insertItem(YUV_COLOR_SPACE, tr("YUV Color Space"));
+    m_colorSpace->setToolTip(tr("Use Grayscale/LAB for color tracking"));
+    styledBar1Layout->addWidget(m_colorSpace);
 
     Utils::ElidingLabel *resLabel = new Utils::ElidingLabel(tr("Res - No Image"));
     resLabel->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred, QSizePolicy::Label));
@@ -826,15 +829,17 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     tempLayout1->addWidget(histogram);
     tempWidget1->setLayout(tempLayout1);
 
-    connect(m_histogramColorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), histogram, &OpenMVPluginHistogram::colorSpaceChanged);
-    m_histogramColorSpace->setCurrentIndex(m_settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), RGB_COLOR_SPACE).toInt());
+    connect(m_colorSpace, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), histogram, &OpenMVPluginHistogram::colorSpaceChanged);
+    m_colorSpace->setCurrentIndex(m_settings->value(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), RGB_COLOR_SPACE).toInt());
+
     connect(frameBuffer, &OpenMVPluginFB::pixmapUpdate, histogram, &OpenMVPluginHistogram::pixmapUpdate);
+
     connect(frameBuffer, &OpenMVPluginFB::resolutionAndROIUpdate, this, [this, resLabel] (const QSize &res, const QRect &roi) {
         if(res.isValid())
         {
             if(roi.isValid())
             {
-                resLabel->setText(tr("Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()));
+                resLabel->setText(tr("Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6) - Pixels (%7)").arg(res.width()).arg(res.height()).arg(roi.x()).arg(roi.y()).arg(roi.width()).arg(roi.height()).arg(roi.width() * roi.height()));
             }
             else
             {
@@ -846,6 +851,8 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
             resLabel->setText(tr("Res - No Image"));
         }
     });
+
+    ///////////////////////////////////////////////////////////////////////////
 
     Utils::StyledBar *styledBar2 = new Utils::StyledBar;
     QHBoxLayout *styledBar2Layout = new QHBoxLayout;
@@ -907,6 +914,8 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     QVBoxLayout *tempLayout3 = new QVBoxLayout;
     tempLayout3->setMargin(0);
     tempLayout3->setSpacing(0);
+
+    ///////////////////////////////////////////////////////////////////////////
 
     Utils::StyledBar *topBar = new Utils::StyledBar;
     topBar->setSingleRow(true);
@@ -990,30 +999,39 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
         m_hsplitter->setSizes(QList<int>() << 1 << m_hsplitter->sizes().at(1));
         m_leftDrawer->parentWidget()->hide();
     });
+
     connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
     });
+
     connect(m_rightDrawer, &QToolButton::clicked, this, [this] {
         m_hsplitter->setSizes(QList<int>() << m_hsplitter->sizes().at(0) << 1);
         m_rightDrawer->parentWidget()->hide();
     });
+
     connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
     });
+
     connect(m_topDrawer, &QToolButton::clicked, this, [this] {
         m_vsplitter->setSizes(QList<int>() << 1 <<  m_vsplitter->sizes().at(1));
         m_topDrawer->parentWidget()->hide();
     });
+
     connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
     });
+
     connect(m_bottomDrawer, &QToolButton::clicked, this, [this] {
         m_vsplitter->setSizes(QList<int>() << m_vsplitter->sizes().at(0) << 1);
         m_bottomDrawer->parentWidget()->hide();
     });
+
     connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this] (int pos, int index) {
         Q_UNUSED(pos) Q_UNUSED(index) m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
     });
+
+    ///////////////////////////////////////////////////////////////////////////
 
     QMainWindow *mainWindow = qobject_cast<QMainWindow *>(Core::ICore::mainWindow());
 
@@ -1023,22 +1041,24 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 
         if(widget)
         {
+            setAutoFillBackground(widget->autoFillBackground());
             setStyleSheet(widget->styleSheet());
 
             QPalette pal = palette();
             pal.setColor(QPalette::Background, widget->palette().color(QPalette::Background));
-            setAutoFillBackground(true);
             setPalette(pal);
         }
     }
 
-    m_context = new Core::IContext;
+    m_context = new Core::IContext(this);
     m_context->setContext(context);
     m_context->setWidget(this);
+
     Core::ICore::addContextObject(m_context);
 
     Core::Command *overrideCtrlE = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.E"), context);
     overrideCtrlE->setDefaultKeySequence(tr("Ctrl+E"));
+
     Core::Command *overrideCtrlR = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.R"), context);
     overrideCtrlR->setDefaultKeySequence(tr("Ctrl+R"));
 }
@@ -1046,8 +1066,6 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 OpenMVTerminal::~OpenMVTerminal()
 {
     Core::ICore::removeContextObject(m_context);
-
-    delete m_context;
 }
 
 void OpenMVTerminal::showEvent(QShowEvent *event)
@@ -1080,9 +1098,9 @@ void OpenMVTerminal::closeEvent(QCloseEvent *event)
     m_settings->setValue(QStringLiteral(GEOMETRY), saveGeometry());
     m_settings->setValue(QStringLiteral(HSPLITTER_STATE), m_hsplitter->saveState());
     m_settings->setValue(QStringLiteral(VSPLITTER_STATE), m_vsplitter->saveState());
-    m_settings->setValue(QStringLiteral(ZOOM_STATE), m_zoom->isChecked());
+    m_settings->setValue(QStringLiteral(ZOOM_STATE), m_zoomButton->isChecked());
     m_settings->setValue(QStringLiteral(FONT_ZOOM_STATE), m_edit->font().pointSizeF());
-    m_settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_histogramColorSpace->currentIndex());
+    m_settings->setValue(QStringLiteral(HISTOGRAM_COLOR_SPACE_STATE), m_colorSpace->currentIndex());
 
     QWidget::closeEvent(event);
 }
@@ -1183,17 +1201,33 @@ void OpenMVTerminalUDPPort_private::open(const QString &hostName, int port)
         emit readBytes(m_port->readAll());
     });
 
-    m_port->connectToHost(hostName, port);
-
-    if(!m_port->waitForConnected())
+    if(!hostName.isEmpty())
     {
-        emit openResult(m_port->errorString());
-        delete m_port;
-        m_port = Q_NULLPTR;
+        m_port->connectToHost(hostName, port);
+
+        if(!m_port->waitForConnected())
+        {
+            emit openResult(m_port->errorString());
+            delete m_port;
+            m_port = Q_NULLPTR;
+        }
+        else
+        {
+            emit openResult(QString());
+        }
     }
     else
     {
-        emit openResult(QString());
+        if(!m_port->bind(port))
+        {
+            emit openResult(m_port->errorString());
+            delete m_port;
+            m_port = Q_NULLPTR;
+        }
+        else
+        {
+            emit openResult(QString(QStringLiteral("%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+        }
     }
 }
 
@@ -1257,17 +1291,33 @@ void OpenMVTerminalTCPPort_private::open(const QString &hostName, int port)
         emit readBytes(m_port->readAll());
     });
 
-    m_port->connectToHost(hostName, port);
-
-    if(!m_port->waitForConnected())
+    if(!hostName.isEmpty())
     {
-        emit openResult(m_port->errorString());
-        delete m_port;
-        m_port = Q_NULLPTR;
+        m_port->connectToHost(hostName, port);
+
+        if(!m_port->waitForConnected())
+        {
+            emit openResult(m_port->errorString());
+            delete m_port;
+            m_port = Q_NULLPTR;
+        }
+        else
+        {
+            emit openResult(QString());
+        }
     }
     else
     {
-        emit openResult(QString());
+        if(!m_port->bind(port))
+        {
+            emit openResult(m_port->errorString());
+            delete m_port;
+            m_port = Q_NULLPTR;
+        }
+        else
+        {
+            emit openResult(QString(QStringLiteral("%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+        }
     }
 }
 

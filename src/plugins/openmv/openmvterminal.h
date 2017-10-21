@@ -108,8 +108,8 @@ private:
     QToolButton *m_bottomDrawer;
     QToolButton *m_leftDrawer;
     QToolButton *m_rightDrawer;
-    QToolButton *m_zoom;
-    QComboBox *m_histogramColorSpace;
+    QToolButton *m_zoomButton;
+    QComboBox *m_colorSpace;
     MyPlainTextEdit *m_edit;
     Core::IContext *m_context;
 };
