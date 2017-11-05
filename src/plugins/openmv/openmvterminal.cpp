@@ -1226,7 +1226,45 @@ void OpenMVTerminalUDPPort_private::open(const QString &hostName, int port)
         }
         else
         {
-            emit openResult(QString(QStringLiteral("%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+            if(m_port->localAddress() != QHostAddress::Any)
+            {
+                emit openResult(QString(QStringLiteral("OPENMV::%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+            }
+            else
+            {
+                QStringList addresses;
+
+                foreach(const QNetworkInterface &interface, QNetworkInterface::allInterfaces())
+                {
+                    if(interface.flags().testFlag(QNetworkInterface::IsUp)
+                    && interface.flags().testFlag(QNetworkInterface::IsRunning)
+                    && interface.flags().testFlag(QNetworkInterface::CanBroadcast)
+                    && (!interface.flags().testFlag(QNetworkInterface::IsLoopBack))
+                    && (!interface.flags().testFlag(QNetworkInterface::IsPointToPoint))
+                    && interface.flags().testFlag(QNetworkInterface::CanMulticast))
+                    {
+                        foreach(const QNetworkAddressEntry &entry, interface.addressEntries())
+                        {
+                            if((!entry.broadcast().isNull())
+                            && (!entry.ip().isNull())
+                            && (!entry.netmask().isNull())
+                            && (!entry.ip().toString().endsWith(QStringLiteral(".1")))) // gateway
+                            {
+                                addresses.append(entry.ip().toString());
+                            }
+                        }
+                    }
+                }
+
+                if(!addresses.isEmpty())
+                {
+                    emit openResult(QString(QStringLiteral("OPENMV::%1:%2")).arg(addresses.first()).arg(m_port->localPort()));
+                }
+                else
+                {
+                    emit openResult(QString(QStringLiteral("OPENMV::%1")).arg(m_port->localPort()));
+                }
+            }
         }
     }
 }
@@ -1316,7 +1354,45 @@ void OpenMVTerminalTCPPort_private::open(const QString &hostName, int port)
         }
         else
         {
-            emit openResult(QString(QStringLiteral("%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+            if(m_port->localAddress() != QHostAddress::Any)
+            {
+                emit openResult(QString(QStringLiteral("OPENMV::%1:%2")).arg(m_port->localAddress().toString()).arg(m_port->localPort()));
+            }
+            else
+            {
+                QStringList addresses;
+
+                foreach(const QNetworkInterface &interface, QNetworkInterface::allInterfaces())
+                {
+                    if(interface.flags().testFlag(QNetworkInterface::IsUp)
+                    && interface.flags().testFlag(QNetworkInterface::IsRunning)
+                    && interface.flags().testFlag(QNetworkInterface::CanBroadcast)
+                    && (!interface.flags().testFlag(QNetworkInterface::IsLoopBack))
+                    && (!interface.flags().testFlag(QNetworkInterface::IsPointToPoint))
+                    && interface.flags().testFlag(QNetworkInterface::CanMulticast))
+                    {
+                        foreach(const QNetworkAddressEntry &entry, interface.addressEntries())
+                        {
+                            if((!entry.broadcast().isNull())
+                            && (!entry.ip().isNull())
+                            && (!entry.netmask().isNull())
+                            && (!entry.ip().toString().endsWith(QStringLiteral(".1")))) // gateway
+                            {
+                                addresses.append(entry.ip().toString());
+                            }
+                        }
+                    }
+                }
+
+                if(!addresses.isEmpty())
+                {
+                    emit openResult(QString(QStringLiteral("OPENMV::%1:%2")).arg(addresses.first()).arg(m_port->localPort()));
+                }
+                else
+                {
+                    emit openResult(QString(QStringLiteral("OPENMV::%1")).arg(m_port->localPort()));
+                }
+            }
         }
     }
 }

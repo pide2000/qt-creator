@@ -483,7 +483,7 @@
 				<DetectSpaces/>
 				<DetectChar attribute="Normal Text" char="(" context="ArgumentHighlight"/>
 			</context>
-			<context name="ArgumentHighlight" attribute="Normal Text" lineEndContext="#pop#pop#pop" fallthrough="true" fallthroughContext="#pop#pop#pop">
+			<context name="ArgumentHighlight" attribute="Normal Text" lineEndContext="#stay" fallthrough="true" fallthroughContext="#pop#pop#pop">
 				<DetectSpaces/>
 				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]*\s*=" context="ArgumentHighlight2" lookAhead="true"/>
 				<DetectChar attribute="Normal Text" char=")" context="#pop#pop#pop"/>

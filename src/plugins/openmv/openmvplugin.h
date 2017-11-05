@@ -87,8 +87,12 @@
 #define LAST_OPEN_TERMINAL_SELECT "LastOpenTerminalSelect"
 #define LAST_OPEN_TERMINAL_SERIAL_PORT "LastOpenTerminalSerialPort"
 #define LAST_OPEN_TERMINAL_SERIAL_PORT_BAUD_RATE "LastOpenTerminalSerialPortBaudRate"
+#define LAST_OPEN_TERMINAL_UDP_TYPE_SELECT "LastOpenTerminalUDPTypeSelect"
 #define LAST_OPEN_TERMINAL_UDP_PORT "LastOpenTerminalUDPPort"
+#define LAST_OPEN_TERMINAL_UDP_SERVER_PORT "LastOpenTerminalSereverUDPPort"
+#define LAST_OPEN_TERMINAL_TCP_TYPE_SELECT "LastOpenTerminalTCPTypeSelect"
 #define LAST_OPEN_TERMINAL_TCP_PORT "LastOpenTerminalTCPPort"
+#define LAST_OPEN_TERMINAL_TCP_SERVER_PORT "LastOpenTerminalSereverTCPPort"
 #define LAST_THRESHOLD_EDITOR_STATE "LastThresholdEditorState"
 #define LAST_THRESHOLD_EDITOR_PATH "LastThresholdEditorPath"
 #define LAST_EDIT_KEYPOINTS_STATE "LastEditKeyointsState"
@@ -123,6 +127,7 @@
 #define GET_TX_BUFFER_SPACING       5 // in ms
 
 #define FPS_AVERAGE_BUFFER_DEPTH    100 // in samples
+#define WIFI_PORT_RETIRE            60 // in seconds
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
 #define FPS_TIMER_EXPIRATION_TIME   2000 // in milliseconds
 
@@ -194,15 +199,13 @@ public slots: // private
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
+    QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
     void updateCam();
     void setPortPath(bool silent = false);
     void openTerminalAboutToShow();
     QList<int> openThresholdEditor(const QVariant parameters = QVariant());
     void openKeypointsEditor();
     void openAprilTagGenerator(apriltag_family_t *family);
-    void openQRCodeGenerator();
-    void openDataMatrixGenerator();
-    void openBarcodeGenerator();
 
 signals:
 
@@ -210,51 +213,6 @@ signals:
     void disconnectDone(); // private
 
 private:
-
-    QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
-
-    Core::Command *m_bootloaderCommand;
-    Core::Command *m_configureSettingsCommand;
-    Core::Command *m_saveCommand;
-    Core::Command *m_resetCommand;
-    Core::Command *m_docsCommand;
-    Core::Command *m_forumsCommand;
-    Core::Command *m_pinoutCommand;
-    Core::Command *m_aboutCommand;
-    Core::Command *m_connectCommand;
-    Core::Command *m_disconnectCommand;
-    Core::Command *m_startCommand;
-    Core::Command *m_stopCommand;
-    Core::ActionContainer *m_openTerminalMenu;
-    Core::ActionContainer *m_machineVisionToolsMenu;
-    Core::ActionContainer *m_videoToolsMenu;
-    Core::Command *m_thresholdEditorCommand;
-    Core::Command *m_keypointsEditorCommand;
-    Core::ActionContainer *m_AprilTagGeneratorSubmenu;
-    Core::Command *m_tag16h5Command;
-    Core::Command *m_tag25h7Command;
-    Core::Command *m_tag25h9Command;
-    Core::Command *m_tag36h10Command;
-    Core::Command *m_tag36h11Command;
-    Core::Command *m_tag36artoolkitCommand;
-    Core::Command *m_QRCodeGeneratorCommand;
-    Core::Command *m_DataMatrixGeneratorCommand;
-    Core::Command *m_BarcodeGeneratorCommand;
-    Core::Command *m_convertVideoFileCommand;
-    Core::Command *m_playVideoFileCommand;
-
-    Core::MiniSplitter *m_hsplitter;
-    Core::MiniSplitter *m_vsplitter;
-
-    QToolButton *m_jpgCompress;
-    QToolButton *m_disableFrameBuffer;
-    OpenMVPluginFB *m_frameBuffer;
-    OpenMVPluginHistogram *m_histogram;
-
-    Utils::ElidingToolButton *m_versionButton;
-    Utils::ElidingLabel *m_portLabel;
-    Utils::ElidingToolButton *m_pathButton;
-    Utils::ElidingLabel  *m_fpsLabel;
 
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
@@ -277,6 +235,26 @@ private:
 
     QRegularExpression m_errorFilterRegex;
     QString m_errorFilterString;
+
+    Core::Command *m_bootloaderCommand;
+    Core::Command *m_configureSettingsCommand;
+    Core::Command *m_saveCommand;
+    Core::Command *m_resetCommand;
+    Core::ActionContainer *m_openTerminalMenu;
+    Core::Command *m_connectCommand;
+    Core::Command *m_disconnectCommand;
+    Core::Command *m_startCommand;
+    Core::Command *m_stopCommand;
+
+    QToolButton *m_jpgCompress;
+    QToolButton *m_disableFrameBuffer;
+    OpenMVPluginFB *m_frameBuffer;
+    OpenMVPluginHistogram *m_histogram;
+
+    Utils::ElidingToolButton *m_versionButton;
+    Utils::ElidingLabel *m_portLabel;
+    Utils::ElidingToolButton *m_pathButton;
+    Utils::ElidingLabel  *m_fpsLabel;
 
     ///////////////////////////////////////////////////////////////////////////
 

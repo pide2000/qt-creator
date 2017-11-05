@@ -47,12 +47,435 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
 
+    ///////////////////////////////////////////////////////////////////////////
+
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(QStringLiteral(SPLASH_PATH)));
 
     connect(Core::ICore::instance(), &Core::ICore::coreOpened,
             splashScreen, &QSplashScreen::deleteLater);
 
     splashScreen->show();
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    QStringList providerVariables;
+    QStringList providerFunctions;
+    QMap<QString, QStringList> providerFunctionArgs;
+
+    QRegularExpression moduleRegEx(QStringLiteral("<div class=\"section\" id=\"module-(.+?)\">(.*?)<div class=\"section\""), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression spanRegEx(QStringLiteral("<span.*?>"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression linkRegEx(QStringLiteral("<a.*?>"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression classRegEx(QStringLiteral(" class=\".*?\""), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression cdfmRegEx(QStringLiteral("<dl class=\"(class|data|function|method)\">\\s*<dt id=\"(.+?)\">(.*?)</dt>\\s*<dd>(.*?)</dd>\\s*</dl>"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression argumentRegEx(QStringLiteral("<span class=\"sig-paren\">\\(</span>(.*?)<span class=\"sig-paren\">\\)</span>"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression tupleRegEx(QStringLiteral("\\(.*?\\)"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression listRegEx(QStringLiteral("\\[.*?\\]"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression dictionaryRegEx(QStringLiteral("\\{.*?\\}"), QRegularExpression::DotMatchesEverythingOption);
+
+    QDirIterator it(Core::ICore::userResourcePath() + QStringLiteral("/html/library"), QDir::Files);
+
+    while(it.hasNext())
+    {
+        QFile file(it.next());
+
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QString data = QString::fromUtf8(file.readAll());
+
+            if((file.error() == QFile::NoError) && (!data.isEmpty()))
+            {
+                file.close();
+
+                QRegularExpressionMatch moduleMatch = moduleRegEx.match(data);
+
+                if(moduleMatch.hasMatch())
+                {
+                    QString name = moduleMatch.captured(1);
+                    QString text = moduleMatch.captured(2).
+                                   remove(QStringLiteral("\u00B6")).
+                                   remove(spanRegEx).
+                                   remove(QStringLiteral("</span>")).
+                                   remove(linkRegEx).
+                                   remove(QStringLiteral("</a>")).
+                                   remove(classRegEx).
+                                   replace(QStringLiteral("<h1>"), QStringLiteral("<h3>")).
+                                   replace(QStringLiteral("</h1>"), QStringLiteral("</h3>"));
+
+                    documentation_t d;
+                    d.moduleName = QString();
+                    d.className = QString();
+                    d.name = name;
+                    d.text = text;
+                    m_modules.append(d);
+
+                    if(name.startsWith(QLatin1Char('u')))
+                    {
+                        d.name = name.mid(1);
+                        m_modules.append(d);
+                    }
+                }
+
+                QRegularExpressionMatchIterator matches = cdfmRegEx.globalMatch(data);
+
+                while(matches.hasNext())
+                {
+                    QRegularExpressionMatch match = matches.next();
+                    QString type = match.captured(1);
+                    QString id = match.captured(2);
+                    QString head = match.captured(3);
+                    QString body = match.captured(4);
+                    QStringList idList = id.split(QLatin1Char('.'), QString::SkipEmptyParts);
+
+                    if((1 <= idList.size()) && (idList.size() <= 3))
+                    {
+                        documentation_t d;
+                        d.moduleName = (idList.size() > 1) ? idList.at(0) : QString();
+                        d.className = (idList.size() > 2) ? idList.at(1) : QString();
+                        d.name = idList.last();
+                        d.text = QString(QStringLiteral("<h3>%1</h3>%2")).arg(it.fileInfo().completeBaseName() + QStringLiteral(" - ") + head).arg(body).
+                                 remove(QStringLiteral("\u00B6")).
+                                 remove(spanRegEx).
+                                 remove(QStringLiteral("</span>")).
+                                 remove(linkRegEx).
+                                 remove(QStringLiteral("</a>")).
+                                 remove(classRegEx);
+
+                        if(type == QStringLiteral("class"))
+                        {
+                            m_classes.append(d);
+                            providerFunctions.append(d.name);
+                        }
+                        else if(type == QStringLiteral("data"))
+                        {
+                            m_datas.append(d);
+                            providerVariables.append(d.name);
+                        }
+                        else if(type == QStringLiteral("function"))
+                        {
+                            m_functions.append(d);
+                            providerFunctions.append(d.name);
+                        }
+                        else if(type == QStringLiteral("method"))
+                        {
+                            m_methods.append(d);
+                            providerFunctions.append(d.name);
+                        }
+
+                        QRegularExpressionMatch args = argumentRegEx.match(head);
+
+                        if(args.hasMatch())
+                        {
+                            QStringList list;
+
+                            foreach(const QString &arg, args.captured(1).
+                                                        remove(QLatin1String("<span class=\"optional\">[</span>")).
+                                                        remove(QLatin1String("<span class=\"optional\">]</span>")).
+                                                        remove(QLatin1String("<em>")).
+                                                        remove(QLatin1String("</em>")).
+                                                        remove(tupleRegEx).
+                                                        remove(listRegEx).
+                                                        remove(dictionaryRegEx).
+                                                        remove(QLatin1Char(' ')).
+                                                        split(QLatin1Char(','), QString::SkipEmptyParts))
+                            {
+                                int equals = arg.indexOf(QLatin1Char('='));
+                                QString temp = (equals != -1) ? arg.left(equals) : arg;
+
+                                m_arguments.insert(temp);
+                                list.append(temp);
+                            }
+
+                            providerFunctionArgs.insert(d.name, list);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    connect(TextEditor::Internal::Manager::instance(), &TextEditor::Internal::Manager::highlightingFilesRegistered, this, [this] {
+        QString id = TextEditor::Internal::Manager::instance()->definitionIdByName(QStringLiteral("Python"));
+
+        if(!id.isEmpty())
+        {
+            QSharedPointer<TextEditor::Internal::HighlightDefinition> def = TextEditor::Internal::Manager::instance()->definition(id);
+
+            if(def)
+            {
+                QSharedPointer<TextEditor::Internal::KeywordList> modulesList = def->keywordList(QStringLiteral("listOpenMVModules"));
+                QSharedPointer<TextEditor::Internal::KeywordList> classesList = def->keywordList(QStringLiteral("listOpenMVClasses"));
+                QSharedPointer<TextEditor::Internal::KeywordList> datasList = def->keywordList(QStringLiteral("listOpenMVDatas"));
+                QSharedPointer<TextEditor::Internal::KeywordList> functionsList = def->keywordList(QStringLiteral("listOpenMVFunctions"));
+                QSharedPointer<TextEditor::Internal::KeywordList> methodsList = def->keywordList(QStringLiteral("listOpenMVMethods"));
+                QSharedPointer<TextEditor::Internal::KeywordList> argumentsList = def->keywordList(QStringLiteral("listOpenMVArguments"));
+
+                if(modulesList)
+                {
+                    foreach(const documentation_t &d, m_modules)
+                    {
+                        modulesList->addKeyword(d.name);
+                    }
+                }
+
+                if(classesList)
+                {
+                    foreach(const documentation_t &d, m_classes)
+                    {
+                        classesList->addKeyword(d.name);
+                    }
+                }
+
+                if(datasList)
+                {
+                    foreach(const documentation_t &d, m_datas)
+                    {
+                        datasList->addKeyword(d.name);
+                    }
+                }
+
+                if(functionsList)
+                {
+                    foreach(const documentation_t &d, m_functions)
+                    {
+                        functionsList->addKeyword(d.name);
+                    }
+                }
+
+                if(methodsList)
+                {
+                    foreach(const documentation_t &d, m_methods)
+                    {
+                        methodsList->addKeyword(d.name);
+                    }
+                }
+
+                if(argumentsList)
+                {
+                    foreach(const QString &d, m_arguments.values())
+                    {
+                        argumentsList->addKeyword(d);
+                    }
+                }
+            }
+        }
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    OpenMVPluginCompletionAssistProvider *provider = new OpenMVPluginCompletionAssistProvider(providerVariables, providerFunctions, providerFunctionArgs);
+    provider->setParent(this);
+
+    connect(Core::EditorManager::instance(), &Core::EditorManager::editorCreated, this, [this, provider] (Core::IEditor *editor, const QString &fileName) {
+        TextEditor::BaseTextEditor *textEditor = qobject_cast<TextEditor::BaseTextEditor *>(editor);
+
+        if(textEditor && fileName.endsWith(QStringLiteral(".py"), Qt::CaseInsensitive))
+        {
+            textEditor->textDocument()->setCompletionAssistProvider(provider);
+            connect(textEditor->editorWidget(), &TextEditor::TextEditorWidget::tooltipOverrideRequested, this, [this] (TextEditor::TextEditorWidget *widget, const QPoint &globalPos, int position, bool *handled) {
+
+                if(handled)
+                {
+                    *handled = true;
+                }
+
+                QTextCursor cursor(widget->textDocument()->document());
+                cursor.setPosition(position);
+                cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+                QString text = cursor.selectedText().replace(QChar::ParagraphSeparator, QLatin1Char('\n'));
+
+                if(!text.isEmpty())
+                {
+                    enum
+                    {
+                        IN_NONE,
+                        IN_COMMENT,
+                        IN_STRING_0,
+                        IN_STRING_1
+                    }
+                    in_state = IN_NONE;
+
+                    for(int i = 0; i < text.size(); i++)
+                    {
+                        switch(in_state)
+                        {
+                            case IN_NONE:
+                            {
+                                if((text.at(i) == QLatin1Char('#')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_COMMENT;
+                                if((text.at(i) == QLatin1Char('\'')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_0;
+                                if((text.at(i) == QLatin1Char('\"')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_1;
+                                break;
+                            }
+                            case IN_COMMENT:
+                            {
+                                if((text.at(i) == QLatin1Char('\n')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                                break;
+                            }
+                            case IN_STRING_0:
+                            {
+                                if((text.at(i) == QLatin1Char('\'')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                                break;
+                            }
+                            case IN_STRING_1:
+                            {
+                                if((text.at(i) == QLatin1Char('\"')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(in_state == IN_NONE)
+                    {
+                        cursor.setPosition(position);
+                        cursor.select(QTextCursor::WordUnderCursor);
+                        text = cursor.selectedText();
+
+                        if(!text.isEmpty())
+                        {
+                            QStringList list;
+
+                            foreach(const documentation_t &d, m_modules)
+                            {
+                                if(d.name == text)
+                                {
+                                    list.append(d.text);
+                                }
+                            }
+
+                            if(qMin(cursor.position(), cursor.anchor()) && (widget->textDocument()->document()->characterAt(qMin(cursor.position(), cursor.anchor()) - 1) == QLatin1Char('.')))
+                            {
+                                foreach(const documentation_t &d, m_datas)
+                                {
+                                    if(d.name == text)
+                                    {
+                                        list.append(d.text);
+                                    }
+                                }
+                            }
+
+                            if(widget->textDocument()->document()->characterAt(qMax(cursor.position(), cursor.anchor())) == QLatin1Char('('))
+                            {
+                                foreach(const documentation_t &d, m_classes)
+                                {
+                                    if(d.name == text)
+                                    {
+                                        list.append(d.text);
+                                    }
+                                }
+
+                                foreach(const documentation_t &d, m_functions)
+                                {
+                                    if(d.name == text)
+                                    {
+                                        list.append(d.text);
+                                    }
+                                }
+
+                                foreach(const documentation_t &d, m_methods)
+                                {
+                                    if(d.name == text)
+                                    {
+                                        list.append(d.text);
+                                    }
+                                }
+                            }
+
+                            if(!list.isEmpty())
+                            {
+                                QString string;
+                                int i = 0;
+
+                                for(int j = 0, k = qCeil(qSqrt(list.size())); j < k; j++)
+                                {
+                                    string.append(QStringLiteral("<tr>"));
+
+                                    for(int l = 0; l < k; l++)
+                                    {
+                                        string.append(QStringLiteral("<td style=\"padding:6px;\">") + list.at(i++) + QStringLiteral("</td>"));
+
+                                        if(i >= list.size())
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    string.append(QStringLiteral("</tr>"));
+
+                                    if(i >= list.size())
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                Utils::ToolTip::show(globalPos, QStringLiteral("<table>") + string + QStringLiteral("</table>"), widget);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                Utils::ToolTip::hide();
+            });
+
+            connect(textEditor->editorWidget(), &TextEditor::TextEditorWidget::contextMenuEventCB, this, [this, textEditor] (QMenu *menu, QString text) {
+
+                QRegularExpressionMatch grayscaleMatch = QRegularExpression(QStringLiteral("^\\s*\\(\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*\\)\\s*$")).match(text);
+
+                if(grayscaleMatch.hasMatch())
+                {
+                    menu->addSeparator();
+                    QAction *action = new QAction(tr("Edit Grayscale threshold with Threshold Editor"), menu);
+                    connect(action, &QAction::triggered, this, [this, textEditor, grayscaleMatch] {
+                        QList<int> list = openThresholdEditor(QList<QVariant>()
+                            << grayscaleMatch.captured(1).toInt()
+                            << grayscaleMatch.captured(2).toInt()
+                        );
+
+                        if(!list.isEmpty())
+                        {
+                            textEditor->textCursor().removeSelectedText();
+                            textEditor->textCursor().insertText(QString(QStringLiteral("(%1, %2)")).arg(list.at(0), 3) // can't use takeFirst() here
+                                                                                                   .arg(list.at(1), 3)); // can't use takeFirst() here
+                        }
+                    });
+
+                    menu->addAction(action);
+                }
+
+                QRegularExpressionMatch labMatch = QRegularExpression(QStringLiteral("^\\s*\\(\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*\\)\\s*$")).match(text);
+
+                if(labMatch.hasMatch())
+                {
+                    menu->addSeparator();
+                    QAction *action = new QAction(tr("Edit LAB threshold with Threshold Editor"), menu);
+                    connect(action, &QAction::triggered, this, [this, textEditor, labMatch] {
+                        QList<int> list = openThresholdEditor(QList<QVariant>()
+                            << labMatch.captured(1).toInt()
+                            << labMatch.captured(2).toInt()
+                            << labMatch.captured(3).toInt()
+                            << labMatch.captured(4).toInt()
+                            << labMatch.captured(5).toInt()
+                            << labMatch.captured(6).toInt()
+                        );
+
+                        if(!list.isEmpty())
+                        {
+                            textEditor->textCursor().removeSelectedText();
+                            textEditor->textCursor().insertText(QString(QStringLiteral("(%1, %2, %3, %4, %5, %6)")).arg(list.at(2), 3) // can't use takeFirst() here
+                                                                                                                   .arg(list.at(3), 3) // can't use takeFirst() here
+                                                                                                                   .arg(list.at(4), 4) // can't use takeFirst() here
+                                                                                                                   .arg(list.at(5), 4) // can't use takeFirst() here
+                                                                                                                   .arg(list.at(6), 4) // can't use takeFirst() here
+                                                                                                                   .arg(list.at(7), 4)); // can't use takeFirst() here
+                        }
+                    });
+
+                    menu->addAction(action);
+                }
+            });
+        }
+    });
 
     return true;
 }
@@ -69,16 +492,21 @@ void OpenMVPlugin::extensionsInitialized()
         TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
             tr("# Untitled - By: %L1 - %L2\n"
                "\n"
-               "import sensor\n"
+               "import sensor, image, time\n"
                "\n"
                "sensor.reset()\n"
                "sensor.set_pixformat(sensor.RGB565)\n"
                "sensor.set_framesize(sensor.QVGA)\n"
-               "sensor.skip_frames()\n"
+               "sensor.skip_frames(time = 2000)\n"
+               "\n"
+               "clock = time.clock()\n"
                "\n"
                "while(True):\n"
-               "    img = sensor.snapshot()\n").
+               "    clock.tick()\n"
+               "    img = sensor.snapshot()\n"
+               "    print(clock.fps())\n").
             arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toUtf8()));
+
         if(editor)
         {
             editor->editorWidget()->configureGenericHighlighter();
@@ -104,15 +532,12 @@ void OpenMVPlugin::extensionsInitialized()
         examplesMenu->menu()->setDisabled(actions.values().isEmpty());
     });
 
-    ///////////////////////////////////////////////////////////////////////////
-
     Core::ActionContainer *toolsMenu = Core::ActionManager::actionContainer(Core::Constants::M_TOOLS);
     Core::ActionContainer *helpMenu = Core::ActionManager::actionContainer(Core::Constants::M_HELP);
 
     QAction *bootloaderCommand = new QAction(tr("Run Bootloader"), this);
     m_bootloaderCommand = Core::ActionManager::registerAction(bootloaderCommand, Core::Id("OpenMV.Bootloader"));
     toolsMenu->addAction(m_bootloaderCommand);
-    bootloaderCommand->setEnabled(true);
     connect(bootloaderCommand, &QAction::triggered, this, &OpenMVPlugin::bootloaderClicked);
     toolsMenu->addSeparator();
 
@@ -141,91 +566,117 @@ void OpenMVPlugin::extensionsInitialized()
     toolsMenu->addMenu(m_openTerminalMenu);
     connect(m_openTerminalMenu->menu(), &QMenu::aboutToShow, this, &OpenMVPlugin::openTerminalAboutToShow);
 
-    m_machineVisionToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.MachineVision"));
-    m_machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
-    m_machineVisionToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
-    toolsMenu->addMenu(m_machineVisionToolsMenu);
+    Core::ActionContainer *machineVisionToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.MachineVision"));
+    machineVisionToolsMenu->menu()->setTitle(tr("Machine Vision"));
+    machineVisionToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    toolsMenu->addMenu(machineVisionToolsMenu);
 
-    QAction *thresholdEditorCommand = new QAction(tr("Threshold Editor"), this);
-    m_thresholdEditorCommand = Core::ActionManager::registerAction(thresholdEditorCommand, Core::Id("OpenMV.ThresholdEditor"));
-    m_machineVisionToolsMenu->addAction(m_thresholdEditorCommand);
-    connect(thresholdEditorCommand, &QAction::triggered, this, &OpenMVPlugin::openThresholdEditor);
+    QAction *thresholdEditorAction = new QAction(tr("Threshold Editor"), this);
+    Core::Command *thresholdEditorCommand = Core::ActionManager::registerAction(thresholdEditorAction, Core::Id("OpenMV.ThresholdEditor"));
+    machineVisionToolsMenu->addAction(thresholdEditorCommand);
+    connect(thresholdEditorAction, &QAction::triggered, this, &OpenMVPlugin::openThresholdEditor);
 
-    QAction *keypointsEditorCommand = new QAction(tr("Keypoints Editor"), this);
-    m_keypointsEditorCommand = Core::ActionManager::registerAction(keypointsEditorCommand, Core::Id("OpenMV.KeypointsEditor"));
-    m_machineVisionToolsMenu->addAction(m_keypointsEditorCommand);
-    connect(keypointsEditorCommand, &QAction::triggered, this, &OpenMVPlugin::openKeypointsEditor);
+    QAction *keypointsEditorAction = new QAction(tr("Keypoints Editor"), this);
+    Core::Command *keypointsEditorCommand = Core::ActionManager::registerAction(keypointsEditorAction, Core::Id("OpenMV.KeypointsEditor"));
+    machineVisionToolsMenu->addAction(keypointsEditorCommand);
+    connect(keypointsEditorAction, &QAction::triggered, this, &OpenMVPlugin::openKeypointsEditor);
 
-    m_machineVisionToolsMenu->addSeparator();
-    m_AprilTagGeneratorSubmenu = Core::ActionManager::createMenu(Core::Id("OpenMV.AprilTagGenerator"));
-    m_AprilTagGeneratorSubmenu->menu()->setTitle(tr("AprilTag Generator"));
-    m_machineVisionToolsMenu->addMenu(m_AprilTagGeneratorSubmenu);
+    machineVisionToolsMenu->addSeparator();
+    Core::ActionContainer *aprilTagGeneratorSubmenu = Core::ActionManager::createMenu(Core::Id("OpenMV.AprilTagGenerator"));
+    aprilTagGeneratorSubmenu->menu()->setTitle(tr("AprilTag Generator"));
+    machineVisionToolsMenu->addMenu(aprilTagGeneratorSubmenu);
 
-    QAction *tag16h5Command = new QAction(tr("TAG16H5 Family (30 Tags)"), this);
-    m_tag16h5Command = Core::ActionManager::registerAction(tag16h5Command, Core::Id("OpenMV.TAG16H5"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag16h5Command);
-    connect(tag16h5Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag16h5_create());});
+    QAction *tag16h5Action = new QAction(tr("TAG16H5 Family (30 Tags)"), this);
+    Core::Command *tag16h5Command = Core::ActionManager::registerAction(tag16h5Action, Core::Id("OpenMV.TAG16H5"));
+    aprilTagGeneratorSubmenu->addAction(tag16h5Command);
+    connect(tag16h5Action, &QAction::triggered, this, [this] {openAprilTagGenerator(tag16h5_create());});
 
-    QAction *tag25h7Command = new QAction(tr("TAG25H7 Family (242 Tags)"), this);
-    m_tag25h7Command = Core::ActionManager::registerAction(tag25h7Command, Core::Id("OpenMV.TAG25H7"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag25h7Command);
-    connect(tag25h7Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h7_create());});
+    QAction *tag25h7Action = new QAction(tr("TAG25H7 Family (242 Tags)"), this);
+    Core::Command *tag25h7Command = Core::ActionManager::registerAction(tag25h7Action, Core::Id("OpenMV.TAG25H7"));
+    aprilTagGeneratorSubmenu->addAction(tag25h7Command);
+    connect(tag25h7Action, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h7_create());});
 
-    QAction *tag25h9Command = new QAction(tr("TAG25H9 Family (35 Tags)"), this);
-    m_tag25h9Command = Core::ActionManager::registerAction(tag25h9Command, Core::Id("OpenMV.TAG25H9"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag25h9Command);
-    connect(tag25h9Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h9_create());});
+    QAction *tag25h9Action = new QAction(tr("TAG25H9 Family (35 Tags)"), this);
+    Core::Command *tag25h9Command = Core::ActionManager::registerAction(tag25h9Action, Core::Id("OpenMV.TAG25H9"));
+    aprilTagGeneratorSubmenu->addAction(tag25h9Command);
+    connect(tag25h9Action, &QAction::triggered, this, [this] {openAprilTagGenerator(tag25h9_create());});
 
-    QAction *tag36h10Command = new QAction(tr("TAG36H10 Family (2320 Tags)"), this);
-    m_tag36h10Command = Core::ActionManager::registerAction(tag36h10Command, Core::Id("OpenMV.TAG36H10"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag36h10Command);
-    connect(tag36h10Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h10_create());});
+    QAction *tag36h10Action = new QAction(tr("TAG36H10 Family (2320 Tags)"), this);
+    Core::Command *tag36h10Command = Core::ActionManager::registerAction(tag36h10Action, Core::Id("OpenMV.TAG36H10"));
+    aprilTagGeneratorSubmenu->addAction(tag36h10Command);
+    connect(tag36h10Action, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h10_create());});
 
-    QAction *tag36h11Command = new QAction(tr("TAG36H11 Family (587 Tags - Recommended)"), this);
-    m_tag36h11Command = Core::ActionManager::registerAction(tag36h11Command, Core::Id("OpenMV.TAG36H11"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag36h11Command);
-    connect(tag36h11Command, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h11_create());});
+    QAction *tag36h11Action = new QAction(tr("TAG36H11 Family (587 Tags - Recommended)"), this);
+    Core::Command *tag36h11Command = Core::ActionManager::registerAction(tag36h11Action, Core::Id("OpenMV.TAG36H11"));
+    aprilTagGeneratorSubmenu->addAction(tag36h11Command);
+    connect(tag36h11Action, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36h11_create());});
 
-    QAction *tag36artoolkitCommand = new QAction(tr("ARKTOOLKIT Family (512 Tags)"), this);
-    m_tag36artoolkitCommand = Core::ActionManager::registerAction(tag36artoolkitCommand, Core::Id("OpenMV.ARKTOOLKIT"));
-    m_AprilTagGeneratorSubmenu->addAction(m_tag36artoolkitCommand);
-    connect(tag36artoolkitCommand, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36artoolkit_create());});
+    QAction *tag36artoolkitAction = new QAction(tr("ARKTOOLKIT Family (512 Tags)"), this);
+    Core::Command *tag36artoolkitCommand = Core::ActionManager::registerAction(tag36artoolkitAction, Core::Id("OpenMV.ARKTOOLKIT"));
+    aprilTagGeneratorSubmenu->addAction(tag36artoolkitCommand);
+    connect(tag36artoolkitAction, &QAction::triggered, this, [this] {openAprilTagGenerator(tag36artoolkit_create());});
 
-    QAction *QRCodeGeneratorCommand = new QAction(tr("QRCode Generator"), this);
-    m_QRCodeGeneratorCommand = Core::ActionManager::registerAction(QRCodeGeneratorCommand, Core::Id("OpenMV.QRCodeGenerator"));
-    m_machineVisionToolsMenu->addAction(m_QRCodeGeneratorCommand);
-    connect(QRCodeGeneratorCommand, &QAction::triggered, this, &OpenMVPlugin::openQRCodeGenerator);
+    QAction *QRCodeGeneratorAction = new QAction(tr("QRCode Generator"), this);
+    Core::Command *QRCodeGeneratorCommand = Core::ActionManager::registerAction(QRCodeGeneratorAction, Core::Id("OpenMV.QRCodeGenerator"));
+    machineVisionToolsMenu->addAction(QRCodeGeneratorCommand);
+    connect(QRCodeGeneratorAction, &QAction::triggered, this, [this] {
+        QUrl url = QUrl(QStringLiteral("http://www.google.com/search?q=qr+code+generator"));
 
-    QAction *DatamatrixGeneratorCommand = new QAction(tr("DataMatrix Generator"), this);
-    m_DataMatrixGeneratorCommand = Core::ActionManager::registerAction(DatamatrixGeneratorCommand, Core::Id("OpenMV.DataMatrixGenerator"));
-    m_machineVisionToolsMenu->addAction(m_DataMatrixGeneratorCommand);
-    connect(DatamatrixGeneratorCommand, &QAction::triggered, this, &OpenMVPlugin::openDataMatrixGenerator);
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
+    });
 
-    QAction *BarcodeGeneratorCommand = new QAction(tr("Barcode Generator"), this);
-    m_BarcodeGeneratorCommand = Core::ActionManager::registerAction(BarcodeGeneratorCommand, Core::Id("OpenMV.BarcodeGenerator"));
-    m_machineVisionToolsMenu->addAction(m_BarcodeGeneratorCommand);
-    connect(BarcodeGeneratorCommand, &QAction::triggered, this, &OpenMVPlugin::openBarcodeGenerator);
+    QAction *DatamatrixGeneratorAction = new QAction(tr("DataMatrix Generator"), this);
+    Core::Command *DataMatrixGeneratorCommand = Core::ActionManager::registerAction(DatamatrixGeneratorAction, Core::Id("OpenMV.DataMatrixGenerator"));
+    machineVisionToolsMenu->addAction(DataMatrixGeneratorCommand);
+    connect(DatamatrixGeneratorAction, &QAction::triggered, this, [this] {
+        QUrl url = QUrl(QStringLiteral("http://www.google.com/search?q=data+matrix+generator"));
 
-    m_videoToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.VideoTools"));
-    m_videoToolsMenu->menu()->setTitle(tr("Video Tools"));
-    m_videoToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
-    toolsMenu->addMenu(m_videoToolsMenu);
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
+    });
 
-    QAction *convertVideoFileCommand = new QAction(tr("Convert Video File"), this);
-    m_convertVideoFileCommand = Core::ActionManager::registerAction(convertVideoFileCommand, Core::Id("OpenMV.ConvertVideoFile"));
-    m_videoToolsMenu->addAction(m_convertVideoFileCommand);
-    connect(convertVideoFileCommand, &QAction::triggered, this, [this] {convertVideoFileAction(m_portPath);});
+    QAction *BarcodeGeneratorAction = new QAction(tr("Barcode Generator"), this);
+    Core::Command *BarcodeGeneratorCommand = Core::ActionManager::registerAction(BarcodeGeneratorAction, Core::Id("OpenMV.BarcodeGenerator"));
+    machineVisionToolsMenu->addAction(BarcodeGeneratorCommand);
+    connect(BarcodeGeneratorAction, &QAction::triggered, this, [this] {
+        QUrl url = QUrl(QStringLiteral("http://www.google.com/search?q=barcode+generator"));
 
-    QAction *playVideoFileCommand = new QAction(tr("Play Video File"), this);
-    m_playVideoFileCommand = Core::ActionManager::registerAction(playVideoFileCommand, Core::Id("OpenMV.PlayVideoFile"));
-    if(!Utils::HostOsInfo::isLinuxHost()) m_videoToolsMenu->addAction(m_playVideoFileCommand);
-    connect(playVideoFileCommand, &QAction::triggered, this, [this] {playVideoFileAction(m_portPath);});
+        if(!QDesktopServices::openUrl(url))
+        {
+            QMessageBox::critical(Core::ICore::dialogParent(),
+                                  QString(),
+                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+        }
+    });
 
-    QAction *docsCommand = new QAction(tr("OpenMV Docs"), this);
-    m_docsCommand = Core::ActionManager::registerAction(docsCommand, Core::Id("OpenMV.Docs"));
-    helpMenu->addAction(m_docsCommand, Core::Constants::G_HELP_SUPPORT);
-    docsCommand->setEnabled(true);
-    connect(docsCommand, &QAction::triggered, this, [this] {
+    Core::ActionContainer *videoToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.VideoTools"));
+    videoToolsMenu->menu()->setTitle(tr("Video Tools"));
+    videoToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    toolsMenu->addMenu(videoToolsMenu);
+
+    QAction *convertVideoFile = new QAction(tr("Convert Video File"), this);
+    Core::Command *convertVideoFileCommand = Core::ActionManager::registerAction(convertVideoFile, Core::Id("OpenMV.ConvertVideoFile"));
+    videoToolsMenu->addAction(convertVideoFileCommand);
+    connect(convertVideoFile, &QAction::triggered, this, [this] {convertVideoFileAction(m_portPath);});
+
+    QAction *playVideoFile = new QAction(tr("Play Video File"), this);
+    Core::Command *playVideoFileCommand = Core::ActionManager::registerAction(playVideoFile, Core::Id("OpenMV.PlayVideoFile"));
+    if(!Utils::HostOsInfo::isLinuxHost()) videoToolsMenu->addAction(playVideoFileCommand);
+    connect(playVideoFile, &QAction::triggered, this, [this] {playVideoFileAction(m_portPath);});
+
+    QAction *docsAction = new QAction(tr("OpenMV Docs"), this);
+    Core::Command *docsCommand = Core::ActionManager::registerAction(docsAction, Core::Id("OpenMV.Docs"));
+    helpMenu->addAction(docsCommand, Core::Constants::G_HELP_SUPPORT);
+    connect(docsAction, &QAction::triggered, this, [this] {
         QUrl url = QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/index.html"));
 
         if(!QDesktopServices::openUrl(url))
@@ -236,11 +687,10 @@ void OpenMVPlugin::extensionsInitialized()
         }
     });
 
-    QAction *forumsCommand = new QAction(tr("OpenMV Forums"), this);
-    m_forumsCommand = Core::ActionManager::registerAction(forumsCommand, Core::Id("OpenMV.Forums"));
-    helpMenu->addAction(m_forumsCommand, Core::Constants::G_HELP_SUPPORT);
-    forumsCommand->setEnabled(true);
-    connect(forumsCommand, &QAction::triggered, this, [this] {
+    QAction *forumsAction = new QAction(tr("OpenMV Forums"), this);
+    Core::Command *forumsCommand = Core::ActionManager::registerAction(forumsAction, Core::Id("OpenMV.Forums"));
+    helpMenu->addAction(forumsCommand, Core::Constants::G_HELP_SUPPORT);
+    connect(forumsAction, &QAction::triggered, this, [this] {
         QUrl url = QUrl(QStringLiteral("http://forums.openmv.io/"));
 
         if(!QDesktopServices::openUrl(url))
@@ -254,9 +704,8 @@ void OpenMVPlugin::extensionsInitialized()
     QAction *pinoutAction = new QAction(
          Utils::HostOsInfo::isMacHost() ? tr("About OpenMV Cam") : tr("About OpenMV Cam..."), this);
     pinoutAction->setMenuRole(QAction::ApplicationSpecificRole);
-    m_pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
-    helpMenu->addAction(m_pinoutCommand, Core::Constants::G_HELP_ABOUT);
-    pinoutAction->setEnabled(true);
+    Core::Command *pinoutCommand = Core::ActionManager::registerAction(pinoutAction, Core::Id("OpenMV.Pinout"));
+    helpMenu->addAction(pinoutCommand, Core::Constants::G_HELP_ABOUT);
     connect(pinoutAction, &QAction::triggered, this, [this] {
         QUrl url = QUrl::fromLocalFile(Core::ICore::userResourcePath() + QStringLiteral("/html/_images/pinout.png"));
 
@@ -271,9 +720,8 @@ void OpenMVPlugin::extensionsInitialized()
     QAction *aboutAction = new QAction(QIcon::fromTheme(QStringLiteral("help-about")),
         Utils::HostOsInfo::isMacHost() ? tr("About OpenMV IDE") : tr("About OpenMV IDE..."), this);
     aboutAction->setMenuRole(QAction::AboutRole);
-    m_aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
-    helpMenu->addAction(m_aboutCommand, Core::Constants::G_HELP_ABOUT);
-    aboutAction->setEnabled(true);
+     Core::Command *aboutCommand = Core::ActionManager::registerAction(aboutAction, Core::Id("OpenMV.About"));
+    helpMenu->addAction(aboutCommand, Core::Constants::G_HELP_ABOUT);
     connect(aboutAction, &QAction::triggered, this, [this] {
         QMessageBox::about(Core::ICore::dialogParent(), tr("About OpenMV IDE"), tr(
         "<p><b>About OpenMV IDE %L1</b></p>"
@@ -312,6 +760,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_startCommand->action()->setVisible(true);
     connect(m_startCommand->action(), &QAction::triggered, this, &OpenMVPlugin::startClicked);
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, [this] (Core::IEditor *editor) {
+
         if(m_connected)
         {
             m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
@@ -331,6 +780,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_stopCommand->action()->setVisible(false);
     connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);
     connect(m_iodevice, &OpenMVPluginIO::scriptRunning, this, [this] (bool running) {
+
         if(m_connected)
         {
             Core::IEditor *editor = Core::EditorManager::currentEditor();
@@ -572,49 +1022,49 @@ void OpenMVPlugin::extensionsInitialized()
         }
     });
 
-    m_hsplitter = widget->m_hsplitter;
-    m_vsplitter = widget->m_vsplitter;
-    m_vsplitter->insertWidget(0, tempWidget0);
-    m_vsplitter->insertWidget(1, tempWidget1);
-    m_vsplitter->setStretchFactor(0, 0);
-    m_vsplitter->setStretchFactor(1, 1);
-    m_vsplitter->setCollapsible(0, true);
-    m_vsplitter->setCollapsible(1, true);
+    Core::MiniSplitter *hsplitter = widget->m_hsplitter;
+    Core::MiniSplitter *vsplitter = widget->m_vsplitter;
+    vsplitter->insertWidget(0, tempWidget0);
+    vsplitter->insertWidget(1, tempWidget1);
+    vsplitter->setStretchFactor(0, 0);
+    vsplitter->setStretchFactor(1, 1);
+    vsplitter->setCollapsible(0, true);
+    vsplitter->setCollapsible(1, true);
 
-    connect(widget->m_leftDrawer, &QToolButton::clicked, this, [this, widget] {
-        m_hsplitter->setSizes(QList<int>() << 1 << m_hsplitter->sizes().at(1));
+    connect(widget->m_leftDrawer, &QToolButton::clicked, this, [this, widget, hsplitter] {
+        hsplitter->setSizes(QList<int>() << 1 << hsplitter->sizes().at(1));
         widget->m_leftDrawer->parentWidget()->hide();
     });
 
-    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
-        Q_UNUSED(pos) Q_UNUSED(index) widget->m_leftDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(0));
+    connect(hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget, hsplitter] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_leftDrawer->parentWidget()->setVisible(!hsplitter->sizes().at(0));
     });
 
-    connect(widget->m_rightDrawer, &QToolButton::clicked, this, [this, widget] {
-        m_hsplitter->setSizes(QList<int>() << m_hsplitter->sizes().at(0) << 1);
+    connect(widget->m_rightDrawer, &QToolButton::clicked, this, [this, widget, hsplitter] {
+        hsplitter->setSizes(QList<int>() << hsplitter->sizes().at(0) << 1);
         widget->m_rightDrawer->parentWidget()->hide();
     });
 
-    connect(m_hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
-        Q_UNUSED(pos) Q_UNUSED(index) widget->m_rightDrawer->parentWidget()->setVisible(!m_hsplitter->sizes().at(1));
+    connect(hsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget, hsplitter] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_rightDrawer->parentWidget()->setVisible(!hsplitter->sizes().at(1));
     });
 
-    connect(widget->m_topDrawer, &QToolButton::clicked, this, [this, widget] {
-        m_vsplitter->setSizes(QList<int>() << 1 <<  m_vsplitter->sizes().at(1));
+    connect(widget->m_topDrawer, &QToolButton::clicked, this, [this, widget, vsplitter] {
+        vsplitter->setSizes(QList<int>() << 1 <<  vsplitter->sizes().at(1));
         widget->m_topDrawer->parentWidget()->hide();
     });
 
-    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
-        Q_UNUSED(pos) Q_UNUSED(index) widget->m_topDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(0));
+    connect(vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget, vsplitter] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_topDrawer->parentWidget()->setVisible(!vsplitter->sizes().at(0));
     });
 
-    connect(widget->m_bottomDrawer, &QToolButton::clicked, this, [this, widget] {
-        m_vsplitter->setSizes(QList<int>() << m_vsplitter->sizes().at(0) << 1);
+    connect(widget->m_bottomDrawer, &QToolButton::clicked, this, [this, widget, vsplitter] {
+        vsplitter->setSizes(QList<int>() << vsplitter->sizes().at(0) << 1);
         widget->m_bottomDrawer->parentWidget()->hide();
     });
 
-    connect(m_vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget] (int pos, int index) {
-        Q_UNUSED(pos) Q_UNUSED(index) widget->m_bottomDrawer->parentWidget()->setVisible(!m_vsplitter->sizes().at(1));
+    connect(vsplitter, &Core::MiniSplitter::splitterMoved, this, [this, widget, vsplitter] (int pos, int index) {
+        Q_UNUSED(pos) Q_UNUSED(index) widget->m_bottomDrawer->parentWidget()->setVisible(!vsplitter->sizes().at(1));
     });
 
     connect(m_iodevice, &OpenMVPluginIO::printData, Core::MessageManager::instance(), &Core::MessageManager::printData);
@@ -692,14 +1142,14 @@ void OpenMVPlugin::extensionsInitialized()
         settings->value(QStringLiteral(OUTPUT_WINDOW_FONT_ZOOM_STATE)).toFloat());
     settings->endGroup();
 
-    connect(q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow())), &Core::Internal::MainWindow::showEventSignal, this, [this, widget, settings] {
+    connect(q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow())), &Core::Internal::MainWindow::showEventSignal, this, [this, widget, settings, hsplitter, vsplitter] {
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-        if(settings->contains(QStringLiteral(HSPLITTER_STATE))) m_hsplitter->restoreState(settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
-        if(settings->contains(QStringLiteral(VSPLITTER_STATE))) m_vsplitter->restoreState(settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
-        widget->m_leftDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(0)) : false);
-        widget->m_rightDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!m_hsplitter->sizes().at(1)) : false);
-        widget->m_topDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(0)) : false);
-        widget->m_bottomDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!m_vsplitter->sizes().at(1)) : false);
+        if(settings->contains(QStringLiteral(HSPLITTER_STATE))) hsplitter->restoreState(settings->value(QStringLiteral(HSPLITTER_STATE)).toByteArray());
+        if(settings->contains(QStringLiteral(VSPLITTER_STATE))) vsplitter->restoreState(settings->value(QStringLiteral(VSPLITTER_STATE)).toByteArray());
+        widget->m_leftDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!hsplitter->sizes().at(0)) : false);
+        widget->m_rightDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(HSPLITTER_STATE)) ? (!hsplitter->sizes().at(1)) : false);
+        widget->m_topDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!vsplitter->sizes().at(0)) : false);
+        widget->m_bottomDrawer->parentWidget()->setVisible(settings->contains(QStringLiteral(VSPLITTER_STATE)) ? (!vsplitter->sizes().at(1)) : false);
         settings->endGroup();
     });
 
@@ -718,15 +1168,15 @@ void OpenMVPlugin::extensionsInitialized()
 
     settings->endArray();
 
-    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this, zoomButton, colorSpace] {
+    connect(Core::ICore::instance(), &Core::ICore::saveSettingsRequested, this, [this, zoomButton, colorSpace, hsplitter, vsplitter] {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
         settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
             Core::EditorManager::saveState());
         settings->setValue(QStringLiteral(HSPLITTER_STATE),
-            m_hsplitter->saveState());
+            hsplitter->saveState());
         settings->setValue(QStringLiteral(VSPLITTER_STATE),
-            m_vsplitter->saveState());
+            vsplitter->saveState());
         settings->setValue(QStringLiteral(ZOOM_STATE),
             zoomButton->isChecked());
         settings->setValue(QStringLiteral(JPG_COMPRESS_STATE),
@@ -819,414 +1269,6 @@ void OpenMVPlugin::extensionsInitialized()
 
     ///////////////////////////////////////////////////////////////////////////
 
-    QStringList providerVariables;
-    QStringList providerFunctions;
-    QMap<QString, QStringList> providerFunctionArgs;
-
-    QRegularExpression moduleRegEx(QStringLiteral("<div class=\"section\" id=\"module-(.+?)\">(.*?)<div class=\"section\""), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression spanRegEx(QStringLiteral("<span.*?>"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression linkRegEx(QStringLiteral("<a.*?>"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression classRegEx(QStringLiteral(" class=\".*?\""), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression cdfmRegEx(QStringLiteral("<dl class=\"(class|data|function|method)\">\\s*<dt id=\"(.+?)\">(.*?)</dt>\\s*<dd>(.*?)</dd>\\s*</dl>"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression argumentRegEx(QStringLiteral("<span class=\"sig-paren\">\\(</span>(.*?)<span class=\"sig-paren\">\\)</span>"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression tupleRegEx(QStringLiteral("\\(.*?\\)"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression listRegEx(QStringLiteral("\\[.*?\\]"), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression dictionaryRegEx(QStringLiteral("\\{.*?\\}"), QRegularExpression::DotMatchesEverythingOption);
-
-    QDirIterator it(Core::ICore::userResourcePath() + QStringLiteral("/html/library"), QDir::Files);
-
-    while(it.hasNext())
-    {
-        QFile file(it.next());
-
-        if(file.open(QIODevice::ReadOnly))
-        {
-            QString data = QString::fromUtf8(file.readAll());
-
-            if((file.error() == QFile::NoError) && (!data.isEmpty()))
-            {
-                file.close();
-
-                QRegularExpressionMatch moduleMatch = moduleRegEx.match(data);
-
-                if(moduleMatch.hasMatch())
-                {
-                    QString name = moduleMatch.captured(1);
-                    QString text = moduleMatch.captured(2).
-                                   remove(QStringLiteral("\u00B6")).
-                                   remove(spanRegEx).
-                                   remove(QStringLiteral("</span>")).
-                                   remove(linkRegEx).
-                                   remove(QStringLiteral("</a>")).
-                                   remove(classRegEx).
-                                   replace(QStringLiteral("<h1>"), QStringLiteral("<h3>")).
-                                   replace(QStringLiteral("</h1>"), QStringLiteral("</h3>"));
-
-                    documentation_t d;
-                    d.moduleName = QString();
-                    d.className = QString();
-                    d.name = name;
-                    d.text = text;
-                    m_modules.append(d);
-
-                    if(name.startsWith(QLatin1Char('u')))
-                    {
-                        d.name = name.mid(1);
-                        m_modules.append(d);
-                    }
-                }
-
-                QRegularExpressionMatchIterator matches = cdfmRegEx.globalMatch(data);
-
-                while(matches.hasNext())
-                {
-                    QRegularExpressionMatch match = matches.next();
-                    QString type = match.captured(1);
-                    QString id = match.captured(2);
-                    QString head = match.captured(3);
-                    QString body = match.captured(4);
-                    QStringList idList = id.split(QLatin1Char('.'), QString::SkipEmptyParts);
-
-                    if((1 <= idList.size()) && (idList.size() <= 3))
-                    {
-                        documentation_t d;
-                        d.moduleName = (idList.size() > 1) ? idList.at(0) : QString();
-                        d.className = (idList.size() > 2) ? idList.at(1) : QString();
-                        d.name = idList.last();
-                        d.text = QString(QStringLiteral("<h3>%1</h3>%2")).arg(it.fileInfo().completeBaseName() + QStringLiteral(" - ") + head).arg(body).
-                                 remove(QStringLiteral("\u00B6")).
-                                 remove(spanRegEx).
-                                 remove(QStringLiteral("</span>")).
-                                 remove(linkRegEx).
-                                 remove(QStringLiteral("</a>")).
-                                 remove(classRegEx);
-
-                        if(type == QStringLiteral("class"))
-                        {
-                            m_classes.append(d);
-                            providerFunctions.append(d.name);
-                        }
-                        else if(type == QStringLiteral("data"))
-                        {
-                            m_datas.append(d);
-                            providerVariables.append(d.name);
-                        }
-                        else if(type == QStringLiteral("function"))
-                        {
-                            m_functions.append(d);
-                            providerFunctions.append(d.name);
-                        }
-                        else if(type == QStringLiteral("method"))
-                        {
-                            m_methods.append(d);
-                            providerFunctions.append(d.name);
-                        }
-
-                        QRegularExpressionMatch args = argumentRegEx.match(head);
-
-                        if(args.hasMatch())
-                        {
-                            QStringList list;
-
-                            foreach(const QString &arg, args.captured(1).
-                                                        remove(QLatin1String("<span class=\"optional\">[</span>")).
-                                                        remove(QLatin1String("<span class=\"optional\">]</span>")).
-                                                        remove(QLatin1String("<em>")).
-                                                        remove(QLatin1String("</em>")).
-                                                        remove(tupleRegEx).
-                                                        remove(listRegEx).
-                                                        remove(dictionaryRegEx).
-                                                        remove(QLatin1Char(' ')).
-                                                        split(QLatin1Char(','), QString::SkipEmptyParts))
-                            {
-                                int equals = arg.indexOf(QLatin1Char('='));
-                                QString temp = (equals != -1) ? arg.left(equals) : arg;
-
-                                m_arguments.insert(temp);
-                                list.append(temp);
-                            }
-
-                            providerFunctionArgs.insert(d.name, list);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    connect(TextEditor::Internal::Manager::instance(), &TextEditor::Internal::Manager::highlightingFilesRegistered, this, [this] {
-        QString id = TextEditor::Internal::Manager::instance()->definitionIdByName(QStringLiteral("Python"));
-
-        if(!id.isEmpty())
-        {
-            QSharedPointer<TextEditor::Internal::HighlightDefinition> def = TextEditor::Internal::Manager::instance()->definition(id);
-
-            if(def)
-            {
-                QSharedPointer<TextEditor::Internal::KeywordList> modulesList = def->keywordList(QStringLiteral("listOpenMVModules"));
-                QSharedPointer<TextEditor::Internal::KeywordList> classesList = def->keywordList(QStringLiteral("listOpenMVClasses"));
-                QSharedPointer<TextEditor::Internal::KeywordList> datasList = def->keywordList(QStringLiteral("listOpenMVDatas"));
-                QSharedPointer<TextEditor::Internal::KeywordList> functionsList = def->keywordList(QStringLiteral("listOpenMVFunctions"));
-                QSharedPointer<TextEditor::Internal::KeywordList> methodsList = def->keywordList(QStringLiteral("listOpenMVMethods"));
-                QSharedPointer<TextEditor::Internal::KeywordList> argumentsList = def->keywordList(QStringLiteral("listOpenMVArguments"));
-
-                if(modulesList)
-                {
-                    foreach(const documentation_t &d, m_modules)
-                    {
-                        modulesList->addKeyword(d.name);
-                    }
-                }
-
-                if(classesList)
-                {
-                    foreach(const documentation_t &d, m_classes)
-                    {
-                        classesList->addKeyword(d.name);
-                    }
-                }
-
-                if(datasList)
-                {
-                    foreach(const documentation_t &d, m_datas)
-                    {
-                        datasList->addKeyword(d.name);
-                    }
-                }
-
-                if(functionsList)
-                {
-                    foreach(const documentation_t &d, m_functions)
-                    {
-                        functionsList->addKeyword(d.name);
-                    }
-                }
-
-                if(methodsList)
-                {
-                    foreach(const documentation_t &d, m_methods)
-                    {
-                        methodsList->addKeyword(d.name);
-                    }
-                }
-
-                if(argumentsList)
-                {
-                    foreach(const QString &d, m_arguments.values())
-                    {
-                        argumentsList->addKeyword(d);
-                    }
-                }
-            }
-        }
-    });
-
-    OpenMVPluginCompletionAssistProvider *provider = new OpenMVPluginCompletionAssistProvider(providerVariables, providerFunctions, providerFunctionArgs);
-    provider->setParent(this);
-
-    connect(Core::EditorManager::instance(), &Core::EditorManager::editorCreated, this, [this, provider] (Core::IEditor *editor, const QString &fileName) {
-        TextEditor::BaseTextEditor *textEditor = qobject_cast<TextEditor::BaseTextEditor *>(editor);
-
-        if(textEditor && fileName.endsWith(QStringLiteral(".py"), Qt::CaseInsensitive))
-        {
-            textEditor->textDocument()->setCompletionAssistProvider(provider);
-            connect(textEditor->editorWidget(), &TextEditor::TextEditorWidget::tooltipOverrideRequested, this, [this] (TextEditor::TextEditorWidget *widget, const QPoint &globalPos, int position, bool *handled) {
-
-                if(handled)
-                {
-                    *handled = true;
-                }
-
-                QTextCursor cursor(widget->textDocument()->document());
-                cursor.setPosition(position);
-                cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
-                QString text = cursor.selectedText().replace(QChar::ParagraphSeparator, QLatin1Char('\n'));
-
-                enum
-                {
-                    IN_NONE,
-                    IN_COMMENT,
-                    IN_STRING_0,
-                    IN_STRING_1
-                }
-                in_state = IN_NONE;
-
-                for(int i = 0; i < text.size(); i++)
-                {
-                    switch(in_state)
-                    {
-                        case IN_NONE:
-                        {
-                            if((text.at(i) == QLatin1Char('#')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_COMMENT;
-                            if((text.at(i) == QLatin1Char('\'')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_0;
-                            if((text.at(i) == QLatin1Char('\"')) && ((!i) || (text.at(i-1) != QLatin1Char('\\')))) in_state = IN_STRING_1;
-                            break;
-                        }
-                        case IN_COMMENT:
-                        {
-                            if((text.at(i) == QLatin1Char('\n')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
-                            break;
-                        }
-                        case IN_STRING_0:
-                        {
-                            if((text.at(i) == QLatin1Char('\'')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
-                            break;
-                        }
-                        case IN_STRING_1:
-                        {
-                            if((text.at(i) == QLatin1Char('\"')) && (text.at(i-1) != QLatin1Char('\\'))) in_state = IN_NONE;
-                            break;
-                        }
-                    }
-                }
-
-                if(in_state == IN_NONE)
-                {
-                    cursor.setPosition(position);
-                    cursor.select(QTextCursor::WordUnderCursor);
-                    text = cursor.selectedText();
-
-                    QStringList list;
-
-                    foreach(const documentation_t &d, m_modules)
-                    {
-                        if(d.name == text)
-                        {
-                            list.append(d.text);
-                        }
-                    }
-
-                    if(widget->textDocument()->document()->characterAt(qMin(cursor.position(), cursor.anchor()) - 1) == QLatin1Char('.'))
-                    {
-                        foreach(const documentation_t &d, m_datas)
-                        {
-                            if(d.name == text)
-                            {
-                                list.append(d.text);
-                            }
-                        }
-
-                        if(widget->textDocument()->document()->characterAt(qMax(cursor.position(), cursor.anchor())) == QLatin1Char('('))
-                        {
-                            foreach(const documentation_t &d, m_classes)
-                            {
-                                if(d.name == text)
-                                {
-                                    list.append(d.text);
-                                }
-                            }
-
-                            foreach(const documentation_t &d, m_functions)
-                            {
-                                if(d.name == text)
-                                {
-                                    list.append(d.text);
-                                }
-                            }
-
-                            foreach(const documentation_t &d, m_methods)
-                            {
-                                if(d.name == text)
-                                {
-                                    list.append(d.text);
-                                }
-                            }
-                        }
-                    }
-
-                    if(!list.isEmpty())
-                    {
-                        QString string;
-                        int i = 0;
-
-                        for(int j = 0, k = qCeil(qSqrt(list.size())); j < k; j++)
-                        {
-                            string.append(QStringLiteral("<tr>"));
-
-                            for(int l = 0, m = k; l < m; l++)
-                            {
-                                string.append(QStringLiteral("<td style=\"padding:6px;\">") + list.at(i++) + QStringLiteral("</td>"));
-
-                                if(i >= list.size())
-                                {
-                                    break;
-                                }
-                            }
-
-                            string.append(QStringLiteral("</tr>"));
-
-                            if(i >= list.size())
-                            {
-                                break;
-                            }
-                        }
-
-                        Utils::ToolTip::show(globalPos, QStringLiteral("<table>") + string + QStringLiteral("</table>"), widget);
-                        return;
-                    }
-                }
-
-                Utils::ToolTip::hide();
-            });
-
-            connect(textEditor->editorWidget(), &TextEditor::TextEditorWidget::contextMenuEventCB, this, [this, textEditor] (QMenu *menu, QString text) {
-                QRegularExpressionMatch grayscaleMatch = QRegularExpression(QStringLiteral("^\\s*\\(\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*\\)\\s*$")).match(text);
-
-                if(grayscaleMatch.hasMatch())
-                {
-                    menu->addSeparator();
-                    QAction *action = new QAction(tr("Edit Grayscale threshold with Threshold Editor"), menu);
-                    connect(action, &QAction::triggered, this, [this, textEditor, grayscaleMatch] {
-                        QList<int> list = openThresholdEditor(QList<QVariant>()
-                        << grayscaleMatch.captured(1).toInt()
-                        << grayscaleMatch.captured(2).toInt()
-                        );
-                        if(!list.isEmpty())
-                        {
-                            textEditor->textCursor().removeSelectedText();
-                            textEditor->textCursor().insertText(QString(QStringLiteral("(%1, %2)")).arg(list.at(0), 3) // can't use takeFirst() here
-                                                                                                   .arg(list.at(1), 3)); // can't use takeFirst() here
-                        }
-                    });
-                    menu->addAction(action);
-                }
-
-                QRegularExpressionMatch labMatch = QRegularExpression(QStringLiteral("^\\s*\\(\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*,\\s*([+-]?\\d+)\\s*\\)\\s*$")).match(text);
-
-                if(labMatch.hasMatch())
-                {
-                    menu->addSeparator();
-                    QAction *action = new QAction(tr("Edit LAB threshold with Threshold Editor"), menu);
-                    connect(action, &QAction::triggered, this, [this, textEditor, labMatch] {
-                        QList<int> list = openThresholdEditor(QList<QVariant>()
-                        << labMatch.captured(1).toInt()
-                        << labMatch.captured(2).toInt()
-                        << labMatch.captured(3).toInt()
-                        << labMatch.captured(4).toInt()
-                        << labMatch.captured(5).toInt()
-                        << labMatch.captured(6).toInt()
-                        );
-                        if(!list.isEmpty())
-                        {
-                            textEditor->textCursor().removeSelectedText();
-                            textEditor->textCursor().insertText(QString(QStringLiteral("(%1, %2, %3, %4, %5, %6)")).arg(list.at(2), 3) // can't use takeFirst() here
-                                                                                                                   .arg(list.at(3), 3) // can't use takeFirst() here
-                                                                                                                   .arg(list.at(4), 4) // can't use takeFirst() here
-                                                                                                                   .arg(list.at(5), 4) // can't use takeFirst() here
-                                                                                                                   .arg(list.at(6), 4) // can't use takeFirst() here
-                                                                                                                   .arg(list.at(7), 4)); // can't use takeFirst() here
-                        }
-                    });
-                    menu->addAction(action);
-                }
-            });
-        }
-    });
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    // TODO : Move this to delayed init.
-
     Core::IEditor *editor = Core::EditorManager::currentEditor();
 
     if(editor ? (editor->document() ? editor->document()->contents().isEmpty() : true) : true)
@@ -1270,7 +1312,7 @@ void OpenMVPlugin::extensionsInitialized()
 
             if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
             {
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("^(\\d+)\\.(\\d+)\\.(\\d+)$")).match(QString::fromUtf8(data).trimmed());
 
                 int major = match.captured(1).toInt();
                 int minor = match.captured(2).toInt();
@@ -1377,7 +1419,7 @@ bool OpenMVPlugin::delayedInitialize()
 
         while(i.hasNext())
         {
-            if(qAbs(i.next().time.secsTo(currentTime)) >= 60)
+            if(qAbs(i.next().time.secsTo(currentTime)) >= WIFI_PORT_RETIRE)
             {
                 i.remove();
             }
@@ -1825,27 +1867,34 @@ void OpenMVPlugin::bootloaderClicked()
     layout->addRow(tr("Firmware Path"), pathChooser);
     layout->addItem(new QSpacerItem(0, 6));
 
+    QHBoxLayout *layout2 = new QHBoxLayout;
+    layout2->setMargin(0);
+    QWidget *widget = new QWidget;
+    widget->setLayout(layout2);
+
     QCheckBox *checkBox = new QCheckBox(tr("Erase internal file system"));
     checkBox->setChecked(settings->value(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), false).toBool());
+    layout2->addWidget(checkBox);
     checkBox->setVisible(!pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-    layout->addRow(checkBox);
     QCheckBox *checkBox2 = new QCheckBox(tr("Erase internal file system"));
     checkBox2->setChecked(true);
     checkBox2->setEnabled(false);
+    layout2->addWidget(checkBox2);
     checkBox2->setVisible(pathChooser->path().endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive));
-    layout->addRow(checkBox2);
-    layout->addItem(new QSpacerItem(0, 6));
 
     QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Cancel);
     QPushButton *run = new QPushButton(tr("Run"));
     run->setEnabled(pathChooser->isValid());
     box->addButton(run, QDialogButtonBox::AcceptRole);
-    layout->addRow(box);
+    layout2->addSpacing(160);
+    layout2->addWidget(box);
+    layout->addRow(widget);
 
     connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     connect(pathChooser, &Utils::PathChooser::validChanged, run, &QPushButton::setEnabled);
     connect(pathChooser, &Utils::PathChooser::pathChanged, this, [this, dialog, checkBox, checkBox2] (const QString &path) {
+
         if(path.endsWith(QStringLiteral(".dfu"), Qt::CaseInsensitive))
         {
             checkBox->setVisible(false);
@@ -1855,8 +1904,8 @@ void OpenMVPlugin::bootloaderClicked()
         {
             checkBox->setVisible(true);
             checkBox2->setVisible(false);
-
         }
+
         dialog->adjustSize();
     });
 
@@ -1865,7 +1914,7 @@ void OpenMVPlugin::bootloaderClicked()
         QString forceFirmwarePath = pathChooser->path();
         bool flashFSErase = checkBox->isChecked();
 
-        if(QFileInfo(forceFirmwarePath).isFile())
+        if(QFileInfo(forceFirmwarePath).exists() && QFileInfo(forceFirmwarePath).isFile())
         {
             settings->setValue(QStringLiteral(LAST_FIRMWARE_PATH), forceFirmwarePath);
             settings->setValue(QStringLiteral(LAST_FLASH_FS_ERASE_STATE), flashFSErase);
@@ -3453,6 +3502,82 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
     }
 }
 
+QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent)
+{
+    QMap<QString, QAction *> actions;
+    QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+
+    while(it.hasNext())
+    {
+        QString filePath = it.next();
+
+        if(it.fileInfo().isDir())
+        {
+            QMenu *menu = new QMenu(it.fileName(), parent);
+            QMap<QString, QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu);
+            menu->addActions(menuActions.values());
+            menu->setDisabled(menuActions.values().isEmpty());
+            actions.insertMulti(it.fileName(), menu->menuAction());
+        }
+        else
+        {
+            QAction *action = new QAction(it.fileName(), parent);
+            connect(action, &QAction::triggered, this, [this, filePath]
+            {
+                QFile file(filePath);
+
+                if(file.open(QIODevice::ReadOnly))
+                {
+                    QByteArray data = file.readAll();
+
+                    if((file.error() == QFile::NoError) && (!data.isEmpty()))
+                    {
+                        Core::EditorManager::cutForwardNavigationHistory();
+                        Core::EditorManager::addCurrentPositionToNavigationHistory();
+
+                        QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral("_$.") + QFileInfo(filePath).completeSuffix();
+                        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, data));
+
+                        if(editor)
+                        {
+                            editor->editorWidget()->configureGenericHighlighter();
+                            Core::EditorManager::activateEditor(editor);
+                        }
+                        else
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Open Example"),
+                                tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                        }
+                    }
+                    else if(file.error() != QFile::NoError)
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Open Example"),
+                            tr("Error: %L1!").arg(file.errorString()));
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Open Example"),
+                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        tr("Open Example"),
+                        tr("Error: %L1!").arg(file.errorString()));
+                }
+            });
+
+            actions.insertMulti(it.fileName(), action);
+        }
+    }
+
+    return actions;
+}
+
 void OpenMVPlugin::updateCam()
 {
     if(!m_working)
@@ -3637,82 +3762,6 @@ void OpenMVPlugin::setPortPath(bool silent)
     }
 }
 
-QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent)
-{
-    QMap<QString, QAction *> actions;
-    QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-
-    while(it.hasNext())
-    {
-        QString filePath = it.next();
-
-        if(it.fileInfo().isDir())
-        {
-            QMenu *menu = new QMenu(it.fileName(), parent);
-            QMap<QString, QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu);
-            menu->addActions(menuActions.values());
-            menu->setDisabled(menuActions.values().isEmpty());
-            actions.insertMulti(it.fileName(), menu->menuAction());
-        }
-        else
-        {
-            QAction *action = new QAction(it.fileName(), parent);
-            connect(action, &QAction::triggered, this, [this, filePath]
-            {
-                QFile file(filePath);
-
-                if(file.open(QIODevice::ReadOnly))
-                {
-                    QByteArray data = file.readAll();
-
-                    if((file.error() == QFile::NoError) && (!data.isEmpty()))
-                    {
-                        Core::EditorManager::cutForwardNavigationHistory();
-                        Core::EditorManager::addCurrentPositionToNavigationHistory();
-
-                        QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral("_$.") + QFileInfo(filePath).completeSuffix();
-                        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, data));
-
-                        if(editor)
-                        {
-                            editor->editorWidget()->configureGenericHighlighter();
-                            Core::EditorManager::activateEditor(editor);
-                        }
-                        else
-                        {
-                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("Open Example"),
-                                tr("Cannot open the example file \"%L1\"!").arg(filePath));
-                        }
-                    }
-                    else if(file.error() != QFile::NoError)
-                    {
-                        QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
-                            tr("Error: %L1!").arg(file.errorString()));
-                    }
-                    else
-                    {
-                        QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
-                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
-                    }
-                }
-                else
-                {
-                    QMessageBox::critical(Core::ICore::dialogParent(),
-                        tr("Open Example"),
-                        tr("Error: %L1!").arg(file.errorString()));
-                }
-            });
-
-            actions.insertMulti(it.fileName(), action);
-        }
-    }
-
-    return actions;
-}
-
 const int connectToSerialPortIndex = 0;
 const int connectToUDPPortIndex = 1;
 const int connectToTCPPortIndex = 2;
@@ -3877,98 +3926,117 @@ void OpenMVPlugin::openTerminalAboutToShow()
                 }
                 case connectToUDPPortIndex:
                 {
-                    bool hostNameOk;
-                    QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
-                        tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
-                        QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                    QMessageBox box(QMessageBox::Question, tr("New Terminal"), tr("Connect to a UDP server as a client or start a UDP Server?"), QMessageBox::Cancel, Core::ICore::dialogParent(),
                         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                    QPushButton *button0 = box.addButton(tr(" Connect to a Server "), QMessageBox::AcceptRole);
+                    QPushButton *button1 = box.addButton(tr(" Start a Server "), QMessageBox::AcceptRole);
+                    box.setDefaultButton(settings->value(QStringLiteral(LAST_OPEN_TERMINAL_UDP_TYPE_SELECT), 0).toInt() ? button1 : button0);
+                    box.setEscapeButton(QMessageBox::Cancel);
+                    box.exec();
 
-                    if(hostNameOk && (!hostName.isEmpty()))
+                    if(box.clickedButton() == button0)
                     {
-                        QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
+                        bool hostNameOk;
+                        QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
+                            tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
+                            QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
-                        if(hostNameList.size() == 2)
+                        if(hostNameOk && (!hostName.isEmpty()))
                         {
-                            bool portValueOk;
-                            QString hostNameValue = hostNameList.at(0);
-                            int portValue = hostNameList.at(1).toInt(&portValueOk);
+                            QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
 
-                            if(portValueOk)
+                            if(hostNameList.size() == 2)
                             {
-                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
-                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), hostName);
+                                bool portValueOk;
+                                QString hostNameValue = hostNameList.at(0);
+                                int portValue = hostNameList.at(1).toInt(&portValueOk);
 
-                                openTerminalMenuData_t data;
-                                data.displayName = tr("UDP Port - %L1").arg(hostName);
-                                data.optionIndex = connectToUDPPortIndex;
-                                data.commandStr = hostNameValue;
-                                data.commandVal = portValue;
-
-                                if(!openTerminalMenuDataContains(data.displayName))
+                                if(portValueOk)
                                 {
-                                    m_openTerminalMenuData.append(data);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_TYPE_SELECT), 0);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_PORT), hostName);
 
-                                    if(m_openTerminalMenuData.size() > 10)
+                                    openTerminalMenuData_t data;
+                                    data.displayName = tr("UDP Client Connection - %1").arg(hostName);
+                                    data.optionIndex = connectToUDPPortIndex;
+                                    data.commandStr = hostNameValue;
+                                    data.commandVal = portValue;
+
+                                    if(!openTerminalMenuDataContains(data.displayName))
                                     {
-                                        m_openTerminalMenuData.removeFirst();
+                                        m_openTerminalMenuData.append(data);
+
+                                        if(m_openTerminalMenuData.size() > 10)
+                                        {
+                                            m_openTerminalMenuData.removeFirst();
+                                        }
                                     }
-                                }
 
-                                OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
-                                OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
+                                    OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
+                                    OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
 
-                                connect(terminal, &OpenMVTerminal::writeBytes,
-                                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+                                    connect(terminal, &OpenMVTerminal::writeBytes,
+                                            terminalDevice, &OpenMVTerminalPort::writeBytes);
 
-                                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
-                                        terminal, &OpenMVTerminal::readBytes);
+                                    connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                            terminal, &OpenMVTerminal::readBytes);
 
-                                QString errorMessage2 = QString();
-                                QString *errorMessage2Ptr = &errorMessage2;
+                                    QString errorMessage2 = QString();
+                                    QString *errorMessage2Ptr = &errorMessage2;
 
-                                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
-                                    *errorMessage2Ptr = errorMessage;
-                                });
+                                    QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                        *errorMessage2Ptr = errorMessage;
+                                    });
 
-                                // QProgressDialog scoping...
-                                {
-                                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                    dialog.setWindowModality(Qt::ApplicationModal);
-                                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-                                    dialog.setCancelButton(Q_NULLPTR);
-                                    QTimer::singleShot(1000, &dialog, &QWidget::show);
+                                    // QProgressDialog scoping...
+                                    {
+                                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                        dialog.setWindowModality(Qt::ApplicationModal);
+                                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                        dialog.setCancelButton(Q_NULLPTR);
+                                        QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-                                    QEventLoop loop;
+                                        QEventLoop loop;
 
-                                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                            &loop, &QEventLoop::quit);
+                                        connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                                &loop, &QEventLoop::quit);
 
-                                    terminalDevice->open(data.commandStr, data.commandVal);
+                                        terminalDevice->open(data.commandStr, data.commandVal);
 
-                                    loop.exec();
-                                    dialog.close();
-                                }
+                                        loop.exec();
+                                        dialog.close();
+                                    }
 
-                                disconnect(conn);
+                                    disconnect(conn);
 
-                                if(!errorMessage2.isEmpty())
-                                {
-                                    QMessageBox::critical(Core::ICore::dialogParent(),
-                                        tr("New Terminal"),
-                                        tr("Error: %L1!").arg(errorMessage2));
+                                    if(!errorMessage2.isEmpty())
+                                    {
+                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                            tr("New Terminal"),
+                                            tr("Error: %L1!").arg(errorMessage2));
 
-                                    delete terminalDevice;
-                                    delete terminal;
+                                        delete terminalDevice;
+                                        delete terminal;
+                                    }
+                                    else
+                                    {
+                                        terminal->show();
+                                        connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                                terminal, &OpenMVTerminal::close);
+                                    }
                                 }
                                 else
                                 {
-                                    terminal->show();
-                                    connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
-                                            terminal, &OpenMVTerminal::close);
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("New Terminal"),
+                                        tr("Invalid string: \"%L1\"!").arg(hostName));
                                 }
                             }
                             else
@@ -3978,11 +4046,98 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                     tr("Invalid string: \"%L1\"!").arg(hostName));
                             }
                         }
-                        else
+                    }
+                    else if(box.clickedButton() == button1)
+                    {
+                        bool portValueOk;
+                        int portValue = QInputDialog::getInt(Core::ICore::dialogParent(),
+                            tr("New Terminal"), tr("Please enter a port number (enter 0 for any random free port)"),
+                            settings->value(QStringLiteral(LAST_OPEN_TERMINAL_UDP_SERVER_PORT), 0).toInt(), 0, 65535, 1, &portValueOk,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                        if(portValueOk)
                         {
-                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("New Terminal"),
-                                tr("Invalid string: \"%L1\"!").arg(hostName));
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_TYPE_SELECT), 1);
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_UDP_SERVER_PORT), portValue);
+
+                            openTerminalMenuData_t data;
+                            data.displayName = tr("UDP Server Connection - %1").arg(portValue);
+                            data.optionIndex = connectToUDPPortIndex;
+                            data.commandStr = QString();
+                            data.commandVal = portValue;
+
+                            if(!openTerminalMenuDataContains(data.displayName))
+                            {
+                                m_openTerminalMenuData.append(data);
+
+                                if(m_openTerminalMenuData.size() > 10)
+                                {
+                                    m_openTerminalMenuData.removeFirst();
+                                }
+                            }
+
+                            OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
+                            OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
+
+                            connect(terminal, &OpenMVTerminal::writeBytes,
+                                    terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                            connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                    terminal, &OpenMVTerminal::readBytes);
+
+                            QString errorMessage2 = QString();
+                            QString *errorMessage2Ptr = &errorMessage2;
+
+                            QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                *errorMessage2Ptr = errorMessage;
+                            });
+
+                            // QProgressDialog scoping...
+                            {
+                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                dialog.setWindowModality(Qt::ApplicationModal);
+                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                dialog.setCancelButton(Q_NULLPTR);
+                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                                QEventLoop loop;
+
+                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        &loop, &QEventLoop::quit);
+
+                                terminalDevice->open(data.commandStr, data.commandVal);
+
+                                loop.exec();
+                                dialog.close();
+                            }
+
+                            disconnect(conn);
+
+                            if((!errorMessage2.isEmpty()) && (!errorMessage2.startsWith(QStringLiteral("OPENMV::"))))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("New Terminal"),
+                                    tr("Error: %L1!").arg(errorMessage2));
+
+                                delete terminalDevice;
+                                delete terminal;
+                            }
+                            else
+                            {
+                                if(!errorMessage2.isEmpty())
+                                {
+                                    terminal->setWindowTitle(terminal->windowTitle().remove(QRegularExpression(QStringLiteral(" - \\d+"))) + QString(QStringLiteral(" - %1")).arg(errorMessage2.remove(0, 8)));
+                                }
+
+                                terminal->show();
+                                connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                        terminal, &OpenMVTerminal::close);
+                            }
                         }
                     }
 
@@ -3990,98 +4145,117 @@ void OpenMVPlugin::openTerminalAboutToShow()
                 }
                 case connectToTCPPortIndex:
                 {
-                    bool hostNameOk;
-                    QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
-                        tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
-                        QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                    QMessageBox box(QMessageBox::Question, tr("New Terminal"), tr("Connect to a TCP server as a client or start a TCP Server?"), QMessageBox::Cancel, Core::ICore::dialogParent(),
                         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                         (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+                    QPushButton *button0 = box.addButton(tr(" Connect to a Server "), QMessageBox::AcceptRole);
+                    QPushButton *button1 = box.addButton(tr(" Start a Server "), QMessageBox::AcceptRole);
+                    box.setDefaultButton(settings->value(QStringLiteral(LAST_OPEN_TERMINAL_TCP_TYPE_SELECT), 0).toInt() ? button1 : button0);
+                    box.setEscapeButton(QMessageBox::Cancel);
+                    box.exec();
 
-                    if(hostNameOk && (!hostName.isEmpty()))
+                    if(box.clickedButton() == button0)
                     {
-                        QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
+                        bool hostNameOk;
+                        QString hostName = QInputDialog::getText(Core::ICore::dialogParent(),
+                            tr("New Terminal"), tr("Please enter a IP address (or domain name) and port (e.g. xxx.xxx.xxx.xxx:xxxx)"),
+                            QLineEdit::Normal, settings->value(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), QStringLiteral("xxx.xxx.xxx.xxx:xxxx")).toString(), &hostNameOk,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
-                        if(hostNameList.size() == 2)
+                        if(hostNameOk && (!hostName.isEmpty()))
                         {
-                            bool portValueOk;
-                            QString hostNameValue = hostNameList.at(0);
-                            int portValue = hostNameList.at(1).toInt(&portValueOk);
+                            QStringList hostNameList = hostName.split(QLatin1Char(':'), QString::SkipEmptyParts);
 
-                            if(portValueOk)
+                            if(hostNameList.size() == 2)
                             {
-                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
-                                settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), hostName);
+                                bool portValueOk;
+                                QString hostNameValue = hostNameList.at(0);
+                                int portValue = hostNameList.at(1).toInt(&portValueOk);
 
-                                openTerminalMenuData_t data;
-                                data.displayName = tr("TCP Port - %L1").arg(hostName);
-                                data.optionIndex = connectToTCPPortIndex;
-                                data.commandStr = hostNameValue;
-                                data.commandVal = portValue;
-
-                                if(!openTerminalMenuDataContains(data.displayName))
+                                if(portValueOk)
                                 {
-                                    m_openTerminalMenuData.append(data);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_TYPE_SELECT), 0);
+                                    settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_PORT), hostName);
 
-                                    if(m_openTerminalMenuData.size() > 10)
+                                    openTerminalMenuData_t data;
+                                    data.displayName = tr("TCP Client Connection - %1").arg(hostName);
+                                    data.optionIndex = connectToTCPPortIndex;
+                                    data.commandStr = hostNameValue;
+                                    data.commandVal = portValue;
+
+                                    if(!openTerminalMenuDataContains(data.displayName))
                                     {
-                                        m_openTerminalMenuData.removeFirst();
+                                        m_openTerminalMenuData.append(data);
+
+                                        if(m_openTerminalMenuData.size() > 10)
+                                        {
+                                            m_openTerminalMenuData.removeFirst();
+                                        }
                                     }
-                                }
 
-                                OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
-                                OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
+                                    OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
+                                    OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
 
-                                connect(terminal, &OpenMVTerminal::writeBytes,
-                                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+                                    connect(terminal, &OpenMVTerminal::writeBytes,
+                                            terminalDevice, &OpenMVTerminalPort::writeBytes);
 
-                                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
-                                        terminal, &OpenMVTerminal::readBytes);
+                                    connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                            terminal, &OpenMVTerminal::readBytes);
 
-                                QString errorMessage2 = QString();
-                                QString *errorMessage2Ptr = &errorMessage2;
+                                    QString errorMessage2 = QString();
+                                    QString *errorMessage2Ptr = &errorMessage2;
 
-                                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
-                                    *errorMessage2Ptr = errorMessage;
-                                });
+                                    QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                        *errorMessage2Ptr = errorMessage;
+                                    });
 
-                                // QProgressDialog scoping...
-                                {
-                                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
-                                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
-                                    dialog.setWindowModality(Qt::ApplicationModal);
-                                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
-                                    dialog.setCancelButton(Q_NULLPTR);
-                                    QTimer::singleShot(1000, &dialog, &QWidget::show);
+                                    // QProgressDialog scoping...
+                                    {
+                                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                        dialog.setWindowModality(Qt::ApplicationModal);
+                                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                        dialog.setCancelButton(Q_NULLPTR);
+                                        QTimer::singleShot(1000, &dialog, &QWidget::show);
 
-                                    QEventLoop loop;
+                                        QEventLoop loop;
 
-                                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
-                                            &loop, &QEventLoop::quit);
+                                        connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                                &loop, &QEventLoop::quit);
 
-                                    terminalDevice->open(data.commandStr, data.commandVal);
+                                        terminalDevice->open(data.commandStr, data.commandVal);
 
-                                    loop.exec();
-                                    dialog.close();
-                                }
+                                        loop.exec();
+                                        dialog.close();
+                                    }
 
-                                disconnect(conn);
+                                    disconnect(conn);
 
-                                if(!errorMessage2.isEmpty())
-                                {
-                                    QMessageBox::critical(Core::ICore::dialogParent(),
-                                        tr("New Terminal"),
-                                        tr("Error: %L1!").arg(errorMessage2));
+                                    if(!errorMessage2.isEmpty())
+                                    {
+                                        QMessageBox::critical(Core::ICore::dialogParent(),
+                                            tr("New Terminal"),
+                                            tr("Error: %L1!").arg(errorMessage2));
 
-                                    delete terminalDevice;
-                                    delete terminal;
+                                        delete terminalDevice;
+                                        delete terminal;
+                                    }
+                                    else
+                                    {
+                                        terminal->show();
+                                        connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                                terminal, &OpenMVTerminal::close);
+                                    }
                                 }
                                 else
                                 {
-                                    terminal->show();
-                                    connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
-                                            terminal, &OpenMVTerminal::close);
+                                    QMessageBox::critical(Core::ICore::dialogParent(),
+                                        tr("New Terminal"),
+                                        tr("Invalid string: \"%L1\"!").arg(hostName));
                                 }
                             }
                             else
@@ -4091,11 +4265,98 @@ void OpenMVPlugin::openTerminalAboutToShow()
                                     tr("Invalid string: \"%L1\"!").arg(hostName));
                             }
                         }
-                        else
+                    }
+                    else if(box.clickedButton() == button1)
+                    {
+                        bool portValueOk;
+                        int portValue = QInputDialog::getInt(Core::ICore::dialogParent(),
+                            tr("New Terminal"), tr("Please enter a port number (enter 0 for any random free port)"),
+                            settings->value(QStringLiteral(LAST_OPEN_TERMINAL_TCP_SERVER_PORT), 0).toInt(), 0, 65535, 1, &portValueOk,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+
+                        if(portValueOk)
                         {
-                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("New Terminal"),
-                                tr("Invalid string: \"%L1\"!").arg(hostName));
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_SELECT), optionName);
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_TYPE_SELECT), 1);
+                            settings->setValue(QStringLiteral(LAST_OPEN_TERMINAL_TCP_SERVER_PORT), portValue);
+
+                            openTerminalMenuData_t data;
+                            data.displayName = tr("TCP Server Connection - %1").arg(portValue);
+                            data.optionIndex = connectToTCPPortIndex;
+                            data.commandStr = QString();
+                            data.commandVal = portValue;
+
+                            if(!openTerminalMenuDataContains(data.displayName))
+                            {
+                                m_openTerminalMenuData.append(data);
+
+                                if(m_openTerminalMenuData.size() > 10)
+                                {
+                                    m_openTerminalMenuData.removeFirst();
+                                }
+                            }
+
+                            OpenMVTerminal *terminal = new OpenMVTerminal(data.displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(data.displayName)));
+                            OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
+
+                            connect(terminal, &OpenMVTerminal::writeBytes,
+                                    terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                            connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                                    terminal, &OpenMVTerminal::readBytes);
+
+                            QString errorMessage2 = QString();
+                            QString *errorMessage2Ptr = &errorMessage2;
+
+                            QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                                *errorMessage2Ptr = errorMessage;
+                            });
+
+                            // QProgressDialog scoping...
+                            {
+                                QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                                dialog.setWindowModality(Qt::ApplicationModal);
+                                dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                                dialog.setCancelButton(Q_NULLPTR);
+                                QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                                QEventLoop loop;
+
+                                connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                        &loop, &QEventLoop::quit);
+
+                                terminalDevice->open(data.commandStr, data.commandVal);
+
+                                loop.exec();
+                                dialog.close();
+                            }
+
+                            disconnect(conn);
+
+                            if((!errorMessage2.isEmpty()) && (!errorMessage2.startsWith(QStringLiteral("OPENMV::"))))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("New Terminal"),
+                                    tr("Error: %L1!").arg(errorMessage2));
+
+                                delete terminalDevice;
+                                delete terminal;
+                            }
+                            else
+                            {
+                                if(!errorMessage2.isEmpty())
+                                {
+                                    terminal->setWindowTitle(terminal->windowTitle().remove(QRegularExpression(QStringLiteral(" - \\d+"))) + QString(QStringLiteral(" - %1")).arg(errorMessage2.remove(0, 8)));
+                                }
+
+                                terminal->show();
+                                connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
+                                        terminal, &OpenMVTerminal::close);
+                            }
                         }
                     }
 
@@ -4182,7 +4443,7 @@ void OpenMVPlugin::openTerminalAboutToShow()
 
             disconnect(conn);
 
-            if(!errorMessage2.isEmpty())
+            if((!errorMessage2.isEmpty()) && (!errorMessage2.startsWith(QStringLiteral("OPENMV::"))))
             {
                 QMessageBox::critical(Core::ICore::dialogParent(),
                     tr("Open Terminal"),
@@ -4193,6 +4454,11 @@ void OpenMVPlugin::openTerminalAboutToShow()
             }
             else
             {
+                if(!errorMessage2.isEmpty())
+                {
+                    terminal->setWindowTitle(terminal->windowTitle().remove(QRegularExpression(QStringLiteral(" - \\d+"))) + QString(QStringLiteral(" - %1")).arg(errorMessage2.remove(0, 8)));
+                }
+
                 terminal->show();
                 connect(Core::ICore::instance(), &Core::ICore::coreAboutToClose,
                         terminal, &OpenMVTerminal::close);
@@ -4673,42 +4939,6 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
     free(family->name);
     free(family->codes);
     free(family);
-}
-
-void OpenMVPlugin::openQRCodeGenerator()
-{
-    QUrl url = QUrl(QStringLiteral("http://www.google.com/#q=qr+code+generator"));
-
-    if(!QDesktopServices::openUrl(url))
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-                              QString(),
-                              tr("Failed to open: \"%L1\"").arg(url.toString()));
-    }
-}
-
-void OpenMVPlugin::openDataMatrixGenerator()
-{
-    QUrl url = QUrl(QStringLiteral("http://www.google.com/#q=data+matrix+generator"));
-
-    if(!QDesktopServices::openUrl(url))
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-                              QString(),
-                              tr("Failed to open: \"%L1\"").arg(url.toString()));
-    }
-}
-
-void OpenMVPlugin::openBarcodeGenerator()
-{
-    QUrl url = QUrl(QStringLiteral("http://www.google.com/#q=barcode+generator"));
-
-    if(!QDesktopServices::openUrl(url))
-    {
-        QMessageBox::critical(Core::ICore::dialogParent(),
-                              QString(),
-                              tr("Failed to open: \"%L1\"").arg(url.toString()));
-    }
 }
 
 } // namespace Internal
