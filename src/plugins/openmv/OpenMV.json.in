@@ -26,6 +26,26 @@
             \"Description\" : \"Open a serial terminal window\"
         },
         {
+            \"Name\" : \"-open_udp_client_terminal\",
+            \"Parameter\" : \"host_name:port\",
+            \"Description\" : \"Open a UDP client terminal window\"
+        },
+        {
+            \"Name\" : \"-open_udp_server_terminal\",
+            \"Parameter\" : \"port\",
+            \"Description\" : \"Open a UDP server terminal window (set port == 0 for any port)\"
+        },
+        {
+            \"Name\" : \"-open_tcp_client_terminal\",
+            \"Parameter\" : \"host_name:port\",
+            \"Description\" : \"Open a TCP client terminal window\"
+        },
+        {
+            \"Name\" : \"-open_tcp_server_terminal\",
+            \"Parameter\" : \"port\",
+            \"Description\" : \"Open a TCP server terminal window (set port == 0 for any port)\"
+        },
+        {
             \"Name\" : \"-override_read_timeout\",
             \"Parameter\" : \"time_in_ms\",
             \"Description\" : \"Ms to wait for a response (default 5000)\"

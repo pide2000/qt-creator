@@ -117,6 +117,7 @@ public:
     void addPreCloseListener(const std::function<bool()> &listener);
     //OPENMV-DIFF//
     void disableShow(bool disable) { m_disableShow = disable; }
+    bool isShowDisabled() const { return m_disableShow; }
     //OPENMV-DIFF//
 
 signals:

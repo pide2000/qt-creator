@@ -47,6 +47,11 @@ static void noShow()
     q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow()))->disableShow(true);
 }
 
+static bool isNoShow()
+{
+    return q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow()))->isShowDisabled();
+}
+
 static void displayError(const QString &string, bool window = false)
 {
     noShow();
@@ -109,7 +114,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
                     // QProgressDialog scoping...
                     {
-                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Q_NULLPTR,
                             Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
                             (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
                         dialog.setWindowModality(Qt::ApplicationModal);
@@ -148,7 +153,6 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
                     else
                     {
                         terminal->show();
-
                         noShow();
                         return true;
                     }
@@ -168,6 +172,374 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
         else
         {
             displayError(tr("Missing arguments for -open_serial_terminal"));
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int open_udp_client_terminal = arguments.indexOf(QRegularExpression(QStringLiteral("-open_udp_client_terminal")));
+
+    if(open_udp_client_terminal != -1)
+    {
+        if(arguments.size() > (open_udp_client_terminal + 1))
+        {
+            QStringList list = arguments.at(open_udp_client_terminal + 1).split(QLatin1Char(':'));
+
+            if(list.size() == 2)
+            {
+                bool ok;
+                QString hostNameValue = list.at(0);
+                int portValue = list.at(1).toInt(&ok);
+
+                if(ok)
+                {
+                    QString displayName = tr("UDP Client Connection - %1:%2").arg(hostNameValue).arg(portValue);
+                    OpenMVTerminal *terminal = new OpenMVTerminal(displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(displayName)), true);
+                    OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
+
+                    connect(terminal, &OpenMVTerminal::writeBytes,
+                            terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                    connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                            terminal, &OpenMVTerminal::readBytes);
+
+                    QString errorMessage2 = QString();
+                    QString *errorMessage2Ptr = &errorMessage2;
+
+                    QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                        *errorMessage2Ptr = errorMessage;
+                    });
+
+                    // QProgressDialog scoping...
+                    {
+                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Q_NULLPTR,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                        dialog.setWindowModality(Qt::ApplicationModal);
+                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                        dialog.setCancelButton(Q_NULLPTR);
+                        QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                        QEventLoop loop;
+
+                        connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                &loop, &QEventLoop::quit);
+
+                        terminalDevice->open(hostNameValue, portValue);
+
+                        loop.exec();
+                        dialog.close();
+                    }
+
+                    disconnect(conn);
+
+                    if(!errorMessage2.isEmpty())
+                    {
+                        QString errorMessage = tr("Error: %L1!").arg(errorMessage2);
+
+                        delete terminalDevice;
+                        delete terminal;
+
+                        displayError(errorMessage);
+                        return true;
+                    }
+                    else
+                    {
+                        terminal->show();
+                        noShow();
+                        return true;
+                    }
+                }
+                else
+                {
+                    displayError(tr("Invalid port argument (%1) for -open_udp_client_terminal").arg(list.at(1)));
+                    return true;
+                }
+            }
+            else
+            {
+                displayError(tr("-open_udp_client_terminal requires two arguments <host_name:port>"));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing arguments for -open_udp_client_terminal"));
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int open_udp_server_terminal = arguments.indexOf(QRegularExpression(QStringLiteral("-open_udp_server_terminal")));
+
+    if(open_udp_server_terminal != -1)
+    {
+        if(arguments.size() > (open_udp_server_terminal + 1))
+        {
+            bool ok;
+            int portValue = arguments.at(open_udp_server_terminal + 1).toInt(&ok);
+
+            if(ok)
+            {
+                QString displayName = tr("UDP Server Connection - %1").arg(portValue);
+                OpenMVTerminal *terminal = new OpenMVTerminal(displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(displayName)), true);
+                OpenMVTerminalUDPPort *terminalDevice = new OpenMVTerminalUDPPort(terminal);
+
+                connect(terminal, &OpenMVTerminal::writeBytes,
+                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                        terminal, &OpenMVTerminal::readBytes);
+
+                QString errorMessage2 = QString();
+                QString *errorMessage2Ptr = &errorMessage2;
+
+                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                    *errorMessage2Ptr = errorMessage;
+                });
+
+                // QProgressDialog scoping...
+                {
+                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Q_NULLPTR,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                    dialog.setWindowModality(Qt::ApplicationModal);
+                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                    dialog.setCancelButton(Q_NULLPTR);
+                    QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                    QEventLoop loop;
+
+                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                            &loop, &QEventLoop::quit);
+
+                    terminalDevice->open(QString(), portValue);
+
+                    loop.exec();
+                    dialog.close();
+                }
+
+                disconnect(conn);
+
+                if((!errorMessage2.isEmpty()) && (!errorMessage2.startsWith(QStringLiteral("OPENMV::"))))
+                {
+                    QString errorMessage = tr("Error: %L1!").arg(errorMessage2);
+
+                    delete terminalDevice;
+                    delete terminal;
+
+                    displayError(errorMessage);
+                    return true;
+                }
+                else
+                {
+                    if(!errorMessage2.isEmpty())
+                    {
+                        terminal->setWindowTitle(terminal->windowTitle().remove(QRegularExpression(QStringLiteral(" - \\d+"))) + QString(QStringLiteral(" - %1")).arg(errorMessage2.remove(0, 8)));
+                    }
+
+                    terminal->show();
+                    noShow();
+                    return true;
+                }
+            }
+            else
+            {
+                displayError(tr("Invalid port argument (%1) for -open_udp_server_terminal").arg(arguments.at(open_udp_server_terminal + 1)));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing arguments for -open_udp_server_terminal"));
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int open_tcp_client_terminal = arguments.indexOf(QRegularExpression(QStringLiteral("-open_tcp_client_terminal")));
+
+    if(open_tcp_client_terminal != -1)
+    {
+        if(arguments.size() > (open_tcp_client_terminal + 1))
+        {
+            QStringList list = arguments.at(open_tcp_client_terminal + 1).split(QLatin1Char(':'));
+
+            if(list.size() == 2)
+            {
+                bool ok;
+                QString hostNameValue = list.at(0);
+                int portValue = list.at(1).toInt(&ok);
+
+                if(ok)
+                {
+                    QString displayName = tr("TCP Client Connection - %1:%2").arg(hostNameValue).arg(portValue);
+                    OpenMVTerminal *terminal = new OpenMVTerminal(displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(displayName)), true);
+                    OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
+
+                    connect(terminal, &OpenMVTerminal::writeBytes,
+                            terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                    connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                            terminal, &OpenMVTerminal::readBytes);
+
+                    QString errorMessage2 = QString();
+                    QString *errorMessage2Ptr = &errorMessage2;
+
+                    QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                        *errorMessage2Ptr = errorMessage;
+                    });
+
+                    // QProgressDialog scoping...
+                    {
+                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Q_NULLPTR,
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                        dialog.setWindowModality(Qt::ApplicationModal);
+                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                        dialog.setCancelButton(Q_NULLPTR);
+                        QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                        QEventLoop loop;
+
+                        connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                &loop, &QEventLoop::quit);
+
+                        terminalDevice->open(hostNameValue, portValue);
+
+                        loop.exec();
+                        dialog.close();
+                    }
+
+                    disconnect(conn);
+
+                    if(!errorMessage2.isEmpty())
+                    {
+                        QString errorMessage = tr("Error: %L1!").arg(errorMessage2);
+
+                        delete terminalDevice;
+                        delete terminal;
+
+                        displayError(errorMessage);
+                        return true;
+                    }
+                    else
+                    {
+                        terminal->show();
+                        noShow();
+                        return true;
+                    }
+                }
+                else
+                {
+                    displayError(tr("Invalid port argument (%1) for -open_tcp_client_terminal").arg(list.at(1)));
+                    return true;
+                }
+            }
+            else
+            {
+                displayError(tr("-open_tcp_client_terminal requires two arguments <host_name:port>"));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing arguments for -open_tcp_client_terminal"));
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int open_tcp_server_terminal = arguments.indexOf(QRegularExpression(QStringLiteral("-open_tcp_server_terminal")));
+
+    if(open_tcp_server_terminal != -1)
+    {
+        if(arguments.size() > (open_tcp_server_terminal + 1))
+        {
+            bool ok;
+            int portValue = arguments.at(open_tcp_server_terminal + 1).toInt(&ok);
+
+            if(ok)
+            {
+                QString displayName = tr("TCP Server Connection - %1").arg(portValue);
+                OpenMVTerminal *terminal = new OpenMVTerminal(displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(displayName)), true);
+                OpenMVTerminalTCPPort *terminalDevice = new OpenMVTerminalTCPPort(terminal);
+
+                connect(terminal, &OpenMVTerminal::writeBytes,
+                        terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                        terminal, &OpenMVTerminal::readBytes);
+
+                QString errorMessage2 = QString();
+                QString *errorMessage2Ptr = &errorMessage2;
+
+                QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                    this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                    *errorMessage2Ptr = errorMessage;
+                });
+
+                // QProgressDialog scoping...
+                {
+                    QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Q_NULLPTR,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                        (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                    dialog.setWindowModality(Qt::ApplicationModal);
+                    dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                    dialog.setCancelButton(Q_NULLPTR);
+                    QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                    QEventLoop loop;
+
+                    connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                            &loop, &QEventLoop::quit);
+
+                    terminalDevice->open(QString(), portValue);
+
+                    loop.exec();
+                    dialog.close();
+                }
+
+                disconnect(conn);
+
+                if((!errorMessage2.isEmpty()) && (!errorMessage2.startsWith(QStringLiteral("OPENMV::"))))
+                {
+                    QString errorMessage = tr("Error: %L1!").arg(errorMessage2);
+
+                    delete terminalDevice;
+                    delete terminal;
+
+                    displayError(errorMessage);
+                    return true;
+                }
+                else
+                {
+                    if(!errorMessage2.isEmpty())
+                    {
+                        terminal->setWindowTitle(terminal->windowTitle().remove(QRegularExpression(QStringLiteral(" - \\d+"))) + QString(QStringLiteral(" - %1")).arg(errorMessage2.remove(0, 8)));
+                    }
+
+                    terminal->show();
+                    noShow();
+                    return true;
+                }
+            }
+            else
+            {
+                displayError(tr("Invalid port argument (%1) for -open_tcp_server_terminal").arg(arguments.at(open_tcp_server_terminal + 1)));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing arguments for -open_tcp_server_terminal"));
             return true;
         }
     }
@@ -1180,7 +1552,7 @@ void OpenMVPlugin::extensionsInitialized()
     tempWidget0->setLayout(tempLayout0);
 
     connect(zoomButton, &QToolButton::toggled, m_frameBuffer, &OpenMVPluginFB::enableFitInView);
-    connect(m_iodevice, &OpenMVPluginIO::frameBufferData, m_frameBuffer, &OpenMVPluginFB::frameBufferData);
+    connect(m_iodevice, &OpenMVPluginIO::frameBufferData, this, [this] (const QPixmap &data) { if(!m_disableFrameBuffer->isChecked()) m_frameBuffer->frameBufferData(data); });
     connect(m_frameBuffer, &OpenMVPluginFB::saveImage, this, &OpenMVPlugin::saveImage);
     connect(m_frameBuffer, &OpenMVPluginFB::saveTemplate, this, &OpenMVPlugin::saveTemplate);
     connect(m_frameBuffer, &OpenMVPluginFB::saveDescriptor, this, &OpenMVPlugin::saveDescriptor);
@@ -1419,9 +1791,9 @@ void OpenMVPlugin::extensionsInitialized()
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
         settings->setValue(QStringLiteral(EDITOR_MANAGER_STATE),
             Core::EditorManager::saveState());
-        settings->setValue(QStringLiteral(HSPLITTER_STATE),
+        if(!isNoShow()) settings->setValue(QStringLiteral(HSPLITTER_STATE),
             hsplitter->saveState());
-        settings->setValue(QStringLiteral(VSPLITTER_STATE),
+        if(!isNoShow()) settings->setValue(QStringLiteral(VSPLITTER_STATE),
             vsplitter->saveState());
         settings->setValue(QStringLiteral(ZOOM_STATE),
             zoomButton->isChecked());
