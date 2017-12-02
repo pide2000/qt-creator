@@ -15,5 +15,26 @@
     \"Category\" : \"Qt Creator\",
     \"Description\" : \"OpenMV Plugin\",
     \"Url\" : \"https://openmv.io\",
+    \"Arguments\" : [
+        {
+            \"Name\" : \"-update_resources\",
+            \"Description\" : \"Force an update of user resources from system resources\"
+        },
+        {
+            \"Name\" : \"-open_serial_terminal\",
+            \"Parameter\" : \"port_name:baud_rate\",
+            \"Description\" : \"Open a serial terminal window\"
+        },
+        {
+            \"Name\" : \"-override_read_timeout\",
+            \"Parameter\" : \"time_in_ms\",
+            \"Description\" : \"Ms to wait for a response (default 5000)\"
+        },
+        {
+            \"Name\" : \"-override_read_stall_timeout\",
+            \"Parameter\" : \"time_in_ms\",
+            \"Description\" : \"Ms to wait before pinging (default 1000)\"
+        }
+    ],
     $$dependencyList
 }

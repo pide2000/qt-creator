@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class WDT – watchdog timer &mdash; MicroPython 1.8 documentation</title>
+  <title>class WDT – watchdog timer &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,10 +34,10 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
-        <link rel="up" title="machine — functions related to the board" href="machine.html"/>
-        <link rel="next" title="class I2C – a two-wire serial protocol" href="machine.I2C.html"/>
-        <link rel="prev" title="class UART – duplex serial communication bus" href="machine.UART.html"/> 
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+        <link rel="up" title="machine — functions related to the hardware" href="machine.html"/>
+        <link rel="next" title="micropython – access and control MicroPython internals" href="micropython.html"/>
+        <link rel="prev" title="class Timer – control hardware timers" href="machine.Timer.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -89,11 +89,32 @@
           
             
             
-                <ul>
+                <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">MicroPython libraries</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="btree.html"><code class="docutils literal"><span class="pre">btree</span></code> &#8211; simple BTree database</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the hardware</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="machine.html#reset-related-functions">Reset related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#interrupt-related-functions">Interrupt related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#power-related-functions">Power related functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#miscellaneous-functions">Miscellaneous functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="machine.html#constants">Constants</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="machine.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="micropython.html"><code class="docutils literal"><span class="pre">micropython</span></code> &#8211; access and control MicroPython internals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html"><code class="docutils literal"><span class="pre">network</span></code> &#8212; network configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -127,7 +148,7 @@
       
           <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
       
-          <li><a href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the board</a> &raquo;</li>
+          <li><a href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the hardware</a> &raquo;</li>
       
     <li>class WDT &#8211; watchdog timer</li>
       <li class="wy-breadcrumbs-aside">
@@ -155,6 +176,7 @@ watchdog periodically to prevent it from expiring and resetting the system.</p>
 <span class="n">wdt</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Availability of this class: pyboard, openmvcam, WiPy.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -169,8 +191,8 @@ cannot be changed and the WDT cannot be stopped either.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt id="wdt.feed">
-<code class="descclassname">wdt.</code><code class="descname">feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wdt.feed" title="Permalink to this definition">¶</a></dt>
+<dt id="machine.wdt.feed">
+<code class="descclassname">wdt.</code><code class="descname">feed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#machine.wdt.feed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Feed the WDT to prevent it from resetting the system. The application
 should place this call in a sensible place ensuring that the WDT is
 only fed after verifying that everything is functioning correctly.</p>
@@ -186,10 +208,10 @@ only fed after verifying that everything is functioning correctly.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="machine.I2C.html" class="btn btn-neutral float-right" title="class I2C – a two-wire serial protocol" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="micropython.html" class="btn btn-neutral float-right" title="micropython – access and control MicroPython internals" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="machine.UART.html" class="btn btn-neutral" title="class UART – duplex serial communication bus" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="machine.Timer.html" class="btn btn-neutral" title="class Timer – control hardware timers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -198,8 +220,8 @@ only fed after verifying that everything is functioning correctly.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -213,7 +235,7 @@ only fed after verifying that everything is functioning correctly.</p>
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -241,14 +263,12 @@ only fed after verifying that everything is functioning correctly.</p>
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -256,19 +276,19 @@ only fed after verifying that everything is functioning correctly.</p>
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

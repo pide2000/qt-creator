@@ -10,7 +10,7 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     qRegisterMetaType<OpenMVPluginSerialPortCommand>("OpenMVPluginSerialPortCommand");
     qRegisterMetaType<OpenMVPluginSerialPortCommandResult>("OpenMVPluginSerialPortCommandResult");
 
-    m_ioport = new OpenMVPluginSerialPort(this);
+    m_ioport = new OpenMVPluginSerialPort(-1, -1, this);
     m_iodevice = new OpenMVPluginIO(m_ioport, this);
 
     m_frameSizeDumpTimer.start();
@@ -42,10 +42,196 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     timer->start(1);
 }
 
+static void noShow()
+{
+    q_check_ptr(qobject_cast<Core::Internal::MainWindow *>(Core::ICore::mainWindow()))->disableShow(true);
+}
+
+static void displayError(const QString &string, bool window = false)
+{
+    noShow();
+
+    if(window
+    || Utils::HostOsInfo::isWindowsHost())
+    {
+        QMessageBox::critical(Q_NULLPTR, QString(), string);
+    }
+    else
+    {
+        qCritical("%s", qPrintable(string));
+    }
+
+    QTimer::singleShot(1, QApplication::instance(), [] { QApplication::exit(-1); });
+}
+
 bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-    Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
+
+    QApplication::setApplicationDisplayName(tr("OpenMV IDE"));
+    QApplication::setWindowIcon(QIcon(QStringLiteral(ICON_PATH)));
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int open_serial_terminal = arguments.indexOf(QRegularExpression(QStringLiteral("-open_serial_terminal")));
+
+    if(open_serial_terminal != -1)
+    {
+        if(arguments.size() > (open_serial_terminal + 1))
+        {
+            QStringList list = arguments.at(open_serial_terminal + 1).split(QLatin1Char(':'));
+
+            if(list.size() == 2)
+            {
+                bool ok;
+                QString portNameValue = list.at(0);
+                int baudRateValue = list.at(1).toInt(&ok);
+
+                if(ok)
+                {
+                    QString displayName = tr("Serial Port - %L1 - %L2 BPS").arg(portNameValue).arg(baudRateValue);
+                    OpenMVTerminal *terminal = new OpenMVTerminal(displayName, ExtensionSystem::PluginManager::settings(), Core::Context(Core::Id::fromString(displayName)), true);
+                    OpenMVTerminalSerialPort *terminalDevice = new OpenMVTerminalSerialPort(terminal);
+
+                    connect(terminal, &OpenMVTerminal::writeBytes,
+                            terminalDevice, &OpenMVTerminalPort::writeBytes);
+
+                    connect(terminalDevice, &OpenMVTerminalPort::readBytes,
+                            terminal, &OpenMVTerminal::readBytes);
+
+                    QString errorMessage2 = QString();
+                    QString *errorMessage2Ptr = &errorMessage2;
+
+                    QMetaObject::Connection conn = connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                        this, [this, errorMessage2Ptr] (const QString &errorMessage) {
+                        *errorMessage2Ptr = errorMessage;
+                    });
+
+                    // QProgressDialog scoping...
+                    {
+                        QProgressDialog dialog(tr("Connecting... (30 second timeout)"), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                            (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                        dialog.setWindowModality(Qt::ApplicationModal);
+                        dialog.setAttribute(Qt::WA_ShowWithoutActivating);
+                        dialog.setCancelButton(Q_NULLPTR);
+                        QTimer::singleShot(1000, &dialog, &QWidget::show);
+
+                        QEventLoop loop;
+
+                        connect(terminalDevice, &OpenMVTerminalPort::openResult,
+                                &loop, &QEventLoop::quit);
+
+                        terminalDevice->open(portNameValue, baudRateValue);
+
+                        loop.exec();
+                        dialog.close();
+                    }
+
+                    disconnect(conn);
+
+                    if(!errorMessage2.isEmpty())
+                    {
+                        QString errorMessage = tr("Error: %L1!").arg(errorMessage2);
+
+                        if(Utils::HostOsInfo::isLinuxHost() && errorMessage2.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive))
+                        {
+                            errorMessage += tr("\n\nTry doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(Utils::Environment::systemEnvironment().userName());
+                        }
+
+                        delete terminalDevice;
+                        delete terminal;
+
+                        displayError(errorMessage);
+                        return true;
+                    }
+                    else
+                    {
+                        terminal->show();
+
+                        noShow();
+                        return true;
+                    }
+                }
+                else
+                {
+                    displayError(tr("Invalid baud rate argument (%1) for -open_serial_terminal").arg(list.at(1)));
+                    return true;
+                }
+            }
+            else
+            {
+                displayError(tr("-open_serial_terminal requires two arguments <port_name:baud_rate>"));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing arguments for -open_serial_terminal"));
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    int override_read_timeout = -1;
+    int index_override_read_timeout = arguments.indexOf(QRegularExpression(QStringLiteral("-override_read_timeout")));
+
+    if(index_override_read_timeout != -1)
+    {
+        if(arguments.size() > (index_override_read_timeout + 1))
+        {
+            bool ok;
+            int tmp_override_read_timeout = arguments.at(index_override_read_timeout + 1).toInt(&ok);
+
+            if(ok)
+            {
+                override_read_timeout = tmp_override_read_timeout;
+            }
+            else
+            {
+                displayError(tr("Invalid argument (%1) for -override_read_timeout").arg(arguments.at(index_override_read_timeout + 1)));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing argument for -override_read_timeout"));
+            return true;
+        }
+    }
+
+    int override_read_stall_timeout = -1;
+    int index_override_read_stall_timeout = arguments.indexOf(QRegularExpression(QStringLiteral("-override_read_stall_timeout")));
+
+    if(index_override_read_stall_timeout != -1)
+    {
+        if(arguments.size() > (index_override_read_stall_timeout + 1))
+        {
+            bool ok;
+            int tmp_override_read_stall_timeout = arguments.at(index_override_read_stall_timeout + 1).toInt(&ok);
+
+            if(ok)
+            {
+                override_read_stall_timeout = tmp_override_read_stall_timeout;
+            }
+            else
+            {
+                displayError(tr("Invalid argument (%1) for -override_read_stall_timeout").arg(arguments.at(index_override_read_stall_timeout + 1)));
+                return true;
+            }
+        }
+        else
+        {
+            displayError(tr("Missing argument for -override_read_stall_timeout"));
+            return true;
+        }
+    }
+
+    delete m_iodevice;
+    delete m_ioport;
+    m_ioport = new OpenMVPluginSerialPort(override_read_timeout, override_read_stall_timeout, this);
+    m_iodevice = new OpenMVPluginIO(m_ioport, this);
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -55,6 +241,69 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
             splashScreen, &QSplashScreen::deleteLater);
 
     splashScreen->show();
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    QSettings *settings = ExtensionSystem::PluginManager::settings();
+    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+
+    int major = settings->value(QStringLiteral(RESOURCES_MAJOR), 0).toInt();
+    int minor = settings->value(QStringLiteral(RESOURCES_MINOR), 0).toInt();
+    int patch = settings->value(QStringLiteral(RESOURCES_PATCH), 0).toInt();
+
+    if((arguments.contains(QStringLiteral("-update_resources"))) 
+    || (major < OMV_IDE_VERSION_MAJOR)
+    || ((major == OMV_IDE_VERSION_MAJOR) && (minor < OMV_IDE_VERSION_MINOR))
+    || ((major == OMV_IDE_VERSION_MAJOR) && (minor == OMV_IDE_VERSION_MINOR) && (patch < OMV_IDE_VERSION_RELEASE)))
+    {
+        settings->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
+        settings->setValue(QStringLiteral(RESOURCES_MINOR), 0);
+        settings->setValue(QStringLiteral(RESOURCES_PATCH), 0);
+        settings->sync();
+
+        bool ok = true;
+
+        QString error;
+
+        if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
+        {
+            displayError(error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"), true);
+            ok = false;
+        }
+        else
+        {
+            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html");
+
+            foreach(const QString &dir, list)
+            {
+                QString error;
+
+                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QLatin1Char('/') + dir),
+                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QLatin1Char('/') + dir),
+                                                      &error))
+                {
+                    displayError(error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"), true);
+                    ok = false;
+                    break;
+                }
+            }
+        }
+
+        if(ok)
+        {
+            settings->setValue(QStringLiteral(RESOURCES_MAJOR), OMV_IDE_VERSION_MAJOR);
+            settings->setValue(QStringLiteral(RESOURCES_MINOR), OMV_IDE_VERSION_MINOR);
+            settings->setValue(QStringLiteral(RESOURCES_PATCH), OMV_IDE_VERSION_RELEASE);
+            settings->sync();
+        }
+        else
+        {
+            settings->endGroup();
+            return true;
+        }
+    }
+
+    settings->endGroup();
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -482,9 +731,6 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void OpenMVPlugin::extensionsInitialized()
 {
-    QApplication::setApplicationDisplayName(tr("OpenMV IDE"));
-    QApplication::setWindowIcon(QIcon(QStringLiteral(ICON_PATH)));
-
     connect(Core::ActionManager::command(Core::Constants::NEW)->action(), &QAction::triggered, this, [this] {
         Core::EditorManager::cutForwardNavigationHistory();
         Core::EditorManager::addCurrentPositionToNavigationHistory();
@@ -1202,70 +1448,6 @@ void OpenMVPlugin::extensionsInitialized()
 
         settings->endArray();
     });
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-
-    int major = settings->value(QStringLiteral(RESOURCES_MAJOR), 0).toInt();
-    int minor = settings->value(QStringLiteral(RESOURCES_MINOR), 0).toInt();
-    int patch = settings->value(QStringLiteral(RESOURCES_PATCH), 0).toInt();
-
-    if((major < OMV_IDE_VERSION_MAJOR)
-    || ((major == OMV_IDE_VERSION_MAJOR) && (minor < OMV_IDE_VERSION_MINOR))
-    || ((major == OMV_IDE_VERSION_MAJOR) && (minor == OMV_IDE_VERSION_MINOR) && (patch < OMV_IDE_VERSION_RELEASE)))
-    {
-        settings->setValue(QStringLiteral(RESOURCES_MAJOR), 0);
-        settings->setValue(QStringLiteral(RESOURCES_MINOR), 0);
-        settings->setValue(QStringLiteral(RESOURCES_PATCH), 0);
-        settings->sync();
-
-        bool ok = true;
-
-        QString error;
-
-        if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(Core::ICore::userResourcePath()), &error))
-        {
-            QMessageBox::critical(Core::ICore::dialogParent(),
-                QString(),
-                error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
-
-            QApplication::quit();
-            ok = false;
-        }
-        else
-        {
-            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html");
-
-            foreach(const QString &dir, list)
-            {
-                QString error;
-
-                if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(Core::ICore::resourcePath() + QLatin1Char('/') + dir),
-                                                      Utils::FileName::fromString(Core::ICore::userResourcePath() + QLatin1Char('/') + dir),
-                                                      &error))
-                {
-                    QMessageBox::critical(Core::ICore::dialogParent(),
-                        QString(),
-                        error + tr("\n\nPlease close any programs that are viewing/editing OpenMV IDE's application data and then restart OpenMV IDE!"));
-
-                    QApplication::quit();
-                    ok = false;
-                    break;
-                }
-            }
-        }
-
-        if(ok)
-        {
-            settings->setValue(QStringLiteral(RESOURCES_MAJOR), OMV_IDE_VERSION_MAJOR);
-            settings->setValue(QStringLiteral(RESOURCES_MINOR), OMV_IDE_VERSION_MINOR);
-            settings->setValue(QStringLiteral(RESOURCES_PATCH), OMV_IDE_VERSION_RELEASE);
-            settings->sync();
-        }
-    }
-
-    settings->endGroup();
 
     ///////////////////////////////////////////////////////////////////////////
 

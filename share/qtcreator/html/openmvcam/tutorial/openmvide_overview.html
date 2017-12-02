@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>3. OpenMV IDE Overview &mdash; MicroPython 1.8 documentation</title>
+  <title>3. OpenMV IDE Overview &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../../index.html"/>
         <link rel="up" title="OpenMV Cam Tutorial" href="index.html"/>
-        <link rel="next" title="4. I/O Tutorial" href="io_tutorial.html"/>
+        <link rel="next" title="4. Script Structure" href="script_structure.html"/>
         <link rel="prev" title="2. Hardware Setup" href="hardware_setup.html"/> 
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,6 +91,7 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">OpenMV Cam Tutorial</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="software_setup.html">1. Software Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware_setup.html">2. Hardware Setup</a></li>
@@ -106,16 +107,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#tools">3.9. Tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#open-terminal">3.10. Open Terminal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#machine-vision">3.11. Machine Vision</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#options">3.12. Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#video-tools">3.12. Video Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#options">3.13. Options</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="io_tutorial.html">4. I/O Tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="led_control.html">4.1.1. LED Control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="more_information.html">5. More Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="script_structure.html">4. Script Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io_tutorial.html">5. I/O Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="more_information.html">6. More Information</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../library/index.html">MicroPython libraries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -201,12 +204,7 @@ yourself with the example scripts so you can use your OpenMV Cam effectively.</p
 <p>Lastly, whenever you create a new file in OpenMV IDE or open an example script
 OpenMV IDE creates a memory only copy of the file that is not stored on disk
 like in the Arduino IDE. This let&#8217;s you quickly test out ideas without having
-to create a file. If you want to save the file you need to use <code class="docutils literal"><span class="pre">Save</span> <span class="pre">As</span></code>
-to save the file to disk. Then the regular file <code class="docutils literal"><span class="pre">Save</span></code> option will work.
-The QtCreator text editor backend only allows use of the <code class="docutils literal"><span class="pre">Save</span></code> command for
-files that exist on disk. Note that if you forget to <code class="docutils literal"><span class="pre">Save</span> <span class="pre">As</span></code> a new file or
-an edited example file OpenMV IDE will ask if you want to save the file(s) on
-close.</p>
+to create a file.</p>
 </div>
 <div class="section" id="text-editing">
 <h2>3.2. Text Editing<a class="headerlink" href="#text-editing" title="Permalink to this headline">¶</a></h2>
@@ -218,6 +216,14 @@ matching with the ability to capture text during the find and use that captured
 text for the replace. Additionally, it also can preserve case while replacing.
 Finally, the find and replace features works not only on the current file, but,
 it can work on all files in a folder or all open files in OpenMV IDE.</p>
+<p>In addition to the nice text editing enviornment OpenMV IDE also provides
+auto-completion support hover tool-tips on keywords. So, after typing <code class="docutils literal"><span class="pre">.</span></code> for
+example in Python OpenMV IDE will detect that you&#8217;re about to write a function
+or method name and it will show you an auto-completion text box. Once you&#8217;ve
+written the function/method name it will also walk you through the arguments.
+Finally, if you hover your mouse cursor over any keyword OpenMV IDE will
+display the documentation for that keyword in a tooltip. These two features
+make editing scripts a joy!</p>
 </div>
 <div class="section" id="connecting-to-your-openmv-cam">
 <h2>3.3. Connecting to your OpenMV Cam<a class="headerlink" href="#connecting-to-your-openmv-cam" title="Permalink to this headline">¶</a></h2>
@@ -298,6 +304,14 @@ that later. For now, here&#8217;s what you need to know about the frame buffer
 viewer:</p>
 <blockquote>
 <div><ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">Reocord</span></code> button on the top right-hand corner of OpenMV IDE
+records whatever is in the frame buffer. Use it to quickly make videos
+of what your OpenMV Cam sees. Note that recording works by recording
+whatever is in OpenMV IDE&#8217;s frame buffer at 30 FPS. However, the frame
+buffer may be updating faster or slower than this depending on the
+application. Anyway, after the recording is complete OpenMV IDE will
+use FFMPEG to transcode the recording to whatever file format you want
+for sharing.</li>
 <li>The <code class="docutils literal"><span class="pre">Zoom</span></code> button on the top right-hand corner of OpenMV IDE controls
 the zoom-to-fit feature for the frame buffer viewer. Enable or disable
 the feature as your please.</li>
@@ -306,11 +320,10 @@ controls whether or not your OpenMV Cam will send images to OpenMV IDE.
 Basically, your OpenMV Cam has to JPEG compress images constantly to
 stream them to OpenMV IDE. This reduces performance. So, if you want to
 see how fast your script will run after in the wild without your OpenMV
-Cam being connected to your computer just click the <code class="docutils literal"><span class="pre">Disable</span></code> button
-and then restart your script. While the frame buffer is disabled you
-won&#8217;t be able to see what your OpenMV Cam is looking at anymore but
-you&#8217;ll still see debug output from your OpenMV Cam in the Serial
-Terminal.</li>
+Cam being connected to your computer just click the <code class="docutils literal"><span class="pre">Disable</span></code> button.
+While the frame buffer is disabled you won&#8217;t be able to see what your
+OpenMV Cam is looking at anymore but you&#8217;ll still see debug output from
+your OpenMV Cam in the Serial Terminal.</li>
 </ul>
 </div></blockquote>
 <p>Finally, you can right click on whatever image you see in the frame buffer
@@ -341,6 +354,8 @@ the histogram will only show the distribution of colors in that area. This
 features makes the histogram display super useful for determining the correct
 Grayscale and LAB color channel settings you need to use in your scripts for
 <code class="docutils literal"><span class="pre">image.find_blobs</span></code> and <code class="docutils literal"><span class="pre">image.binary</span></code>.</p>
+<p>Finally, the image resolution and ROI (x, y, w, h) of the bounding box you
+select on the image are displayed above the histogram graphs.</p>
 </div>
 <div class="section" id="serial-terminal">
 <h2>3.7. Serial Terminal<a class="headerlink" href="#serial-terminal" title="Permalink to this headline">¶</a></h2>
@@ -374,7 +389,7 @@ The FPS label on OpenMV IDE is the FPS OpenMV IDE is getting from your
 OpenMV Cam. But, your OpenMV Cam can actually run faster than OpenMV IDE
 sometimes and OpenMV IDE is only sampling some of the frames from your
 OpenMV Cam and not all. Anyway, OpenMV IDE&#8217;s FPS will never be faster than
-your OpenMV Cam&#8217;s FPS, but, if may be slower.</p>
+your OpenMV Cam&#8217;s FPS, but, it may be slower.</p>
 </div>
 </div>
 <div class="section" id="tools">
@@ -385,6 +400,9 @@ IDE. In particular, the <code class="docutils literal"><span class="pre">Save</s
 application.</p>
 <blockquote>
 <div><ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">Configure</span> <span class="pre">OpenMV</span> <span class="pre">Cam</span> <span class="pre">Settings</span> <span class="pre">file</span></code> allows you to modify an
+<code class="docutils literal"><span class="pre">.ini</span></code> file stored on your OpenMV Cam using OpenMV IDE which your
+OpenMV Cam will read on bootup for particular hardware configurations.</li>
 <li>The <code class="docutils literal"><span class="pre">Save</span> <span class="pre">open</span> <span class="pre">script</span> <span class="pre">to</span> <span class="pre">your</span> <span class="pre">OpenMV</span> <span class="pre">Cam</span></code> command saves whatever
 script you&#8217;re currently looking at to your OpenMV Cam. Additionally,
 it can also automatically strip white-space and comments from your
@@ -393,7 +411,7 @@ your program is ready to deploy without OpenMV IDE. Note that this
 command will save your script as <code class="docutils literal"><span class="pre">main.py</span></code> on your OpenMV Cam&#8217;s
 USB flash drive. <code class="docutils literal"><span class="pre">main.py</span></code> is the script your OpenMV Cam will run
 once it finishes booting up.</li>
-<li>The <cite>Reset OpenMV Cam`</cite> command resets and then disconnects from your
+<li>The <code class="docutils literal"><span class="pre">Reset</span> <span class="pre">OpenMV</span> <span class="pre">Cam</span></code> command resets and then disconnects from your
 OpenMV Cam. You&#8217;ll want to use this option if you run a script that
 creates files on your OpenMV Cam as Windows/Mac/Linux won&#8217;t show you
 any files on your OpenMV Cam created programmatically in a Python
@@ -424,15 +442,23 @@ OpenMV Cam. For example, the you can use the color threshold editor to get
 the best color tracking thresholds for <code class="docutils literal"><span class="pre">image.find_blobs()</span></code>. We&#8217;ll make
 new machine vision tools available regularly to make life easier for you.</p>
 </div>
+<div class="section" id="video-tools">
+<h2>3.12. Video Tools<a class="headerlink" href="#video-tools" title="Permalink to this headline">¶</a></h2>
+<p>If you need to compress a <code class="docutils literal"><span class="pre">.gif</span></code> file produced by your OpenMV Cam or convert
+a <code class="docutils literal"><span class="pre">.mjpeg</span></code> or ImageWriter <code class="docutils literal"><span class="pre">.bin</span></code> video file to <code class="docutils literal"><span class="pre">.mp4</span></code> you can use the
+convert video file action to do this. Alternatively, if you&#8217;d just like to play
+these videos instead you can do that too using the play video file action.</p>
+<p>Note that you should copy video files from your OpenMV Cam&#8217;s flash drive to
+your computer first before playing them since disk I/O over USB on your OpenMV
+Cam is slow.</p>
+<p>Finally, FFMPEG is used to provide conversion and video player support and may
+be used for any non-OpenMV Cam activites you like. FFMPEG can convert/play
+a large number of file formats.</p>
+</div>
 <div class="section" id="options">
-<h2>3.12. Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<h2>3.13. Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <p>Under the Tools Menu (or About Menu for Mac) you can access OpenMV IDE&#8217;s
 option dialog.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">At the time of writing this OpenMV IDE is not complete yet. In particular,
-the options menu has not been cleaned up.</p>
-</div>
 <p>You can configure the editor font, size, zoom, tab behavior, automatic cleaning
 of white space, column margins for folks who like keeping lines to 80
 characters, and more.</p>
@@ -446,7 +472,7 @@ characters, and more.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="io_tutorial.html" class="btn btn-neutral float-right" title="4. I/O Tutorial" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="script_structure.html" class="btn btn-neutral float-right" title="4. Script Structure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="hardware_setup.html" class="btn btn-neutral" title="2. Hardware Setup" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -458,8 +484,8 @@ characters, and more.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -473,7 +499,7 @@ characters, and more.</p>
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -501,14 +527,12 @@ characters, and more.</p>
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -516,19 +540,19 @@ characters, and more.</p>
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

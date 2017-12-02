@@ -309,26 +309,26 @@ static const char *SHARE_PATH =
 //OPENMV-DIFF//
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+    Q_UNUSED(context)
     QByteArray localMsg = msg.toLocal8Bit();
     switch (type) {
     case QtDebugMsg:
-        if(context.file != NULL) { fprintf(stdout, "%s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function); fflush(stdout); }
-        else { fprintf(stdout, "%s\n", localMsg.constData()); fflush(stdout); }
+        fprintf(stdout, "%s\n", localMsg.constData()); fflush(stdout);
         break;
     case QtInfoMsg:
-        fprintf(stderr, "Info: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function); fflush(stderr);
+        fprintf(stderr, "%s\n", localMsg.constData()); fflush(stderr);
         break;
     case QtWarningMsg:
         if(msg.compare(QLatin1String("JIT is disabled for QML. Property bindings and animations will be "
                                      "very slow. Visit https://wiki.qt.io/V4 to learn about possible "
                                      "solutions for your platform.")) == 0) break;
-        fprintf(stderr, "Warning: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function); fflush(stderr);
+        fprintf(stderr, "%s\n", localMsg.constData()); fflush(stderr);
         break;
     case QtCriticalMsg:
-        fprintf(stderr, "Critical: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function); fflush(stderr);
+        fprintf(stderr, "%s\n", localMsg.constData()); fflush(stderr);
         break;
     case QtFatalMsg:
-        fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function); fflush(stderr);
+        fprintf(stderr, "%s\n", localMsg.constData()); fflush(stderr);
         abort();
     }
 }

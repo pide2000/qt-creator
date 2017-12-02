@@ -171,7 +171,7 @@ class OpenMVPluginSerialPort_private : public QObject
 
 public:
 
-    explicit OpenMVPluginSerialPort_private(QObject *parent = Q_NULLPTR);
+    explicit OpenMVPluginSerialPort_private(int override_read_timeout = -1, int override_read_stall_timeout = -1, QObject *parent = Q_NULLPTR);
 
 public slots:
 
@@ -197,6 +197,8 @@ private:
 
     OpenMVPluginSerialPort_thing *m_port;
     bool m_bootloaderStop;
+    int read_timeout;
+    int read_stall_timeout;
 };
 
 class OpenMVPluginSerialPort : public QObject
@@ -205,7 +207,7 @@ class OpenMVPluginSerialPort : public QObject
 
 public:
 
-    explicit OpenMVPluginSerialPort(QObject *parent = Q_NULLPTR);
+    explicit OpenMVPluginSerialPort(int override_read_timeout = -1, int override_read_stall_timeout = -1, QObject *parent = Q_NULLPTR);
 
 signals:
 

@@ -256,6 +256,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="replBox">
+     <property name="text">
+      <string>Duplicate REPL on the UART on startup</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="closeBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

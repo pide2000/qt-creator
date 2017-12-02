@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; MicroPython 1.8 documentation</title>
+  <title>Index &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="index.html"/> 
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -89,9 +89,11 @@
             
                 <ul>
 <li class="toctree-l1"><a class="reference internal" href="openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library/index.html">MicroPython libraries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">MicroPython license information</a></li>
 </ul>
 
@@ -149,6 +151,8 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -170,15 +174,31 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Pin.html#pin.__str__">__str__() (pin method)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.__call__">__call__() (machine.Pin method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Pin.html#pinaf.__str__">(pinaf method)</a>
+      
+  <dt><a href="library/btree.html#btree.btree.__contains__">__contains__() (btree.btree method)</a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/btree.html#btree.btree.__detitem__">__detitem__() (btree.btree method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/btree.html#btree.btree.__getitem__">__getitem__() (btree.btree method)</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.__iter__">__iter__() (btree.btree method)</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.__setitem__">__setitem__() (btree.btree method)</a>
+  </dt>
+
   </dl></td>
 </tr></table>
 
@@ -230,15 +250,17 @@
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#socket.accept">accept() (socket method)</a>
+  <dt><a href="library/builtins.html#abs">abs() (built-in function)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/usocket.html#usocket.socket.accept">(usocket.socket method)</a>
+      
+  <dt><a href="library/network.html#network.AbstractNIC">AbstractNIC (class in network)</a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/usocket.html#usocket.socket.accept">accept() (usocket.socket method)</a>
+  </dt>
+
       
   <dt><a href="library/math.html#math.acos">acos() (in module math)</a>
   </dt>
@@ -248,11 +270,15 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.wlan.active">active() (network.wlan method)</a>
+  <dt><a href="library/network.html#network.active">active() (in module network)</a>
   </dt>
 
       
-  <dt><a href="library/machine.ADC.html#adcchannel">adcchannel()</a>
+  <dt><a href="library/machine.ADC.html#machine.ADC">ADC (class in machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.ADC.html#machine.adcchannel">adcchannel() (in module machine)</a>
   </dt>
 
       
@@ -273,22 +299,26 @@
   <dt><a href="library/uctypes.html#uctypes.addressof">addressof() (in module uctypes)</a>
   </dt>
 
-      
-  <dt><a href="library/pyb.Pin.html#pin.af">af() (pin method)</a>
-  </dt>
-
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Pin.html#Pin.af_list">af_list() (Pin method)</a>
+  <dt><a href="library/usocket.html#usocket.AF_INET">AF_INET (in module usocket)</a>
   </dt>
 
       
-  <dt><a href="library/machine.RTC.html#rtc.alarm">alarm() (rtc method)</a>
+  <dt><a href="library/usocket.html#usocket.AF_INET6">AF_INET6 (in module usocket)</a>
   </dt>
 
       
-  <dt><a href="library/machine.RTC.html#rtc.alarm_left">alarm_left() (rtc method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.alarm">alarm() (machine.RTC method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.RTC.html#machine.RTC.alarm_left">alarm_left() (machine.RTC method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#all">all() (built-in function)</a>
   </dt>
 
       
@@ -296,39 +326,19 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#ALT">ALT (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#pin.alt_list">alt_list() (pin method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#ALT_OPEN_DRAIN">ALT_OPEN_DRAIN (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Servo.html#servo.angle">angle() (servo method)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.wlan.antenna">antenna() (network.wlan method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#can.any">any() (can method)</a>
+  <dt><a href="library/builtins.html#any">any() (built-in function)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.UART.html#uart.any">(uart method)</a>, <a href="library/pyb.UART.html#uart.any">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.any">(usb_vcp method)</a>
+  <dt><a href="library/machine.UART.html#machine.UART.any">(machine.UART method)</a>
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="library/array.html#array.array.array.append">append() (array.array.array method)</a>
+  </dt>
+
       
   <dt><a href="library/omv.image.html#image.blob.area">area() (image.blob method)</a>
   </dt>
@@ -338,11 +348,23 @@
   </dt>
 
       
+  <dt><a href="library/array.html#module-array">array (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/array.html#array.array.array">array.array (class in array)</a>
+  </dt>
+
+      
   <dt><a href="library/math.html#math.asin">asin() (in module math)</a>
   </dt>
 
       
   <dt><a href="library/math.html#math.asinh">asinh() (in module math)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#AssertionError">AssertionError</a>
   </dt>
 
       
@@ -358,7 +380,7 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.wlan.auth">auth() (network.wlan method)</a>
+  <dt><a href="library/builtins.html#AttributeError">AttributeError</a>
   </dt>
 
       
@@ -427,8 +449,6 @@
   <dt><a href="library/omv.image.html#image.statistics.b_uq">b_uq() (image.statistics method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.image.html#image.percentile.b_value">b_value() (image.percentile method)</a>
   </dt>
@@ -441,8 +461,18 @@
   <dt><a href="library/omv.image.html#image.image.b_xor">b_xor() (image.image method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="reference/glossary.html#term-baremetal"><strong>baremetal</strong></a>
+  </dt>
+
       
   <dt><a href="library/uctypes.html#uctypes.BIG_ENDIAN">BIG_ENDIAN (in module uctypes)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#bin">bin() (built-in function)</a>
   </dt>
 
       
@@ -450,15 +480,9 @@
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#socket.bind">bind() (socket method)</a>
+  <dt><a href="library/usocket.html#usocket.socket.bind">bind() (usocket.socket method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/usocket.html#usocket.socket.bind">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/omv.image.html#image.histogram.bins">bins() (image.histogram method)</a>
   </dt>
@@ -468,21 +492,35 @@
   </dt>
 
       
-  <dt><a href="library/machine.html#machine.bootloader">bootloader() (in module machine)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.blit">blit() (framebuf.FrameBuffer method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.bootloader">(in module pyb)</a>
+      
+  <dt><a href="reference/glossary.html#term-board"><strong>board</strong></a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/builtins.html#bool">bool (built-in class)</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#module-btree">btree (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#bytearray">bytearray (built-in class)</a>
+  </dt>
+
       
   <dt><a href="library/uctypes.html#uctypes.bytearray_at">bytearray_at() (in module uctypes)</a>
   </dt>
 
       
   <dt><a href="library/sys.html#sys.byteorder">byteorder (in module sys)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#bytes">bytes (built-in class)</a>
   </dt>
 
       
@@ -504,63 +542,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.RTC.html#rtc.calibration">calibration() (rtc method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Servo.html#servo.calibration">(servo method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.Switch.html#switch.callback">callback() (switch method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Timer.html#timer.callback">(timer method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.Timer.html#timerchannel.callback">(timerchannel method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.CAN.html#CAN.LIST16">CAN.LIST16 (built-in variable)</a>
+  <dt><a href="library/builtins.html#callable">callable() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.CAN.html#CAN.LIST32">CAN.LIST32 (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.LOOPBACK">CAN.LOOPBACK (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.MASK16">CAN.MASK16 (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.MASK32">CAN.MASK32 (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.NORMAL">CAN.NORMAL (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.SILENT">CAN.SILENT (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#CAN.SILENT_LOOPBACK">CAN.SILENT_LOOPBACK (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.RTC.html#rtc.cancel">cancel() (rtc method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.cancel">cancel() (machine.RTC method)</a>
   </dt>
 
       
@@ -568,45 +554,23 @@
   </dt>
 
       
-  <dt><a href="library/pyb.Timer.html#timerchannel.capture">capture() (timerchannel method)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.CC3K">CC3K (class in network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.CC3K.WEP">CC3K.WEP (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.CC3K.WPA">CC3K.WPA (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.CC3K.WPA2">CC3K.WPA2 (in module network)</a>
-  </dt>
-
-      
   <dt><a href="library/math.html#math.ceil">ceil() (in module math)</a>
   </dt>
 
       
-  <dt><a href="library/machine.ADC.html#adc.channel">channel() (adc method)</a>
+  <dt><a href="library/machine.ADC.html#machine.ADC.channel">channel() (machine.ADC method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/network.html#network.wlan.channel">(network.wlan method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Timer.html#timer.channel">(timer method)</a>, <a href="library/pyb.Timer.html#timer.channel">[1]</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/uos.html#uos.chdir">chdir() (in module uos)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#chr">chr() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#classmethod">classmethod() (built-in function)</a>
   </dt>
 
       
@@ -614,14 +578,14 @@
   </dt>
 
       
-  <dt><a href="library/pyb.CAN.html#can.clearfilter">clearfilter() (can method)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.gif.html#gif.gif.close">close() (gif.gif method)</a>
+  <dt><a href="library/btree.html#btree.btree.close">close() (btree.btree method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="library/omv.gif.html#gif.gif.close">(gif.gif method)</a>
+  </dt>
+
         
   <dt><a href="library/omv.image.html#image.imagereader.close">(image.imagereader method)</a>
   </dt>
@@ -632,14 +596,6 @@
 
         
   <dt><a href="library/omv.mjpeg.html#mjpeg.mjpeg.close">(mjpeg.mjpeg method)</a>
-  </dt>
-
-        
-  <dt><a href="library/esp.socket.html#socket.close">(socket method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.close">(usb_vcp method)</a>
   </dt>
 
         
@@ -663,18 +619,18 @@
   <dt><a href="library/omv.image.html#image.datamatrix.columns">columns() (image.datamatrix method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.LCD.html#lcd.command">command() (lcd method)</a>
+  <dt><a href="library/builtins.html#compile">compile() (built-in function)</a>
   </dt>
 
-      
-  <dt><a href="library/pyb.Timer.html#timerchannel.compare">compare() (timerchannel method)</a>
+      <dd><dl>
+        
+  <dt><a href="library/ure.html#ure.compile">(in module ure)</a>
   </dt>
 
+      </dl></dd>
       
-  <dt><a href="library/ure.html#ure.compile">compile() (in module ure)</a>
+  <dt><a href="library/builtins.html#complex">complex (built-in class)</a>
   </dt>
 
       
@@ -693,25 +649,19 @@
   <dt><a href="library/omv.image.html#image.image.compressed_for_ide">compressed_for_ide() (image.image method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/network.html#network.wlan.config">config() (network.wlan method)</a>, <a href="library/network.html#network.wlan.config">[1]</a>
+  <dt><a href="library/network.html#network.config">config() (in module network)</a>
   </dt>
 
       
-  <dt><a href="library/network.html#network.cc3k.connect">connect() (network.cc3k method)</a>
+  <dt><a href="library/network.html#network.connect">connect() (in module network)</a>
   </dt>
 
       <dd><dl>
         
   <dt><a href="library/network.html#network.winc.connect">(network.winc method)</a>
-  </dt>
-
-        
-  <dt><a href="library/network.html#network.wlan.connect">(network.wlan method)</a>, <a href="library/network.html#network.wlan.connect">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/esp.socket.html#socket.connect">(socket method)</a>
   </dt>
 
         
@@ -724,7 +674,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.contrast">contrast() (lcd method)</a>
+  <dt><a href="library/micropython.html#micropython.const">const() (in module micropython)</a>
   </dt>
 
       
@@ -776,10 +726,6 @@
   </dt>
 
       
-  <dt><a href="library/pyb.Timer.html#timer.counter">counter() (timer method)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.cpufreq.html#module-cpufreq">cpufreq (module)</a>
   </dt>
 
@@ -809,6 +755,10 @@
 
       
   <dt><a href="library/omv.cpufreq.html#cpufreq.cpufreq.set_frequency">cpufreq.set_frequency() (in module cpufreq)</a>
+  </dt>
+
+      
+  <dt><a href="reference/glossary.html#term-cpython"><strong>CPython</strong></a>
   </dt>
 
       
@@ -850,15 +800,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.RTC.html#rtc.datetime">datetime() (rtc method)</a>
-  </dt>
-
-      
   <dt><a href="library/ure.html#ure.DEBUG">DEBUG (in module ure)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Pin.html#Pin.debug">debug() (Pin method)</a>
   </dt>
 
       
@@ -866,67 +808,57 @@
   </dt>
 
       
+  <dt><a href="library/uzlib.html#uzlib.DecompIO">DecompIO (class in uzlib)</a>
+  </dt>
+
+      
   <dt><a href="library/uzlib.html#uzlib.decompress">decompress() (in module uzlib)</a>
   </dt>
 
       
-  <dt><a href="library/esp.html#esp.deepsleep">deepsleep() (in module esp)</a>
+  <dt><a href="library/machine.html#machine.deepsleep">deepsleep() (in module machine)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/machine.html#machine.deepsleep">(in module machine)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/math.html#math.degrees">degrees() (in module math)</a>
   </dt>
 
       
-  <dt><a href="library/machine.ADC.html#adc.deinit">deinit() (adc method)</a>
+  <dt><a href="library/machine.ADC.html#machine.ADC.deinit">deinit() (machine.ADC method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.ADC.html#adcchannel.deinit">(adcchannel method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.deinit">(machine.I2C method)</a>
   </dt>
 
         
-  <dt><a href="library/pyb.CAN.html#can.deinit">(can method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.deinit">(machine.RTC method)</a>
   </dt>
 
         
-  <dt><a href="library/pyb.I2C.html#i2c.deinit">(i2c method)</a>
+  <dt><a href="library/machine.SD.html#machine.SD.deinit">(machine.SD method)</a>
   </dt>
 
         
-  <dt><a href="library/network.html#network.server.deinit">(network.server method)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.deinit">(machine.SPI method)</a>
   </dt>
 
         
-  <dt><a href="library/machine.RTC.html#rtc.deinit">(rtc method)</a>
+  <dt><a href="library/machine.Timer.html#machine.Timer.deinit">(machine.Timer method)</a>
   </dt>
 
         
-  <dt><a href="library/machine.SD.html#sd.deinit">(sd method)</a>
+  <dt><a href="library/machine.UART.html#machine.UART.deinit">(machine.UART method)</a>
   </dt>
 
         
-  <dt><a href="library/machine.SPI.html#spi.deinit">(spi method)</a>, <a href="library/pyb.SPI.html#spi.deinit">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Timer.html#timer.deinit">(timer method)</a>, <a href="library/pyb.Timer.html#timer.deinit">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.deinit">(uart method)</a>, <a href="library/pyb.UART.html#uart.deinit">[1]</a>
+  <dt><a href="library/machine.ADC.html#machine.adcchannel.deinit">(machine.adcchannel method)</a>
   </dt>
 
       </dl></dd>
       
-  <dt><a href="library/pyb.html#pyb.delay">delay() (in module pyb)</a>
+  <dt><a href="library/builtins.html#delattr">delattr() (built-in function)</a>
   </dt>
 
       
@@ -934,7 +866,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.dict">dict() (Pin method)</a>
+  <dt><a href="library/btree.html#btree.DESC">DESC (in module btree)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#dict">dict (built-in class)</a>
   </dt>
 
       
@@ -945,34 +881,26 @@
   <dt><a href="library/uhashlib.html#uhashlib.hash.digest">digest() (uhashlib.hash method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.image.html#image.image.dilate">dilate() (image.image method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.ExtInt.html#extint.disable">disable() (extint method)</a>
+  <dt><a href="library/builtins.html#dir">dir() (built-in function)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/gc.html#gc.disable">(in module gc)</a>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/gc.html#gc.disable">disable() (in module gc)</a>
   </dt>
 
-      </dl></dd>
       
   <dt><a href="library/machine.html#machine.disable_irq">disable_irq() (in module machine)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.disable_irq">(in module pyb)</a>
-  </dt>
-
-      </dl></dd>
       
-  <dt><a href="library/network.html#network.cc3k.disconnect">disconnect() (network.cc3k method)</a>
+  <dt><a href="library/network.html#network.disconnect">disconnect() (in module network)</a>
   </dt>
 
       <dd><dl>
@@ -980,11 +908,19 @@
   <dt><a href="library/network.html#network.winc.disconnect">(network.winc method)</a>
   </dt>
 
-        
-  <dt><a href="library/network.html#network.wlan.disconnect">(network.wlan method)</a>, <a href="library/network.html#network.wlan.disconnect">[1]</a>
+      </dl></dd>
+      
+  <dt><a href="library/builtins.html#divmod">divmod() (built-in function)</a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.dot">dot() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.dot_no_clip">dot_no_clip() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
       
   <dt><a href="library/omv.image.html#image.image.draw_circle">draw_circle() (image.image method)</a>
   </dt>
@@ -1010,7 +946,7 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#pin.drive">drive() (pin method)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.drive">drive() (machine.Pin method)</a>
   </dt>
 
       
@@ -1019,10 +955,6 @@
 
       
   <dt><a href="library/uos.html#uos.dupterm">dupterm() (in module uos)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#timerchannel.duty_cycle">duty_cycle() (timerchannel method)</a>
   </dt>
 
   </dl></td>
@@ -1050,33 +982,21 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.elapsed_micros">elapsed_micros() (in module pyb)</a>
+  <dt><a href="library/gc.html#gc.enable">enable() (in module gc)</a>
   </dt>
 
-      
-  <dt><a href="library/pyb.html#pyb.elapsed_millis">elapsed_millis() (in module pyb)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#extint.enable">enable() (extint method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/gc.html#gc.enable">(in module gc)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/machine.html#machine.enable_irq">enable_irq() (in module machine)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.enable_irq">(in module pyb)</a>
+      
+  <dt><a href="library/builtins.html#enumerate">enumerate() (built-in function)</a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.erase">erase() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
       
   <dt><a href="library/math.html#math.erf">erf() (in module math)</a>
   </dt>
@@ -1092,11 +1012,19 @@
   </dt>
 
       
-  <dt><a href="library/esp.html#module-esp">esp (module)</a>
+  <dt><a href="library/uerrno.html#uerrno.errorcode">errorcode (in module uerrno)</a>
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#esp.socket">esp.socket (built-in class)</a>
+  <dt><a href="library/builtins.html#eval">eval() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#Exception">Exception</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#exec">exec() (built-in function)</a>
   </dt>
 
       
@@ -1118,15 +1046,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.ExtInt.html#ExtInt.IRQ_FALLING">ExtInt.IRQ_FALLING (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#ExtInt.IRQ_RISING">ExtInt.IRQ_RISING (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#ExtInt.IRQ_RISING_FALLING">ExtInt.IRQ_RISING_FALLING (built-in variable)</a>
+  <dt><a href="library/array.html#array.array.array.extend">extend() (array.array.array method)</a>
   </dt>
 
   </dl></td>
@@ -1144,7 +1064,15 @@
   </dt>
 
       
-  <dt><a href="library/machine.WDT.html#wdt.feed">feed() (wdt method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.fast_spi">fast_spi() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.WDT.html#machine.wdt.feed">feed() (machine.wdt method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.feed_wdt">feed_wdt() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
@@ -1152,11 +1080,15 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.fill">fill() (lcd method)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.fill">fill() (framebuf.FrameBuffer method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Accel.html#accel.filtered_xyz">filtered_xyz() (accel method)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.fill_rect">fill_rect() (framebuf.FrameBuffer method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#filter">filter() (built-in function)</a>
   </dt>
 
       
@@ -1223,8 +1155,6 @@
   <dt><a href="library/omv.image.html#image.image.find_template">find_template() (image.image method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.fir.html#module-fir">fir (module)</a>
   </dt>
@@ -1233,6 +1163,8 @@
   <dt><a href="library/omv.fir.html#fir.fir.deinit">fir.deinit() (in module fir)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.fir.html#fir.fir.draw_ta">fir.draw_ta() (in module fir)</a>, <a href="library/omv.fir.html#fir.fir.draw_ta">[1]</a>
   </dt>
@@ -1262,23 +1194,15 @@
   </dt>
 
       
-  <dt><a href="library/esp.html#esp.flash_erase">flash_erase() (in module esp)</a>
-  </dt>
-
-      
-  <dt><a href="library/esp.html#esp.flash_id">flash_id() (in module esp)</a>
-  </dt>
-
-      
-  <dt><a href="library/esp.html#esp.flash_read">flash_read() (in module esp)</a>
-  </dt>
-
-      
-  <dt><a href="library/esp.html#esp.flash_write">flash_write() (in module esp)</a>
+  <dt><a href="library/builtins.html#float">float (built-in class)</a>
   </dt>
 
       
   <dt><a href="library/math.html#math.floor">floor() (in module math)</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.flush">flush() (btree.btree method)</a>
   </dt>
 
       
@@ -1300,25 +1224,47 @@
   </dt>
 
       
+  <dt><a href="library/framebuf.html#module-framebuf">framebuf (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.framebuf.GS4_HMSB">framebuf.GS4_HMSB (in module framebuf)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.framebuf.MONO_HLSB">framebuf.MONO_HLSB (in module framebuf)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.framebuf.MONO_HMSB">framebuf.MONO_HMSB (in module framebuf)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.framebuf.MONO_VLSB">framebuf.MONO_VLSB (in module framebuf)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.framebuf.RGB565">framebuf.RGB565 (in module framebuf)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer">FrameBuffer (class in framebuf)</a>
+  </dt>
+
+      
   <dt><a href="library/machine.html#machine.freq">freq() (in module machine)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.freq">(in module pyb)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.Timer.html#timer.freq">(timer method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Timer.html#timerchannel.freq">(timerchannel method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/math.html#math.frexp">frexp() (in module math)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#int.from_bytes">from_bytes() (int class method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#frozenset">frozenset (built-in class)</a>
   </dt>
 
       
@@ -1352,11 +1298,15 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.get">get() (lcd method)</a>
+  <dt><a href="library/btree.html#btree.btree.get">get() (btree.btree method)</a>
   </dt>
 
       
   <dt><a href="library/omv.image.html#image.image.get_histogram">get_histogram() (image.image method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.get_line">get_line() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
@@ -1371,8 +1321,12 @@
   <dt><a href="library/omv.image.html#image.image.get_pixel">get_pixel() (image.image method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
+      <dd><dl>
+        
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.get_pixel">(lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="library/omv.image.html#image.histogram.get_statistics">get_statistics() (image.histogram method)</a>
   </dt>
@@ -1383,6 +1337,20 @@
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.get_touch">get_touch() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/usocket.html#usocket.getaddrinfo">getaddrinfo() (in module usocket)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#getattr">getattr() (built-in function)</a>
+  </dt>
+
       
   <dt><a href="library/uos.html#uos.getcwd">getcwd() (in module uos)</a>
   </dt>
@@ -1400,11 +1368,19 @@
   </dt>
 
       
+  <dt><a href="library/builtins.html#globals">globals() (built-in function)</a>
+  </dt>
+
+      
   <dt><a href="library/omv.image.html#image.apriltag.goodness">goodness() (image.apriltag method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#pin.gpio">gpio() (pin method)</a>
+  <dt><a href="reference/glossary.html#term-gpio"><strong>GPIO</strong></a>
+  </dt>
+
+      
+  <dt><a href="reference/glossary.html#term-gpio-port"><strong>GPIO port</strong></a>
   </dt>
 
       
@@ -1452,11 +1428,19 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.hard_reset">hard_reset() (in module pyb)</a>
+  <dt><a href="library/builtins.html#hasattr">hasattr() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.have_cdc">have_cdc() (in module pyb)</a>
+  <dt><a href="library/builtins.html#hash">hash() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/micropython.html#micropython.heap_lock">heap_lock() (in module micropython)</a>
+  </dt>
+
+      
+  <dt><a href="library/micropython.html#micropython.heap_unlock">heap_unlock() (in module micropython)</a>
   </dt>
 
       
@@ -1467,14 +1451,10 @@
   <dt><a href="library/uheapq.html#uheapq.heappop">heappop() (in module uheapq)</a>
   </dt>
 
-      
-  <dt><a href="library/uheapq.html#uheapq.heappush">heappush() (in module uheapq)</a>
-  </dt>
-
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/wipy.html#wipy.heartbeat">heartbeat() (in module wipy)</a>
+  <dt><a href="library/uheapq.html#uheapq.heappush">heappush() (in module uheapq)</a>
   </dt>
 
       
@@ -1492,6 +1472,10 @@
 
       </dl></dd>
       
+  <dt><a href="library/builtins.html#hex">hex() (built-in function)</a>
+  </dt>
+
+      
   <dt><a href="library/uhashlib.html#uhashlib.hash.hexdigest">hexdigest() (uhashlib.hash method)</a>
   </dt>
 
@@ -1500,15 +1484,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.hid">hid() (in module pyb)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#HIGH_POWER">HIGH_POWER (built-in variable)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.image.html#image.image.histeq">histeq() (image.image method)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.hline">hline() (framebuf.FrameBuffer method)</a>
   </dt>
 
   </dl></td>
@@ -1518,20 +1498,16 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.I2C.html#I2C.MASTER">I2C.MASTER (built-in variable)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C">I2C (class in machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.I2C.html#I2C.SLAVE">I2C.SLAVE (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.image.html#image.apriltag.id">id() (image.apriltag method)</a>
+  <dt><a href="library/builtins.html#id">id() (built-in function)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.Pin.html#pin.id">(pin method)</a>
+  <dt><a href="library/omv.image.html#image.apriltag.id">(image.apriltag method)</a>
   </dt>
 
       </dl></dd>
@@ -1540,7 +1516,7 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.cc3k.ifconfig">ifconfig() (network.cc3k method)</a>
+  <dt><a href="library/network.html#network.ifconfig">ifconfig() (in module network)</a>
   </dt>
 
       <dd><dl>
@@ -1548,15 +1524,11 @@
   <dt><a href="library/network.html#network.winc.ifconfig">(network.winc method)</a>
   </dt>
 
-        
-  <dt><a href="library/network.html#network.wiznet5k.ifconfig">(network.wiznet5k method)</a>
-  </dt>
-
-        
-  <dt><a href="library/network.html#network.wlan.ifconfig">(network.wlan method)</a>, <a href="library/network.html#network.wlan.ifconfig">[1]</a>
-  </dt>
-
       </dl></dd>
+      
+  <dt><a href="library/uos.html#uos.ilistdir">ilistdir() (in module uos)</a>
+  </dt>
+
       
   <dt><a href="library/omv.image.html#module-image">image (module)</a>
   </dt>
@@ -1677,12 +1649,12 @@
   <dt><a href="library/omv.image.html#image.image.PDF417">image.PDF417 (in module image)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.image.html#image.image.rgb_to_grayscale">image.rgb_to_grayscale() (in module image)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.image.html#image.image.rgb_to_lab">image.rgb_to_lab() (in module image)</a>
   </dt>
@@ -1732,87 +1704,53 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#IN">IN (built-in variable)</a>
+  <dt><a href="library/builtins.html#ImportError">ImportError</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#pinaf.index">index() (pinaf method)</a>
+  <dt><a href="library/btree.html#btree.INCL">INCL (in module btree)</a>
   </dt>
 
       
-  <dt><a href="library/machine.html#machine.info">info() (in module machine)</a>
+  <dt><a href="library/builtins.html#IndexError">IndexError</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.ADC.html#machine.ADC.init">init() (machine.ADC method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/pyb.html#pyb.info">(in module pyb)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.init">(machine.I2C method)</a>
   </dt>
 
         
-  <dt><a href="library/pyb.RTC.html#rtc.info">(rtc method)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.init">(machine.Pin method)</a>
+  </dt>
+
+        
+  <dt><a href="library/machine.RTC.html#machine.RTC.init">(machine.RTC method)</a>
+  </dt>
+
+        
+  <dt><a href="library/machine.SD.html#machine.SD.init">(machine.SD method)</a>
+  </dt>
+
+        
+  <dt><a href="library/machine.SPI.html#machine.SPI.init">(machine.SPI method)</a>
+  </dt>
+
+        
+  <dt><a href="library/machine.ADC.html#machine.adcchannel.init">(machine.adcchannel method)</a>
   </dt>
 
       </dl></dd>
       
-  <dt><a href="library/machine.ADC.html#adc.init">init() (adc method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/machine.ADC.html#adcchannel.init">(adcchannel method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.CAN.html#can.init">(can method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.DAC.html#dac.init">(dac method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.I2C.html#i2c.init">(i2c method)</a>
-  </dt>
-
-        
-  <dt><a href="library/network.html#network.server.init">(network.server method)</a>
-  </dt>
-
-        
-  <dt><a href="library/network.html#network.wlan.init">(network.wlan method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Pin.html#pin.init">(pin method)</a>, <a href="library/machine.Pin.html#pin.init">[1]</a>, <a href="library/pyb.Pin.html#pin.init">[2]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.RTC.html#rtc.init">(rtc method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.SD.html#sd.init">(sd method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.SPI.html#spi.init">(spi method)</a>, <a href="library/pyb.SPI.html#spi.init">[1]</a>, <a href="library/pyb.SPI.html#spi.init">[2]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Timer.html#timer.init">(timer method)</a>, <a href="library/pyb.Timer.html#timer.init">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.init">(uart method)</a>, <a href="library/pyb.UART.html#uart.init">[1]</a>, <a href="library/pyb.UART.html#uart.init">[2]</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.CAN.html#CAN.initfilterbanks">initfilterbanks() (CAN method)</a>
+  <dt><a href="library/builtins.html#input">input() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.LED.html#led.intensity">intensity() (led method)</a>
+  <dt><a href="library/builtins.html#int">int (built-in class)</a>
   </dt>
 
       
@@ -1820,43 +1758,27 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.wlan.irq">irq() (network.wlan method)</a>
+  <dt><a href="library/uselect.html#uselect.poll.ipoll">ipoll() (uselect.poll method)</a>
+  </dt>
+
+      
+  <dt><a href="library/usocket.html#usocket.IPPROTO_TCP">IPPROTO_TCP (in module usocket)</a>
+  </dt>
+
+      
+  <dt><a href="library/usocket.html#usocket.IPPROTO_UDP">IPPROTO_UDP (in module usocket)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.Pin.html#machine.Pin.irq">irq() (machine.Pin method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.Pin.html#pin.irq">(pin method)</a>, <a href="library/machine.Pin.html#pin.irq">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.RTC.html#rtc.irq">(rtc method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Timer.html#timerchannel.irq">(timerchannel method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.irq">(uart method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.irq">(machine.RTC method)</a>
   </dt>
 
       </dl></dd>
-      
-  <dt><a href="library/machine.Pin.html#IRQ_FALLING">IRQ_FALLING (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#IRQ_HIGH_LEVEL">IRQ_HIGH_LEVEL (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#IRQ_LOW_LEVEL">IRQ_LOW_LEVEL (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#IRQ_RISING">IRQ_RISING (built-in variable)</a>
-  </dt>
-
       
   <dt><a href="library/omv.image.html#image.qrcode.is_alphanumeric">is_alphanumeric() (image.qrcode method)</a>
   </dt>
@@ -1874,24 +1796,16 @@
   </dt>
 
       
-  <dt><a href="library/pyb.I2C.html#i2c.is_ready">is_ready() (i2c method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.is_touched">is_touched() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
-  <dt><a href="library/network.html#network.cc3k.isconnected">isconnected() (network.cc3k method)</a>
+  <dt><a href="library/network.html#network.isconnected">isconnected() (in module network)</a>
   </dt>
 
       <dd><dl>
         
   <dt><a href="library/network.html#network.winc.isconnected">(network.winc method)</a>
-  </dt>
-
-        
-  <dt><a href="library/network.html#network.wlan.isconnected">(network.wlan method)</a>, <a href="library/network.html#network.wlan.isconnected">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.isconnected">(usb_vcp method)</a>
   </dt>
 
       </dl></dd>
@@ -1904,11 +1818,67 @@
   </dt>
 
       
+  <dt><a href="library/builtins.html#isinstance">isinstance() (built-in function)</a>
+  </dt>
+
+      
   <dt><a href="library/math.html#math.isnan">isnan() (in module math)</a>
   </dt>
 
       
-  <dt><a href="library/network.html#network.server.isrunning">isrunning() (network.server method)</a>
+  <dt><a href="library/builtins.html#issubclass">issubclass() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.items">items() (btree.btree method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#iter">iter() (built-in function)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.jpeg">jpeg() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.jpeg_data">jpeg_data() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.jpeg_start">jpeg_start() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/micropython.html#micropython.kbd_intr">kbd_intr() (in module micropython)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#KeyboardInterrupt">KeyboardInterrupt</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/builtins.html#KeyError">KeyError</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.keys">keys() (btree.btree method)</a>
   </dt>
 
   </dl></td>
@@ -1993,14 +1963,62 @@
   <dt><a href="library/omv.lcd.html#lcd.lcd.type">lcd.type() (in module lcd)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.lcd.html#lcd.lcd.width">lcd.width() (in module lcd)</a>
   </dt>
 
       
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR">LCD160CR (class in lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#module-lcd160cr">lcd160cr (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.h">LCD160CR.h (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.LANDSCAPE">lcd160cr.LANDSCAPE (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.LANDSCAPE_UPSIDEDOWN">lcd160cr.LANDSCAPE_UPSIDEDOWN (in module lcd160cr)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.PORTRAIT">lcd160cr.PORTRAIT (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.PORTRAIT_UPSIDEDOWN">lcd160cr.PORTRAIT_UPSIDEDOWN (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.STARTUP_DECO_INFO">lcd160cr.STARTUP_DECO_INFO (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.STARTUP_DECO_MLOGO">lcd160cr.STARTUP_DECO_MLOGO (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.lcd160cr.STARTUP_DECO_NONE">lcd160cr.STARTUP_DECO_NONE (in module lcd160cr)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.w">LCD160CR.w (in module lcd160cr)</a>
+  </dt>
+
+      
   <dt><a href="library/math.html#math.ldexp">ldexp() (in module math)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#len">len() (built-in function)</a>
   </dt>
 
       
@@ -2016,11 +2034,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.light">light() (lcd method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#extint.line">line() (extint method)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.line">line() (framebuf.FrameBuffer method)</a>
   </dt>
 
       <dd><dl>
@@ -2028,27 +2042,37 @@
   <dt><a href="library/omv.image.html#image.line.line">(image.line method)</a>
   </dt>
 
+        
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.line">(lcd160cr.LCD160CR method)</a>
+  </dt>
+
       </dl></dd>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.line_no_clip">line_no_clip() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#list">list (built-in class)</a>
+  </dt>
+
       
   <dt><a href="library/uos.html#uos.listdir">listdir() (in module uos)</a>
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#socket.listen">listen() (socket method)</a>
+  <dt><a href="library/usocket.html#usocket.socket.listen">listen() (usocket.socket method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/usocket.html#usocket.socket.listen">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/uctypes.html#uctypes.LITTLE_ENDIAN">LITTLE_ENDIAN (in module uctypes)</a>
   </dt>
 
       
   <dt><a href="library/ujson.html#ujson.loads">loads() (in module ujson)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#locals">locals() (built-in function)</a>
   </dt>
 
       
@@ -2084,10 +2108,6 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#LOW_POWER">LOW_POWER (built-in variable)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.image.html#image.statistics.lq">lq() (image.statistics method)</a>
   </dt>
 
@@ -2098,15 +2118,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/network.html#network.wlan.mac">mac() (network.wlan method)</a>
-  </dt>
-
-      
   <dt><a href="library/machine.html#module-machine">machine (module)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.ADC.html#machine.ADC">machine.ADC (built-in class)</a>
   </dt>
 
       
@@ -2122,15 +2134,7 @@
   </dt>
 
       
-  <dt><a href="library/machine.I2C.html#machine.I2C">machine.I2C (built-in class)</a>, <a href="library/machine.I2C.html#machine.I2C">[1]</a>, <a href="library/machine.I2C.html#machine.I2C">[2]</a>
-  </dt>
-
-      
   <dt><a href="library/machine.html#machine.machine.IDLE">machine.IDLE (in module machine)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#machine.Pin">machine.Pin (built-in class)</a>
   </dt>
 
       
@@ -2138,19 +2142,11 @@
   </dt>
 
       
-  <dt><a href="library/machine.html#machine.machine.POWER_ON">machine.POWER_ON (in module machine)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.RTC.html#machine.RTC">machine.RTC (built-in class)</a>
+  <dt><a href="library/machine.html#machine.machine.PWRON_RESET">machine.PWRON_RESET (in module machine)</a>
   </dt>
 
       
   <dt><a href="library/machine.html#machine.machine.RTC_WAKE">machine.RTC_WAKE (in module machine)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.SD.html#machine.SD">machine.SD (built-in class)</a>
   </dt>
 
       
@@ -2159,22 +2155,6 @@
 
       
   <dt><a href="library/machine.html#machine.machine.SOFT_RESET">machine.SOFT_RESET (in module machine)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.SPI.html#machine.SPI">machine.SPI (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#machine.Timer">machine.Timer (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.UART.html#machine.UART">machine.UART (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.WDT.html#machine.WDT">machine.WDT (built-in class)</a>
   </dt>
 
       
@@ -2200,21 +2180,11 @@
 
       </dl></dd>
       
-  <dt><a href="library/machine.html#machine.main">main() (in module machine)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.main">(in module pyb)</a>
-  </dt>
-
-      </dl></dd>
-      
   <dt><a href="library/usocket.html#usocket.socket.makefile">makefile() (usocket.socket method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.mapper">mapper() (Pin method)</a>
+  <dt><a href="library/builtins.html#map">map() (built-in function)</a>
   </dt>
 
       
@@ -2239,14 +2209,22 @@
   <dt><a href="library/math.html#module-math">math (module)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/omv.image.html#image.statistics.max">max() (image.statistics method)</a>
+  <dt><a href="library/builtins.html#max">max() (built-in function)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="library/omv.image.html#image.statistics.max">(image.statistics method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="library/sys.html#sys.maxsize">maxsize (in module sys)</a>
   </dt>
 
       
-  <dt><a href="library/sys.html#sys.maxsize">maxsize (in module sys)</a>
+  <dt><a href="reference/glossary.html#term-mcu"><strong>MCU</strong></a>
   </dt>
 
       
@@ -2263,10 +2241,8 @@
   <dt><a href="library/omv.image.html#image.image.mean_pooled">mean_pooled() (image.image method)</a>
   </dt>
 
-      
-  <dt><a href="library/machine.Pin.html#MED_POWER">MED_POWER (built-in variable)</a>
-  </dt>
-
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.image.html#image.statistics.median">median() (image.statistics method)</a>
   </dt>
@@ -2290,11 +2266,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.I2C.html#i2c.mem_read">mem_read() (i2c method)</a>
+  <dt><a href="library/builtins.html#MemoryError">MemoryError</a>
   </dt>
 
       
-  <dt><a href="library/pyb.I2C.html#i2c.mem_write">mem_write() (i2c method)</a>
+  <dt><a href="library/builtins.html#memoryview">memoryview (built-in class)</a>
   </dt>
 
       
@@ -2302,7 +2278,15 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.micros">micros() (in module pyb)</a>
+  <dt><a href="reference/glossary.html#term-micropython-port"><strong>MicroPython port</strong></a>
+  </dt>
+
+      
+  <dt><a href="reference/glossary.html#term-micropython-unix-port"><strong>MicroPython Unix port</strong></a>
+  </dt>
+
+      
+  <dt><a href="reference/glossary.html#term-micropython-lib"><strong>micropython-lib</strong></a>
   </dt>
 
       
@@ -2314,13 +2298,15 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.millis">millis() (in module pyb)</a>
+  <dt><a href="library/builtins.html#min">min() (built-in function)</a>
   </dt>
 
-      
-  <dt><a href="library/omv.image.html#image.statistics.min">min() (image.statistics method)</a>
+      <dd><dl>
+        
+  <dt><a href="library/omv.image.html#image.statistics.min">(image.statistics method)</a>
   </dt>
 
+      </dl></dd>
       
   <dt><a href="library/omv.mjpeg.html#module-mjpeg">mjpeg (module)</a>
   </dt>
@@ -2331,10 +2317,6 @@
 
       
   <dt><a href="library/uos.html#uos.mkdir">mkdir() (in module uos)</a>
-  </dt>
-
-      
-  <dt><a href="library/uos.html#uos.mkfs">mkfs() (in module uos)</a>
   </dt>
 
       
@@ -2351,11 +2333,7 @@
   </dt>
 
         
-  <dt><a href="library/network.html#network.wlan.mode">(network.wlan method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.Pin.html#pin.mode">(pin method)</a>, <a href="library/pyb.Pin.html#pin.mode">[1]</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.mode">(machine.Pin method)</a>
   </dt>
 
       </dl></dd>
@@ -2364,7 +2342,7 @@
   </dt>
 
       
-  <dt><a href="library/select.html#select.poll.modify">modify() (select.poll method)</a>
+  <dt><a href="library/uselect.html#uselect.poll.modify">modify() (uselect.poll method)</a>
   </dt>
 
       
@@ -2375,16 +2353,6 @@
   <dt><a href="library/omv.image.html#image.image.morph">morph() (image.image method)</a>
   </dt>
 
-      
-  <dt><a href="library/pyb.html#pyb.mount">mount() (in module pyb)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/uos.html#uos.mount">(in module uos)</a>
-  </dt>
-
-      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -2392,21 +2360,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Pin.html#pin.name">name() (pin method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Pin.html#pinaf.name">(pinaf method)</a>
-  </dt>
-
-      </dl></dd>
-      
   <dt><a href="library/ucollections.html#ucollections.namedtuple">namedtuple() (in module ucollections)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#pin.names">names() (pin method)</a>
+  <dt><a href="library/builtins.html#NameError">NameError</a>
   </dt>
 
       
@@ -2417,14 +2375,14 @@
   <dt><a href="library/omv.image.html#image.image.negate">negate() (image.image method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/network.html#module-network">network (module)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/network.html#network.network.Server">network.Server (class in network)</a>
+  <dt><a href="library/builtins.html#next">next() (built-in function)</a>
   </dt>
 
       
@@ -2432,11 +2390,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.DAC.html#dac.noise">noise() (dac method)</a>
+  <dt><a href="library/builtins.html#NotImplementedError">NotImplementedError</a>
   </dt>
 
       
-  <dt><a href="library/machine.RTC.html#rtc.now">now() (rtc method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.now">now() (machine.RTC method)</a>
   </dt>
 
   </dl></td>
@@ -2446,37 +2404,55 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.LED.html#led.off">off() (led method)</a>
+  <dt><a href="library/builtins.html#object">object (built-in class)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.LED.html#led.on">on() (led method)</a>
+  <dt><a href="library/builtins.html#oct">oct() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#onconnect">onconnect()</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.off">off() (machine.Pin method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="library/machine.Signal.html#machine.Signal.off">(machine.Signal method)</a>
+  </dt>
+
+      </dl></dd>
       
-  <dt><a href="library/esp.socket.html#ondisconnect">ondisconnect()</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.on">on() (machine.Pin method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="library/machine.Signal.html#machine.Signal.on">(machine.Signal method)</a>
+  </dt>
+
+      </dl></dd>
       
-  <dt><a href="library/esp.socket.html#onrecv">onrecv()</a>
+  <dt><a href="library/builtins.html#open">open() (built-in function)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="library/btree.html#btree.open">(in module btree)</a>
+  </dt>
+
+        
+  <dt><a href="library/uio.html#uio.open">(in module uio)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/esp.socket.html#onsent">onsent()</a>
+  <dt><a href="library/micropython.html#micropython.opt_level">opt_level() (in module micropython)</a>
   </dt>
 
       
-  <dt><a href="library/uio.html#uio.open">open() (in module uio)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#OPEN_DRAIN">OPEN_DRAIN (built-in variable)</a>
+  <dt><a href="library/builtins.html#ord">ord() (built-in function)</a>
   </dt>
 
       
@@ -2484,7 +2460,7 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#OUT">OUT (built-in variable)</a>
+  <dt><a href="library/builtins.html#OSError">OSError</a>
   </dt>
 
   </dl></td>
@@ -2506,14 +2482,6 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.cc3k.patch_program">patch_program() (network.cc3k method)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.cc3k.patch_version">patch_version() (network.cc3k method)</a>
-  </dt>
-
-      
   <dt><a href="library/sys.html#sys.path">path (in module sys)</a>
   </dt>
 
@@ -2532,21 +2500,7 @@
 
       </dl></dd>
       
-  <dt><a href="library/pyb.Timer.html#timer.period">period() (timer method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/machine.Timer.html#timerchannel.period">(timerchannel method)</a>
-  </dt>
-
-      </dl></dd>
-      
   <dt><a href="library/cmath.html#cmath.phase">phase() (in module cmath)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.phy_mode">phy_mode() (in module network)</a>
   </dt>
 
       
@@ -2560,57 +2514,69 @@
 
       </dl></dd>
       
-  <dt><a href="library/machine.Pin.html#pin">pin()</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Pin.html#pin.pin">(pin method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.Pin.html#Pin.AF_OD">Pin.AF_OD (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin">Pin (class in machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.AF_PP">Pin.AF_PP (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.ALT">Pin.ALT (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.ANALOG">Pin.ANALOG (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.ALT_OPEN_DRAIN">Pin.ALT_OPEN_DRAIN (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#Pin.board">Pin.board (built-in class)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.HIGH_POWER">Pin.HIGH_POWER (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.IN">Pin.IN (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.IN">Pin.IN (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.OUT_OD">Pin.OUT_OD (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.IRQ_FALLING">Pin.IRQ_FALLING (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.OUT_PP">Pin.OUT_PP (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.IRQ_HIGH_LEVEL">Pin.IRQ_HIGH_LEVEL (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.PULL_DOWN">Pin.PULL_DOWN (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.IRQ_LOW_LEVEL">Pin.IRQ_LOW_LEVEL (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.PULL_NONE">Pin.PULL_NONE (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.IRQ_RISING">Pin.IRQ_RISING (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Pin.html#Pin.PULL_UP">Pin.PULL_UP (built-in variable)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.LOW_POWER">Pin.LOW_POWER (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.pixel">pixel() (lcd method)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.MED_POWER">Pin.MED_POWER (in module machine)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="library/machine.Pin.html#machine.Pin.OPEN_DRAIN">Pin.OPEN_DRAIN (in module machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.Pin.html#machine.Pin.OUT">Pin.OUT (in module machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.Pin.html#machine.Pin.PULL_DOWN">Pin.PULL_DOWN (in module machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.Pin.html#machine.Pin.PULL_UP">Pin.PULL_UP (in module machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.pixel">pixel() (framebuf.FrameBuffer method)</a>
   </dt>
 
       
@@ -2626,27 +2592,39 @@
   </dt>
 
       
-  <dt><a href="library/select.html#select.poll">poll() (in module select)</a>
+  <dt><a href="library/uselect.html#uselect.poll">poll() (in module uselect)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/select.html#select.poll.poll">(select.poll method)</a>
+  <dt><a href="library/uselect.html#uselect.poll.poll">(uselect.poll method)</a>
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Pin.html#pin.port">port() (pin method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.poly_dot">poly_dot() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
-  <dt><a href="library/math.html#math.pow">pow() (in module math)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.poly_line">poly_line() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Timer.html#timer.prescaler">prescaler() (timer method)</a>
+  <dt><a href="reference/glossary.html#term-port"><strong>port</strong></a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#pow">pow() (built-in function)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="library/math.html#math.pow">(in module math)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="library/builtins.html#print">print() (built-in function)</a>
   </dt>
 
       
@@ -2654,97 +2632,11 @@
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#pin.pull">pull() (pin method)</a>, <a href="library/pyb.Pin.html#pin.pull">[1]</a>
+  <dt><a href="library/builtins.html#property">property() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Pin.html#PULL_DOWN">PULL_DOWN (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Pin.html#PULL_UP">PULL_UP (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Servo.html#servo.pulse_width">pulse_width() (servo method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.Timer.html#timerchannel.pulse_width">(timerchannel method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.Timer.html#timerchannel.pulse_width_percent">pulse_width_percent() (timerchannel method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.html#module-pyb">pyb (module)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Accel.html#pyb.Accel">pyb.Accel (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ADC.html#pyb.ADC">pyb.ADC (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#pyb.CAN">pyb.CAN (built-in class)</a>, <a href="library/pyb.CAN.html#pyb.CAN">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.DAC.html#pyb.DAC">pyb.DAC (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#pyb.ExtInt">pyb.ExtInt (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.I2C.html#pyb.I2C">pyb.I2C (built-in class)</a>, <a href="library/pyb.I2C.html#pyb.I2C">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.LCD.html#pyb.LCD">pyb.LCD (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.LED.html#pyb.LED">pyb.LED (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Pin.html#pyb.Pin">pyb.Pin (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.RTC.html#pyb.RTC">pyb.RTC (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Servo.html#pyb.Servo">pyb.Servo (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.SPI.html#pyb.SPI">pyb.SPI (built-in class)</a>, <a href="library/pyb.SPI.html#pyb.SPI">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Switch.html#pyb.Switch">pyb.Switch (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Timer.html#pyb.Timer">pyb.Timer (built-in class)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.UART.html#pyb.UART">pyb.UART (built-in class)</a>, <a href="library/pyb.UART.html#pyb.UART">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.USB_VCP.html#pyb.USB_VCP">pyb.USB_VCP (built-in class)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.pull">pull() (machine.Pin method)</a>
   </dt>
 
   </dl></td>
@@ -2778,20 +2670,16 @@
   </dt>
 
       
-  <dt><a href="library/pyb.ADC.html#adc.read">read() (adc method)</a>, <a href="library/pyb.ADC.html#adc.read">[1]</a>
+  <dt><a href="library/builtins.html#range">range() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.SPI.html#machine.SPI.read">read() (machine.SPI method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.SPI.html#spi.read">(spi method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.read">(uart method)</a>, <a href="library/pyb.UART.html#uart.read">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.read">(usb_vcp method)</a>
+  <dt><a href="library/machine.UART.html#machine.UART.read">(machine.UART method)</a>
   </dt>
 
         
@@ -2800,58 +2688,32 @@
 
       </dl></dd>
       
-  <dt><a href="library/pyb.ADC.html#adc.read_timed">read_timed() (adc method)</a>, <a href="library/pyb.ADC.html#adc.read_timed">[1]</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.readfrom">readfrom() (machine.I2C method)</a>
   </dt>
 
       
-  <dt><a href="library/machine.UART.html#uart.readall">readall() (uart method)</a>, <a href="library/pyb.UART.html#uart.readall">[1]</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.readfrom_into">readfrom_into() (machine.I2C method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.I2C.html#machine.I2C.readfrom_mem">readfrom_mem() (machine.I2C method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.I2C.html#machine.I2C.readfrom_mem_into">readfrom_mem_into() (machine.I2C method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.I2C.html#machine.I2C.readinto">readinto() (machine.I2C method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.readall">(usb_vcp method)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.readinto">(machine.SPI method)</a>
   </dt>
 
         
-  <dt><a href="library/usocket.html#usocket.socket.readall">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.UART.html#uart.readchar">readchar() (uart method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.readfrom">readfrom() (i2c method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.readfrom_into">readfrom_into() (i2c method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.readfrom_mem">readfrom_mem() (i2c method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.readfrom_mem_into">readfrom_mem_into() (i2c method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.readinto">readinto() (i2c method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/machine.SPI.html#spi.readinto">(spi method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.readinto">(uart method)</a>, <a href="library/pyb.UART.html#uart.readinto">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.readinto">(usb_vcp method)</a>
+  <dt><a href="library/machine.UART.html#machine.UART.readinto">(machine.UART method)</a>
   </dt>
 
         
@@ -2860,28 +2722,24 @@
 
       </dl></dd>
       
-  <dt><a href="library/machine.UART.html#uart.readline">readline() (uart method)</a>, <a href="library/pyb.UART.html#uart.readline">[1]</a>
+  <dt><a href="library/machine.UART.html#machine.UART.readline">readline() (machine.UART method)</a>
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.readline">(usb_vcp method)</a>
-  </dt>
-
         
   <dt><a href="library/usocket.html#usocket.socket.readline">(usocket.socket method)</a>
   </dt>
 
       </dl></dd>
       
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.readlines">readlines() (usb_vcp method)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.image.html#image.apriltag.rect">rect() (image.apriltag method)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.rect">rect() (framebuf.FrameBuffer method)</a>
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="library/omv.image.html#image.apriltag.rect">(image.apriltag method)</a>
+  </dt>
+
         
   <dt><a href="library/omv.image.html#image.barcode.rect">(image.barcode method)</a>
   </dt>
@@ -2910,63 +2768,45 @@
   <dt><a href="library/cmath.html#cmath.rect">(in module cmath)</a>
   </dt>
 
-      </dl></dd>
-      
-  <dt><a href="library/pyb.CAN.html#can.recv">recv() (can method)</a>
-  </dt>
-
-      <dd><dl>
         
-  <dt><a href="library/pyb.I2C.html#i2c.recv">(i2c method)</a>
-  </dt>
-
-        
-  <dt><a href="library/esp.socket.html#socket.recv">(socket method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.SPI.html#spi.recv">(spi method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.recv">(usb_vcp method)</a>
-  </dt>
-
-        
-  <dt><a href="library/usocket.html#usocket.socket.recv">(usocket.socket method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect">(lcd160cr.LCD160CR method)</a>
   </dt>
 
       </dl></dd>
       
-  <dt><a href="library/esp.socket.html#socket.recvfrom">recvfrom() (socket method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect_interior">rect_interior() (lcd160cr.LCD160CR method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/usocket.html#usocket.socket.recvfrom">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
       
-  <dt><a href="library/pyb.Pin.html#pinaf.reg">reg() (pinaf method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect_interior_no_clip">rect_interior_no_clip() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect_no_clip">rect_no_clip() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect_outline">rect_outline() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rect_outline_no_clip">rect_outline_no_clip() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/usocket.html#usocket.socket.recv">recv() (usocket.socket method)</a>
+  </dt>
+
+      
+  <dt><a href="library/usocket.html#usocket.socket.recvfrom">recvfrom() (usocket.socket method)</a>
+  </dt>
+
+      
+  <dt><a href="library/uselect.html#uselect.poll.register">register() (uselect.poll method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="library/select.html#select.poll.register">register() (select.poll method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.ExtInt.html#ExtInt.regs">regs() (ExtInt method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/network.html#network.wiznet5k.regs">(network.wiznet5k method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/uos.html#uos.remove">remove() (in module uos)</a>
   </dt>
@@ -2976,11 +2816,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.repl_uart">repl_uart() (in module pyb)</a>
+  <dt><a href="library/omv.image.html#image.image.replace">replace() (image.image method)</a>
   </dt>
 
       
-  <dt><a href="library/omv.image.html#image.image.replace">replace() (image.image method)</a>
+  <dt><a href="library/builtins.html#repr">repr() (built-in function)</a>
   </dt>
 
       
@@ -2988,6 +2828,10 @@
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.reset">(lcd160cr.LCD160CR method)</a>
+  </dt>
+
         
   <dt><a href="library/omv.time.html#time.clock.reset">(time.clock method)</a>
   </dt>
@@ -2998,6 +2842,14 @@
   </dt>
 
       
+  <dt><a href="library/builtins.html#reversed">reversed() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.rgb">rgb() (lcd160cr.LCD160CR static method)</a>
+  </dt>
+
+      
   <dt><a href="library/omv.image.html#image.line.rho">rho() (image.line method)</a>
   </dt>
 
@@ -3005,16 +2857,6 @@
   <dt><a href="library/uos.html#uos.rmdir">rmdir() (in module uos)</a>
   </dt>
 
-      
-  <dt><a href="library/machine.html#machine.rng">rng() (in module machine)</a>, <a href="library/machine.html#machine.rng">[1]</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.rng">(in module pyb)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/omv.image.html#image.apriltag.rotation">rotation() (image.apriltag method)</a>
   </dt>
@@ -3034,6 +2876,14 @@
 
       </dl></dd>
       
+  <dt><a href="library/omv.image.html#image.img.rotation_corr">rotation_corr() (image.img method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#round">round() (built-in function)</a>
+  </dt>
+
+      
   <dt><a href="library/omv.image.html#image.datamatrix.rows">rows() (image.datamatrix method)</a>
   </dt>
 
@@ -3042,11 +2892,15 @@
   </dt>
 
       
-  <dt><a href="library/machine.RTC.html#RTC.ALARM0">RTC.ALARM0 (built-in variable)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC">RTC (class in machine)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.CAN.html#can.rxcallback">rxcallback() (can method)</a>
+  <dt><a href="library/machine.RTC.html#machine.RTC.ALARM0">RTC.ALARM0 (in module machine)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#RuntimeError">RuntimeError</a>
   </dt>
 
   </dl></td>
@@ -3060,19 +2914,43 @@
   </dt>
 
       
-  <dt><a href="library/pyb.I2C.html#i2c.scan">scan() (i2c method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.save_to_flash">save_to_flash() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/network.html#network.scan">scan() (in module network)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/network.html#network.winc.scan">(network.winc method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.scan">(machine.I2C method)</a>
   </dt>
 
         
-  <dt><a href="library/network.html#network.wlan.scan">(network.wlan method)</a>, <a href="library/network.html#network.wlan.scan">[1]</a>
+  <dt><a href="library/network.html#network.winc.scan">(network.winc method)</a>
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="library/micropython.html#micropython.schedule">schedule() (in module micropython)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.screen_dump">screen_dump() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.screen_load">screen_load() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.scroll">scroll() (framebuf.FrameBuffer method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.SD.html#machine.SD">SD (class in machine)</a>
+  </dt>
+
       
   <dt><a href="library/ure.html#ure.search">search() (in module ure)</a>
   </dt>
@@ -3084,41 +2962,11 @@
 
       </dl></dd>
       
-  <dt><a href="library/select.html#module-select">select (module)</a>
+  <dt><a href="library/uselect.html#uselect.select">select() (in module uselect)</a>
   </dt>
 
       
-  <dt><a href="library/select.html#select.select">select() (in module select)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#can.send">send() (can method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.I2C.html#i2c.send">(i2c method)</a>
-  </dt>
-
-        
-  <dt><a href="library/esp.socket.html#socket.send">(socket method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.SPI.html#spi.send">(spi method)</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.send">(usb_vcp method)</a>
-  </dt>
-
-        
-  <dt><a href="library/usocket.html#usocket.socket.send">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.SPI.html#spi.send_recv">send_recv() (spi method)</a>
+  <dt><a href="library/usocket.html#usocket.socket.send">send() (usocket.socket method)</a>
   </dt>
 
       
@@ -3126,19 +2974,13 @@
   </dt>
 
       
-  <dt><a href="library/machine.UART.html#uart.sendbreak">sendbreak() (uart method)</a>, <a href="library/pyb.UART.html#uart.sendbreak">[1]</a>
+  <dt><a href="library/machine.UART.html#machine.UART.sendbreak">sendbreak() (machine.UART method)</a>
   </dt>
 
       
-  <dt><a href="library/esp.socket.html#socket.sendto">sendto() (socket method)</a>
+  <dt><a href="library/usocket.html#usocket.socket.sendto">sendto() (usocket.socket method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/usocket.html#usocket.socket.sendto">(usocket.socket method)</a>
-  </dt>
-
-      </dl></dd>
       
   <dt><a href="library/omv.sensor.html#module-sensor">sensor (module)</a>
   </dt>
@@ -3188,10 +3030,6 @@
   </dt>
 
       
-  <dt><a href="library/omv.sensor.html#sensor.sensor.HQQQQVGA">sensor.HQQQQVGA (in module sensor)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.sensor.html#sensor.sensor.HQQQVGA">sensor.HQQQVGA (in module sensor)</a>
   </dt>
 
@@ -3201,10 +3039,6 @@
 
       
   <dt><a href="library/omv.sensor.html#sensor.sensor.HQVGA">sensor.HQVGA (in module sensor)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.sensor.html#sensor.sensor.HVGA">sensor.HVGA (in module sensor)</a>
   </dt>
 
       
@@ -3232,23 +3066,7 @@
   </dt>
 
       
-  <dt><a href="library/omv.sensor.html#sensor.sensor.QQQCIF">sensor.QQQCIF (in module sensor)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.sensor.html#sensor.sensor.QQQQCIF">sensor.QQQQCIF (in module sensor)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.sensor.html#sensor.sensor.QQQQSIF">sensor.QQQQSIF (in module sensor)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.sensor.html#sensor.sensor.QQQQVGA">sensor.QQQQVGA (in module sensor)</a>
-  </dt>
-
-      
-  <dt><a href="library/omv.sensor.html#sensor.sensor.QQQSIF">sensor.QQQSIF (in module sensor)</a>
   </dt>
 
       
@@ -3359,10 +3177,12 @@
   <dt><a href="library/omv.sensor.html#sensor.sensor.SIF">sensor.SIF (in module sensor)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.sensor.html#sensor.sensor.skip_frames">sensor.skip_frames() (in module sensor)</a>
+  </dt>
+
+      
+  <dt><a href="library/omv.sensor.html#sensor.sensor.sleep">sensor.sleep() (in module sensor)</a>
   </dt>
 
       
@@ -3389,28 +3209,92 @@
   <dt><a href="library/omv.sensor.html#sensor.sensor.width">sensor.width() (in module sensor)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.sensor.html#sensor.sensor.YUV422">sensor.YUV422 (in module sensor)</a>
   </dt>
 
       
-  <dt><a href="library/uos.html#uos.sep">sep (in module uos)</a>
+  <dt><a href="library/builtins.html#set">set (built-in class)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_brightness">set_brightness() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_font">set_font() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_i2c_addr">set_i2c_addr() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_orient">set_orient() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_pen">set_pen() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
   <dt><a href="library/omv.image.html#image.image.set_pixel">set_pixel() (image.image method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_pixel">(lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_pos">set_pos() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_power">set_power() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_scroll">set_scroll() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_scroll_buf">set_scroll_buf() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_scroll_win">set_scroll_win() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_scroll_win_param">set_scroll_win_param() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_spi_win">set_spi_win() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_startup_deco">set_startup_deco() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_text_color">set_text_color() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.set_uart_baudrate">set_uart_baudrate() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#setattr">setattr() (built-in function)</a>
+  </dt>
+
       
   <dt><a href="library/usocket.html#usocket.socket.setblocking">setblocking() (usocket.socket method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.CAN.html#can.setfilter">setfilter() (can method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.setinterrupt">setinterrupt() (usb_vcp method)</a>
   </dt>
 
       
@@ -3422,7 +3306,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.show">show() (lcd method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.show_framebuf">show_framebuf() (lcd160cr.LCD160CR method)</a>
+  </dt>
+
+      
+  <dt><a href="library/machine.Signal.html#machine.Signal">Signal (class in machine)</a>
   </dt>
 
       
@@ -3471,7 +3359,7 @@
 
       <dd><dl>
         
-  <dt><a href="library/utime.html#utime.sleep">(in module utime)</a>, <a href="library/utime.html#utime.sleep">[1]</a>
+  <dt><a href="library/utime.html#utime.sleep">(in module utime)</a>
   </dt>
 
       </dl></dd>
@@ -3480,75 +3368,47 @@
   </dt>
 
       
-  <dt><a href="library/esp.html#esp.sleep_type">sleep_type() (in module esp)</a>
-  </dt>
-
-      
   <dt><a href="library/utime.html#utime.sleep_us">sleep_us() (in module utime)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.AF_INET">socket.AF_INET (in module usocket)</a>
+  <dt><a href="library/builtins.html#slice">slice (built-in class)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.error">socket.error (in module usocket)</a>
+  <dt><a href="library/usocket.html#usocket.SOCK_DGRAM">SOCK_DGRAM (in module usocket)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.getaddrinfo">socket.getaddrinfo() (in module usocket)</a>
+  <dt><a href="library/usocket.html#usocket.SOCK_STREAM">SOCK_STREAM (in module usocket)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.IPPROTO_SEC">socket.IPPROTO_SEC (in module usocket)</a>
+  <dt><a href="library/usocket.html#usocket.socket">socket() (in module usocket)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.IPPROTO_TCP">socket.IPPROTO_TCP (in module usocket)</a>
+  <dt><a href="library/usocket.html#usocket.socket.error">socket.error</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.IPPROTO_UDP">socket.IPPROTO_UDP (in module usocket)</a>
+  <dt><a href="library/builtins.html#sorted">sorted() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.SOCK_DGRAM">socket.SOCK_DGRAM (in module usocket)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI">SPI (class in machine)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.SOCK_STREAM">socket.SOCK_STREAM (in module usocket)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.LSB">SPI.LSB (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.socket">socket.socket() (in module usocket)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.MASTER">SPI.MASTER (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/usocket.html#usocket.socket.timeout">socket.timeout (in module usocket)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Timer.html#timer.source_freq">source_freq() (timer method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.Servo.html#servo.speed">speed() (servo method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.SPI.html#SPI.LSB">SPI.LSB (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.SPI.html#SPI.MASTER">SPI.MASTER (built-in variable)</a>, <a href="library/pyb.SPI.html#SPI.MASTER">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.SPI.html#SPI.MSB">SPI.MSB (built-in variable)</a>, <a href="library/pyb.SPI.html#SPI.MSB">[1]</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.SPI.html#SPI.SLAVE">SPI.SLAVE (built-in variable)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.MSB">SPI.MSB (in module machine)</a>
   </dt>
 
       
@@ -3565,10 +3425,6 @@
   </dt>
 
       </dl></dd>
-      
-  <dt><a href="library/network.html#network.wlan.ssid">ssid() (network.wlan method)</a>
-  </dt>
-
       
   <dt><a href="library/ussl.html#ussl.ssl.CERT_NONE">ssl.CERT_NONE (in module ussl)</a>
   </dt>
@@ -3590,11 +3446,11 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.standby">standby() (in module pyb)</a>
+  <dt><a href="library/micropython.html#micropython.stack_use">stack_use() (in module micropython)</a>
   </dt>
 
       
-  <dt><a href="library/machine.I2C.html#i2c.start">start() (i2c method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.start">start() (machine.I2C method)</a>
   </dt>
 
       
@@ -3606,7 +3462,15 @@
   </dt>
 
       
-  <dt><a href="library/network.html#network.wlan.status">status() (network.wlan method)</a>
+  <dt><a href="library/builtins.html#staticmethod">staticmethod() (built-in function)</a>
+  </dt>
+
+      
+  <dt><a href="library/network.html#network.status">status() (in module network)</a>
+  </dt>
+
+      
+  <dt><a href="library/uos.html#uos.statvfs">statvfs() (in module uos)</a>
   </dt>
 
       
@@ -3626,15 +3490,17 @@
   </dt>
 
       
-  <dt><a href="library/machine.I2C.html#i2c.stop">stop() (i2c method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.stop">stop() (machine.I2C method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.stop">(in module pyb)</a>
+      
+  <dt><a href="library/builtins.html#StopIteration">StopIteration</a>
   </dt>
 
-      </dl></dd>
+      
+  <dt><a href="library/builtins.html#str">str (built-in class)</a>
+  </dt>
+
       
   <dt><a href="library/uio.html#uio.StringIO">StringIO (class in uio)</a>
   </dt>
@@ -3644,25 +3510,27 @@
   </dt>
 
       
-  <dt><a href="library/pyb.ExtInt.html#extint.swint">swint() (extint method)</a>
+  <dt><a href="library/builtins.html#sum">sum() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.Switch.html#switch">switch()</a>
+  <dt><a href="library/builtins.html#super">super() (built-in function)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.sync">sync() (in module pyb)</a>
+  <dt><a href="library/uos.html#uos.sync">sync() (in module uos)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="library/uos.html#uos.sync">(in module uos)</a>
+      
+  <dt><a href="library/builtins.html#SyntaxError">SyntaxError</a>
   </dt>
 
-      </dl></dd>
       
   <dt><a href="library/sys.html#module-sys">sys (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#SystemExit">SystemExit</a>
   </dt>
 
   </dl></td>
@@ -3680,7 +3548,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.LCD.html#lcd.text">text() (lcd method)</a>
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.text">text() (framebuf.FrameBuffer method)</a>
   </dt>
 
       
@@ -3698,7 +3566,15 @@
 
       </dl></dd>
       
+  <dt><a href="library/gc.html#gc.threshold">threshold() (in module gc)</a>
+  </dt>
+
+      
   <dt><a href="library/omv.time.html#time.clock.tick">tick() (time.clock method)</a>
+  </dt>
+
+      
+  <dt><a href="library/utime.html#utime.ticks_add">ticks_add() (in module utime)</a>
   </dt>
 
       
@@ -3718,10 +3594,6 @@
   </dt>
 
       
-  <dt><a href="library/pyb.Accel.html#accel.tilt">tilt() (accel method)</a>
-  </dt>
-
-      
   <dt><a href="library/omv.time.html#module-time">time (module)</a>
   </dt>
 
@@ -3729,6 +3601,8 @@
   <dt><a href="library/utime.html#utime.time">time() (in module utime)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.time.html#time.time.clock">time.clock (class in time)</a>
   </dt>
@@ -3737,64 +3611,32 @@
   <dt><a href="library/omv.time.html#time.time.sleep">time.sleep() (in module time)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/omv.time.html#time.time.ticks">time.ticks() (in module time)</a>
   </dt>
 
       
-  <dt><a href="library/network.html#network.server.timeout">timeout() (network.server method)</a>
+  <dt><a href="library/machine.html#machine.time_pulse_us">time_pulse_us() (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Timer.html#Timer.A">Timer.A (built-in variable)</a>
+  <dt><a href="library/machine.Timer.html#machine.Timer">Timer (class in machine)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Timer.html#Timer.B">Timer.B (built-in variable)</a>
+  <dt><a href="library/machine.Timer.html#machine.Timer.ONE_SHOT">Timer.ONE_SHOT (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Timer.html#Timer.MATCH">Timer.MATCH (built-in variable)</a>
+  <dt><a href="library/machine.Timer.html#machine.Timer.PERIODIC">Timer.PERIODIC (in module machine)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Timer.html#Timer.NEGATIVE">Timer.NEGATIVE (built-in variable)</a>
+  <dt><a href="library/builtins.html#int.to_bytes">to_bytes() (int method)</a>
   </dt>
 
       
-  <dt><a href="library/machine.Timer.html#Timer.ONE_SHOT">Timer.ONE_SHOT (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#Timer.PERIODIC">Timer.PERIODIC (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#Timer.POSITIVE">Timer.POSITIVE (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#Timer.PWM">Timer.PWM (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.Timer.html#Timer.TIMEOUT">Timer.TIMEOUT (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.LED.html#led.toggle">toggle() (led method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/machine.Pin.html#pin.toggle">(pin method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/pyb.DAC.html#dac.triangle">triangle() (dac method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.touch_config">touch_config() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       
@@ -3802,7 +3644,21 @@
   </dt>
 
       
-  <dt><a href="library/omv.image.html#image.barcode.type">type() (image.barcode method)</a>
+  <dt><a href="library/builtins.html#tuple">tuple (built-in class)</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#type">type() (built-in function)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="library/omv.image.html#image.barcode.type">(image.barcode method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="library/builtins.html#TypeError">TypeError</a>
   </dt>
 
   </dl></td>
@@ -3812,23 +3668,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.UART.html#UART.CTS">UART.CTS (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.UART.html#UART.EVEN">UART.EVEN (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.UART.html#UART.ODD">UART.ODD (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.UART.html#UART.RTS">UART.RTS (built-in variable)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.UART.html#UART.RX_ANY">UART.RX_ANY (built-in variable)</a>
+  <dt><a href="library/machine.UART.html#machine.UART">UART (class in machine)</a>
   </dt>
 
       
@@ -3844,7 +3684,7 @@
   </dt>
 
       
-  <dt><a href="library/pyb.html#pyb.udelay">udelay() (in module pyb)</a>
+  <dt><a href="library/uerrno.html#module-uerrno">uerrno (module)</a>
   </dt>
 
       
@@ -3852,11 +3692,15 @@
   </dt>
 
       
+  <dt><a href="library/uhashlib.html#uhashlib.uhashlib.md5">uhashlib.md5 (class in uhashlib)</a>
+  </dt>
+
+      
   <dt><a href="library/uhashlib.html#uhashlib.uhashlib.sha1">uhashlib.sha1 (class in uhashlib)</a>
   </dt>
 
       
-  <dt><a href="library/uhashlib.html#uhashlib.uhashlib.sha256">uhashlib.sha256 (class in uhashlib)</a>, <a href="library/uhashlib.html#uhashlib.uhashlib.sha256">[1]</a>
+  <dt><a href="library/uhashlib.html#uhashlib.uhashlib.sha256">uhashlib.sha256 (class in uhashlib)</a>
   </dt>
 
       
@@ -3875,32 +3719,22 @@
   <dt><a href="library/ubinascii.html#ubinascii.unhexlify">unhexlify() (in module ubinascii)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/machine.html#machine.unique_id">unique_id() (in module machine)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="library/pyb.html#pyb.unique_id">(in module pyb)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="library/uos.html#uos.unmount">unmount() (in module uos)</a>
   </dt>
 
       
   <dt><a href="library/ustruct.html#ustruct.unpack">unpack() (in module ustruct)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/ustruct.html#ustruct.unpack_from">unpack_from() (in module ustruct)</a>
   </dt>
 
       
-  <dt><a href="library/select.html#select.poll.unregister">unregister() (select.poll method)</a>
+  <dt><a href="library/uselect.html#uselect.poll.unregister">unregister() (uselect.poll method)</a>
   </dt>
 
       
@@ -3909,6 +3743,10 @@
 
       
   <dt><a href="library/uhashlib.html#uhashlib.hash.update">update() (uhashlib.hash method)</a>
+  </dt>
+
+      
+  <dt><a href="reference/glossary.html#term-upip"><strong>upip</strong></a>
   </dt>
 
       
@@ -3921,6 +3759,10 @@
 
       
   <dt><a href="library/ure.html#module-ure">ure (module)</a>
+  </dt>
+
+      
+  <dt><a href="library/uselect.html#module-uselect">uselect (module)</a>
   </dt>
 
       
@@ -3950,19 +3792,31 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/machine.ADC.html#adcchannel.value">value() (adcchannel method)</a>
+  <dt><a href="library/omv.image.html#image.percentile.value">value() (image.percentile method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/omv.image.html#image.percentile.value">(image.percentile method)</a>
+  <dt><a href="library/machine.Pin.html#machine.Pin.value">(machine.Pin method)</a>
   </dt>
 
         
-  <dt><a href="library/machine.Pin.html#pin.value">(pin method)</a>, <a href="library/pyb.Pin.html#pin.value">[1]</a>
+  <dt><a href="library/machine.Signal.html#machine.Signal.value">(machine.Signal method)</a>
+  </dt>
+
+        
+  <dt><a href="library/machine.ADC.html#machine.adcchannel.value">(machine.adcchannel method)</a>
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="library/builtins.html#ValueError">ValueError</a>
+  </dt>
+
+      
+  <dt><a href="library/btree.html#btree.btree.values">values() (btree.btree method)</a>
+  </dt>
+
       
   <dt><a href="library/sys.html#sys.version">version (in module sys)</a>
   </dt>
@@ -3975,6 +3829,10 @@
 
       
   <dt><a href="library/sys.html#sys.version_info">version_info (in module sys)</a>
+  </dt>
+
+      
+  <dt><a href="library/framebuf.html#framebuf.FrameBuffer.vline">vline() (framebuf.FrameBuffer method)</a>
   </dt>
 
   </dl></td>
@@ -4018,15 +3876,7 @@
   </dt>
 
       
-  <dt><a href="library/machine.html#machine.wake_reason">wake_reason() (in module machine)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.RTC.html#rtc.wakeup">wakeup() (rtc method)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.html#pyb.wfi">wfi() (in module pyb)</a>
+  <dt><a href="library/machine.WDT.html#machine.WDT">WDT (class in machine)</a>
   </dt>
 
       
@@ -4055,6 +3905,8 @@
   <dt><a href="library/network.html#network.winc.OPEN">winc.OPEN (in module network)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="library/network.html#network.winc.WEP">winc.WEP (in module network)</a>
   </dt>
@@ -4064,70 +3916,20 @@
   </dt>
 
       
-  <dt><a href="library/wipy.html#module-wipy">wipy (module)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WIZNET5K">WIZNET5K (class in network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN">WLAN (class in network)</a>, <a href="library/network.html#network.WLAN">[1]</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="library/network.html#network.WLAN.AP">WLAN.AP (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.EXT_ANT">WLAN.EXT_ANT (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.INT_ANT">WLAN.INT_ANT (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.STA">WLAN.STA (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.WEP">WLAN.WEP (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.WPA">WLAN.WPA (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/network.html#network.WLAN.WPA2">WLAN.WPA2 (in module network)</a>
-  </dt>
-
-      
-  <dt><a href="library/pyb.DAC.html#dac.write">write() (dac method)</a>
+  <dt><a href="library/lcd160cr.html#lcd160cr.LCD160CR.write">write() (lcd160cr.LCD160CR method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="library/machine.I2C.html#i2c.write">(i2c method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.write">(machine.I2C method)</a>
   </dt>
 
         
-  <dt><a href="library/pyb.LCD.html#lcd.write">(lcd method)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.write">(machine.SPI method)</a>
   </dt>
 
         
-  <dt><a href="library/machine.SPI.html#spi.write">(spi method)</a>
-  </dt>
-
-        
-  <dt><a href="library/machine.UART.html#uart.write">(uart method)</a>, <a href="library/pyb.UART.html#uart.write">[1]</a>
-  </dt>
-
-        
-  <dt><a href="library/pyb.USB_VCP.html#usb_vcp.write">(usb_vcp method)</a>
+  <dt><a href="library/machine.UART.html#machine.UART.write">(machine.UART method)</a>
   </dt>
 
         
@@ -4136,23 +3938,15 @@
 
       </dl></dd>
       
-  <dt><a href="library/machine.SPI.html#spi.write_readinto">write_readinto() (spi method)</a>
+  <dt><a href="library/machine.SPI.html#machine.SPI.write_readinto">write_readinto() (machine.SPI method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.DAC.html#dac.write_timed">write_timed() (dac method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.writeto">writeto() (machine.I2C method)</a>
   </dt>
 
       
-  <dt><a href="library/pyb.UART.html#uart.writechar">writechar() (uart method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.writeto">writeto() (i2c method)</a>
-  </dt>
-
-      
-  <dt><a href="library/machine.I2C.html#i2c.writeto_mem">writeto_mem() (i2c method)</a>
+  <dt><a href="library/machine.I2C.html#machine.I2C.writeto_mem">writeto_mem() (machine.I2C method)</a>
   </dt>
 
   </dl></td>
@@ -4162,14 +3956,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Accel.html#accel.x">x() (accel method)</a>
+  <dt><a href="library/omv.image.html#image.apriltag.x">x() (image.apriltag method)</a>
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="library/omv.image.html#image.apriltag.x">(image.apriltag method)</a>
-  </dt>
-
         
   <dt><a href="library/omv.image.html#image.barcode.x">(image.barcode method)</a>
   </dt>
@@ -4224,14 +4014,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Accel.html#accel.y">y() (accel method)</a>
+  <dt><a href="library/omv.image.html#image.apriltag.y">y() (image.apriltag method)</a>
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="library/omv.image.html#image.apriltag.y">(image.apriltag method)</a>
-  </dt>
-
         
   <dt><a href="library/omv.image.html#image.barcode.y">(image.barcode method)</a>
   </dt>
@@ -4286,17 +4072,21 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/pyb.Accel.html#accel.z">z() (accel method)</a>
+  <dt><a href="library/omv.image.html#image.apriltag.z_rotation">z_rotation() (image.apriltag method)</a>
   </dt>
 
       
-  <dt><a href="library/omv.image.html#image.apriltag.z_rotation">z_rotation() (image.apriltag method)</a>
+  <dt><a href="library/omv.image.html#image.apriltag.z_translation">z_translation() (image.apriltag method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="library/omv.image.html#image.apriltag.z_translation">z_translation() (image.apriltag method)</a>
+  <dt><a href="library/builtins.html#ZeroDivisionError">ZeroDivisionError</a>
+  </dt>
+
+      
+  <dt><a href="library/builtins.html#zip">zip() (built-in function)</a>
   </dt>
 
   </dl></td>
@@ -4313,8 +4103,8 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -4328,7 +4118,7 @@
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -4356,14 +4146,12 @@
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -4371,19 +4159,19 @@
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

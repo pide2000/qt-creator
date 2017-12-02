@@ -115,6 +115,9 @@ public:
     void appendAboutInformation(const QString &line);
 
     void addPreCloseListener(const std::function<bool()> &listener);
+    //OPENMV-DIFF//
+    void disableShow(bool disable) { m_disableShow = disable; }
+    //OPENMV-DIFF//
 
 signals:
     //OPENMV-DIFF//
@@ -185,6 +188,9 @@ private:
     RightPaneWidget *m_rightPaneWidget;
     StatusBarWidget *m_outputView;
     VersionDialog *m_versionDialog;
+    //OPENMV-DIFF//
+    bool m_disableShow;
+    //OPENMV-DIFF//
 
     QList<IContext *> m_activeContext;
 

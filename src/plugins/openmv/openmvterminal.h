@@ -86,7 +86,7 @@ class OpenMVTerminal : public QWidget
 
 public:
 
-    explicit OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, QWidget *parent = Q_NULLPTR);
+    explicit OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, bool stand_alone = false, QWidget *parent = Q_NULLPTR);
     ~OpenMVTerminal();
 
 signals:

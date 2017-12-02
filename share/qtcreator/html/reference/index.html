@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The MicroPython language &mdash; MicroPython 1.8 documentation</title>
+  <title>The MicroPython language &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
-        <link rel="next" title="The MicroPython Interactive Interpreter Mode (aka REPL)" href="repl.html"/>
-        <link rel="prev" title="class I2C – a two-wire serial protocol" href="../library/machine.I2C.html"/> 
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+        <link rel="next" title="Glossary" href="glossary.html"/>
+        <link rel="prev" title="cpufreq — easy cpu frequency control" href="../library/omv.cpufreq.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -90,15 +90,19 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../library/index.html">MicroPython libraries</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">The MicroPython language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="repl.html">The MicroPython Interactive Interpreter Mode (aka REPL)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximizing Python Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -146,17 +150,29 @@
             
   <div class="section" id="the-micropython-language">
 <h1>The MicroPython language<a class="headerlink" href="#the-micropython-language" title="Permalink to this headline">¶</a></h1>
-<p>MicroPython aims to implement the Python 3.4 standard, and most of
-the features of MicroPython are identical to those described by the
-documentation at
-<a class="reference external" href="http://docs.python.org/3.4/reference/index.html">docs.python.org</a>.</p>
-<p>Differences to standard Python as well as additional features of
-MicroPython are described in the sections here.</p>
+<p>MicroPython aims to implement the Python 3.4 standard (with selected
+features from later versions) with respect to language syntax, and most
+of the features of MicroPython are identical to those described by the
+&#8220;Language Reference&#8221; documentation at
+<a class="reference external" href="https://docs.python.org/3/reference/index.html">docs.python.org</a>.</p>
+<p>The MicroPython standard library is described in the
+<a class="reference internal" href="../library/index.html#micropython-lib"><span>corresponding chapter</span></a>. The <a class="reference internal" href="../genrst/index.html#cpython-diffs"><span>MicroPython differences from CPython</span></a>
+chapter describes differences between MicroPython and CPython (which
+mostly concern standard library and types, but also some language-level
+features).</p>
+<p>This chapter describes features and peculiarities of MicroPython
+implementation and the best practices to use them.</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 <li class="toctree-l1"><a class="reference internal" href="repl.html">The MicroPython Interactive Interpreter Mode (aka REPL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="speed_python.html">Maximizing Python Speed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </div>
@@ -169,10 +185,10 @@ MicroPython are described in the sections here.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="repl.html" class="btn btn-neutral float-right" title="The MicroPython Interactive Interpreter Mode (aka REPL)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../library/machine.I2C.html" class="btn btn-neutral" title="class I2C – a two-wire serial protocol" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../library/omv.cpufreq.html" class="btn btn-neutral" title="cpufreq — easy cpu frequency control" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -181,8 +197,8 @@ MicroPython are described in the sections here.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -196,7 +212,7 @@ MicroPython are described in the sections here.</p>
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -224,14 +240,12 @@ MicroPython are described in the sections here.</p>
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -239,19 +253,19 @@ MicroPython are described in the sections here.</p>
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

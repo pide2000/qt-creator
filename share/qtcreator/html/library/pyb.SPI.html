@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.8 documentation</title>
+  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class Timer – control internal timers" href="pyb.Timer.html"/>
         <link rel="prev" title="class Servo – 3-wire hobby servo driver" href="pyb.Servo.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,6 +91,7 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a></li>
@@ -112,6 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pyb.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.LED.html">class LED &#8211; LED object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Pin.html">class Pin &#8211; control I/O pins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.RTC.html">class RTC &#8211; real time clock</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Servo.html">class Servo &#8211; 3-wire hobby servo driver</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="">class SPI &#8211; a master-driven serial protocol</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
@@ -149,13 +151,12 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a></li>
-<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the board</a></li>
-<li class="toctree-l3"><a class="reference internal" href="machine.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -205,17 +206,17 @@
             
   <div class="section" id="class-spi-a-master-driven-serial-protocol">
 <span id="pyb-spi"></span><h1>class SPI &#8211; a master-driven serial protocol<a class="headerlink" href="#class-spi-a-master-driven-serial-protocol" title="Permalink to this headline">¶</a></h1>
-<p>SPI is a serial protocol that is driven by a master. At the physical level
+<p>SPI is a serial protocol that is driven by a master.  At the physical level
 there are 3 lines: SCK, MOSI, MISO.</p>
-<p>See usage model of I2C; SPI is very similar. Main difference is
+<p>See usage model of I2C; SPI is very similar.  Main difference is
 parameters to init the SPI bus:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyb</span> <span class="kn">import</span> <span class="n">SPI</span>
 <span class="n">spi</span> <span class="o">=</span> <span class="n">SPI</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">SPI</span><span class="o">.</span><span class="n">MASTER</span><span class="p">,</span> <span class="n">baudrate</span><span class="o">=</span><span class="mi">600000</span><span class="p">,</span> <span class="n">polarity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">crc</span><span class="o">=</span><span class="mh">0x7</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Only required parameter is mode, SPI.MASTER or SPI.SLAVE. Polarity can be
-0 or 1, and is the level the idle clock line sits at. Phase can be 0 or 1
-to sample data on the first or second clock edge respectively. Crc can be
+<p>Only required parameter is mode, SPI.MASTER or SPI.SLAVE.  Polarity can be
+0 or 1, and is the level the idle clock line sits at.  Phase can be 0 or 1
+to sample data on the first or second clock edge respectively.  Crc can be
 None for no CRC, or a polynomial specifier.</p>
 <p>Additional methods for SPI:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">send_recv</span><span class="p">(</span><span class="n">b</span><span class="s">&#39;1234&#39;</span><span class="p">)</span>        <span class="c"># send 4 bytes and receive 4 bytes</span>
@@ -229,15 +230,15 @@ None for no CRC, or a polynomial specifier.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">SPI</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span></dt>
-<dd><p>Construct an SPI object on the given bus. <code class="docutils literal"><span class="pre">bus</span></code> can be 2.
+<dd><p>Construct an SPI object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 2.
 With no additional parameters, the SPI object is created but
-not initialized (it has the settings from the last initialization of
-the bus, if any). If extra arguments are given, the bus is initialized.
-See <code class="docutils literal"><span class="pre">init</span></code> for parameters of initialization.</p>
-<p>The physical pins of the SPI buses are:</p>
+not initialised (it has the settings from the last initialisation of
+the bus, if any).  If extra arguments are given, the bus is initialised.
+See <code class="docutils literal"><span class="pre">init</span></code> for parameters of initialisation.</p>
+<p>The physical pins of the SPI busses are:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">SPI(2)</span></code>: <code class="docutils literal"><span class="pre">(NSS,</span> <span class="pre">SCK,</span> <span class="pre">MISO,</span> <span class="pre">MOSI)</span> <span class="pre">=</span> <span class="pre">(P3,</span> <span class="pre">P2,</span> <span class="pre">P1,</span> <span class="pre">P0)</span> <span class="pre">=</span> <span class="pre">(PB12,</span> <span class="pre">PB13,</span> <span class="pre">PB14,</span> <span class="pre">PB15)</span></code></li>
+<li><code class="docutils literal"><span class="pre">SPI(2)</span></code> is on the Y position: <code class="docutils literal"><span class="pre">(NSS,</span> <span class="pre">SCK,</span> <span class="pre">MISO,</span> <span class="pre">MOSI)</span> <span class="pre">=</span> <span class="pre">(P3,</span> <span class="pre">P2,</span> <span class="pre">P1,</span> <span class="pre">P0)</span> <span class="pre">=</span> <span class="pre">(PB12,</span> <span class="pre">PB13,</span> <span class="pre">PB14,</span> <span class="pre">PB15)</span></code></li>
 </ul>
 </div></blockquote>
 <p>At the moment, the NSS pin is not used by the SPI driver and is free
@@ -248,15 +249,15 @@ for other use.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt id="spi.deinit">
-<code class="descclassname">spi.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spi.deinit" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Turn off the SPI bus.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descclassname">spi.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>baudrate=328125</em>, <em>*</em>, <em>prescaler</em>, <em>polarity=1</em>, <em>phase=0</em>, <em>bits=8</em>, <em>firstbit=SPI.MSB</em>, <em>ti=False</em>, <em>crc=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Initialize the SPI bus with the given parameters:</p>
+<code class="descclassname">SPI.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>baudrate=328125</em>, <em>*</em>, <em>prescaler</em>, <em>polarity=1</em>, <em>phase=0</em>, <em>bits=8</em>, <em>firstbit=SPI.MSB</em>, <em>ti=False</em>, <em>crc=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Initialise the SPI bus with the given parameters:</p>
 <blockquote>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">mode</span></code> must be either <code class="docutils literal"><span class="pre">SPI.MASTER</span></code> or <code class="docutils literal"><span class="pre">SPI.SLAVE</span></code>.</li>
@@ -266,14 +267,15 @@ use of <code class="docutils literal"><span class="pre">prescaler</span></code> 
 <li><code class="docutils literal"><span class="pre">polarity</span></code> can be 0 or 1, and is the level the idle clock line sits at.</li>
 <li><code class="docutils literal"><span class="pre">phase</span></code> can be 0 or 1 to sample data on the first or second clock edge
 respectively.</li>
+<li><code class="docutils literal"><span class="pre">bits</span></code> can be 8 or 16, and is the number of bits in each transferred word.</li>
 <li><code class="docutils literal"><span class="pre">firstbit</span></code> can be <code class="docutils literal"><span class="pre">SPI.MSB</span></code> or <code class="docutils literal"><span class="pre">SPI.LSB</span></code>.</li>
 <li><code class="docutils literal"><span class="pre">crc</span></code> can be None for no CRC, or a polynomial specifier.</li>
 </ul>
 </div></blockquote>
 <p>Note that the SPI clock frequency will not always be the requested baudrate.
 The hardware only supports baudrates that are the APB bus frequency
-(see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code></a>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
-64, 128 or 256. SPI(2) is on AHB1. For precise
+(see <code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
+64, 128 or 256.  SPI(2) is on AHB1.  For precise
 control over the SPI clock frequency, specify <code class="docutils literal"><span class="pre">prescaler</span></code> instead of
 <code class="docutils literal"><span class="pre">baudrate</span></code>.</p>
 <p>Printing the SPI object will show you the computed baudrate and the chosen
@@ -281,8 +283,8 @@ prescaler.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="spi.recv">
-<code class="descclassname">spi.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#spi.recv" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
 <dd><p>Receive data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -296,8 +298,8 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt id="spi.send">
-<code class="descclassname">spi.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#spi.send" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
 <dd><p>Send data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -309,14 +311,14 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt id="spi.send_recv">
-<code class="descclassname">spi.</code><code class="descname">send_recv</code><span class="sig-paren">(</span><em>send</em>, <em>recv=None</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#spi.send_recv" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">send_recv</code><span class="sig-paren">(</span><em>send</em>, <em>recv=None</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
 <dd><p>Send and receive data on the bus at the same time:</p>
 <blockquote>
 <div><ul class="simple">
 <li><code class="docutils literal"><span class="pre">send</span></code> is the data to send (an integer to send, or a buffer object).</li>
 <li><code class="docutils literal"><span class="pre">recv</span></code> is a mutable buffer which will be filled with received bytes.
-It can be the same as <code class="docutils literal"><span class="pre">send</span></code>, or omitted. If omitted, a new buffer will
+It can be the same as <code class="docutils literal"><span class="pre">send</span></code>, or omitted.  If omitted, a new buffer will
 be created.</li>
 <li><code class="docutils literal"><span class="pre">timeout</span></code> is the timeout in milliseconds to wait for the receive.</li>
 </ul>
@@ -328,24 +330,24 @@ be created.</li>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt id="SPI.MASTER">
-<code class="descclassname">SPI.</code><code class="descname">MASTER</code><a class="headerlink" href="#SPI.MASTER" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">MASTER</code></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt id="SPI.SLAVE">
-<code class="descclassname">SPI.</code><code class="descname">SLAVE</code><a class="headerlink" href="#SPI.SLAVE" title="Permalink to this definition">¶</a></dt>
-<dd><p>for initializing the SPI bus to master or slave mode</p>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">SLAVE</code></dt>
+<dd><p>for initialising the SPI bus to master or slave mode</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="SPI.LSB">
-<code class="descclassname">SPI.</code><code class="descname">LSB</code><a class="headerlink" href="#SPI.LSB" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">LSB</code></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt id="SPI.MSB">
-<code class="descclassname">SPI.</code><code class="descname">MSB</code><a class="headerlink" href="#SPI.MSB" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">SPI.</code><code class="descname">MSB</code></dt>
 <dd><p>set the first bit to be the least or most significant bit</p>
 </dd></dl>
 
@@ -371,8 +373,8 @@ be created.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -386,7 +388,7 @@ be created.</li>
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -414,14 +416,12 @@ be created.</li>
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -429,19 +429,19 @@ be created.</li>
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. Register move instructions &mdash; MicroPython 1.8 documentation</title>
+  <title>1. Register move instructions &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
         <link rel="up" title="Inline Assembler for Thumb2 architectures" href="asm_thumb2_index.html"/>
         <link rel="next" title="2. Load register from memory" href="asm_thumb2_ldr.html"/>
         <link rel="prev" title="Inline Assembler for Thumb2 architectures" href="asm_thumb2_index.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,12 +91,15 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../library/index.html">MicroPython libraries</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">The MicroPython language</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="repl.html">The MicroPython Interactive Interpreter Mode (aka REPL)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximizing Python Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="asm_thumb2_index.html#document-conventions">Document conventions</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="asm_thumb2_index.html#instruction-categories">Instruction Categories</a><ul class="current">
@@ -119,6 +122,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -177,7 +181,7 @@ value having a width of N bits. These instructions affect the condition flags.</
 </div>
 <div class="section" id="register-moves">
 <h2>1.2. Register moves<a class="headerlink" href="#register-moves" title="Permalink to this headline">¶</a></h2>
-<p>When immediate values are used, these are zero-extended to 32 bits. Thus
+<p>Where immediate values are used, these are zero-extended to 32 bits. Thus
 <code class="docutils literal"><span class="pre">mov(R0,</span> <span class="pre">0xff)</span></code> will set R0 to 255.</p>
 <ul class="simple">
 <li>mov(Rd, imm8) <code class="docutils literal"><span class="pre">Rd</span> <span class="pre">=</span> <span class="pre">imm8</span></code></li>
@@ -214,8 +218,8 @@ by a <code class="docutils literal"><span class="pre">movt</span></code> to move
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -229,7 +233,7 @@ by a <code class="docutils literal"><span class="pre">movt</span></code> to move
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -257,14 +261,12 @@ by a <code class="docutils literal"><span class="pre">movt</span></code> to move
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -272,19 +274,19 @@ by a <code class="docutils literal"><span class="pre">movt</span></code> to move
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

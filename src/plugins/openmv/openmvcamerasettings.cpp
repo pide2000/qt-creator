@@ -1,7 +1,7 @@
 #include "openmvcamerasettings.h"
 #include "ui_openmvcamerasettings.h"
 
-#define SETTINGS_GROUP "WiFiSettings"
+#define SETTINGS_GROUP "BootSettings"
 #define WIFI_MODE "WiFiMode"
 #define CLIENT_MODE_SSID "ClientModeSSID"
 #define CLIENT_MODE_PASS "ClientModePass"
@@ -10,6 +10,7 @@
 #define ACCESS_POINT_MODE_PASS "AccessPointModePass"
 #define ACCESS_POINT_MODE_TYPE "AccessPointModeType"
 #define BOARD_NAME "BoardName"
+#define REPL_UART "REPLUart"
 
 OpenMVCameraSettings::OpenMVCameraSettings(const QString &fileName, QWidget *parent) : QDialog(parent), m_settings(new QSettings(fileName, QSettings::IniFormat, this)), m_ui(new Ui::OpenMVCameraSettings)
 {
@@ -26,6 +27,7 @@ OpenMVCameraSettings::OpenMVCameraSettings(const QString &fileName, QWidget *par
     QString accessPointModePass = m_settings->value(QStringLiteral(ACCESS_POINT_MODE_PASS)).toString();
     int accessPointModeType = m_settings->value(QStringLiteral(ACCESS_POINT_MODE_TYPE)).toInt();
     QString boardName = m_settings->value(QStringLiteral(BOARD_NAME)).toString();
+    bool repluart = m_settings->value(QStringLiteral(REPL_UART)).toBool();
 
     switch(wifiMode)
     {
@@ -60,7 +62,6 @@ OpenMVCameraSettings::OpenMVCameraSettings(const QString &fileName, QWidget *par
     }
 
     QStringList list;
-
     QNetworkConfigurationManager *manager = new QNetworkConfigurationManager(this);
 
     foreach(const QNetworkConfiguration &config, manager->allConfigurations())
@@ -105,6 +106,8 @@ OpenMVCameraSettings::OpenMVCameraSettings(const QString &fileName, QWidget *par
 
     connect(m_ui->accessPointModeButton, &QRadioButton::toggled,
             m_ui->accessPointModeWidget, &QWidget::setEnabled);
+
+    m_ui->replBox->setChecked(repluart);
 }
 
 OpenMVCameraSettings::~OpenMVCameraSettings()
@@ -122,6 +125,7 @@ void OpenMVCameraSettings::accept()
     m_settings->setValue(QStringLiteral(ACCESS_POINT_MODE_PASS), m_ui->accessPointModePasswordEntry->text());
     m_settings->setValue(QStringLiteral(ACCESS_POINT_MODE_TYPE), m_ui->accessPointModeTypeEntry->currentIndex());
     m_settings->setValue(QStringLiteral(BOARD_NAME), m_ui->boardNameEntry->text());
+    m_settings->setValue(QStringLiteral(REPL_UART), m_ui->replBox->isChecked());
 
     QDialog::accept();
 }

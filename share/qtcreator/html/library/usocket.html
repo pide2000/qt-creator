@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>usocket – socket module &mdash; MicroPython 1.8 documentation</title>
+  <title>usocket – socket module &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,10 +34,10 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="ustruct – pack and unpack primitive data types" href="ustruct.html"/>
-        <link rel="prev" title="ure – regular expressions" href="ure.html"/> 
+        <link rel="prev" title="uselect – wait for events on a set of streams" href="uselect.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,19 +91,25 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="builtins.html">Builtin functions and exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array.html"><code class="docutils literal"><span class="pre">array</span></code> &#8211; arrays of numeric data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gc.html"><code class="docutils literal"><span class="pre">gc</span></code> &#8211; control the garbage collector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="math.html"><code class="docutils literal"><span class="pre">math</span></code> &#8211; mathematical functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="select.html"><code class="docutils literal"><span class="pre">select</span></code> &#8211; wait for events on a set of streams</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sys.html"><code class="docutils literal"><span class="pre">sys</span></code> &#8211; system specific functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ubinascii.html"><code class="docutils literal"><span class="pre">ubinascii</span></code> &#8211; binary/ASCII conversions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal"><span class="pre">uhashlib</span></code> &#8211; hashing algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ucollections.html"><code class="docutils literal"><span class="pre">ucollections</span></code> &#8211; collection and container types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uerrno.html"><code class="docutils literal"><span class="pre">uerrno</span></code> &#8211; system error codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uhashlib.html"><code class="docutils literal"><span class="pre">uhashlib</span></code> &#8211; hashing algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uheapq.html"><code class="docutils literal"><span class="pre">uheapq</span></code> &#8211; heap queue algorithm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="uio.html"><code class="docutils literal"><span class="pre">uio</span></code> &#8211; input/output streams</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ujson.html"><code class="docutils literal"><span class="pre">ujson</span></code> &#8211; JSON encoding and decoding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="uos.html"><code class="docutils literal"><span class="pre">uos</span></code> &#8211; basic &#8220;operating system&#8221; services</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal"><span class="pre">ure</span></code> &#8211; regular expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ure.html"><code class="docutils literal"><span class="pre">ure</span></code> &#8211; simple regular expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uselect.html"><code class="docutils literal"><span class="pre">uselect</span></code> &#8211; wait for events on a set of streams</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">usocket</span></code> &#8211; socket module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#socket-address-format-s">Socket address format(s)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
@@ -121,6 +127,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -170,30 +177,72 @@
             
   <div class="section" id="module-usocket">
 <span id="usocket-socket-module"></span><h1><a class="reference internal" href="#module-usocket" title="usocket: socket module"><code class="xref py py-mod docutils literal"><span class="pre">usocket</span></code></a> &#8211; socket module<a class="headerlink" href="#module-usocket" title="Permalink to this headline">¶</a></h1>
+<p><em>This module implements a subset of the corresponding</em> <a class="reference internal" href="../reference/glossary.html#term-cpython"><code class="xref any std std-term docutils literal"><span class="pre">CPython</span></code></a> <em>module,
+as described below. For more information, refer to the original
+CPython documentation:</em> <a class="reference external" href="http://docs.python.org/3/library/socket.html#module-socket" title="(in Python v3.6)"><code class="docutils literal"><span class="pre">socket</span></code></a>.</p>
 <p>This module provides access to the BSD socket interface.</p>
-<p>See corresponding <a class="reference external" href="https://docs.python.org/3/library/socket.html">CPython module</a> for
-comparison.</p>
+<div class="attention admonition">
+<p class="first admonition-title">Difference to CPython</p>
+<p class="last">For efficiency and consistency, socket objects in MicroPython implement a stream
+(file-like) interface directly. In CPython, you need to convert a socket to
+a file-like object using <a class="reference internal" href="#usocket.socket.makefile" title="usocket.socket.makefile"><code class="xref any py py-meth docutils literal"><span class="pre">makefile()</span></code></a> method. This method is still supported
+by MicroPython (but is a no-op), so where compatibility with CPython matters,
+be sure to use it.</p>
+</div>
 <div class="section" id="socket-address-format-s">
 <h2>Socket address format(s)<a class="headerlink" href="#socket-address-format-s" title="Permalink to this headline">¶</a></h2>
-<p>Functions below which expect a network address, accept it in the format of
-<cite>(ipv4_address, port)</cite>, where <cite>ipv4_address</cite> is a string with dot-notation numeric
-IPv4 address, e.g. <code class="docutils literal"><span class="pre">&quot;8.8.8.8&quot;</span></code>, and port is integer port number in the range
-1-65535. Note the domain names are not accepted as <cite>ipv4_address</cite>, they should be
-resolved first using <code class="docutils literal"><span class="pre">socket.getaddrinfo()</span></code>.</p>
+<p>The native socket address format of the <code class="docutils literal"><span class="pre">usocket</span></code> module is an opaque data type
+returned by <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo</span></code></a> function, which must be used to resolve textual address
+(including numeric addresses):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sockaddr</span> <span class="o">=</span> <span class="n">usocket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="s">&#39;www.micropython.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="c"># You must use getaddrinfo() even for numeric addresses</span>
+<span class="n">sockaddr</span> <span class="o">=</span> <span class="n">usocket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="c"># Now you can use that address</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo</span></code></a> is the most efficient (both in terms of memory and processing
+power) and portable way to work with addresses.</p>
+<p>However, <code class="docutils literal"><span class="pre">socket</span></code> module (note the difference with native MicroPython
+<code class="docutils literal"><span class="pre">usocket</span></code> module described here) provides CPython-compatible way to specify
+addresses using tuples, as described below. Note that depending on a
+<a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>, <code class="docutils literal"><span class="pre">socket</span></code> module can be builtin or need to be
+installed from <a class="reference internal" href="../reference/glossary.html#term-micropython-lib"><code class="xref any std std-term docutils literal"><span class="pre">micropython-lib</span></code></a> (as in the case of <a class="reference internal" href="../reference/glossary.html#term-micropython-unix-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">Unix</span> <span class="pre">port</span></code></a>),
+and some ports still accept only numeric addresses in the tuple format,
+and require to use <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo</span></code></a> function to resolve domain names.</p>
+<p>Summing up:</p>
+<ul class="simple">
+<li>Always use <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo</span></code></a> when writing portable applications.</li>
+<li>Tuple addresses described below can be used as a shortcut for
+quick hacks and interactive use, if your port supports them.</li>
+</ul>
+<p>Tuple address format for <code class="docutils literal"><span class="pre">socket</span></code> module:</p>
+<ul class="simple">
+<li>IPv4: <em>(ipv4_address, port)</em>, where <em>ipv4_address</em> is a string with
+dot-notation numeric IPv4 address, e.g. <code class="docutils literal"><span class="pre">&quot;8.8.8.8&quot;</span></code>, and <em>port</em> is and
+integer port number in the range 1-65535. Note the domain names are not
+accepted as <em>ipv4_address</em>, they should be resolved first using
+<a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">usocket.getaddrinfo()</span></code></a>.</li>
+<li>IPv6: <em>(ipv6_address, port, flowinfo, scopeid)</em>, where <em>ipv6_address</em>
+is a string with colon-notation numeric IPv6 address, e.g. <code class="docutils literal"><span class="pre">&quot;2001:db8::1&quot;</span></code>,
+and <em>port</em> is an integer port number in the range 1-65535. <em>flowinfo</em>
+must be 0. <em>scopeid</em> is the interface scope identifier for link-local
+addresses. Note the domain names are not accepted as <em>ipv6_address</em>,
+they should be resolved first using <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">usocket.getaddrinfo()</span></code></a>. Availability
+of IPv6 support depends on a <a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>.</li>
+</ul>
 </div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="usocket.socket.socket">
-<code class="descclassname">socket.</code><code class="descname">socket</code><span class="sig-paren">(</span><em>socket.AF_INET</em>, <em>socket.SOCK_STREAM</em>, <em>socket.IPPROTO_TCP</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.socket" title="Permalink to this definition">¶</a></dt>
+<dt id="usocket.socket">
+<code class="descclassname">usocket.</code><code class="descname">socket</code><span class="sig-paren">(</span><em>af=AF_INET</em>, <em>type=SOCK_STREAM</em>, <em>proto=IPPROTO_TCP</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new socket using the given address family, socket type and protocol number.</p>
-<blockquote>
-<div></div></blockquote>
 </dd></dl>
 
 <dl class="function">
-<dt id="usocket.socket.getaddrinfo">
-<code class="descclassname">socket.</code><code class="descname">getaddrinfo</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.getaddrinfo" title="Permalink to this definition">¶</a></dt>
+<dt id="usocket.getaddrinfo">
+<code class="descclassname">usocket.</code><code class="descname">getaddrinfo</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.getaddrinfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translate the host/port argument into a sequence of 5-tuples that contain all the
 necessary arguments for creating a socket connected to that service. The list of
 5-tuples has following structure:</p>
@@ -205,37 +254,60 @@ necessary arguments for creating a socket connected to that service. The list of
 <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="s">&#39;www.micropython.org&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
+<div class="attention admonition">
+<p class="first admonition-title">Difference to CPython</p>
+<p class="last">CPython raises a <code class="docutils literal"><span class="pre">socket.gaierror</span></code> exception (<a class="reference internal" href="builtins.html#OSError" title="OSError"><code class="xref any py py-exc docutils literal"><span class="pre">OSError</span></code></a> subclass) in case
+of error in this function. MicroPython doesn&#8217;t have <code class="docutils literal"><span class="pre">socket.gaierror</span></code>
+and raises OSError directly. Note that error numbers of <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo()</span></code></a>
+form a separate namespace and may not match error numbers from
+<a class="reference internal" href="uerrno.html"><em>uerrno &#8211; system error codes</em></a> module. To distinguish <a class="reference internal" href="#usocket.getaddrinfo" title="usocket.getaddrinfo"><code class="xref any py py-func docutils literal"><span class="pre">getaddrinfo()</span></code></a> errors, they are
+represented by negative numbers, whereas standard system errors are
+positive numbers (error numbers are accessible using <code class="docutils literal"><span class="pre">e.args[0]</span></code> property
+from an exception object). The use of negative values is a provisional
+detail which may change in the future.</p>
+</div>
 </dd></dl>
 
 </div>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt id="usocket.socket.AF_INET">
-<code class="descclassname">socket.</code><code class="descname">AF_INET</code><a class="headerlink" href="#usocket.socket.AF_INET" title="Permalink to this definition">¶</a></dt>
-<dd><p>family types</p>
+<dt id="usocket.AF_INET">
+<code class="descclassname">usocket.</code><code class="descname">AF_INET</code><a class="headerlink" href="#usocket.AF_INET" title="Permalink to this definition">¶</a></dt>
+<dt id="usocket.AF_INET6">
+<code class="descclassname">usocket.</code><code class="descname">AF_INET6</code><a class="headerlink" href="#usocket.AF_INET6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Address family types. Availability depends on a particular board.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="usocket.socket.SOCK_STREAM">
-<code class="descclassname">socket.</code><code class="descname">SOCK_STREAM</code><a class="headerlink" href="#usocket.socket.SOCK_STREAM" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt id="usocket.socket.SOCK_DGRAM">
-<code class="descclassname">socket.</code><code class="descname">SOCK_DGRAM</code><a class="headerlink" href="#usocket.socket.SOCK_DGRAM" title="Permalink to this definition">¶</a></dt>
-<dd><p>socket types</p>
+<dt id="usocket.SOCK_STREAM">
+<code class="descclassname">usocket.</code><code class="descname">SOCK_STREAM</code><a class="headerlink" href="#usocket.SOCK_STREAM" title="Permalink to this definition">¶</a></dt>
+<dt id="usocket.SOCK_DGRAM">
+<code class="descclassname">usocket.</code><code class="descname">SOCK_DGRAM</code><a class="headerlink" href="#usocket.SOCK_DGRAM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Socket types.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="usocket.socket.IPPROTO_UDP">
-<code class="descclassname">socket.</code><code class="descname">IPPROTO_UDP</code><a class="headerlink" href="#usocket.socket.IPPROTO_UDP" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="usocket.IPPROTO_UDP">
+<code class="descclassname">usocket.</code><code class="descname">IPPROTO_UDP</code><a class="headerlink" href="#usocket.IPPROTO_UDP" title="Permalink to this definition">¶</a></dt>
+<dt id="usocket.IPPROTO_TCP">
+<code class="descclassname">usocket.</code><code class="descname">IPPROTO_TCP</code><a class="headerlink" href="#usocket.IPPROTO_TCP" title="Permalink to this definition">¶</a></dt>
+<dd><p>IP protocol numbers.</p>
+</dd></dl>
 
 <dl class="data">
-<dt id="usocket.socket.IPPROTO_TCP">
-<code class="descclassname">socket.</code><code class="descname">IPPROTO_TCP</code><a class="headerlink" href="#usocket.socket.IPPROTO_TCP" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt>
+<code class="descname">usocket.SOL_*</code></dt>
+<dd><p>Socket option levels (an argument to <a class="reference internal" href="#usocket.socket.setsockopt" title="usocket.socket.setsockopt"><code class="xref any py py-meth docutils literal"><span class="pre">setsockopt()</span></code></a>). The exact
+inventory depends on a MicroPython port.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<code class="descname">usocket.SO_*</code></dt>
+<dd><p>Socket options (an argument to <a class="reference internal" href="#usocket.socket.setsockopt" title="usocket.socket.setsockopt"><code class="xref any py py-meth docutils literal"><span class="pre">setsockopt()</span></code></a>). The exact
+inventory depends on a MicroPython port.</p>
+</dd></dl>
 
 <div class="section" id="class-socket">
 <h3>class socket<a class="headerlink" href="#class-socket" title="Permalink to this headline">¶</a></h3>
@@ -243,26 +315,26 @@ necessary arguments for creating a socket connected to that service. The list of
 </div>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><dl class="method">
+<dl class="method">
 <dt id="usocket.socket.close">
 <code class="descclassname">socket.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mark the socket closed. Once that happens, all future operations on the socket
-object will fail. The remote end will receive no more data (after queued data is flushed).</p>
+<dd><p>Mark the socket closed and release all resources. Once that happens, all future operations
+on the socket object will fail. The remote end will receive EOF indication if
+supported by protocol.</p>
 <p>Sockets are automatically closed when they are garbage-collected, but it is recommended
-to close() them explicitly, or to use a with statement around them.</p>
+to <a class="reference internal" href="#usocket.socket.close" title="usocket.socket.close"><code class="xref any py py-meth docutils literal"><span class="pre">close()</span></code></a> them explicitly as soon you finished working with them.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.bind">
 <code class="descclassname">socket.</code><code class="descname">bind</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.bind" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bind the socket to address. The socket must not already be bound.</p>
+<dd><p>Bind the socket to <em>address</em>. The socket must not already be bound.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.listen">
 <code class="descclassname">socket.</code><code class="descname">listen</code><span class="sig-paren">(</span><span class="optional">[</span><em>backlog</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enable a server to accept connections. If backlog is specified, it must be at least 0
+<dd><p>Enable a server to accept connections. If <em>backlog</em> is specified, it must be at least 0
 (if it&#8217;s lower, it will be set to 0); and specifies the number of unaccepted connections
 that the system will allow before refusing new connections. If not specified, a default
 reasonable value is chosen.</p>
@@ -280,19 +352,27 @@ other end of the connection.</p>
 <dl class="method">
 <dt id="usocket.socket.connect">
 <code class="descclassname">socket.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to a remote socket at address.</p>
+<dd><p>Connect to a remote socket at <em>address</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.send">
 <code class="descclassname">socket.</code><code class="descname">send</code><span class="sig-paren">(</span><em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.send" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send data to the socket. The socket must be connected to a remote socket.</p>
+<dd><p>Send data to the socket. The socket must be connected to a remote socket.
+Returns number of bytes sent, which may be smaller than the length of data
+(&#8220;short write&#8221;).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.sendall">
 <code class="descclassname">socket.</code><code class="descname">sendall</code><span class="sig-paren">(</span><em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.sendall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send data to the socket. The socket must be connected to a remote socket.</p>
+<dd><p>Send all data to the socket. The socket must be connected to a remote socket.
+Unlike <a class="reference internal" href="#usocket.socket.send" title="usocket.socket.send"><code class="xref any py py-meth docutils literal"><span class="pre">send()</span></code></a>, this method will try to send all of data, by sending data
+chunk by chunk consecutively.</p>
+<p>The behavior of this method on non-blocking sockets is undefined. Due to this,
+on MicroPython, it&#8217;s recommended to use <a class="reference internal" href="#usocket.socket.write" title="usocket.socket.write"><code class="xref any py py-meth docutils literal"><span class="pre">write()</span></code></a> method instead, which
+has the same &#8220;no short writes&#8221; policy for blocking sockets, and will return
+number of bytes sent on non-blocking sockets.</p>
 </dd></dl>
 
 <dl class="method">
@@ -306,14 +386,14 @@ received. The maximum amount of data to be received at once is specified by bufs
 <dt id="usocket.socket.sendto">
 <code class="descclassname">socket.</code><code class="descname">sendto</code><span class="sig-paren">(</span><em>bytes</em>, <em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.sendto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send data to the socket. The socket should not be connected to a remote socket, since the
-destination socket is specified by <cite>address</cite>.</p>
+destination socket is specified by <em>address</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.recvfrom">
 <code class="descclassname">socket.</code><code class="descname">recvfrom</code><span class="sig-paren">(</span><em>bufsize</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.recvfrom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receive data from the socket. The return value is a pair (bytes, address) where bytes is a
-bytes object representing the data received and address is the address of the socket sending
+<dd><p>Receive data from the socket. The return value is a pair <em>(bytes, address)</em> where <em>bytes</em> is a
+bytes object representing the data received and <em>address</em> is the address of the socket sending
 the data.</p>
 </dd></dl>
 
@@ -321,7 +401,7 @@ the data.</p>
 <dt id="usocket.socket.setsockopt">
 <code class="descclassname">socket.</code><code class="descname">setsockopt</code><span class="sig-paren">(</span><em>level</em>, <em>optname</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.setsockopt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of the given socket option. The needed symbolic constants are defined in the
-socket module (SO_* etc.). The value can be an integer or a bytes-like object representing
+socket module (SO_* etc.). The <em>value</em> can be an integer or a bytes-like object representing
 a buffer.</p>
 </dd></dl>
 
@@ -330,9 +410,16 @@ a buffer.</p>
 <code class="descclassname">socket.</code><code class="descname">settimeout</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.settimeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a timeout on blocking socket operations. The value argument can be a nonnegative floating
 point number expressing seconds, or None. If a non-zero value is given, subsequent socket operations
-will raise a timeout exception if the timeout period value has elapsed before the operation has
+will raise an <a class="reference internal" href="builtins.html#OSError" title="OSError"><code class="xref any py py-exc docutils literal"><span class="pre">OSError</span></code></a> exception if the timeout period value has elapsed before the operation has
 completed. If zero is given, the socket is put in non-blocking mode. If None is given, the socket
 is put in blocking mode.</p>
+<div class="attention admonition">
+<p class="first admonition-title">Difference to CPython</p>
+<p class="last">CPython raises a <code class="docutils literal"><span class="pre">socket.timeout</span></code> exception in case of timeout,
+which is an <a class="reference internal" href="builtins.html#OSError" title="OSError"><code class="xref any py py-exc docutils literal"><span class="pre">OSError</span></code></a> subclass. MicroPython raises an OSError directly
+instead. If you use <code class="docutils literal"><span class="pre">except</span> <span class="pre">OSError:</span></code> to catch the exception,
+your code will work both in MicroPython and CPython.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -340,21 +427,24 @@ is put in blocking mode.</p>
 <code class="descclassname">socket.</code><code class="descname">setblocking</code><span class="sig-paren">(</span><em>flag</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.setblocking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set blocking or non-blocking mode of the socket: if flag is false, the socket is set to non-blocking,
 else to blocking mode.</p>
-<p>This method is a shorthand for certain <code class="docutils literal"><span class="pre">settimeout()</span></code> calls:</p>
-<div class="highlight-python"><div class="highlight"><pre>sock.setblocking(True) is equivalent to sock.settimeout(None)
-sock.setblocking(False) is equivalent to sock.settimeout(0.0)
-</pre></div>
-</div>
+<p>This method is a shorthand for certain <a class="reference internal" href="#usocket.socket.settimeout" title="usocket.socket.settimeout"><code class="xref any py py-meth docutils literal"><span class="pre">settimeout()</span></code></a> calls:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">sock.setblocking(True)</span></code> is equivalent to <code class="docutils literal"><span class="pre">sock.settimeout(None)</span></code></li>
+<li><code class="docutils literal"><span class="pre">sock.setblocking(False)</span></code> is equivalent to <code class="docutils literal"><span class="pre">sock.settimeout(0)</span></code></li>
+</ul>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.makefile">
-<code class="descclassname">socket.</code><code class="descname">makefile</code><span class="sig-paren">(</span><em>mode='rb'</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.makefile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">socket.</code><code class="descname">makefile</code><span class="sig-paren">(</span><em>mode='rb'</em>, <em>buffering=0</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.makefile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a file object associated with the socket. The exact returned type depends on the arguments
-given to makefile(). The support is limited to binary modes only (&#8216;rb&#8217; and &#8216;wb&#8217;).
-CPython&#8217;s arguments: <code class="docutils literal"><span class="pre">encoding</span></code>, <code class="docutils literal"><span class="pre">errors</span></code> and <code class="docutils literal"><span class="pre">newline</span></code> are not supported.</p>
-<p>The socket must be in blocking mode; it can have a timeout, but the file object’s internal buffer
-may end up in a inconsistent state if a timeout occurs.</p>
+given to makefile(). The support is limited to binary modes only (&#8216;rb&#8217;, &#8216;wb&#8217;, and &#8216;rwb&#8217;).
+CPython&#8217;s arguments: <em>encoding</em>, <em>errors</em> and <em>newline</em> are not supported.</p>
+<div class="attention admonition">
+<p class="first admonition-title">Difference to CPython</p>
+<p class="last">As MicroPython doesn&#8217;t support buffered streams, values of <em>buffering</em>
+parameter is ignored and treated as if it was 0 (unbuffered).</p>
+</div>
 <div class="attention admonition">
 <p class="first admonition-title">Difference to CPython</p>
 <p class="last">Closing the file object returned by makefile() WILL close the
@@ -364,24 +454,21 @@ original socket as well.</p>
 
 <dl class="method">
 <dt id="usocket.socket.read">
-<code class="descclassname">socket.</code><code class="descname">read</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read up to size bytes from the socket. Return a bytes object. If <code class="docutils literal"><span class="pre">size</span></code> is not given, it
-behaves just like <code class="docutils literal"><span class="pre">socket.readall()</span></code>, see below.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="usocket.socket.readall">
-<code class="descclassname">socket.</code><code class="descname">readall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.readall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read all data available from the socket until <code class="docutils literal"><span class="pre">EOF</span></code>. This function will not return until
-the socket is closed.</p>
+<code class="descclassname">socket.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>size</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read up to size bytes from the socket. Return a bytes object. If <em>size</em> is not given, it
+reads all data available from the socket until EOF; as such the method will not return until
+the socket is closed. This function tries to read as much data as
+requested (no &#8220;short reads&#8221;). This may be not possible with
+non-blocking socket though, and then less data will be returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="usocket.socket.readinto">
 <code class="descclassname">socket.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.readinto" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read bytes into the <code class="docutils literal"><span class="pre">buf</span></code>. If <code class="docutils literal"><span class="pre">nbytes</span></code> is specified then read at most
-that many bytes. Otherwise, read at most <code class="docutils literal"><span class="pre">len(buf)</span></code> bytes.</p>
-<p>Return value: number of bytes read and stored into <code class="docutils literal"><span class="pre">buf</span></code>.</p>
+<dd><p>Read bytes into the <em>buf</em>.  If <em>nbytes</em> is specified then read at most
+that many bytes.  Otherwise, read at most <em>len(buf)</em> bytes. Just as
+<a class="reference internal" href="#usocket.socket.read" title="usocket.socket.read"><code class="xref any py py-meth docutils literal"><span class="pre">read()</span></code></a>, this method follows &#8220;no short reads&#8221; policy.</p>
+<p>Return value: number of bytes read and stored into <em>buf</em>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -394,11 +481,24 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
 <dl class="method">
 <dt id="usocket.socket.write">
 <code class="descclassname">socket.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#usocket.socket.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write the buffer of bytes to the socket.</p>
+<dd><p>Write the buffer of bytes to the socket. This function will try to
+write all data to a socket (no &#8220;short writes&#8221;). This may be not possible
+with a non-blocking socket though, and returned value will be less than
+the length of <em>buf</em>.</p>
 <p>Return value: number of bytes written.</p>
 </dd></dl>
 
-</div></blockquote>
+<dl class="exception">
+<dt id="usocket.socket.error">
+<em class="property">exception </em><code class="descclassname">socket.</code><code class="descname">error</code><a class="headerlink" href="#usocket.socket.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>MicroPython does NOT have this exception.</p>
+<div class="attention admonition">
+<p class="first admonition-title">Difference to CPython</p>
+<p class="last">CPython used to have a <code class="docutils literal"><span class="pre">socket.error</span></code> exception which is now deprecated,
+and is an alias of <a class="reference internal" href="builtins.html#OSError" title="OSError"><code class="xref any py py-exc docutils literal"><span class="pre">OSError</span></code></a>. In MicroPython, use <a class="reference internal" href="builtins.html#OSError" title="OSError"><code class="xref any py py-exc docutils literal"><span class="pre">OSError</span></code></a> directly.</p>
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -412,7 +512,7 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
         <a href="ustruct.html" class="btn btn-neutral float-right" title="ustruct – pack and unpack primitive data types" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ure.html" class="btn btn-neutral" title="ure – regular expressions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="uselect.html" class="btn btn-neutral" title="uselect – wait for events on a set of streams" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -421,8 +521,8 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -436,7 +536,7 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -464,14 +564,12 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -479,19 +577,19 @@ that many bytes. Otherwise, read at most <code class="docutils literal"><span cl
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

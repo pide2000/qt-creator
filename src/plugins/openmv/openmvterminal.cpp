@@ -688,7 +688,7 @@ bool MyPlainTextEdit::focusNextPrevChild(bool next)
     return false;
 }
 
-OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, QWidget *parent) : QWidget(parent)
+OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, const Core::Context &context, bool stand_alone, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(displayName);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -873,20 +873,36 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     executeButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/run_small.png"), Utils::Theme::IconsBaseColor}}).icon());
     executeButton->setToolTip(tr("Run current script in editor window"));
     styledBar2Layout->addWidget(executeButton);
+
     connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, executeButton, [executeButton] (Core::IEditor *editor) {
         executeButton->setEnabled(editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false);
     });
+
+    if(stand_alone)
+    {
+        executeButton->hide();
+    }
 
     QToolButton *interruptButton = new QToolButton;
     interruptButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/stop_small.png"), Utils::Theme::IconsBaseColor}}).icon());
     interruptButton->setToolTip(tr("Stop running script"));
     styledBar2Layout->addWidget(interruptButton);
 
+    if(stand_alone)
+    {
+        interruptButton->hide();
+    }
+
     QToolButton *reloadButton = new QToolButton;
     reloadButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/reload_gray.png"), Utils::Theme::IconsBaseColor}}).icon());
     reloadButton->setToolTip(tr("Soft reset"));
     styledBar2Layout->addWidget(reloadButton);
     styledBar2Layout->addStretch(1);
+
+    if(stand_alone)
+    {
+        reloadButton->hide();
+    }
 
     m_edit = new MyPlainTextEdit(m_settings->value(QStringLiteral(FONT_ZOOM_STATE), TextEditor::TextEditorSettings::fontSettings().defaultFontSize()).toReal());
     connect(this, &OpenMVTerminal::readBytes, m_edit, &MyPlainTextEdit::readBytes);

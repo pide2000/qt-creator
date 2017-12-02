@@ -276,10 +276,12 @@ bool OpenMVPluginSerialPort_thing::waitForBytesWritten(int msecs)
     return bool();
 }
 
-OpenMVPluginSerialPort_private::OpenMVPluginSerialPort_private(QObject *parent) : QObject(parent)
+OpenMVPluginSerialPort_private::OpenMVPluginSerialPort_private(int override_read_timeout, int override_read_stall_timeout, QObject *parent) : QObject(parent)
 {
     m_port = Q_NULLPTR;
     m_bootloaderStop = false;
+    read_timeout = (override_read_timeout > 0) ? override_read_timeout : READ_TIMEOUT;
+    read_stall_timeout = (override_read_stall_timeout > 0) ? override_read_stall_timeout : READ_STALL_TIMEOUT;
 }
 
 void OpenMVPluginSerialPort_private::open(const QString &portName)
@@ -491,7 +493,7 @@ void OpenMVPluginSerialPort_private::command(const OpenMVPluginSerialPortCommand
                 m_port->waitForReadyRead(1);
                 response.append(m_port->readAll());
 
-                if((response.size() < responseLen) && elaspedTimer2.hasExpired(READ_STALL_TIMEOUT))
+                if((response.size() < responseLen) && elaspedTimer2.hasExpired(read_stall_timeout))
                 {
                     QByteArray data;
                     serializeByte(data, __USBDBG_CMD);
@@ -510,7 +512,7 @@ void OpenMVPluginSerialPort_private::command(const OpenMVPluginSerialPortCommand
                     }
                 }
             }
-            while((response.size() < responseLen) && (!elaspedTimer.hasExpired(READ_TIMEOUT)));
+            while((response.size() < responseLen) && (!elaspedTimer.hasExpired(read_timeout)));
 
             if(response.size() >= responseLen)
             {
@@ -676,10 +678,10 @@ void OpenMVPluginSerialPort_private::bootloaderReset()
     emit bootloaderResetResponse();
 }
 
-OpenMVPluginSerialPort::OpenMVPluginSerialPort(QObject *parent) : QObject(parent)
+OpenMVPluginSerialPort::OpenMVPluginSerialPort(int override_read_timeout, int override_read_stall_timeout, QObject *parent) : QObject(parent)
 {
     QThread *thread = new QThread;
-    OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private;
+    OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private(override_read_timeout, override_read_stall_timeout);
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,

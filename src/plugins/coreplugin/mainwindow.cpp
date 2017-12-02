@@ -129,6 +129,9 @@ MainWindow::MainWindow() :
     m_navigationWidget(0),
     m_rightPaneWidget(0),
     m_versionDialog(0),
+    //OPENMV-DIFF//
+    m_disableShow(0),
+    //OPENMV-DIFF//
     m_generalSettings(new GeneralSettings),
     m_systemSettings(new SystemSettings),
     m_shortcutSettings(new ShortcutSettings),
@@ -1171,7 +1174,11 @@ void MainWindow::restoreWindowState()
         resize(1008, 700); // size without window decoration
     restoreState(settings->value(QLatin1String(windowStateKey)).toByteArray());
     settings->endGroup();
-    show();
+    //OPENMV-DIFF//
+    //show();
+    //OPENMV-DIFF//
+    if(!m_disableShow) show();
+    //OPENMV-DIFF//
     m_statusBarManager->restoreSettings();
 }
 

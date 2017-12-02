@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Maximizing Python Speed &mdash; MicroPython 1.8 documentation</title>
+  <title>Maximising MicroPython Speed &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
-        <link rel="next" title="Inline Assembler for Thumb2 architectures" href="asm_thumb2_index.html"/>
+        <link rel="next" title="MicroPython on Microcontrollers" href="constrained.html"/>
         <link rel="prev" title="Writing interrupt handlers" href="isr_rules.html"/> 
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,12 +91,14 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../library/index.html">MicroPython libraries</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">The MicroPython language</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="repl.html">The MicroPython Interactive Interpreter Mode (aka REPL)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Maximizing Python Speed</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Maximising MicroPython Speed</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#designing-for-speed">Designing for speed</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#algorithms">Algorithms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ram-allocation">RAM Allocation</a></li>
@@ -110,16 +112,18 @@
 <li class="toctree-l4"><a class="reference internal" href="#the-const-declaration">The const() declaration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#caching-object-references">Caching object references</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#controlling-garbage-collection">Controlling garbage collection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#accessing-hardware-directly">Accessing hardware directly</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#the-native-code-emitter">The Native code emitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-viper-code-emitter">The Viper code emitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-hardware-directly">Accessing hardware directly</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -153,7 +157,7 @@
       
           <li><a href="index.html">The MicroPython language</a> &raquo;</li>
       
-    <li>Maximizing Python Speed</li>
+    <li>Maximising MicroPython Speed</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -167,40 +171,67 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="maximizing-python-speed">
-<h1>Maximizing Python Speed<a class="headerlink" href="#maximizing-python-speed" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="maximising-micropython-speed">
+<h1><a class="toc-backref" href="#id1">Maximising MicroPython Speed</a><a class="headerlink" href="#maximising-micropython-speed" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#maximising-micropython-speed" id="id1">Maximising MicroPython Speed</a><ul>
+<li><a class="reference internal" href="#designing-for-speed" id="id2">Designing for speed</a><ul>
+<li><a class="reference internal" href="#algorithms" id="id3">Algorithms</a></li>
+<li><a class="reference internal" href="#ram-allocation" id="id4">RAM Allocation</a></li>
+<li><a class="reference internal" href="#buffers" id="id5">Buffers</a></li>
+<li><a class="reference internal" href="#floating-point" id="id6">Floating Point</a></li>
+<li><a class="reference internal" href="#arrays" id="id7">Arrays</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#identifying-the-slowest-section-of-code" id="id8">Identifying the slowest section of code</a></li>
+<li><a class="reference internal" href="#micropython-code-improvements" id="id9">MicroPython code improvements</a><ul>
+<li><a class="reference internal" href="#the-const-declaration" id="id10">The const() declaration</a></li>
+<li><a class="reference internal" href="#caching-object-references" id="id11">Caching object references</a></li>
+<li><a class="reference internal" href="#controlling-garbage-collection" id="id12">Controlling garbage collection</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-native-code-emitter" id="id13">The Native code emitter</a></li>
+<li><a class="reference internal" href="#the-viper-code-emitter" id="id14">The Viper code emitter</a></li>
+<li><a class="reference internal" href="#accessing-hardware-directly" id="id15">Accessing hardware directly</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>This tutorial describes ways of improving the performance of MicroPython code.
-Optimizations involving other languages are covered elsewhere, namely the use
-of modules written in C and the MicroPython inline ARM Thumb-2 assembler.</p>
+Optimisations involving other languages are covered elsewhere, namely the use
+of modules written in C and the MicroPython inline assembler.</p>
 <p>The process of developing high performance code comprises the following stages
 which should be performed in the order listed.</p>
 <ul class="simple">
 <li>Design for speed.</li>
 <li>Code and debug.</li>
 </ul>
-<p>Optimization steps:</p>
+<p>Optimisation steps:</p>
 <ul class="simple">
 <li>Identify the slowest section of code.</li>
 <li>Improve the efficiency of the Python code.</li>
 <li>Use the native code emitter.</li>
 <li>Use the viper code emitter.</li>
+<li>Use hardware-specific optimisations.</li>
 </ul>
 <div class="section" id="designing-for-speed">
-<h2>Designing for speed<a class="headerlink" href="#designing-for-speed" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Designing for speed</a><a class="headerlink" href="#designing-for-speed" title="Permalink to this headline">¶</a></h2>
 <p>Performance issues should be considered at the outset. This involves taking a view
 on the sections of code which are most performance critical and devoting particular
-attention to their design. The process of optimization begins when the code has
-been tested: if the design is correct at the outset optimization will be
+attention to their design. The process of optimisation begins when the code has
+been tested: if the design is correct at the outset optimisation will be
 straightforward and may actually be unnecessary.</p>
 <div class="section" id="algorithms">
-<h3>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">Algorithms</a><a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h3>
 <p>The most important aspect of designing any routine for performance is ensuring that
 the best algorithm is employed. This is a topic for textbooks rather than for a
 MicroPython guide but spectacular performance gains can sometimes be achieved
 by adopting algorithms known for their efficiency.</p>
 </div>
 <div class="section" id="ram-allocation">
-<h3>RAM Allocation<a class="headerlink" href="#ram-allocation" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">RAM Allocation</a><a class="headerlink" href="#ram-allocation" title="Permalink to this headline">¶</a></h3>
 <p>To design efficient MicroPython code it is necessary to have an understanding of the
 way the interpreter allocates RAM. When an object is created or grows in size
 (for example where an item is appended to a list) the necessary RAM is allocated
@@ -211,22 +242,22 @@ can take several milliseconds.</p>
 once only and not permitted to grow in size. This implies that the object persists
 for the duration of its use: typically it will be instantiated in a class constructor
 and used in various methods.</p>
-<p>This is covered in further detail <a class="reference internal" href="#gc"><span>Controlling garbage collection</span></a> below.</p>
+<p>This is covered in further detail <a class="reference internal" href="#controlling-gc"><span>Controlling garbage collection</span></a> below.</p>
 </div>
 <div class="section" id="buffers">
-<h3>Buffers<a class="headerlink" href="#buffers" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Buffers</a><a class="headerlink" href="#buffers" title="Permalink to this headline">¶</a></h3>
 <p>An example of the above is the common case where a buffer is required, such as one
 used for communication with a device. A typical driver will create the buffer in the
 constructor and use it in its I/O methods which will be called repeatedly.</p>
 <p>The MicroPython libraries typically provide support for pre-allocated buffers. For
-example, objects which support the stream interface (e.g., file or UART) provide a <code class="docutils literal"><span class="pre">read()</span></code>
-method which allocates a new buffer for read data, but also a <code class="docutils literal"><span class="pre">readinto()</span></code> method
+example, objects which support stream interface (e.g., file or UART) provide <a class="reference internal" href="../library/machine.SPI.html#machine.SPI.read" title="machine.SPI.read"><code class="xref any py py-meth docutils literal"><span class="pre">read()</span></code></a>
+method which allocates new buffer for read data, but also a <a class="reference internal" href="../library/machine.UART.html#machine.UART.readinto" title="machine.UART.readinto"><code class="xref any py py-meth docutils literal"><span class="pre">readinto()</span></code></a> method
 to read data into an existing buffer.</p>
 </div>
 <div class="section" id="floating-point">
-<h3>Floating Point<a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Floating Point</a><a class="headerlink" href="#floating-point" title="Permalink to this headline">¶</a></h3>
 <p>Some MicroPython ports allocate floating point numbers on heap. Some other ports
-may lack a dedicated floating-point coprocessor (the OpenMV Cam has a dedicated floating-point coprocessor), and perform arithmetic operations
+may lack dedicated floating-point coprocessor, and perform arithmetic operations
 on them in &#8220;software&#8221; at considerably lower speed than on integers. Where
 performance is important, use integer operations and restrict the use of floating
 point to sections of the code where performance is not paramount. For example,
@@ -234,15 +265,15 @@ capture ADC readings as integers values to an array in one quick go, and only th
 convert them to floating-point numbers for signal processing.</p>
 </div>
 <div class="section" id="arrays">
-<h3>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Arrays</a><a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h3>
 <p>Consider the use of the various types of array classes as an alternative to lists.
-The <code class="docutils literal"><span class="pre">array</span></code> module supports various element types with 8-bit elements supported
-by Python&#8217;s built in <code class="docutils literal"><span class="pre">bytes</span></code> and <code class="docutils literal"><span class="pre">bytearray</span></code> classes. These data structures all store
+The <a class="reference internal" href="../library/array.html#module-array" title="array: efficient arrays of numeric data"><code class="xref any py py-mod docutils literal"><span class="pre">array</span></code></a> module supports various element types with 8-bit elements supported
+by Python&#8217;s built in <a class="reference internal" href="../library/builtins.html#bytes" title="bytes"><code class="xref any py py-class docutils literal"><span class="pre">bytes</span></code></a> and <a class="reference internal" href="../library/builtins.html#bytearray" title="bytearray"><code class="xref any py py-class docutils literal"><span class="pre">bytearray</span></code></a> classes. These data structures all store
 elements in contiguous memory locations. Once again to avoid memory allocation in critical
 code these should be pre-allocated and passed as arguments or as bound objects.</p>
-<p>When passing slices of objects such as <code class="docutils literal"><span class="pre">bytearray</span></code> instances, Python creates
+<p>When passing slices of objects such as <a class="reference internal" href="../library/builtins.html#bytearray" title="bytearray"><code class="xref any py py-class docutils literal"><span class="pre">bytearray</span></code></a> instances, Python creates
 a copy which involves allocation of the size proportional to the size of slice.
-This can be alleviated using a <code class="docutils literal"><span class="pre">memoryview</span></code> object. A <code class="docutils literal"><span class="pre">memoryview</span></code> object itself
+This can be alleviated using a <a class="reference internal" href="../library/builtins.html#memoryview" title="memoryview"><code class="xref any py py-class docutils literal"><span class="pre">memoryview</span></code></a> object. <a class="reference internal" href="../library/builtins.html#memoryview" title="memoryview"><code class="xref any py py-class docutils literal"><span class="pre">memoryview</span></code></a> itself
 is allocated on heap, but is a small, fixed-size object, regardless of the size
 of slice it points too.</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>  <span class="c"># big array</span>
@@ -251,37 +282,36 @@ of slice it points too.</p>
 <span class="n">func</span><span class="p">(</span><span class="n">mv</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">2000</span><span class="p">])</span>      <span class="c"># a pointer to memory is passed</span>
 </pre></div>
 </div>
-<p>A <code class="docutils literal"><span class="pre">memoryview</span></code> object can only be applied to objects supporting the buffer protocol - this
-includes arrays but not lists. A small caveat is that while the memoryview object is live,
-it also keeps alive the original buffer object. So, a memoryview object isn&#8217;t a universal
+<p>A <a class="reference internal" href="../library/builtins.html#memoryview" title="memoryview"><code class="xref any py py-class docutils literal"><span class="pre">memoryview</span></code></a> can only be applied to objects supporting the buffer protocol - this
+includes arrays but not lists. Small caveat is that while memoryview object is live,
+it also keeps alive the original buffer object. So, a memoryview isn&#8217;t a universal
 panacea. For instance, in the example above, if you are done with 10K buffer and
 just need those bytes 30:2000 from it, it may be better to make a slice, and let
 the 10K buffer go (be ready for garbage collection), instead of making a
-long-living memoryview object and keeping 10K blocked for GC.</p>
-<p>Nonetheless, the <code class="docutils literal"><span class="pre">memoryview</span></code> class is indispensable for advanced preallocated buffer
-management. The <code class="docutils literal"><span class="pre">.readinto()</span></code> method discussed above puts data at the beginning
+long-living memoryview and keeping 10K blocked for GC.</p>
+<p>Nonetheless, <a class="reference internal" href="../library/builtins.html#memoryview" title="memoryview"><code class="xref any py py-class docutils literal"><span class="pre">memoryview</span></code></a> is indispensable for advanced preallocated buffer
+management. <a class="reference internal" href="../library/machine.UART.html#machine.UART.readinto" title="machine.UART.readinto"><code class="xref any py py-meth docutils literal"><span class="pre">readinto()</span></code></a> method discussed above puts data at the beginning
 of buffer and fills in entire buffer. What if you need to put data in the
 middle of existing buffer? Just create a memoryview into the needed section
-of buffer and pass it to <code class="docutils literal"><span class="pre">.readinto()</span></code>.</p>
+of buffer and pass it to <a class="reference internal" href="../library/machine.UART.html#machine.UART.readinto" title="machine.UART.readinto"><code class="xref any py py-meth docutils literal"><span class="pre">readinto()</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="identifying-the-slowest-section-of-code">
-<h2>Identifying the slowest section of code<a class="headerlink" href="#identifying-the-slowest-section-of-code" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Identifying the slowest section of code</a><a class="headerlink" href="#identifying-the-slowest-section-of-code" title="Permalink to this headline">¶</a></h2>
 <p>This is a process known as profiling and is covered in textbooks and
 (for standard Python) supported by various software tools. For the type of
 smaller embedded application likely to be running on MicroPython platforms
 the slowest function or method can usually be established by judicious use
-of the timing <code class="docutils literal"><span class="pre">ticks</span></code> group of functions documented
-<a class="reference external" href="http://docs.micropython.org/en/latest/pyboard/library/time.html">here</a>.
+of the timing <code class="docutils literal"><span class="pre">ticks</span></code> group of functions documented in <a class="reference internal" href="../library/utime.html#module-utime" title="utime: time related functions"><code class="xref any py py-mod docutils literal"><span class="pre">utime</span></code></a>.
 Code execution time can be measured in ms, us, or CPU cycles.</p>
 <p>The following enables any function or method to be timed by adding an
 <code class="docutils literal"><span class="pre">&#64;timed_function</span></code> decorator:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">timed_function</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">myname</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ticks_us</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">utime</span><span class="o">.</span><span class="n">ticks_us</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ticks_diff</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">ticks_us</span><span class="p">())</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">utime</span><span class="o">.</span><span class="n">ticks_diff</span><span class="p">(</span><span class="n">utime</span><span class="o">.</span><span class="n">ticks_us</span><span class="p">(),</span> <span class="n">t</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&#39;Function {} Time = {:6.3f}ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">myname</span><span class="p">,</span> <span class="n">delta</span><span class="o">/</span><span class="mi">1000</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">return</span> <span class="n">new_func</span>
@@ -289,9 +319,9 @@ Code execution time can be measured in ms, us, or CPU cycles.</p>
 </div>
 </div>
 <div class="section" id="micropython-code-improvements">
-<h2>MicroPython code improvements<a class="headerlink" href="#micropython-code-improvements" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">MicroPython code improvements</a><a class="headerlink" href="#micropython-code-improvements" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="the-const-declaration">
-<h3>The const() declaration<a class="headerlink" href="#the-const-declaration" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">The const() declaration</a><a class="headerlink" href="#the-const-declaration" title="Permalink to this headline">¶</a></h3>
 <p>MicroPython provides a <code class="docutils literal"><span class="pre">const()</span></code> declaration. This works in a similar way
 to <code class="docutils literal"><span class="pre">#define</span></code> in C in that when the code is compiled to bytecode the compiler
 substitutes the numeric value for the identifier. This avoids a dictionary
@@ -299,7 +329,7 @@ lookup at runtime. The argument to <code class="docutils literal"><span class="p
 compile time, evaluates to an integer e.g. <code class="docutils literal"><span class="pre">0x100</span></code> or <code class="docutils literal"><span class="pre">1</span> <span class="pre">&lt;&lt;</span> <span class="pre">8</span></code>.</p>
 </div>
 <div class="section" id="caching-object-references">
-<span id="caching"></span><h3>Caching object references<a class="headerlink" href="#caching-object-references" title="Permalink to this headline">¶</a></h3>
+<span id="caching"></span><h3><a class="toc-backref" href="#id11">Caching object references</a><a class="headerlink" href="#caching-object-references" title="Permalink to this headline">¶</a></h3>
 <p>Where a function or method repeatedly accesses objects performance is improved
 by caching the object in a local variable:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -315,14 +345,14 @@ by caching the object in a local variable:</p>
 in the body of the method <code class="docutils literal"><span class="pre">bar()</span></code>.</p>
 </div>
 <div class="section" id="controlling-garbage-collection">
-<span id="gc"></span><h3>Controlling garbage collection<a class="headerlink" href="#controlling-garbage-collection" title="Permalink to this headline">¶</a></h3>
+<span id="controlling-gc"></span><h3><a class="toc-backref" href="#id12">Controlling garbage collection</a><a class="headerlink" href="#controlling-garbage-collection" title="Permalink to this headline">¶</a></h3>
 <p>When memory allocation is required, MicroPython attempts to locate an adequately
 sized block on the heap. This may fail, usually because the heap is cluttered
 with objects which are no longer referenced by code. If a failure occurs, the
 process known as garbage collection reclaims the memory used by these redundant
 objects and the allocation is then tried again - a process which can take several
 milliseconds.</p>
-<p>There are benefits in pre-empting this by periodically issuing <code class="docutils literal"><span class="pre">gc.collect()</span></code>.
+<p>There may be benefits in pre-empting this by periodically issuing <code class="docutils literal"><span class="pre">gc.collect()</span></code>.
 Firstly doing a collection before it is actually required is quicker - typically on the
 order of 1ms if done frequently. Secondly you can determine the point in code
 where this time is used rather than have a longer delay occur at random points,
@@ -330,30 +360,11 @@ possibly in a speed critical section. Finally performing collections regularly
 can reduce fragmentation in the heap. Severe fragmentation can lead to
 non-recoverable allocation failures.</p>
 </div>
-<div class="section" id="accessing-hardware-directly">
-<h3>Accessing hardware directly<a class="headerlink" href="#accessing-hardware-directly" title="Permalink to this headline">¶</a></h3>
-<p>This comes into the category of more advanced programming and involves some knowledge
-of the target MCU. Consider the example of toggling an output pin on the Pyboard. The
-standard approach would be to write</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">^</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># mypin was instantiated as an output pin</span>
-</pre></div>
-</div>
-<p>This involves the overhead of two calls to the <code class="docutils literal"><span class="pre">Pin</span></code> instance&#8217;s <code class="docutils literal"><span class="pre">value()</span></code>
-method. This overhead can be eliminated by performing a read/write to the relevant bit
-of the chip&#8217;s GPIO port output data register (odr). To facilitate this the <code class="docutils literal"><span class="pre">stm</span></code>
-module provides a set of constants providing the addresses of the relevant registers.
-A fast toggle of pin <code class="docutils literal"><span class="pre">P4</span></code> (CPU pin <code class="docutils literal"><span class="pre">A14</span></code>) - corresponding to the green LED -
-can be performed as follows:</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">BIT14</span> <span class="o">=</span> <span class="n">const</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">)</span>
-<span class="n">stm</span><span class="o">.</span><span class="n">mem16</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">GPIOA</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">GPIO_ODR</span><span class="p">]</span> <span class="o">^=</span> <span class="n">BIT14</span>
-</pre></div>
-</div>
-</div>
 </div>
 <div class="section" id="the-native-code-emitter">
-<h2>The Native code emitter<a class="headerlink" href="#the-native-code-emitter" title="Permalink to this headline">¶</a></h2>
-<p>This causes the MicroPython compiler to emit ARM native opcodes rather than
-bytecode. It covers the bulk of the Python language so most functions will require
+<h2><a class="toc-backref" href="#id13">The Native code emitter</a><a class="headerlink" href="#the-native-code-emitter" title="Permalink to this headline">¶</a></h2>
+<p>This causes the MicroPython compiler to emit native CPU opcodes rather than
+bytecode. It covers the bulk of the MicroPython functionality, so most functions will require
 no adaptation (but see below). It is invoked by means of a function decorator:</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="nd">@micropython.native</span>
 <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
@@ -367,16 +378,16 @@ no adaptation (but see below). It is invoked by means of a function decorator:</
 <li>Generators are not supported.</li>
 <li>If <code class="docutils literal"><span class="pre">raise</span></code> is used an argument must be supplied.</li>
 </ul>
-<p>The trade-off for the improved performance (roughly twice as fast as bytecode) is an
+<p>The trade-off for the improved performance (roughly twices as fast as bytecode) is an
 increase in compiled code size.</p>
 </div>
 <div class="section" id="the-viper-code-emitter">
-<h2>The Viper code emitter<a class="headerlink" href="#the-viper-code-emitter" title="Permalink to this headline">¶</a></h2>
-<p>The optimizations discussed above involve standards-compliant Python code. The
+<h2><a class="toc-backref" href="#id14">The Viper code emitter</a><a class="headerlink" href="#the-viper-code-emitter" title="Permalink to this headline">¶</a></h2>
+<p>The optimisations discussed above involve standards-compliant Python code. The
 Viper code emitter is not fully compliant. It supports special Viper native data types
 in pursuit of performance. Integer processing is non-compliant because it uses machine
 words: arithmetic on 32 bit hardware is performed modulo 2**32.</p>
-<p>Like the Native emitter Viper produces machine instructions but further optimizations
+<p>Like the Native emitter Viper produces machine instructions but further optimisations
 are performed, substantially increasing performance especially for integer arithmetic and
 bit manipulations. It is invoked using a decorator:</p>
 <div class="code python highlight-python"><div class="highlight"><pre>@micropython.viper
@@ -384,7 +395,7 @@ def foo(self, arg: int) -&gt; int:
     # code
 </pre></div>
 </div>
-<p>As the above fragment illustrates it is beneficial to use Python type hints to assist the Viper optimizer.
+<p>As the above fragment illustrates it is beneficial to use Python type hints to assist the Viper optimiser.
 Type hints provide information on the data types of arguments and of the return value; these
 are a standard Python language feature formally defined here <a class="reference external" href="https://www.python.org/dev/peps/pep-0484/">PEP0484</a>.
 Viper supports its own set of types namely <code class="docutils literal"><span class="pre">int</span></code>, <code class="docutils literal"><span class="pre">uint</span></code> (unsigned integer), <code class="docutils literal"><span class="pre">ptr</span></code>, <code class="docutils literal"><span class="pre">ptr8</span></code>,
@@ -395,9 +406,9 @@ Python will interpret the result as 2**32 -1 rather than as -1.</p>
 <ul class="simple">
 <li>Functions may have up to four arguments.</li>
 <li>Default argument values are not permitted.</li>
-<li>Floating point may be used but is not optimized.</li>
+<li>Floating point may be used but is not optimised.</li>
 </ul>
-<p>Viper provides pointer types to assist the optimizer. These comprise</p>
+<p>Viper provides pointer types to assist the optimiser. These comprise</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">ptr</span></code> Pointer to an object.</li>
 <li><code class="docutils literal"><span class="pre">ptr8</span></code> Points to a byte.</li>
@@ -405,7 +416,7 @@ Python will interpret the result as 2**32 -1 rather than as -1.</p>
 <li><code class="docutils literal"><span class="pre">ptr32</span></code> Points to a 32 bit machine word.</li>
 </ul>
 <p>The concept of a pointer may be unfamiliar to Python programmers. It has similarities
-to a Python <code class="docutils literal"><span class="pre">memoryview</span></code> object in that it provides direct access to data stored in memory.
+to a Python <a class="reference internal" href="../library/builtins.html#memoryview" title="memoryview"><code class="xref any py py-class docutils literal"><span class="pre">memoryview</span></code></a> object in that it provides direct access to data stored in memory.
 Items are accessed using subscript notation, but slices are not supported: a pointer can return
 a single item only. Its purpose is to provide fast random access to data stored in contiguous
 memory locations - such as data stored in objects which support the buffer protocol, and
@@ -442,7 +453,7 @@ then the Python object must either have the buffer protocol with read-write capa
 (in which case a pointer to the start of the buffer is returned) or it must be of integral
 type (in which case the value of that integral object is returned).</li>
 </ul>
-<p>The following example illustrates the use of a <code class="docutils literal"><span class="pre">ptr16</span></code> cast to toggle pin X1 on the Pyboard <code class="docutils literal"><span class="pre">n</span></code> times:</p>
+<p>The following example illustrates the use of a <code class="docutils literal"><span class="pre">ptr16</span></code> cast to toggle pin X1 <code class="docutils literal"><span class="pre">n</span></code> times:</p>
 <div class="code python highlight-python"><div class="highlight"><pre>BIT0 = const(1)
 @micropython.viper
 def toggle_n(n: int):
@@ -452,8 +463,35 @@ def toggle_n(n: int):
 </pre></div>
 </div>
 <p>A detailed technical description of the three code emitters may be found
-on Kickstarter here <a class="reference external" href="http://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/664832">Note 1</a>
-and here <a class="reference external" href="http://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/665145">Note 2</a></p>
+on Kickstarter here <a class="reference external" href="https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/664832">Note 1</a>
+and here <a class="reference external" href="https://www.kickstarter.com/projects/214379695/micro-python-python-for-microcontrollers/posts/665145">Note 2</a></p>
+</div>
+<div class="section" id="accessing-hardware-directly">
+<h2><a class="toc-backref" href="#id15">Accessing hardware directly</a><a class="headerlink" href="#accessing-hardware-directly" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Code examples in this section are given for the Pyboard. The techniques
+described however may be applied to other MicroPython ports too.</p>
+</div>
+<p>This comes into the category of more advanced programming and involves some knowledge
+of the target MCU. Consider the example of toggling an output pin on the Pyboard. The
+standard approach would be to write</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">^</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># mypin was instantiated as an output pin</span>
+</pre></div>
+</div>
+<p>This involves the overhead of two calls to the <a class="reference internal" href="../library/machine.Pin.html#machine.Pin" title="machine.Pin"><code class="xref any py py-class docutils literal"><span class="pre">Pin</span></code></a> instance&#8217;s <a class="reference internal" href="../library/machine.Pin.html#machine.Pin.value" title="machine.Pin.value"><code class="xref py py-meth docutils literal"><span class="pre">value()</span></code></a>
+method. This overhead can be eliminated by performing a read/write to the relevant bit
+of the chip&#8217;s GPIO port output data register (odr). To facilitate this the <code class="docutils literal"><span class="pre">stm</span></code>
+module provides a set of constants providing the addresses of the relevant registers.
+A fast toggle of pin <code class="docutils literal"><span class="pre">P4</span></code> (CPU pin <code class="docutils literal"><span class="pre">A14</span></code>) - corresponding to the green LED -
+can be performed as follows:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">machine</span>
+<span class="kn">import</span> <span class="nn">stm</span>
+
+<span class="n">BIT14</span> <span class="o">=</span> <span class="n">const</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">)</span>
+<span class="n">machine</span><span class="o">.</span><span class="n">mem16</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">GPIOA</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">GPIO_ODR</span><span class="p">]</span> <span class="o">^=</span> <span class="n">BIT14</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -464,7 +502,7 @@ and here <a class="reference external" href="http://www.kickstarter.com/projects
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="asm_thumb2_index.html" class="btn btn-neutral float-right" title="Inline Assembler for Thumb2 architectures" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="constrained.html" class="btn btn-neutral float-right" title="MicroPython on Microcontrollers" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="isr_rules.html" class="btn btn-neutral" title="Writing interrupt handlers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -476,8 +514,8 @@ and here <a class="reference external" href="http://www.kickstarter.com/projects
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -491,7 +529,7 @@ and here <a class="reference external" href="http://www.kickstarter.com/projects
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -519,14 +557,12 @@ and here <a class="reference external" href="http://www.kickstarter.com/projects
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -534,19 +570,19 @@ and here <a class="reference external" href="http://www.kickstarter.com/projects
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class ExtInt – configure I/O pins to interrupt on external events &mdash; MicroPython 1.8 documentation</title>
+  <title>class ExtInt – configure I/O pins to interrupt on external events &mdash; MicroPython 1.9.2 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.8 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class I2C – a two-wire serial protocol" href="pyb.I2C.html"/>
         <link rel="prev" title="class DAC – digital to analog conversion" href="pyb.DAC.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.8
+                1.9.2
               </div>
             
           
@@ -91,6 +91,7 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/quickref.html">Quick reference for the openmvcam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../openmvcam/general.html">General information about the openmvcam</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../openmvcam/tutorial/index.html">OpenMV Cam Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">MicroPython libraries</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a></li>
@@ -118,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pyb.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.LED.html">class LED &#8211; LED object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Pin.html">class Pin &#8211; control I/O pins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.RTC.html">class RTC &#8211; real time clock</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Servo.html">class Servo &#8211; 3-wire hobby servo driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.SPI.html">class SPI &#8211; a master-driven serial protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Timer.html">class Timer &#8211; control internal timers</a></li>
@@ -150,13 +152,12 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a></li>
-<li class="toctree-l3"><a class="reference internal" href="machine.html"><code class="docutils literal"><span class="pre">machine</span></code> &#8212; functions related to the board</a></li>
-<li class="toctree-l3"><a class="reference internal" href="machine.I2C.html">class I2C &#8211; a two-wire serial protocol</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">The MicroPython language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genrst/index.html">MicroPython differences from CPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">MicroPython license information</a></li>
 </ul>
 
@@ -208,7 +209,7 @@
 <span id="pyb-extint"></span><h1>class ExtInt &#8211; configure I/O pins to interrupt on external events<a class="headerlink" href="#class-extint-configure-i-o-pins-to-interrupt-on-external-events" title="Permalink to this headline">¶</a></h1>
 <p>There are a total of 22 interrupt lines. 16 of these can come from GPIO pins
 and the remaining 6 are from internal sources.</p>
-<p>For lines 0 thru 15, a given line can map to the corresponding line from an
+<p>For lines 0 through 15, a given line can map to the corresponding line from an
 arbitrary port. So line 0 can map to Px0 where x is A, B, C, ... and
 line 1 can map to Px1 where x is A, B, C, ...</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
@@ -226,7 +227,7 @@ See: <a class="reference external" href="http://www.eng.utah.edu/~cs5780/debounc
 explanation, along with various techniques for debouncing.</p>
 <p>Trying to register 2 callbacks onto the same pin will throw an exception.</p>
 <p>If pin is passed as an integer, then it is assumed to map to one of the
-internal interrupt sources, and must be in the range 16 thru 22.</p>
+internal interrupt sources, and must be in the range 16 through 22.</p>
 <p>All other pin objects go through the pin mapper to come up with one of the
 gpio pins.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">extint</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ExtInt</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">pull</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
@@ -244,8 +245,8 @@ usrsw.h for an example of using this.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="pyb.ExtInt">
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">ExtInt</code><span class="sig-paren">(</span><em>pin</em>, <em>mode</em>, <em>pull</em>, <em>callback</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.ExtInt" title="Permalink to this definition">¶</a></dt>
+<dt>
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">ExtInt</code><span class="sig-paren">(</span><em>pin</em>, <em>mode</em>, <em>pull</em>, <em>callback</em><span class="sig-paren">)</span></dt>
 <dd><p>Create an ExtInt object:</p>
 <blockquote>
 <div><ul class="simple">
@@ -258,7 +259,7 @@ usrsw.h for an example of using this.</p>
 - <code class="docutils literal"><span class="pre">pyb.Pin.PULL_NONE</span></code> - no pull up or down resistors;
 - <code class="docutils literal"><span class="pre">pyb.Pin.PULL_UP</span></code> - enable the pull-up resistor;
 - <code class="docutils literal"><span class="pre">pyb.Pin.PULL_DOWN</span></code> - enable the pull-down resistor.</li>
-<li><code class="docutils literal"><span class="pre">callback</span></code> is the function to call when the interrupt triggers. The
+<li><code class="docutils literal"><span class="pre">callback</span></code> is the function to call when the interrupt triggers.  The
 callback function must accept exactly 1 argument, which is the line that
 triggered the interrupt.</li>
 </ul>
@@ -268,9 +269,9 @@ triggered the interrupt.</li>
 </div>
 <div class="section" id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this headline">¶</a></h2>
-<dl class="method">
-<dt id="ExtInt.regs">
-<code class="descclassname">ExtInt.</code><code class="descname">regs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ExtInt.regs" title="Permalink to this definition">¶</a></dt>
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><code class="descclassname">ExtInt.</code><code class="descname">regs</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Dump the values of the EXTI registers.</p>
 </dd></dl>
 
@@ -278,27 +279,27 @@ triggered the interrupt.</li>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt id="extint.disable">
-<code class="descclassname">extint.</code><code class="descname">disable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#extint.disable" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">disable</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Disable the interrupt associated with the ExtInt object.
 This could be useful for debouncing.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="extint.enable">
-<code class="descclassname">extint.</code><code class="descname">enable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#extint.enable" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">enable</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Enable a disabled interrupt.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="extint.line">
-<code class="descclassname">extint.</code><code class="descname">line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#extint.line" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">line</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Return the line number that the pin is mapped to.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="extint.swint">
-<code class="descclassname">extint.</code><code class="descname">swint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#extint.swint" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">swint</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Trigger the callback from software.</p>
 </dd></dl>
 
@@ -306,20 +307,20 @@ This could be useful for debouncing.</p>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt id="ExtInt.IRQ_FALLING">
-<code class="descclassname">ExtInt.</code><code class="descname">IRQ_FALLING</code><a class="headerlink" href="#ExtInt.IRQ_FALLING" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">IRQ_FALLING</code></dt>
 <dd><p>interrupt on a falling edge</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="ExtInt.IRQ_RISING">
-<code class="descclassname">ExtInt.</code><code class="descname">IRQ_RISING</code><a class="headerlink" href="#ExtInt.IRQ_RISING" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">IRQ_RISING</code></dt>
 <dd><p>interrupt on a rising edge</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="ExtInt.IRQ_RISING_FALLING">
-<code class="descclassname">ExtInt.</code><code class="descname">IRQ_RISING_FALLING</code><a class="headerlink" href="#ExtInt.IRQ_RISING_FALLING" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">ExtInt.</code><code class="descname">IRQ_RISING_FALLING</code></dt>
 <dd><p>interrupt on a rising or falling edge</p>
 </dd></dl>
 
@@ -345,8 +346,8 @@ This could be useful for debouncing.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, OpenMV LLC, and contributors.
-      Last updated on 10 Aug 2017.
+        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 30 Nov 2017.
 
     </p>
   </div>
@@ -360,7 +361,7 @@ This could be useful for debouncing.</p>
     </section>
 
   </div>
-  <!--
+  <!--p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
@@ -388,14 +389,12 @@ This could be useful for debouncing.</p>
         <dd><a href="//en/latest/openmvcam">latest</a></dd>
       
     </dl>
-    -->
-    <!--
     <dl>
       <dt>Downloads</dt>
       
+        <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
+      
     </dl>
-    -->
-    <!--
     <hr/>
     <dl>
       <dt>External links</dt>
@@ -403,19 +402,19 @@ This could be useful for debouncing.</p>
           <a href="http://www.micropython.org">micropython.org</a>
         </dd>
         <dd>
-          <a href="http://github.com/micropython/micropython">GitHub</a>
+          <a href="https://github.com/micropython/micropython">GitHub</a>
         </dd>
     </dl>
   </div>
 </div>
--->
+</p-->
 
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8',
+            VERSION:'1.9.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
