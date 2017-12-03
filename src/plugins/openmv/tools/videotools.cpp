@@ -546,7 +546,9 @@ static bool convertVideoFile(const QString &dst, const QString &src)
 
     if(Utils::HostOsInfo::isWindowsHost())
     {
-        result = QProcess::startDetached(QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffmpeg.exe"))), QStringList()
+        result = QProcess::startDetached(QStringLiteral("cmd.exe"), QStringList()
+            << QStringLiteral("/c")
+            << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffmpeg.exe")))
             << QStringLiteral("-hide_banner")
             << QStringLiteral("-i")
             << QDir::cleanPath(QDir::toNativeSeparators(src))
@@ -612,7 +614,9 @@ static bool playVideoFile(const QString &path)
 
     if(Utils::HostOsInfo::isWindowsHost())
     {
-        result = QProcess::startDetached(QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffplay.exe"))), QStringList()
+        result = QProcess::startDetached(QStringLiteral("cmd.exe"), QStringList()
+            << QStringLiteral("/c")
+            << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffplay.exe")))
             << QStringLiteral("-hide_banner")
             << QDir::cleanPath(QDir::toNativeSeparators(path)));
     }
