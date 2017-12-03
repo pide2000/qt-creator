@@ -1164,6 +1164,10 @@ void OpenMVTerminalSerialPort_private::writeBytes(const QByteArray &data)
             delete m_port;
             m_port = Q_NULLPTR;
         }
+        else
+        {
+            QThread::msleep(1);
+        }
     }
 }
 
@@ -1292,6 +1296,10 @@ void OpenMVTerminalUDPPort_private::writeBytes(const QByteArray &data)
             delete m_port;
             m_port = Q_NULLPTR;
         }
+        else
+        {
+            QThread::msleep(1);
+        }
     }
 }
 
@@ -1419,6 +1427,10 @@ void OpenMVTerminalTCPPort_private::writeBytes(const QByteArray &data)
         {
             delete m_port;
             m_port = Q_NULLPTR;
+        }
+        else
+        {
+            QThread::msleep(1);
         }
     }
 }
