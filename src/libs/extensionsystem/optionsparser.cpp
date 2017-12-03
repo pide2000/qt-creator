@@ -72,12 +72,14 @@ bool OptionsParser::parse()
             break;
         if (checkForEndOfOptions())
             break;
-        if (checkForLoadOption())
-            continue;
-        if (checkForNoLoadOption())
-            continue;
-        if (checkForProfilingOption())
-            continue;
+        //OPENMV-DIFF//
+        //if (checkForLoadOption())
+        //    continue;
+        //if (checkForNoLoadOption())
+        //    continue;
+        //if (checkForProfilingOption())
+        //    continue;
+        //OPENMV-DIFF//
 #ifdef WITH_TESTS
         if (checkForTestOptions())
             continue;

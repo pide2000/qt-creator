@@ -155,8 +155,8 @@ MainWindow::MainWindow() :
 
     //OPENMV-DIFF// setWindowTitle(tr("Qt Creator"));
     setWindowTitle(tr("OpenMV IDE"));
-    if (HostOsInfo::isLinuxHost())
-        QApplication::setWindowIcon(Icons::QTLOGO_128.icon());
+    //OPENMV-DIFF// if (HostOsInfo::isLinuxHost())
+    //OPENMV-DIFF//     QApplication::setWindowIcon(Icons::QTLOGO_128.icon());
     //OPENMV-DIFF// QCoreApplication::setApplicationName(QLatin1String("QtCreator"));
     QCoreApplication::setApplicationName(QLatin1String("OpenMVIDE"));
     //OPENMV-DIFF// QCoreApplication::setApplicationVersion(QLatin1String(Constants::IDE_VERSION_LONG));

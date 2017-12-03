@@ -113,7 +113,9 @@ void CorePlugin::parseArguments(const QStringList &arguments)
         if (arguments.at(i) == QLatin1String("-presentationMode"))
             presentationMode = true;
         if (arguments.at(i) == QLatin1String("-theme")) {
-            themeId = Id::fromString(arguments.at(i + 1));
+            //OPENMV-DIFF//
+            //themeId = Id::fromString(arguments.at(i + 1));
+            //OPENMV-DIFF//
             i++;
         }
     }
@@ -138,12 +140,18 @@ void CorePlugin::parseArguments(const QStringList &arguments)
     // defer creation of these widgets until here,
     // because they need a valid theme set
     m_mainWindow = new MainWindow;
-    ActionManager::setPresentationModeEnabled(presentationMode);
+    //OPENMV-DIFF//
+    //ActionManager::setPresentationModeEnabled(presentationMode);
+    //OPENMV-DIFF//
+    Q_UNUSED(presentationMode)
+    //OPENMV-DIFF//
     m_findPlugin = new FindPlugin;
     m_locator = new Locator;
 
-    if (overrideColor.isValid())
-        m_mainWindow->setOverrideColor(overrideColor);
+    //OPENMV-DIFF//
+    //if (overrideColor.isValid())
+    //    m_mainWindow->setOverrideColor(overrideColor);
+    //OPENMV-DIFF//
 }
 
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)

@@ -435,18 +435,32 @@ void MyPlainTextEdit::clear()
     m_lastChar = QChar();
 }
 
-void MyPlainTextEdit::execute()
+void MyPlainTextEdit::execute(bool standAlone)
 {
     // Write bytes slowly so as to not overload the MicroPython board.
 
-    QByteArray data = "\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02";
-
-    for(int i = 0; i < data.size(); i++)
+    if(!standAlone)
     {
-        emit writeBytes(data.mid(i, 1));
-    }
+        QByteArray data = "\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02";
 
-    // emit writeBytes("\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02");
+        for(int i = 0; i < data.size(); i++)
+        {
+            emit writeBytes(data.mid(i, 1));
+        }
+
+        // emit writeBytes("\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02");
+    }
+    else
+    {
+        QByteArray data = "\x03\r\n\x01\r\nexecfile(\"/main.py\")\r\n\x04\r\n\x02";
+
+        for(int i = 0; i < data.size(); i++)
+        {
+            emit writeBytes(data.mid(i, 1));
+        }
+
+        // emit writeBytes("\x03\r\n\x01\r\nexecfile(\"/main.py\")\r\n\x04\r\n\x02");
+    }
 }
 
 void MyPlainTextEdit::interrupt()
@@ -871,27 +885,16 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
 
     QToolButton *executeButton = new QToolButton;
     executeButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/run_small.png"), Utils::Theme::IconsBaseColor}}).icon());
-    executeButton->setToolTip(tr("Run current script in editor window"));
+    executeButton->setToolTip(stand_alone ? tr("Run \"/main.py\"") : tr("Run current script in editor window"));
     styledBar2Layout->addWidget(executeButton);
-
-    connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, executeButton, [executeButton] (Core::IEditor *editor) {
+    if(!stand_alone) connect(Core::EditorManager::instance(), &Core::EditorManager::currentEditorChanged, executeButton, [executeButton] (Core::IEditor *editor) {
         executeButton->setEnabled(editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false);
     });
-
-    if(stand_alone)
-    {
-        executeButton->hide();
-    }
 
     QToolButton *interruptButton = new QToolButton;
     interruptButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/stop_small.png"), Utils::Theme::IconsBaseColor}}).icon());
     interruptButton->setToolTip(tr("Stop running script"));
     styledBar2Layout->addWidget(interruptButton);
-
-    if(stand_alone)
-    {
-        interruptButton->hide();
-    }
 
     QToolButton *reloadButton = new QToolButton;
     reloadButton->setIcon(Utils::Icon({{QStringLiteral(":/core/images/reload_gray.png"), Utils::Theme::IconsBaseColor}}).icon());
@@ -899,17 +902,12 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     styledBar2Layout->addWidget(reloadButton);
     styledBar2Layout->addStretch(1);
 
-    if(stand_alone)
-    {
-        reloadButton->hide();
-    }
-
     m_edit = new MyPlainTextEdit(m_settings->value(QStringLiteral(FONT_ZOOM_STATE), TextEditor::TextEditorSettings::fontSettings().defaultFontSize()).toReal());
     connect(this, &OpenMVTerminal::readBytes, m_edit, &MyPlainTextEdit::readBytes);
     connect(m_edit, &MyPlainTextEdit::writeBytes, this, &OpenMVTerminal::writeBytes);
     connect(m_edit, &MyPlainTextEdit::frameBufferData, frameBuffer, &OpenMVPluginFB::frameBufferData);
     connect(clearButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::clear);
-    connect(executeButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::execute);
+    connect(executeButton, &QToolButton::clicked, this, [this, stand_alone] { m_edit->execute(stand_alone); });
     connect(interruptButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::interrupt);
     connect(reloadButton, &QToolButton::clicked, m_edit, &MyPlainTextEdit::reload);
 

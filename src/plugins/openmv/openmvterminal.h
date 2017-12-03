@@ -43,7 +43,7 @@ public slots:
 
     void readBytes(const QByteArray &data);
     void clear();
-    void execute();
+    void execute(bool standAlone = false);
     void interrupt();
     void reload();
 

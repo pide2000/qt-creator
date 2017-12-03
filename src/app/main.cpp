@@ -77,10 +77,14 @@ const char fixedOptionsC[] =
 "Options:\n"
 "    -help                         Display this help\n"
 "    -version                      Display program version\n"
-"    -client                       Attempt to connect to already running first instance\n"
+//OPENMV-DIFF//
+//"    -client                       Attempt to connect to already running first instance\n"
+//OPENMV-DIFF//
 "    -settingspath <path>          Override the default path where user settings are stored\n"
-"    -pid <pid>                    Attempt to connect to instance given by pid\n"
-"    -block                        Block until editor is closed\n"
+//OPENMV-DIFF//
+//"    -pid <pid>                    Attempt to connect to instance given by pid\n"
+//"    -block                        Block until editor is closed\n"
+//OPENMV-DIFF//
 "    -pluginpath <path>            Add a custom search path for plugins\n";
 
 const char HELP_OPTION1[] = "-h";
@@ -116,7 +120,11 @@ static void displayHelpText(const QString &t)
     if (Utils::HostOsInfo::isWindowsHost())
         QMessageBox::information(0, QLatin1String(appNameC), toHtml(t));
     else
-        qWarning("%s", qPrintable(t));
+        //OPENMV-DIFF//
+        //qWarning("%s", qPrintable(t));
+        //OPENMV-DIFF//
+        qInfo("%s", qPrintable(t));
+        //OPENMV-DIFF//
 }
 
 static void displayError(const QString &t)
@@ -131,9 +139,14 @@ static void printVersion(const PluginSpec *coreplugin)
 {
     QString version;
     QTextStream str(&version);
-    str << '\n' << appNameC << ' ' << coreplugin->version()<< " based on Qt " << qVersion() << "\n\n";
-    PluginManager::formatPluginVersions(str);
-    str << '\n' << coreplugin->copyright() << '\n';
+    //OPENMV-DIFF//
+    //str << '\n' << appNameC << ' ' << coreplugin->version()<< " based on Qt " << qVersion() << "\n\n";
+    //PluginManager::formatPluginVersions(str);
+    //str << '\n' << coreplugin->copyright() << '\n';
+    //OPENMV-DIFF//
+    Q_UNUSED(coreplugin)
+    str << '\n' << appNameC << ' ' << QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG) << " based on Qt " << qVersion();
+    //OPENMV-DIFF//
     displayHelpText(version);
 }
 
@@ -142,7 +155,9 @@ static void printHelp(const QString &a0)
     QString help;
     QTextStream str(&help);
     str << "Usage: " << a0 << fixedOptionsC;
-    PluginManager::formatOptions(str, OptionIndent, DescriptionIndent);
+    //OPENMV-DIFF//
+    //PluginManager::formatOptions(str, OptionIndent, DescriptionIndent);
+    //OPENMV-DIFF//
     PluginManager::formatPluginOptions(str, OptionIndent, DescriptionIndent);
     displayHelpText(help);
 }
@@ -401,7 +416,11 @@ int main(int argc, char **argv)
     QScopedPointer<QTemporaryDir> temporaryCleanSettingsDir;
     if (settingsPath.isEmpty() && testOptionProvided) {
         const QString settingsPathTemplate = QDir::cleanPath(QDir::tempPath()
-            + QString::fromLatin1("/qtc-test-settings-XXXXXX"));
+            //OPENMV-DIFF//
+            //+ QString::fromLatin1("/qtc-test-settings-XXXXXX"));
+            //OPENMV-DIFF//
+            + QString::fromLatin1("/openmvide-test-settings-XXXXXX"));
+            //OPENMV-DIFF//
         temporaryCleanSettingsDir.reset(new QTemporaryDir(settingsPathTemplate));
         if (!temporaryCleanSettingsDir->isValid())
             return 1;
@@ -474,9 +493,11 @@ int main(int argc, char **argv)
         appOptions.insert(QLatin1String(HELP_OPTION3), false);
         appOptions.insert(QLatin1String(HELP_OPTION4), false);
         appOptions.insert(QLatin1String(VERSION_OPTION), false);
-        appOptions.insert(QLatin1String(CLIENT_OPTION), false);
-        appOptions.insert(QLatin1String(PID_OPTION), true);
-        appOptions.insert(QLatin1String(BLOCK_OPTION), false);
+        //OPENMV-DIFF//
+        //appOptions.insert(QLatin1String(CLIENT_OPTION), false);
+        //appOptions.insert(QLatin1String(PID_OPTION), true);
+        //appOptions.insert(QLatin1String(BLOCK_OPTION), false);
+        //OPENMV-DIFF//
         QString errorMessage;
         if (!PluginManager::parseOptions(arguments, appOptions, &foundAppOptions, &errorMessage)) {
             displayError(errorMessage);
@@ -521,15 +542,21 @@ int main(int argc, char **argv)
     }
 
     qint64 pid = -1;
-    if (foundAppOptions.contains(QLatin1String(PID_OPTION))) {
-        QString pidString = foundAppOptions.value(QLatin1String(PID_OPTION));
-        bool pidOk;
-        qint64 tmpPid = pidString.toInt(&pidOk);
-        if (pidOk)
-            pid = tmpPid;
-    }
+    //OPENMV-DIFF//
+    //if (foundAppOptions.contains(QLatin1String(PID_OPTION))) {
+    //    QString pidString = foundAppOptions.value(QLatin1String(PID_OPTION));
+    //    bool pidOk;
+    //    qint64 tmpPid = pidString.toInt(&pidOk);
+    //    if (pidOk)
+    //        pid = tmpPid;
+    //}
+    //OPENMV-DIFF//
 
-    bool isBlock = foundAppOptions.contains(QLatin1String(BLOCK_OPTION));
+    //OPENMV-DIFF//
+    //bool isBlock = foundAppOptions.contains(QLatin1String(BLOCK_OPTION));
+    //OPENMV-DIFF//
+    bool isBlock = false;
+    //OPENMV-DIFF//
     if (app.isRunning() && (pid != -1 || isBlock
                             //OPENMV-DIFF//
                             || true

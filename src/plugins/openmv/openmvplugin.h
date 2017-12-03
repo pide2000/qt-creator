@@ -181,6 +181,8 @@ public:
     void extensionsInitialized();
     bool delayedInitialize();
     ExtensionSystem::IPlugin::ShutdownFlag aboutToShutdown();
+    QObject *remoteCommand(const QStringList &options, const QString &workingDirectory, const QStringList &arguments);
+    QList<QObject *> createTestObjects() const { return QList<QObject *>(); }
 
 public slots: // private
 

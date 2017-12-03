@@ -291,19 +291,19 @@ void Action::updateActiveState()
 {
     setActive(m_action->isEnabled() && m_action->isVisible() && !m_action->isSeparator());
 }
-
-static QString msgActionWarning(QAction *newAction, Id id, QAction *oldAction)
-{
-    QString msg;
-    QTextStream str(&msg);
-    str << "addOverrideAction " << newAction->objectName() << '/' << newAction->text()
-         << ": Action ";
-    if (oldAction)
-        str << oldAction->objectName() << '/' << oldAction->text();
-    str << " is already registered for context " << id.toString() << '.';
-    return msg;
-}
-
+//OPENMV-DIFF//
+//static QString msgActionWarning(QAction *newAction, Id id, QAction *oldAction)
+//{
+//    QString msg;
+//    QTextStream str(&msg);
+//    str << "addOverrideAction " << newAction->objectName() << '/' << newAction->text()
+//         << ": Action ";
+//    if (oldAction)
+//        str << oldAction->objectName() << '/' << oldAction->text();
+//    str << " is already registered for context " << id.toString() << '.';
+//    return msg;
+//}
+//OPENMV-DIFF//
 void Action::addOverrideAction(QAction *action, const Context &context, bool scriptable)
 {
     if (Utils::HostOsInfo::isMacHost())
@@ -319,8 +319,10 @@ void Action::addOverrideAction(QAction *action, const Context &context, bool scr
     } else {
         for (int i = 0; i < context.size(); ++i) {
             Id id = context.at(i);
-            if (m_contextActionMap.contains(id))
-                qWarning("%s", qPrintable(msgActionWarning(action, id, m_contextActionMap.value(id, 0))));
+            //OPENMV-DIFF//
+            //if (m_contextActionMap.contains(id))
+            //    qWarning("%s", qPrintable(msgActionWarning(action, id, m_contextActionMap.value(id, 0))));
+            //OPENMV-DIFF//
             m_contextActionMap.insert(id, action);
         }
     }
