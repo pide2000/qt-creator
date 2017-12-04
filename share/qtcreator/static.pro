@@ -36,9 +36,9 @@ DATA_DIRS = \
 win32: DATA_DIRS += drivers dfuse ffmpeg/windows
 else: DATA_DIRS += pydfu
 macx: DATA_DIRS += ffmpeg/mac
-linux-*:equals(QMAKE_HOST.arch, "i686"): DATA_DIRS += ffmpeg/linux-x86
-linux-*:equals(QMAKE_HOST.arch, "x86_64"): DATA_DIRS += ffmpeg/linux-x86_64
-linux-*:equals(QMAKE_HOST.arch, "arm"): DATA_DIRS += ffmpeg/linux-arm
+linux-*:contains(QT_ARCH, i386): DATA_DIRS += ffmpeg/linux-x86
+linux-*:contains(QT_ARCH, x86_64): DATA_DIRS += ffmpeg/linux-x86_64
+linux-*:contains(QT_ARCH, arm): DATA_DIRS += ffmpeg/linux-arm
 #OPENMV-DIFF#
 
 for(data_dir, DATA_DIRS) {
