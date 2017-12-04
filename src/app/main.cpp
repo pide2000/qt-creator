@@ -95,8 +95,10 @@ const char VERSION_OPTION[] = "-version";
 const char CLIENT_OPTION[] = "-client";
 const char SETTINGS_OPTION[] = "-settingspath";
 const char TEST_OPTION[] = "-test";
-const char PID_OPTION[] = "-pid";
-const char BLOCK_OPTION[] = "-block";
+//OPENMV-DIFF//
+//const char PID_OPTION[] = "-pid";
+//const char BLOCK_OPTION[] = "-block";
+//OPENMV-DIFF//
 const char PLUGINPATH_OPTION[] = "-pluginpath";
 
 typedef QList<PluginSpec *> PluginSpecSet;

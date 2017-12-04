@@ -558,13 +558,24 @@ static bool convertVideoFile(const QString &dst, const QString &src)
     }
     else if(Utils::HostOsInfo::isMacHost())
     {
-        result = QProcess::startDetached(QStringLiteral("x-terminal-emulator"), QStringList()
-            << QStringLiteral("-e")
-            << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg")))
-            << QStringLiteral("-hide_banner")
-            << QStringLiteral("-i")
-            << QDir::cleanPath(QDir::toNativeSeparators(src))
-            << QDir::cleanPath(QDir::toNativeSeparators(dst)));
+        QFile file(QDir::tempPath()  + QDir::separator() + QStringLiteral("openmvide-ffmpeg.sh"));
+
+        if(file.open(QIODevice::WriteOnly))
+        {
+            QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
+                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
+                QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+
+            if(file.write(command) == command.size())
+            {
+                file.close();
+                file.setPermissions(file.permissions() | QFileDevice::ExeOwner | QFileDevice::ExeUser | QFileDevice::ExeGroup | QFileDevice::ExeOther);
+                result = QProcess::startDetached(QStringLiteral("open"), QStringList()
+                    << QStringLiteral("-a")
+                    << QStringLiteral("Terminal")
+                    << QFileInfo(file).filePath());
+            }
+        }
     }
     else if(Utils::HostOsInfo::isLinuxHost())
     {
@@ -624,11 +635,24 @@ static bool playVideoFile(const QString &path)
     }
     else if(Utils::HostOsInfo::isMacHost())
     {
-        result = QProcess::startDetached(QStringLiteral("x-terminal-emulator"), QStringList()
-            << QStringLiteral("-e")
-            << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffplay")))
-            << QStringLiteral("-hide_banner")
-            << QDir::cleanPath(QDir::toNativeSeparators(path)));
+        QFile file(QDir::tempPath()  + QDir::separator() + QStringLiteral("openmvide-ffplay.sh"));
+
+        if(file.open(QIODevice::WriteOnly))
+        {
+            QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
+                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffplay"))) + QStringLiteral("\" -hide_banner \"") +
+                QDir::cleanPath(QDir::toNativeSeparators(path)) + QStringLiteral("\"\n")).toUtf8();
+
+            if(file.write(command) == command.size())
+            {
+                file.close();
+                file.setPermissions(file.permissions() | QFileDevice::ExeOwner | QFileDevice::ExeUser | QFileDevice::ExeGroup | QFileDevice::ExeOther);
+                result = QProcess::startDetached(QStringLiteral("open"), QStringList()
+                    << QStringLiteral("-a")
+                    << QStringLiteral("Terminal")
+                    << QFileInfo(file).filePath());
+            }
+        }
     }
     else if(Utils::HostOsInfo::isLinuxHost())
     {
