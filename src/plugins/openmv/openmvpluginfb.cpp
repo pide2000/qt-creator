@@ -165,7 +165,7 @@ void OpenMVPluginFB::private_timerCallBack()
     data.append(jpeg);
 
     int size = 16 - (jpeg.size() % 16);
-    if(size != 16) data.append(size, 0);
+    if(size != 16) data.append(QByteArray(size, 0));
 
     if(m_tempFile->write(data) == data.size())
     {

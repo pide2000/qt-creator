@@ -457,6 +457,7 @@ static QString getInputFormats()
         box.setInformativeText(response.exitMessage(command, process.timeoutS()));
         box.setDefaultButton(QMessageBox::Ok);
         box.setEscapeButton(QMessageBox::Cancel);
+        box.exec();
 
         return QString();
     }
@@ -535,6 +536,7 @@ static QString getOutputFormats()
         box.setInformativeText(response.exitMessage(command, process.timeoutS()));
         box.setDefaultButton(QMessageBox::Ok);
         box.setEscapeButton(QMessageBox::Cancel);
+        box.exec();
 
         return QString();
     }
@@ -674,14 +676,22 @@ void convertVideoFileAction(const QString &drivePath)
     QString src =
         QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Source"),
             settings->value(QStringLiteral(LAST_CONVERT_VIDEO_SRC_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+#else
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin)"));
+#endif
 
     if(!src.isEmpty())
     {
         QString dst =
             QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Output"),
                 settings->value(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), QDir::homePath()).toString(),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
                 QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
+#else
+                QObject::tr("Video Files (*.mp4 *.*)"));
+#endif
 
         if(!dst.isEmpty())
         {
@@ -715,7 +725,11 @@ void playVideoFileAction(const QString &drivePath)
     QString path =
         QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Play Video"),
             settings->value(QStringLiteral(LAST_PLAY_VIDEO_PATH), drivePath.isEmpty() ? QDir::homePath() : drivePath).toString(),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin);;") + getInputFormats());
+#else
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageWriter Files (*.bin)"));
+#endif
 
     if(!path.isEmpty())
     {
@@ -738,7 +752,11 @@ void saveVideoFile(const QString &srcPath)
     QString dst =
         QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Save Video"),
             settings->value(QStringLiteral(LAST_SAVE_VIDEO_PATH), QDir::homePath()).toString(),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
+#else
+            QObject::tr("Video Files (*.mp4 *.*)"));
+#endif
 
     if(!dst.isEmpty())
     {
