@@ -427,46 +427,89 @@ void Highlighter::changeContext(const QString &contextName,
                                 const QSharedPointer<HighlightDefinition> &definition,
                                 const bool assignCurrent)
 {
-    if (contextName.startsWith(kPop)) {
-        QStringList list = contextName.split(kHash, QString::SkipEmptyParts);
-        for (int i = 0; i < list.size(); ++i) {
+//OPENMV-DIFF//
+//    if (contextName.startsWith(kPop)) {
+//        QStringList list = contextName.split(kHash, QString::SkipEmptyParts);
+//        for (int i = 0; i < list.size(); ++i) {
+//            if (m_contexts.isEmpty()) {
+//                throw HighlighterException(
+//                        QCoreApplication::translate("GenericHighlighter", "Reached empty context."));
+//            }
+//            m_contexts.pop_back();
+//        }
+//
+//        if (extractObservableState(currentBlockState()) >= PersistentsStart) {
+//            // One or more contexts were popped during during a persistent state.
+//            const QString &currentSequence = currentContextSequence();
+//            if (m_persistentObservableStates.contains(currentSequence))
+//                setCurrentBlockState(
+//                    computeState(m_persistentObservableStates.value(currentSequence)));
+//            else
+//                setCurrentBlockState(
+//                    computeState(m_leadingObservableStates.value(currentSequence)));
+//        }
+//    } else {
+//        const QSharedPointer<Context> &context = definition->context(contextName);
+//
+//        if (context->isDynamic())
+//            pushDynamicContext(context);
+//        else
+//            m_contexts.push_back(context);
+//
+//        if (m_contexts.back()->lineEndContext() == kStay ||
+//            extractObservableState(currentBlockState()) >= PersistentsStart) {
+//            const QString &currentSequence = currentContextSequence();
+//            mapLeadingSequence(currentSequence);
+//            if (m_contexts.back()->lineEndContext() == kStay) {
+//                // A persistent context was pushed.
+//                mapPersistentSequence(currentSequence);
+//                setCurrentBlockState(
+//                    computeState(m_persistentObservableStates.value(currentSequence)));
+//            }
+//        }
+//    }
+//OPENMV-DIFF//
+    QStringList list = contextName.split(kHash, QString::SkipEmptyParts);
+    for (int i = 0; i < list.size(); ++i) {
+        if (QString(kHash + list.at(i)).startsWith(kPop)) {
             if (m_contexts.isEmpty()) {
                 throw HighlighterException(
                         QCoreApplication::translate("GenericHighlighter", "Reached empty context."));
             }
             m_contexts.pop_back();
-        }
 
-        if (extractObservableState(currentBlockState()) >= PersistentsStart) {
-            // One or more contexts were popped during during a persistent state.
-            const QString &currentSequence = currentContextSequence();
-            if (m_persistentObservableStates.contains(currentSequence))
-                setCurrentBlockState(
-                    computeState(m_persistentObservableStates.value(currentSequence)));
+            if (extractObservableState(currentBlockState()) >= PersistentsStart) {
+                // One or more contexts were popped during during a persistent state.
+                const QString &currentSequence = currentContextSequence();
+                if (m_persistentObservableStates.contains(currentSequence))
+                    setCurrentBlockState(
+                        computeState(m_persistentObservableStates.value(currentSequence)));
+                else
+                    setCurrentBlockState(
+                        computeState(m_leadingObservableStates.value(currentSequence)));
+            }
+        } else {
+            const QSharedPointer<Context> &context = definition->context((i == 0) ? list.at(i) : (kHash + list.at(i)));
+
+            if (context->isDynamic())
+                pushDynamicContext(context);
             else
-                setCurrentBlockState(
-                    computeState(m_leadingObservableStates.value(currentSequence)));
-        }
-    } else {
-        const QSharedPointer<Context> &context = definition->context(contextName);
+                m_contexts.push_back(context);
 
-        if (context->isDynamic())
-            pushDynamicContext(context);
-        else
-            m_contexts.push_back(context);
-
-        if (m_contexts.back()->lineEndContext() == kStay ||
-            extractObservableState(currentBlockState()) >= PersistentsStart) {
-            const QString &currentSequence = currentContextSequence();
-            mapLeadingSequence(currentSequence);
-            if (m_contexts.back()->lineEndContext() == kStay) {
-                // A persistent context was pushed.
-                mapPersistentSequence(currentSequence);
-                setCurrentBlockState(
-                    computeState(m_persistentObservableStates.value(currentSequence)));
+            if (m_contexts.back()->lineEndContext() == kStay ||
+                extractObservableState(currentBlockState()) >= PersistentsStart) {
+                const QString &currentSequence = currentContextSequence();
+                mapLeadingSequence(currentSequence);
+                if (m_contexts.back()->lineEndContext() == kStay) {
+                    // A persistent context was pushed.
+                    mapPersistentSequence(currentSequence);
+                    setCurrentBlockState(
+                        computeState(m_persistentObservableStates.value(currentSequence)));
+                }
             }
         }
     }
+//OPENMV-DIFF//
 
     if (assignCurrent)
         assignCurrentContext();

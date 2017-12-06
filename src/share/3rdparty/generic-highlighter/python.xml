@@ -426,6 +426,7 @@
 				<keyword attribute="OpenMVModules" String="listOpenMVModules" context="#stay"/>
 				<keyword attribute="OpenMVDatas" String="listOpenMVDatas" context="#stay"/>
 				<RegExpr attribute="Normal Text" String="[a-zA-Z_][a-zA-Z_0-9]*\s*\(" context="ClassFunctionMethodHighlight" lookAhead="true"/>
+ 				<keyword attribute="OpenMVClasses" String="listOpenMVClasses" context="#stay"/>
 				<!--OPENMV-DIFF-->
 				<keyword attribute="Builtin Function" String="builtinfuncs" context="#stay"/>
 				<keyword attribute="Special Variable" String="specialvars" context="#stay"/>
@@ -482,6 +483,7 @@
 			<context name="ClassFunctionMethodHighlight2" attribute="Normal Text" lineEndContext="#pop#pop" fallthrough="true" fallthroughContext="#pop#pop">
 				<DetectSpaces/>
 				<DetectChar attribute="Normal Text" char="(" context="ArgumentHighlight"/>
+				<LineContinue attribute="Normal Text" context="ClassFunctionMethodHighlight2"/>
 			</context>
 			<context name="ArgumentHighlight" attribute="Normal Text" lineEndContext="#stay" fallthrough="true" fallthroughContext="#pop#pop#pop">
 				<DetectSpaces/>

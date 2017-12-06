@@ -218,7 +218,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
     QRegularExpression spanRegEx(QStringLiteral("<span.*?>"), QRegularExpression::DotMatchesEverythingOption);
     QRegularExpression linkRegEx(QStringLiteral("<a.*?>"), QRegularExpression::DotMatchesEverythingOption);
     QRegularExpression classRegEx(QStringLiteral(" class=\".*?\""), QRegularExpression::DotMatchesEverythingOption);
-    QRegularExpression cdfmRegEx(QStringLiteral("<dl class=\"(class|data|function|method)\">\\s*<dt id=\"(.+?)\">(.*?)</dt>\\s*<dd>(.*?)</dd>\\s*</dl>"), QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpression cdfmRegEx(QStringLiteral("<dl class=\"(class|data|exception|function|method)\">\\s*<dt id=\"(.+?)\">(.*?)</dt>\\s*<dd>(.*?)</dd>\\s*</dl>"), QRegularExpression::DotMatchesEverythingOption);
     QRegularExpression argumentRegEx(QStringLiteral("<span class=\"sig-paren\">\\(</span>(.*?)<span class=\"sig-paren\">\\)</span>"), QRegularExpression::DotMatchesEverythingOption);
     QRegularExpression tupleRegEx(QStringLiteral("\\(.*?\\)"), QRegularExpression::DotMatchesEverythingOption);
     QRegularExpression listRegEx(QStringLiteral("\\[.*?\\]"), QRegularExpression::DotMatchesEverythingOption);
@@ -297,7 +297,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
                             m_classes.append(d);
                             providerFunctions.append(d.name);
                         }
-                        else if(type == QStringLiteral("data"))
+                        else if((type == QStringLiteral("data")) || (type == QStringLiteral("exception")))
                         {
                             m_datas.append(d);
                             providerVariables.append(d.name);
@@ -2084,6 +2084,14 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
         QLineEdit *edit = new QLineEdit(QStringLiteral("#####-#####-#####-#####-#####"));
         layout->addWidget(edit);
 
+        QLabel *info1 = new QLabel(QStringLiteral("Email <a href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a> with your license key and the below info if you have trouble registering."));
+        info1->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        layout->addWidget(info1);
+
+        QLabel *info2 = new QLabel(QString(QStringLiteral("Board: %1 - ID: %2")).arg(board).arg(id));
+        info2->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        layout->addWidget(info2);
+
         QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
         connect(box, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
         connect(box, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
@@ -2143,7 +2151,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
                     {
                         if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
                         {
-                            if(QString::fromUtf8(data).contains(QStringLiteral("Done")))
+                            if(QString::fromUtf8(data).contains(QStringLiteral("<p>Done</p>")))
                             {
                                 QMessageBox::information(Core::ICore::dialogParent(),
                                     tr("Register OpenMV Cam"),
@@ -2151,19 +2159,19 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
 
                                 return true;
                             }
-                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: Invalid ID Key!")))
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("<p>Error: Invalid ID Key!</p>")))
                             {
                                 QMessageBox::critical(Core::ICore::dialogParent(),
                                     tr("Register OpenMV Cam"),
                                     tr("Invalid Board Key!"));
                             }
-                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: ID Key already used!")))
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("<p>Error: ID Key already used!</p>")))
                             {
                                 QMessageBox::critical(Core::ICore::dialogParent(),
                                     tr("Register OpenMV Cam"),
                                     tr("Board Key already used!"));
                             }
-                            else if(QString::fromUtf8(data).contains(QStringLiteral("Error: Board and ID already registered!")))
+                            else if(QString::fromUtf8(data).contains(QStringLiteral("<p>Error: Board and ID already registered!</p>")))
                             {
                                 QMessageBox::critical(Core::ICore::dialogParent(),
                                     tr("Register OpenMV Cam"),
@@ -3372,7 +3380,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
                             {
-                                if(QString::fromUtf8(data).contains(QStringLiteral("No")))
+                                if(QString::fromUtf8(data).contains(QStringLiteral("<p>No</p>")))
                                 {
                                     QTimer::singleShot(0, this, [this, board, id] { registerOpenMVCam(board, id); });
                                 }
