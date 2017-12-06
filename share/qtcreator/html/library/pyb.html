@@ -199,50 +199,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pyb-functions-related-to-the-board">
-<h1><code class="xref py py-mod docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board<a class="headerlink" href="#pyb-functions-related-to-the-board" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyb">
+<span id="pyb-functions-related-to-the-board"></span><h1><a class="reference internal" href="#module-pyb" title="pyb: functions related to the board"><code class="xref py py-mod docutils literal"><span class="pre">pyb</span></code></a> &#8212; functions related to the board<a class="headerlink" href="#module-pyb" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal"><span class="pre">pyb</span></code> module contains specific functions related to the board.</p>
 <div class="section" id="time-related-functions">
 <h2>Time related functions<a class="headerlink" href="#time-related-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">delay</code><span class="sig-paren">(</span><em>ms</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.delay">
+<code class="descclassname">pyb.</code><code class="descname">delay</code><span class="sig-paren">(</span><em>ms</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.delay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delay for the given number of milliseconds.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">udelay</code><span class="sig-paren">(</span><em>us</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.udelay">
+<code class="descclassname">pyb.</code><code class="descname">udelay</code><span class="sig-paren">(</span><em>us</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.udelay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delay for the given number of microseconds.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">millis</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.millis">
+<code class="descclassname">pyb.</code><code class="descname">millis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.millis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of milliseconds since the board was last reset.</p>
 <p>The result is always a MicroPython smallint (31-bit signed number), so
 after 2^30 milliseconds (about 12.4 days) this will start to return
 negative numbers.</p>
-<p>Note that if <code class="xref py py-meth docutils literal"><span class="pre">pyb.stop()</span></code> is issued the hardware counter supporting this
+<p>Note that if <a class="reference internal" href="#pyb.stop" title="pyb.stop"><code class="xref py py-meth docutils literal"><span class="pre">pyb.stop()</span></code></a> is issued the hardware counter supporting this
 function will pause for the duration of the &#8220;sleeping&#8221; state. This
-will affect the outcome of <code class="xref py py-meth docutils literal"><span class="pre">pyb.elapsed_millis()</span></code>.</p>
+will affect the outcome of <a class="reference internal" href="#pyb.elapsed_millis" title="pyb.elapsed_millis"><code class="xref py py-meth docutils literal"><span class="pre">pyb.elapsed_millis()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">micros</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.micros">
+<code class="descclassname">pyb.</code><code class="descname">micros</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.micros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of microseconds since the board was last reset.</p>
 <p>The result is always a MicroPython smallint (31-bit signed number), so
 after 2^30 microseconds (about 17.8 minutes) this will start to return
 negative numbers.</p>
-<p>Note that if <code class="xref py py-meth docutils literal"><span class="pre">pyb.stop()</span></code> is issued the hardware counter supporting this
+<p>Note that if <a class="reference internal" href="#pyb.stop" title="pyb.stop"><code class="xref py py-meth docutils literal"><span class="pre">pyb.stop()</span></code></a> is issued the hardware counter supporting this
 function will pause for the duration of the &#8220;sleeping&#8221; state. This
-will affect the outcome of <code class="xref py py-meth docutils literal"><span class="pre">pyb.elapsed_micros()</span></code>.</p>
+will affect the outcome of <a class="reference internal" href="#pyb.elapsed_micros" title="pyb.elapsed_micros"><code class="xref py py-meth docutils literal"><span class="pre">pyb.elapsed_micros()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">elapsed_millis</code><span class="sig-paren">(</span><em>start</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.elapsed_millis">
+<code class="descclassname">pyb.</code><code class="descname">elapsed_millis</code><span class="sig-paren">(</span><em>start</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.elapsed_millis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of milliseconds which have elapsed since <code class="docutils literal"><span class="pre">start</span></code>.</p>
 <p>This function takes care of counter wrap, and always returns a positive
 number. This means it can be used to measure periods up to about 12.4 days.</p>
@@ -255,8 +255,8 @@ while pyb.elapsed_millis(start) &lt; 1000:
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">elapsed_micros</code><span class="sig-paren">(</span><em>start</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.elapsed_micros">
+<code class="descclassname">pyb.</code><code class="descname">elapsed_micros</code><span class="sig-paren">(</span><em>start</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.elapsed_micros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of microseconds which have elapsed since <code class="docutils literal"><span class="pre">start</span></code>.</p>
 <p>This function takes care of counter wrap, and always returns a positive
 number. This means it can be used to measure periods up to about 17.8 minutes.</p>
@@ -273,20 +273,20 @@ number. This means it can be used to measure periods up to about 17.8 minutes.</
 <div class="section" id="reset-related-functions">
 <h2>Reset related functions<a class="headerlink" href="#reset-related-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">hard_reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.hard_reset">
+<code class="descclassname">pyb.</code><code class="descname">hard_reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.hard_reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the openmvcam in a manner similar to asserting the external RESET.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">bootloader</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.bootloader">
+<code class="descclassname">pyb.</code><code class="descname">bootloader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.bootloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Activate the bootloader without BOOT pin.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">fault_debug</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.fault_debug">
+<code class="descclassname">pyb.</code><code class="descname">fault_debug</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.fault_debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable or disable hard-fault debugging.  A hard-fault is when there is a fatal
 error in the underlying system, like an invalid memory access.</p>
 <p>If the <em>value</em> argument is <code class="docutils literal"><span class="pre">False</span></code> then the board will automatically reset if
@@ -300,8 +300,8 @@ registers and the stack trace, and then cycle the LEDs indefinitely.</p>
 <div class="section" id="interrupt-related-functions">
 <h2>Interrupt related functions<a class="headerlink" href="#interrupt-related-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">disable_irq</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.disable_irq">
+<code class="descclassname">pyb.</code><code class="descname">disable_irq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.disable_irq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disable interrupt requests.
 Returns the previous IRQ state: <code class="docutils literal"><span class="pre">False</span></code>/<code class="docutils literal"><span class="pre">True</span></code> for disabled/enabled IRQs
 respectively.  This return value can be passed to enable_irq to restore
@@ -309,8 +309,8 @@ the IRQ to its original state.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">enable_irq</code><span class="sig-paren">(</span><em>state=True</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.enable_irq">
+<code class="descclassname">pyb.</code><code class="descname">enable_irq</code><span class="sig-paren">(</span><em>state=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.enable_irq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable interrupt requests.
 If <code class="docutils literal"><span class="pre">state</span></code> is <code class="docutils literal"><span class="pre">True</span></code> (the default value) then IRQs are enabled.
 If <code class="docutils literal"><span class="pre">state</span></code> is <code class="docutils literal"><span class="pre">False</span></code> then IRQs are disabled.  The most common use of
@@ -322,8 +322,8 @@ exit a critical section.</p>
 <div class="section" id="power-related-functions">
 <h2>Power related functions<a class="headerlink" href="#power-related-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">freq</code><span class="sig-paren">(</span><span class="optional">[</span><em>sysclk</em><span class="optional">[</span>, <em>hclk</em><span class="optional">[</span>, <em>pclk1</em><span class="optional">[</span>, <em>pclk2</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.freq">
+<code class="descclassname">pyb.</code><code class="descname">freq</code><span class="sig-paren">(</span><span class="optional">[</span><em>sysclk</em><span class="optional">[</span>, <em>hclk</em><span class="optional">[</span>, <em>pclk1</em><span class="optional">[</span>, <em>pclk2</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>If given no arguments, returns a tuple of clock frequencies:
 (sysclk, hclk, pclk1, pclk2).
 These correspond to:</p>
@@ -353,8 +353,8 @@ drive the PLL (phase locked loop), and then use the output of the PLL.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">wfi</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.wfi">
+<code class="descclassname">pyb.</code><code class="descname">wfi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.wfi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait for an internal or external interrupt.</p>
 <p>This executes a <code class="docutils literal"><span class="pre">wfi</span></code> instruction which reduces power consumption
 of the MCU until any interrupt occurs (be it internal or external),
@@ -364,8 +364,8 @@ at most 1ms.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.stop">
+<code class="descclassname">pyb.</code><code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put the pyboard in a &#8220;sleeping&#8221; state.</p>
 <p>This reduces power consumption to less than 500 uA.  To wake from this
 sleep state requires an external interrupt or a real-time-clock event.
@@ -374,8 +374,8 @@ Upon waking execution continues where it left off.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">standby</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.standby">
+<code class="descclassname">pyb.</code><code class="descname">standby</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.standby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put the openmvcam into a &#8220;deep sleep&#8221; state.</p>
 <p>This reduces power consumption to less than 50 uA.  To wake from this
 sleep state requires a real-time-clock event.
@@ -387,14 +387,14 @@ Upon waking the system undergoes a hard reset.</p>
 <div class="section" id="miscellaneous-functions">
 <h2>Miscellaneous functions<a class="headerlink" href="#miscellaneous-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">info</code><span class="sig-paren">(</span><span class="optional">[</span><em>dump_alloc_table</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.info">
+<code class="descclassname">pyb.</code><code class="descname">info</code><span class="sig-paren">(</span><span class="optional">[</span><em>dump_alloc_table</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print out lots of information about the board.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">mount</code><span class="sig-paren">(</span><em>device</em>, <em>mountpoint</em>, <em>*</em>, <em>readonly=False</em>, <em>mkfs=False</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.mount">
+<code class="descclassname">pyb.</code><code class="descname">mount</code><span class="sig-paren">(</span><em>device</em>, <em>mountpoint</em>, <em>*</em>, <em>readonly=False</em>, <em>mkfs=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.mount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mount a block device and make it available as part of the filesystem.
 <code class="docutils literal"><span class="pre">device</span></code> must be an object that provides the block protocol:</p>
 <blockquote>
@@ -423,26 +423,26 @@ as <code class="docutils literal"><span class="pre">mountpoint</span></code>.</p
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">repl_uart</code><span class="sig-paren">(</span><em>uart</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.repl_uart">
+<code class="descclassname">pyb.</code><code class="descname">repl_uart</code><span class="sig-paren">(</span><em>uart</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.repl_uart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get or set the UART object where the REPL is repeated on.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">rng</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.rng">
+<code class="descclassname">pyb.</code><code class="descname">rng</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.rng" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a 30-bit hardware generated random number.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.sync">
+<code class="descclassname">pyb.</code><code class="descname">sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.sync" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sync all file systems.</p>
 </dd></dl>
 
 <dl class="function">
-<dt>
-<code class="descclassname">pyb.</code><code class="descname">unique_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.unique_id">
+<code class="descclassname">pyb.</code><code class="descname">unique_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.unique_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a string of 12 bytes (96 bits), which is the unique ID of the MCU.</p>
 </dd></dl>
 
@@ -490,7 +490,7 @@ as <code class="docutils literal"><span class="pre">mountpoint</span></code>.</p
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -504,14 +504,14 @@ as <code class="docutils literal"><span class="pre">mountpoint</span></code>.</p
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -538,19 +538,39 @@ as <code class="docutils literal"><span class="pre">mountpoint</span></code>.</p
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

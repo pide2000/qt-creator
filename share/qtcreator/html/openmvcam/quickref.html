@@ -160,7 +160,7 @@
 <a class="reference internal image-reference" href="../_images/pinout.png"><img alt="OpenMV Cam pinout" src="../_images/pinout.png" style="width: 700px;" /></a>
 <div class="section" id="general-board-control">
 <h2>General board control<a class="headerlink" href="#general-board-control" title="Permalink to this headline">¶</a></h2>
-<p>See <code class="xref py py-mod docutils literal"><span class="pre">pyb</span></code>.</p>
+<p>See <a class="reference internal" href="../library/pyb.html#module-pyb" title="pyb: functions related to the board"><code class="xref py py-mod docutils literal"><span class="pre">pyb</span></code></a>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyb</span>
 
 <span class="n">pyb</span><span class="o">.</span><span class="n">repl_uart</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">UART</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9600</span><span class="p">,</span> <span class="n">timeout_char</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span> <span class="c"># duplicate REPL on UART(3)</span>
@@ -429,7 +429,7 @@ ext = ExtInt(Pin(&#39;P7&#39;), ExtInt.IRQ_RISING, Pin.PULL_NONE, callback)
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -443,14 +443,14 @@ ext = ExtInt(Pin(&#39;P7&#39;), ExtInt.IRQ_RISING, Pin.PULL_NONE, callback)
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -477,19 +477,39 @@ ext = ExtInt(Pin(&#39;P7&#39;), ExtInt.IRQ_RISING, Pin.PULL_NONE, callback)
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

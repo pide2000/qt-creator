@@ -228,8 +228,8 @@ None for no CRC, or a polynomial specifier.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">SPI</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.SPI">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">SPI</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.SPI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an SPI object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 2.
 With no additional parameters, the SPI object is created but
 not initialised (it has the settings from the last initialisation of
@@ -249,14 +249,14 @@ for other use.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.SPI.deinit">
+<code class="descclassname">SPI.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.SPI.deinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn off the SPI bus.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>baudrate=328125</em>, <em>*</em>, <em>prescaler</em>, <em>polarity=1</em>, <em>phase=0</em>, <em>bits=8</em>, <em>firstbit=SPI.MSB</em>, <em>ti=False</em>, <em>crc=None</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.SPI.init">
+<code class="descclassname">SPI.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>baudrate=328125</em>, <em>*</em>, <em>prescaler</em>, <em>polarity=1</em>, <em>phase=0</em>, <em>bits=8</em>, <em>firstbit=SPI.MSB</em>, <em>ti=False</em>, <em>crc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.SPI.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the SPI bus with the given parameters:</p>
 <blockquote>
 <div><ul class="simple">
@@ -274,7 +274,7 @@ respectively.</li>
 </div></blockquote>
 <p>Note that the SPI clock frequency will not always be the requested baudrate.
 The hardware only supports baudrates that are the APB bus frequency
-(see <code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
+(see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code></a>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
 64, 128 or 256.  SPI(2) is on AHB1.  For precise
 control over the SPI clock frequency, specify <code class="docutils literal"><span class="pre">prescaler</span></code> instead of
 <code class="docutils literal"><span class="pre">baudrate</span></code>.</p>
@@ -283,8 +283,8 @@ prescaler.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.SPI.recv">
+<code class="descclassname">SPI.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.SPI.recv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -298,8 +298,8 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.SPI.send">
+<code class="descclassname">SPI.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.SPI.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -311,8 +311,8 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">send_recv</code><span class="sig-paren">(</span><em>send</em>, <em>recv=None</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.SPI.send_recv">
+<code class="descclassname">SPI.</code><code class="descname">send_recv</code><span class="sig-paren">(</span><em>send</em>, <em>recv=None</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.SPI.send_recv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send and receive data on the bus at the same time:</p>
 <blockquote>
 <div><ul class="simple">
@@ -330,24 +330,24 @@ be created.</li>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">MASTER</code></dt>
+<dt id="pyb.SPI.MASTER">
+<code class="descclassname">SPI.</code><code class="descname">MASTER</code><a class="headerlink" href="#pyb.SPI.MASTER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">SLAVE</code></dt>
+<dt id="pyb.SPI.SLAVE">
+<code class="descclassname">SPI.</code><code class="descname">SLAVE</code><a class="headerlink" href="#pyb.SPI.SLAVE" title="Permalink to this definition">¶</a></dt>
 <dd><p>for initialising the SPI bus to master or slave mode</p>
 </dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">LSB</code></dt>
+<dt id="pyb.SPI.LSB">
+<code class="descclassname">SPI.</code><code class="descname">LSB</code><a class="headerlink" href="#pyb.SPI.LSB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">SPI.</code><code class="descname">MSB</code></dt>
+<dt id="pyb.SPI.MSB">
+<code class="descclassname">SPI.</code><code class="descname">MSB</code><a class="headerlink" href="#pyb.SPI.MSB" title="Permalink to this definition">¶</a></dt>
 <dd><p>set the first bit to be the least or most significant bit</p>
 </dd></dl>
 
@@ -374,7 +374,7 @@ be created.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -388,14 +388,14 @@ be created.</li>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -422,19 +422,39 @@ be created.</li>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

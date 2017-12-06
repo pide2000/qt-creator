@@ -213,8 +213,8 @@ digital logic level. For analog control of a pin, see the ADC class.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">Pin</code><span class="sig-paren">(</span><em>id</em>, <em>...</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.Pin">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">Pin</code><span class="sig-paren">(</span><em>id</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.Pin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new Pin object associated with the id.  If additional arguments are given,
 they are used to initialise the pin.  See <code class="xref py py-meth docutils literal"><span class="pre">pin.init()</span></code>.</p>
 </dd></dl>
@@ -223,8 +223,8 @@ they are used to initialise the pin.  See <code class="xref py py-meth docutils 
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">Pin.</code><code class="descname">value</code><span class="sig-paren">(</span><span class="optional">[</span><em>value</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Pin.value">
+<code class="descclassname">Pin.</code><code class="descname">value</code><span class="sig-paren">(</span><span class="optional">[</span><em>value</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get or set the digital logic level of the pin:</p>
 <blockquote>
 <div><ul class="simple">
@@ -237,8 +237,8 @@ is set high, otherwise it is set low.</li>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Pin.</code><code class="descname">pull</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Pin.pull">
+<code class="descclassname">Pin.</code><code class="descname">pull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.pull" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the currently configured pull of the pin. The integer returned
 will match one of the allowed constants for the pull argument to the init
 function.</p>
@@ -270,7 +270,7 @@ function.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -284,14 +284,14 @@ function.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -318,19 +318,39 @@ function.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

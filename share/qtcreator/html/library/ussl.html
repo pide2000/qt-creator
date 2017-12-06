@@ -154,8 +154,8 @@ facilities for network sockets, both client-side and server-side.</p>
 <dd><p>Takes a stream <em>sock</em> (usually usocket.socket instance of <code class="docutils literal"><span class="pre">SOCK_STREAM</span></code> type),
 and returns an instance of ssl.SSLSocket, which wraps the underlying stream in
 an SSL context. Returned object has the usual stream interface methods like
-<a class="reference internal" href="machine.SPI.html#machine.SPI.read" title="machine.SPI.read"><code class="xref any py py-meth docutils literal"><span class="pre">read()</span></code></a>, <a class="reference internal" href="machine.SPI.html#machine.SPI.write" title="machine.SPI.write"><code class="xref any py py-meth docutils literal"><span class="pre">write()</span></code></a>, etc. In MicroPython, the returned object does not expose
-socket interface and methods like <a class="reference internal" href="usocket.html#usocket.socket.recv" title="usocket.socket.recv"><code class="xref any py py-meth docutils literal"><span class="pre">recv()</span></code></a>, <a class="reference internal" href="usocket.html#usocket.socket.send" title="usocket.socket.send"><code class="xref any py py-meth docutils literal"><span class="pre">send()</span></code></a>. In particular, a
+<a class="reference internal" href="machine.SPI.html#machine.SPI.read" title="machine.SPI.read"><code class="xref any py py-meth docutils literal"><span class="pre">read()</span></code></a>, <a class="reference internal" href="pyb.UART.html#pyb.UART.write" title="pyb.UART.write"><code class="xref any py py-meth docutils literal"><span class="pre">write()</span></code></a>, etc. In MicroPython, the returned object does not expose
+socket interface and methods like <a class="reference internal" href="pyb.USB_HID.html#pyb.USB_HID.recv" title="pyb.USB_HID.recv"><code class="xref any py py-meth docutils literal"><span class="pre">recv()</span></code></a>, <a class="reference internal" href="pyb.SPI.html#pyb.SPI.send" title="pyb.SPI.send"><code class="xref any py py-meth docutils literal"><span class="pre">send()</span></code></a>. In particular, a
 server-side SSL socket should be created from a normal socket returned from
 <a class="reference internal" href="usocket.html#usocket.socket.accept" title="usocket.socket.accept"><code class="xref any py py-meth docutils literal"><span class="pre">accept()</span></code></a> on a non-SSL listening server socket.</p>
 <p>Depending on the underlying module implementation for a particular board,
@@ -203,7 +203,7 @@ which makes an SSL connection established prone to man-in-the-middle attacks.</p
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -217,14 +217,14 @@ which makes an SSL connection established prone to man-in-the-middle attacks.</p
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -251,19 +251,39 @@ which makes an SSL connection established prone to man-in-the-middle attacks.</p
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

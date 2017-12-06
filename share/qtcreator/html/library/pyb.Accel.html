@@ -150,8 +150,8 @@
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">Accel</code></dt>
+<dt id="pyb.pyb.Accel">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">Accel</code><a class="headerlink" href="#pyb.pyb.Accel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return an accelerometer object.</p>
 </dd></dl>
 
@@ -159,8 +159,8 @@
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">Accel.</code><code class="descname">filtered_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Accel.filtered_xyz">
+<code class="descclassname">Accel.</code><code class="descname">filtered_xyz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Accel.filtered_xyz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a 3-tuple of filtered x, y and z values.</p>
 <p>Implementation note: this method is currently implemented as taking the
 sum of 4 samples, sampled from the 3 previous calls to this function along
@@ -169,26 +169,26 @@ times the size of what they would be from the raw x(), y() and z() calls.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Accel.</code><code class="descname">tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Accel.tilt">
+<code class="descclassname">Accel.</code><code class="descname">tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Accel.tilt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the tilt register.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Accel.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Accel.x">
+<code class="descclassname">Accel.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Accel.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the x-axis value.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Accel.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Accel.y">
+<code class="descclassname">Accel.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Accel.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the y-axis value.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Accel.</code><code class="descname">z</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Accel.z">
+<code class="descclassname">Accel.</code><code class="descname">z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Accel.z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the z-axis value.</p>
 </dd></dl>
 
@@ -213,7 +213,7 @@ concurrently, are UART 1 and Timer 4 channels 1 and 2.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -227,14 +227,14 @@ concurrently, are UART 1 and Timer 4 channels 1 and 2.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -261,19 +261,39 @@ concurrently, are UART 1 and Timer 4 channels 1 and 2.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

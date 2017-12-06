@@ -479,7 +479,7 @@ standard approach would be to write</p>
 <div class="code python highlight-python"><div class="highlight"><pre><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">mypin</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">^</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># mypin was instantiated as an output pin</span>
 </pre></div>
 </div>
-<p>This involves the overhead of two calls to the <a class="reference internal" href="../library/machine.Pin.html#machine.Pin" title="machine.Pin"><code class="xref any py py-class docutils literal"><span class="pre">Pin</span></code></a> instance&#8217;s <a class="reference internal" href="../library/machine.Pin.html#machine.Pin.value" title="machine.Pin.value"><code class="xref py py-meth docutils literal"><span class="pre">value()</span></code></a>
+<p>This involves the overhead of two calls to the <a class="reference internal" href="../library/pyb.Pin.html#pyb.pyb.Pin" title="pyb.pyb.Pin"><code class="xref any py py-class docutils literal"><span class="pre">Pin</span></code></a> instance&#8217;s <a class="reference internal" href="../library/machine.Pin.html#machine.Pin.value" title="machine.Pin.value"><code class="xref py py-meth docutils literal"><span class="pre">value()</span></code></a>
 method. This overhead can be eliminated by performing a read/write to the relevant bit
 of the chip&#8217;s GPIO port output data register (odr). To facilitate this the <code class="docutils literal"><span class="pre">stm</span></code>
 module provides a set of constants providing the addresses of the relevant registers.
@@ -515,7 +515,7 @@ can be performed as follows:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -529,14 +529,14 @@ can be performed as follows:</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -563,19 +563,39 @@ can be performed as follows:</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

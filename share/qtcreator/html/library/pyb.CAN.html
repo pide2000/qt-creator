@@ -215,8 +215,8 @@ voltage levels on the bus.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">CAN</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.CAN">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">CAN</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.CAN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a CAN object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 2.
 With no additional parameters, the CAN object is created but not
 initialised (it has the settings from the last initialisation of
@@ -234,8 +234,8 @@ See <code class="docutils literal"><span class="pre">init</span></code> for para
 <div class="section" id="class-methods">
 <h2>Class Methods<a class="headerlink" href="#class-methods" title="Permalink to this headline">¶</a></h2>
 <dl class="classmethod">
-<dt>
-<em class="property">classmethod </em><code class="descclassname">CAN.</code><code class="descname">initfilterbanks</code><span class="sig-paren">(</span><em>nr</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.initfilterbanks">
+<em class="property">classmethod </em><code class="descclassname">CAN.</code><code class="descname">initfilterbanks</code><span class="sig-paren">(</span><em>nr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.initfilterbanks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset and disable all filter banks and assign how many banks should be available for CAN(2).</p>
 <p><code class="docutils literal"><span class="pre">nr</span></code> is the number of banks that will be assigned to CAN(2). At boot, 14 banks are assigned to CAN(2).</p>
 </dd></dl>
@@ -244,8 +244,8 @@ See <code class="docutils literal"><span class="pre">init</span></code> for para
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>extframe=False</em>, <em>prescaler=100</em>, <em>*</em>, <em>sjw=1</em>, <em>bs1=6</em>, <em>bs2=8</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.init">
+<code class="descclassname">CAN.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>extframe=False</em>, <em>prescaler=100</em>, <em>*</em>, <em>sjw=1</em>, <em>bs1=6</em>, <em>bs2=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the CAN bus with the given parameters:</p>
 <blockquote>
 <div><ul class="simple">
@@ -253,7 +253,7 @@ See <code class="docutils literal"><span class="pre">init</span></code> for para
 <li>if <code class="docutils literal"><span class="pre">extframe</span></code> is True then the bus uses extended identifiers in the frames
 (29 bits); otherwise it uses standard 11 bit identifiers</li>
 <li><code class="docutils literal"><span class="pre">prescaler</span></code> is used to set the duration of 1 time quanta; the time quanta
-will be the input clock (PCLK1, see <code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code>) divided by the prescaler</li>
+will be the input clock (PCLK1, see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code></a>) divided by the prescaler</li>
 <li><code class="docutils literal"><span class="pre">sjw</span></code> is the resynchronisation jump width in units of the time quanta;
 it can be 1, 2, 3, 4</li>
 <li><code class="docutils literal"><span class="pre">bs1</span></code> defines the location of the sample point in units of the time quanta;
@@ -264,7 +264,7 @@ it can be between 1 and 16 inclusive</li>
 </div></blockquote>
 <p>The time quanta tq is the basic unit of time for the CAN bus.  tq is the CAN
 prescaler value divided by PCLK1 (the frequency of internal peripheral bus 1);
-see <code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code> to determine PCLK1.</p>
+see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code></a> to determine PCLK1.</p>
 <p>A single bit is made up of the synchronisation segment, which is always 1 tq.
 Then follows bit segment 1, then bit segment 2.  The sample point is after bit
 segment 1 finishes.  The transmit point is after bit segment 2 finishes.
@@ -276,14 +276,14 @@ is 28kHz.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.deinit">
+<code class="descclassname">CAN.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.deinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn off the CAN bus.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">setfilter</code><span class="sig-paren">(</span><em>bank</em>, <em>mode</em>, <em>fifo</em>, <em>params</em>, <em>*</em>, <em>rtr</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.setfilter">
+<code class="descclassname">CAN.</code><code class="descname">setfilter</code><span class="sig-paren">(</span><em>bank</em>, <em>mode</em>, <em>fifo</em>, <em>params</em>, <em>*</em>, <em>rtr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.setfilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure a filter bank:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">bank</span></code> is the filter bank that is to be configured.</li>
@@ -360,8 +360,8 @@ depends on the <code class="docutils literal"><span class="pre">mode</span></cod
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">clearfilter</code><span class="sig-paren">(</span><em>bank</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.clearfilter">
+<code class="descclassname">CAN.</code><code class="descname">clearfilter</code><span class="sig-paren">(</span><em>bank</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.clearfilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear and disables a filter bank:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">bank</span></code> is the filter bank that is to be cleared.</li>
@@ -369,14 +369,14 @@ depends on the <code class="docutils literal"><span class="pre">mode</span></cod
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">any</code><span class="sig-paren">(</span><em>fifo</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.any">
+<code class="descclassname">CAN.</code><code class="descname">any</code><span class="sig-paren">(</span><em>fifo</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.any" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if any message waiting on the FIFO, else <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>fifo</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.recv">
+<code class="descclassname">CAN.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>fifo</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.recv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -396,8 +396,8 @@ depends on the <code class="docutils literal"><span class="pre">mode</span></cod
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">send</code><span class="sig-paren">(</span><em>data</em>, <em>id</em>, <em>*</em>, <em>timeout=0</em>, <em>rtr=False</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.send">
+<code class="descclassname">CAN.</code><code class="descname">send</code><span class="sig-paren">(</span><em>data</em>, <em>id</em>, <em>*</em>, <em>timeout=0</em>, <em>rtr=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a message on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -419,8 +419,8 @@ specified time an exception is thrown.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">rxcallback</code><span class="sig-paren">(</span><em>fifo</em>, <em>fun</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.CAN.rxcallback">
+<code class="descclassname">CAN.</code><code class="descname">rxcallback</code><span class="sig-paren">(</span><em>fifo</em>, <em>fun</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.CAN.rxcallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a function to be called when a message is accepted into a empty fifo:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">fifo</span></code> is the receiving fifo.</li>
@@ -470,44 +470,44 @@ a integer that indicates the reason for the callback.</p>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">NORMAL</code></dt>
+<dt id="pyb.CAN.NORMAL">
+<code class="descclassname">CAN.</code><code class="descname">NORMAL</code><a class="headerlink" href="#pyb.CAN.NORMAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">LOOPBACK</code></dt>
+<dt id="pyb.CAN.LOOPBACK">
+<code class="descclassname">CAN.</code><code class="descname">LOOPBACK</code><a class="headerlink" href="#pyb.CAN.LOOPBACK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">SILENT</code></dt>
+<dt id="pyb.CAN.SILENT">
+<code class="descclassname">CAN.</code><code class="descname">SILENT</code><a class="headerlink" href="#pyb.CAN.SILENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">SILENT_LOOPBACK</code></dt>
+<dt id="pyb.CAN.SILENT_LOOPBACK">
+<code class="descclassname">CAN.</code><code class="descname">SILENT_LOOPBACK</code><a class="headerlink" href="#pyb.CAN.SILENT_LOOPBACK" title="Permalink to this definition">¶</a></dt>
 <dd><p>the mode of the CAN bus</p>
 </dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">LIST16</code></dt>
+<dt id="pyb.CAN.LIST16">
+<code class="descclassname">CAN.</code><code class="descname">LIST16</code><a class="headerlink" href="#pyb.CAN.LIST16" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">MASK16</code></dt>
+<dt id="pyb.CAN.MASK16">
+<code class="descclassname">CAN.</code><code class="descname">MASK16</code><a class="headerlink" href="#pyb.CAN.MASK16" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">LIST32</code></dt>
+<dt id="pyb.CAN.LIST32">
+<code class="descclassname">CAN.</code><code class="descname">LIST32</code><a class="headerlink" href="#pyb.CAN.LIST32" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">CAN.</code><code class="descname">MASK32</code></dt>
+<dt id="pyb.CAN.MASK32">
+<code class="descclassname">CAN.</code><code class="descname">MASK32</code><a class="headerlink" href="#pyb.CAN.MASK32" title="Permalink to this definition">¶</a></dt>
 <dd><p>the operation mode of a filter</p>
 </dd></dl>
 
@@ -534,7 +534,7 @@ a integer that indicates the reason for the callback.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -548,14 +548,14 @@ a integer that indicates the reason for the callback.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -582,19 +582,39 @@ a integer that indicates the reason for the callback.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

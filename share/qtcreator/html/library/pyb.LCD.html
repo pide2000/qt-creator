@@ -175,8 +175,8 @@ For example, to make a bouncing dot, try:</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">LCD</code><span class="sig-paren">(</span><em>skin_position</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.LCD">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">LCD</code><span class="sig-paren">(</span><em>skin_position</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.LCD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an LCD object in the given skin position.  <code class="docutils literal"><span class="pre">skin_position</span></code> can be &#8216;X&#8217; or &#8216;Y&#8217;, and
 should match the position where the LCD pyskin is plugged in.</p>
 </dd></dl>
@@ -185,62 +185,62 @@ should match the position where the LCD pyskin is plugged in.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">command</code><span class="sig-paren">(</span><em>instr_data</em>, <em>buf</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.command">
+<code class="descclassname">LCD.</code><code class="descname">command</code><span class="sig-paren">(</span><em>instr_data</em>, <em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send an arbitrary command to the LCD.  Pass 0 for <code class="docutils literal"><span class="pre">instr_data</span></code> to send an
 instruction, otherwise pass 1 to send data.  <code class="docutils literal"><span class="pre">buf</span></code> is a buffer with the
 instructions/data to send.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">contrast</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.contrast">
+<code class="descclassname">LCD.</code><code class="descname">contrast</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.contrast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the contrast of the LCD.  Valid values are between 0 and 47.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">fill</code><span class="sig-paren">(</span><em>colour</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.fill">
+<code class="descclassname">LCD.</code><code class="descname">fill</code><span class="sig-paren">(</span><em>colour</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.fill" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill the screen with the given colour (0 or 1 for white or black).</p>
 <p>This method writes to the hidden buffer.  Use <code class="docutils literal"><span class="pre">show()</span></code> to show the buffer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">get</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.get">
+<code class="descclassname">LCD.</code><code class="descname">get</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the pixel at the position <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></code>.  Returns 0 or 1.</p>
 <p>This method reads from the visible buffer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">light</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.light">
+<code class="descclassname">LCD.</code><code class="descname">light</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.light" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn the backlight on/off.  True or 1 turns it on, False or 0 turns it off.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">pixel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>colour</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.pixel">
+<code class="descclassname">LCD.</code><code class="descname">pixel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>colour</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.pixel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the pixel at <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></code> to the given colour (0 or 1).</p>
 <p>This method writes to the hidden buffer.  Use <code class="docutils literal"><span class="pre">show()</span></code> to show the buffer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.show">
+<code class="descclassname">LCD.</code><code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the hidden buffer on the screen.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">text</code><span class="sig-paren">(</span><em>str</em>, <em>x</em>, <em>y</em>, <em>colour</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.text">
+<code class="descclassname">LCD.</code><code class="descname">text</code><span class="sig-paren">(</span><em>str</em>, <em>x</em>, <em>y</em>, <em>colour</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the given text to the position <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></code> using the given colour (0 or 1).</p>
 <p>This method writes to the hidden buffer.  Use <code class="docutils literal"><span class="pre">show()</span></code> to show the buffer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">LCD.</code><code class="descname">write</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.LCD.write">
+<code class="descclassname">LCD.</code><code class="descname">write</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.LCD.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the string <code class="docutils literal"><span class="pre">str</span></code> to the screen.  It will appear immediately.</p>
 </dd></dl>
 
@@ -258,7 +258,7 @@ instructions/data to send.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -272,14 +272,14 @@ instructions/data to send.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -306,19 +306,39 @@ instructions/data to send.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

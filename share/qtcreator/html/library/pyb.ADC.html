@@ -222,8 +222,8 @@
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">ADC</code><span class="sig-paren">(</span><em>pin</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.ADC">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">ADC</code><span class="sig-paren">(</span><em>pin</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.ADC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an ADC object associated with the given pin.
 This allows you to then read analog values on that pin.</p>
 </dd></dl>
@@ -232,15 +232,15 @@ This allows you to then read analog values on that pin.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">ADC.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.ADC.read">
+<code class="descclassname">ADC.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.ADC.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the value on the analog pin and return it.  The returned value
 will be between 0 and 4095.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">ADC.</code><code class="descname">read_timed</code><span class="sig-paren">(</span><em>buf</em>, <em>timer</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.ADC.read_timed">
+<code class="descclassname">ADC.</code><code class="descname">read_timed</code><span class="sig-paren">(</span><em>buf</em>, <em>timer</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.ADC.read_timed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read analog values into <code class="docutils literal"><span class="pre">buf</span></code> at a rate set by the <code class="docutils literal"><span class="pre">timer</span></code> object.</p>
 <p><code class="docutils literal"><span class="pre">buf</span></code> can be bytearray or array.array for example.  The ADC values have
 12-bit resolution and are stored directly into <code class="docutils literal"><span class="pre">buf</span></code> if its element size is
@@ -351,7 +351,7 @@ remain valid under these circumstances use the following:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -365,14 +365,14 @@ remain valid under these circumstances use the following:</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -399,19 +399,39 @@ remain valid under these circumstances use the following:</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

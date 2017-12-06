@@ -211,8 +211,8 @@ the connected host.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">USB_VCP</code></dt>
+<dt id="pyb.pyb.USB_VCP">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">USB_VCP</code><a class="headerlink" href="#pyb.pyb.USB_VCP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new USB_VCP object.</p>
 </dd></dl>
 
@@ -220,8 +220,8 @@ the connected host.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">setinterrupt</code><span class="sig-paren">(</span><em>chr</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.setinterrupt">
+<code class="descclassname">USB_VCP.</code><code class="descname">setinterrupt</code><span class="sig-paren">(</span><em>chr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.setinterrupt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the character which interrupts running Python code.  This is set
 to 3 (CTRL-C) by default, and when a CTRL-C character is received over
 the USB VCP port, a KeyboardInterrupt exception is raised.</p>
@@ -230,27 +230,27 @@ want to send raw bytes over the USB VCP port.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">isconnected</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.isconnected">
+<code class="descclassname">USB_VCP.</code><code class="descname">isconnected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.isconnected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if USB is connected as a serial device, else <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.any">
+<code class="descclassname">USB_VCP.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.any" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if any characters waiting, else <code class="docutils literal"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.close">
+<code class="descclassname">USB_VCP.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method does nothing.  It exists so the USB_VCP object can act as
 a file.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.read">
+<code class="descclassname">USB_VCP.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read at most <code class="docutils literal"><span class="pre">nbytes</span></code> from the serial device and return them as a
 bytes object.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is not specified then the method reads
 all available bytes from the serial device.
@@ -260,8 +260,8 @@ with <code class="docutils literal"><span class="pre">None</span></code> value.<
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>maxlen</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.readinto">
+<code class="descclassname">USB_VCP.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>maxlen</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.readinto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read bytes from the serial device and store them into <code class="docutils literal"><span class="pre">buf</span></code>, which
 should be a buffer-like object.  At most <code class="docutils literal"><span class="pre">len(buf)</span></code> bytes are read.
 If <code class="docutils literal"><span class="pre">maxlen</span></code> is given and then at most <code class="docutils literal"><span class="pre">min(maxlen,</span> <span class="pre">len(buf))</span></code> bytes
@@ -271,16 +271,16 @@ if no pending data available.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.readline">
+<code class="descclassname">USB_VCP.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.readline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a whole line from the serial device.</p>
 <p>Returns a bytes object containing the data, including the trailing
 newline character or <code class="docutils literal"><span class="pre">None</span></code> if no pending data available.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">readlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.readlines">
+<code class="descclassname">USB_VCP.</code><code class="descname">readlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.readlines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read as much data as possible from the serial device, breaking it into
 lines.</p>
 <p>Returns a list of bytes objects, each object being one of the lines.
@@ -288,15 +288,15 @@ Each line will include the newline character.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.write">
+<code class="descclassname">USB_VCP.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the bytes from <code class="docutils literal"><span class="pre">buf</span></code> to the serial device.</p>
 <p>Returns the number of bytes written.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>data</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.recv">
+<code class="descclassname">USB_VCP.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>data</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.recv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -310,8 +310,8 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">USB_VCP.</code><code class="descname">send</code><span class="sig-paren">(</span><em>data</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.USB_VCP.send">
+<code class="descclassname">USB_VCP.</code><code class="descname">send</code><span class="sig-paren">(</span><em>data</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.USB_VCP.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send data over the USB VCP:</p>
 <blockquote>
 <div><ul class="simple">
@@ -345,7 +345,7 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -359,14 +359,14 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -393,19 +393,39 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

@@ -244,8 +244,8 @@ Earlier versions use <code class="docutils literal"><span class="pre">uart.send<
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">UART</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.UART">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">UART</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.UART" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a UART object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 1/3.
 With no additional parameters, the UART object is created but not
 initialised (it has the settings from the last initialisation of
@@ -270,8 +270,8 @@ See <code class="docutils literal"><span class="pre">init</span></code> for para
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">init</code><span class="sig-paren">(</span><em>baudrate</em>, <em>bits=8</em>, <em>parity=None</em>, <em>stop=1</em>, <em>*</em>, <em>timeout=1000</em>, <em>flow=0</em>, <em>timeout_char=0</em>, <em>read_buf_len=64</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.init">
+<code class="descclassname">UART.</code><code class="descname">init</code><span class="sig-paren">(</span><em>baudrate</em>, <em>bits=8</em>, <em>parity=None</em>, <em>stop=1</em>, <em>*</em>, <em>timeout=1000</em>, <em>flow=0</em>, <em>timeout_char=0</em>, <em>read_buf_len=64</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the UART bus with the given parameters:</p>
 <blockquote>
 <div><ul class="simple">
@@ -293,20 +293,20 @@ only 7 and 8 bits are supported.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.deinit">
+<code class="descclassname">UART.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.deinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn off the UART bus.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.any">
+<code class="descclassname">UART.</code><code class="descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.any" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of bytes waiting (may be 0).</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.read">
+<code class="descclassname">UART.</code><code class="descname">read</code><span class="sig-paren">(</span><span class="optional">[</span><em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read characters.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is specified then read at most that many bytes.
 If <code class="docutils literal"><span class="pre">nbytes</span></code> are available in the buffer, returns immediately, otherwise returns
 when sufficient characters arrive or the timeout elapses.</p>
@@ -319,15 +319,15 @@ on timeout.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">readchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.readchar">
+<code class="descclassname">UART.</code><code class="descname">readchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.readchar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive a single character on the bus.</p>
 <p>Return value: The character read, as an integer.  Returns -1 on timeout.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.readinto">
+<code class="descclassname">UART.</code><code class="descname">readinto</code><span class="sig-paren">(</span><em>buf</em><span class="optional">[</span>, <em>nbytes</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.readinto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read bytes into the <code class="docutils literal"><span class="pre">buf</span></code>.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is specified then read at most
 that many bytes.  Otherwise, read at most <code class="docutils literal"><span class="pre">len(buf)</span></code> bytes.</p>
 <p>Return value: number of bytes read and stored into <code class="docutils literal"><span class="pre">buf</span></code> or <code class="docutils literal"><span class="pre">None</span></code> on
@@ -335,8 +335,8 @@ timeout.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.readline">
+<code class="descclassname">UART.</code><code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.readline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a line, ending in a newline character. If such a line exists, return is
 immediate. If the timeout elapses, all available data is returned regardless
 of whether a newline exists.</p>
@@ -344,8 +344,8 @@ of whether a newline exists.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.write">
+<code class="descclassname">UART.</code><code class="descname">write</code><span class="sig-paren">(</span><em>buf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the buffer of bytes to the bus.  If characters are 7 or 8 bits wide
 then each byte is one character.  If characters are 9 bits wide then two
 bytes are used for each character (little endian), and <code class="docutils literal"><span class="pre">buf</span></code> must contain
@@ -355,15 +355,15 @@ were written returns <code class="docutils literal"><span class="pre">None</span
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">writechar</code><span class="sig-paren">(</span><em>char</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.writechar">
+<code class="descclassname">UART.</code><code class="descname">writechar</code><span class="sig-paren">(</span><em>char</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.writechar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a single character on the bus.  <code class="docutils literal"><span class="pre">char</span></code> is an integer to write.
 Return value: <code class="docutils literal"><span class="pre">None</span></code>. See note below if CTS flow control is used.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">sendbreak</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.UART.sendbreak">
+<code class="descclassname">UART.</code><code class="descname">sendbreak</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.UART.sendbreak" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a break condition on the bus.  This drives the bus low for a duration
 of 13 bits.
 Return value: <code class="docutils literal"><span class="pre">None</span></code>.</p>
@@ -373,13 +373,13 @@ Return value: <code class="docutils literal"><span class="pre">None</span></code
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">RTS</code></dt>
+<dt id="pyb.UART.RTS">
+<code class="descclassname">UART.</code><code class="descname">RTS</code><a class="headerlink" href="#pyb.UART.RTS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">UART.</code><code class="descname">CTS</code></dt>
+<dt id="pyb.UART.CTS">
+<code class="descclassname">UART.</code><code class="descname">CTS</code><a class="headerlink" href="#pyb.UART.CTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>to select the flow control type.</p>
 </dd></dl>
 
@@ -450,7 +450,7 @@ cause <code class="docutils literal"><span class="pre">nRTS</span></code> to go 
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -464,14 +464,14 @@ cause <code class="docutils literal"><span class="pre">nRTS</span></code> to go 
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -498,19 +498,39 @@ cause <code class="docutils literal"><span class="pre">nRTS</span></code> to go 
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

@@ -166,7 +166,7 @@
 <h1>5.1.1. LED Control<a class="headerlink" href="#led-control" title="Permalink to this headline">¶</a></h1>
 <p>Your OpenMV Cam has an RGB LED and two IR LEDs on board. You can control the
 red, green, and blue segments of the RGB LED individually and the two IR LEDs
-as one unit. To control the LEDs first import the <code class="xref any docutils literal"><span class="pre">pyb</span></code> module. Then create
+as one unit. To control the LEDs first import the <a class="reference internal" href="../../library/pyb.html#module-pyb" title="pyb: functions related to the board"><code class="xref any py py-mod docutils literal"><span class="pre">pyb</span></code></a> module. Then create
 an LED class object for the particular LED you want to control:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyb</span>
 
@@ -176,14 +176,14 @@ an LED class object for the particular LED you want to control:</p>
 <span class="n">ir_leds</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <code class="xref any docutils literal"><span class="pre">pyb.LED()</span></code> call creates an LED object which you can use to control a
+<p>The <a class="reference internal" href="../../library/pyb.LED.html#pyb.pyb.LED" title="pyb.pyb.LED"><code class="xref any py py-class docutils literal"><span class="pre">pyb.LED()</span></code></a> call creates an LED object which you can use to control a
 particular LED. Pass <code class="docutils literal"><span class="pre">pyb.LED</span></code> &#8220;1&#8221; to control the red RGB LED segment, &#8220;2&#8221; to
 control the green RGB LED segment, &#8220;3&#8221; to control the blue RGB LED segment, and
 &#8220;4&#8221; to control the two IR LEDs.</p>
 <p>After creating the LED control objects like above I heavily recommend that you
-call the <code class="xref any docutils literal"><span class="pre">pyb.LED.off()</span></code> method for a new LED to put it into a known state.</p>
-<p>Anyway, there are three methods you can call for each LED, <code class="xref any docutils literal"><span class="pre">pyb.LED.off()</span></code>,
-<code class="xref any docutils literal"><span class="pre">pyb.LED.on()</span></code>, and <code class="xref any docutils literal"><span class="pre">pyb.LED.toggle()</span></code> which do exactly that.</p>
+call the <a class="reference internal" href="../../library/pyb.LED.html#pyb.LED.off" title="pyb.LED.off"><code class="xref any py py-meth docutils literal"><span class="pre">pyb.LED.off()</span></code></a> method for a new LED to put it into a known state.</p>
+<p>Anyway, there are three methods you can call for each LED, <a class="reference internal" href="../../library/pyb.LED.html#pyb.LED.off" title="pyb.LED.off"><code class="xref any py py-meth docutils literal"><span class="pre">pyb.LED.off()</span></code></a>,
+<a class="reference internal" href="../../library/pyb.LED.html#pyb.LED.on" title="pyb.LED.on"><code class="xref any py py-meth docutils literal"><span class="pre">pyb.LED.on()</span></code></a>, and <a class="reference internal" href="../../library/pyb.LED.html#pyb.LED.toggle" title="pyb.LED.toggle"><code class="xref any py py-meth docutils literal"><span class="pre">pyb.LED.toggle()</span></code></a> which do exactly that.</p>
 <p>Unlike other MicroPython Boards the OpenMV Cam doesn&#8217;t support the
 <code class="docutils literal"><span class="pre">intensity()</span></code> method to allow for PWM dimming of the LEDs. We re-purposed the
 timer that was used for LED dimming for generating a clock source to power the
@@ -215,7 +215,7 @@ enough to illuminate about 3 meters in front of your OpenMV Cam in pitch black.<
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -229,14 +229,14 @@ enough to illuminate about 3 meters in front of your OpenMV Cam in pitch black.<
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -263,19 +263,39 @@ enough to illuminate about 3 meters in front of your OpenMV Cam in pitch black.<
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

@@ -255,8 +255,8 @@ when created, or initialised later on.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">I2C</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.pyb.I2C">
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">I2C</code><span class="sig-paren">(</span><em>bus</em>, <em>...</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.I2C" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an I2C object on the given bus.  <code class="docutils literal"><span class="pre">bus</span></code> can be 2 or 4.
 With no additional parameters, the I2C object is created but not
 initialised (it has the settings from the last initialisation of
@@ -281,14 +281,14 @@ See <code class="docutils literal"><span class="pre">init</span></code> for para
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.deinit">
+<code class="descclassname">I2C.</code><code class="descname">deinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.deinit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn off the I2C bus.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>*</em>, <em>addr=0x12</em>, <em>baudrate=400000</em>, <em>gencall=False</em>, <em>dma=False</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.init">
+<code class="descclassname">I2C.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>*</em>, <em>addr=0x12</em>, <em>baudrate=400000</em>, <em>gencall=False</em>, <em>dma=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise the I2C bus with the given parameters:</p>
 <blockquote>
 <div><ul class="simple">
@@ -304,14 +304,14 @@ errors properly)</li>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">is_ready</code><span class="sig-paren">(</span><em>addr</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.is_ready">
+<code class="descclassname">I2C.</code><code class="descname">is_ready</code><span class="sig-paren">(</span><em>addr</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.is_ready" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if an I2C device responds to the given address.  Only valid when in master mode.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">mem_read</code><span class="sig-paren">(</span><em>data</em>, <em>addr</em>, <em>memaddr</em>, <em>*</em>, <em>timeout=5000</em>, <em>addr_size=8</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.mem_read">
+<code class="descclassname">I2C.</code><code class="descname">mem_read</code><span class="sig-paren">(</span><em>data</em>, <em>addr</em>, <em>memaddr</em>, <em>*</em>, <em>timeout=5000</em>, <em>addr_size=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.mem_read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read from the memory of an I2C device:</p>
 <blockquote>
 <div><ul class="simple">
@@ -327,8 +327,8 @@ This is only valid in master mode.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">mem_write</code><span class="sig-paren">(</span><em>data</em>, <em>addr</em>, <em>memaddr</em>, <em>*</em>, <em>timeout=5000</em>, <em>addr_size=8</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.mem_write">
+<code class="descclassname">I2C.</code><code class="descname">mem_write</code><span class="sig-paren">(</span><em>data</em>, <em>addr</em>, <em>memaddr</em>, <em>*</em>, <em>timeout=5000</em>, <em>addr_size=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.mem_write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write to the memory of an I2C device:</p>
 <blockquote>
 <div><ul class="simple">
@@ -344,8 +344,8 @@ This is only valid in master mode.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>addr=0x00</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.recv">
+<code class="descclassname">I2C.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>recv</em>, <em>addr=0x00</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.recv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -360,8 +360,8 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>addr=0x00</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.send">
+<code class="descclassname">I2C.</code><code class="descname">send</code><span class="sig-paren">(</span><em>send</em>, <em>addr=0x00</em>, <em>*</em>, <em>timeout=5000</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send data on the bus:</p>
 <blockquote>
 <div><ul class="simple">
@@ -374,8 +374,8 @@ otherwise the same buffer that was passed in to <code class="docutils literal"><
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">scan</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.I2C.scan">
+<code class="descclassname">I2C.</code><code class="descname">scan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.I2C.scan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scan all I2C addresses from 0x01 to 0x7f and return a list of those that respond.
 Only valid when in master mode.</p>
 </dd></dl>
@@ -384,14 +384,14 @@ Only valid when in master mode.</p>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">MASTER</code></dt>
+<dt id="pyb.I2C.MASTER">
+<code class="descclassname">I2C.</code><code class="descname">MASTER</code><a class="headerlink" href="#pyb.I2C.MASTER" title="Permalink to this definition">¶</a></dt>
 <dd><p>for initialising the bus to master mode</p>
 </dd></dl>
 
 <dl class="data">
-<dt>
-<code class="descclassname">I2C.</code><code class="descname">SLAVE</code></dt>
+<dt id="pyb.I2C.SLAVE">
+<code class="descclassname">I2C.</code><code class="descname">SLAVE</code><a class="headerlink" href="#pyb.I2C.SLAVE" title="Permalink to this definition">¶</a></dt>
 <dd><p>for initialising the bus to slave mode</p>
 </dd></dl>
 
@@ -418,7 +418,7 @@ Only valid when in master mode.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -432,14 +432,14 @@ Only valid when in master mode.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -466,19 +466,39 @@ Only valid when in master mode.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 

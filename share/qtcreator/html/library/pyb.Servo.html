@@ -233,8 +233,8 @@ same time.</p>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt>
-<code class="descclassname">Servo.</code><code class="descname">angle</code><span class="sig-paren">(</span><span class="optional">[</span><em>angle</em>, <em>time=0</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Servo.angle">
+<code class="descclassname">Servo.</code><code class="descname">angle</code><span class="sig-paren">(</span><span class="optional">[</span><em>angle</em>, <em>time=0</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Servo.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>If no arguments are given, this function returns the current angle.</p>
 <p>If arguments are given, this function sets the angle of the servo:</p>
 <blockquote>
@@ -248,8 +248,8 @@ new position.</li>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Servo.</code><code class="descname">speed</code><span class="sig-paren">(</span><span class="optional">[</span><em>speed</em>, <em>time=0</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Servo.speed">
+<code class="descclassname">Servo.</code><code class="descname">speed</code><span class="sig-paren">(</span><span class="optional">[</span><em>speed</em>, <em>time=0</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Servo.speed" title="Permalink to this definition">¶</a></dt>
 <dd><p>If no arguments are given, this function returns the current speed.</p>
 <p>If arguments are given, this function sets the speed of the servo:</p>
 <blockquote>
@@ -262,16 +262,16 @@ speed.  If omitted, then the servo accelerates as quickly as possible.</li>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Servo.</code><code class="descname">pulse_width</code><span class="sig-paren">(</span><span class="optional">[</span><em>value</em><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Servo.pulse_width">
+<code class="descclassname">Servo.</code><code class="descname">pulse_width</code><span class="sig-paren">(</span><span class="optional">[</span><em>value</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Servo.pulse_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>If no arguments are given, this function returns the current raw pulse-width
 value.</p>
 <p>If an argument is given, this function sets the raw pulse-width value.</p>
 </dd></dl>
 
 <dl class="method">
-<dt>
-<code class="descclassname">Servo.</code><code class="descname">calibration</code><span class="sig-paren">(</span><span class="optional">[</span><em>pulse_min</em>, <em>pulse_max</em>, <em>pulse_centre</em><span class="optional">[</span>, <em>pulse_angle_90</em>, <em>pulse_speed_100</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span></dt>
+<dt id="pyb.Servo.calibration">
+<code class="descclassname">Servo.</code><code class="descname">calibration</code><span class="sig-paren">(</span><span class="optional">[</span><em>pulse_min</em>, <em>pulse_max</em>, <em>pulse_centre</em><span class="optional">[</span>, <em>pulse_angle_90</em>, <em>pulse_speed_100</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Servo.calibration" title="Permalink to this definition">¶</a></dt>
 <dd><p>If no arguments are given, this function returns the current calibration
 data, as a 5-tuple.</p>
 <p>If arguments are given, this function sets the timing calibration:</p>
@@ -309,7 +309,7 @@ data, as a 5-tuple.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 30 Nov 2017.
+      Last updated on 05 Dec 2017.
 
     </p>
   </div>
@@ -323,14 +323,14 @@ data, as a 5-tuple.</p>
     </section>
 
   </div>
-  <!--p>
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Ports and Versions</span>
     openmvcam (latest)
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
+    <!--p>
     <dl>
       <dt>Ports</dt>
       
@@ -357,19 +357,39 @@ data, as a 5-tuple.</p>
         <dd><a href="//en/latest/micropython-openmvcam.pdf">PDF</a></dd>
       
     </dl>
+    </p-->
+    <dl>
+        <dt>Language</dt>
+        
+          <dd><a href="http://docs.openmv.io">English</a></dd>
+        
+          <dd><a href="http://doc.singtown.cc/openmv_zh">中文</a></dd>
+        
+    </dl>
     <hr/>
     <dl>
       <dt>External links</dt>
         <dd>
-          <a href="http://www.micropython.org">micropython.org</a>
+          <a href="https://openmv.io">openmv.io</a>
         </dd>
         <dd>
-          <a href="https://github.com/micropython/micropython">GitHub</a>
+          <a href="http://forums.openmv.io">forums.openmv.io</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/openmv/openmv">github.com/openmv/openmv</a>
+        </dd>
+        <dd>
+          <a href="http://micropython.org">micropython.org</a>
+        </dd>
+        <dd>
+          <a href="http://forum.micropython.org">forum.micropython.org</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/micropython/micropython">github.com/micropython/micropython</a>
         </dd>
     </dl>
   </div>
 </div>
-</p-->
 
   
 
