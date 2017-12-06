@@ -384,6 +384,7 @@ static QString handleImageWriterFiles(const QString &path)
     return QString();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 static QString getInputFormats()
 {
     QString command;
@@ -462,7 +463,9 @@ static QString getInputFormats()
         return QString();
     }
 }
+#endif
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 static QString getOutputFormats()
 {
     QString command;
@@ -541,6 +544,7 @@ static QString getOutputFormats()
         return QString();
     }
 }
+#endif
 
 static bool convertVideoFile(const QString &dst, const QString &src)
 {
