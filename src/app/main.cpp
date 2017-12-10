@@ -510,11 +510,25 @@ int main(int argc, char **argv)
 
     const PluginSpecSet plugins = PluginManager::plugins();
     PluginSpec *coreplugin = 0;
+    //OPENMV-DIFF//
+    PluginSpec *texteditorplugin = 0;
+    PluginSpec *openmvplugin = 0;
+    //OPENMV-DIFF//
     foreach (PluginSpec *spec, plugins) {
         if (spec->name() == QLatin1String(corePluginNameC)) {
             coreplugin = spec;
-            break;
+            //OPENMV-DIFF//
+            //break;
+            //OPENMV-DIFF//
         }
+        //OPENMV-DIFF//
+        if (spec->name() == QLatin1String("TextEditor")) {
+            texteditorplugin = spec;
+        }
+        if (spec->name() == QLatin1String("OpenMV")) {
+            openmvplugin = spec;
+        }
+        //OPENMV-DIFF//
     }
     if (!coreplugin) {
         QString nativePaths = QDir::toNativeSeparators(pluginPaths.join(QLatin1Char(',')));
@@ -522,15 +536,51 @@ int main(int argc, char **argv)
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
+    //OPENMV-DIFF//
+    if (!texteditorplugin) {
+        QString nativePaths = QDir::toNativeSeparators(pluginPaths.join(QLatin1Char(',')));
+        const QString reason = QCoreApplication::translate("Application", "Could not find TextEditor plugin in %1").arg(nativePaths);
+        displayError(msgCoreLoadFailure(reason));
+        return 1;
+    }
+    if (!openmvplugin) {
+        QString nativePaths = QDir::toNativeSeparators(pluginPaths.join(QLatin1Char(',')));
+        const QString reason = QCoreApplication::translate("Application", "Could not find OpenMV plugin in %1").arg(nativePaths);
+        displayError(msgCoreLoadFailure(reason));
+        return 1;
+    }
+    //OPENMV-DIFF//
     if (!coreplugin->isEffectivelyEnabled()) {
         const QString reason = QCoreApplication::translate("Application", "Core plugin is disabled.");
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }
+    //OPENMV-DIFF//
+    if (!texteditorplugin->isEffectivelyEnabled()) {
+        const QString reason = QCoreApplication::translate("Application", "TextEditor plugin is disabled.");
+        displayError(msgCoreLoadFailure(reason));
+        return 1;
+    }
+    if (!openmvplugin->isEffectivelyEnabled()) {
+        const QString reason = QCoreApplication::translate("Application", "OpenMV plugin is disabled.");
+        displayError(msgCoreLoadFailure(reason));
+        return 1;
+    }
+    //OPENMV-DIFF//
     if (coreplugin->hasError()) {
         displayError(msgCoreLoadFailure(coreplugin->errorString()));
         return 1;
     }
+    //OPENMV-DIFF//
+    if (texteditorplugin->hasError()) {
+        displayError(msgCoreLoadFailure(texteditorplugin->errorString()));
+        return 1;
+    }
+    if (openmvplugin->hasError()) {
+        displayError(msgCoreLoadFailure(openmvplugin->errorString()));
+        return 1;
+    }
+    //OPENMV-DIFF//
     if (foundAppOptions.contains(QLatin1String(VERSION_OPTION))) {
         printVersion(coreplugin);
         return 0;

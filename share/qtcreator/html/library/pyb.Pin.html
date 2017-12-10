@@ -114,8 +114,13 @@
 <li class="toctree-l3"><a class="reference internal" href="pyb.LED.html">class LED &#8211; LED object</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="">class Pin &#8211; control I/O pins</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-methods">Class methods</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-pinaf-pin-alternate-functions">class PinAF &#8211; Pin Alternate Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.RTC.html">class RTC &#8211; real time clock</a></li>
@@ -210,6 +215,61 @@
 the mode of the pin (input, output, etc) and methods to get and set the
 digital logic level. For analog control of a pin, see the ADC class.</p>
 <p>Usage Model:</p>
+<p>All Board Pins are predefined as pyb.Pin.board.Name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x1_pin</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">P0</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">P0</span><span class="p">,</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>CPU pins which correspond to the board pins are available
+as <code class="docutils literal"><span class="pre">pyb.cpu.Name</span></code>. For the CPU pins, the names are the port letter
+followed by the pin number. On the OpenMV Cam, <code class="docutils literal"><span class="pre">pyb.Pin.board.P0</span></code> and
+<code class="docutils literal"><span class="pre">pyb.Pin.cpu.PB15</span></code> are the same pin.</p>
+<p>You can also use strings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&#39;P0&#39;</span><span class="p">,</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">OUT_PP</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Users can add their own names:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">MyMapperDict</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;LeftMotorDir&#39;</span> <span class="p">:</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">cpu</span><span class="o">.</span><span class="n">PB15</span> <span class="p">}</span>
+<span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">MyMapperDict</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;LeftMotorDir&quot;</span><span class="p">,</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">OUT_OD</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and can query mappings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pin</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;LeftMotorDir&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Users can also add their own mapping function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">MyMapper</span><span class="p">(</span><span class="n">pin_name</span><span class="p">):</span>
+   <span class="k">if</span> <span class="n">pin_name</span> <span class="o">==</span> <span class="s">&quot;LeftMotorDir&quot;</span><span class="p">:</span>
+       <span class="k">return</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">cpu</span><span class="o">.</span><span class="n">PB15</span>
+
+<span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">MyMapper</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>So, if you were to call: <code class="docutils literal"><span class="pre">pyb.Pin(&quot;LeftMotorDir&quot;,</span> <span class="pre">pyb.Pin.OUT_PP)</span></code>
+then <code class="docutils literal"><span class="pre">&quot;LeftMotorDir&quot;</span></code> is passed directly to the mapper function.</p>
+<p>To summarise, the following order determines how things get mapped into
+an ordinal pin number:</p>
+<ol class="arabic simple">
+<li>Directly specify a pin object</li>
+<li>User supplied mapping function</li>
+<li>User supplied mapping (object must be usable as a dictionary key)</li>
+<li>Supply a string which matches a board pin</li>
+<li>Supply a string which matches a CPU port/pin</li>
+</ol>
+<p>You can set <code class="docutils literal"><span class="pre">pyb.Pin.debug(True)</span></code> to get some debug information about
+how a particular object gets mapped to a pin.</p>
+<p>When a pin has the <code class="docutils literal"><span class="pre">Pin.PULL_UP</span></code> or <code class="docutils literal"><span class="pre">Pin.PULL_DOWN</span></code> pull-mode enabled,
+that pin has an effective 40k Ohm resistor pulling it to 3V3 or GND
+respectively.</p>
+<p>Now every time a falling edge is seen on the gpio pin, the callback will be
+executed. Caution: mechanical push buttons have &#8220;bounce&#8221; and pushing or
+releasing a switch will often generate multiple edges.
+See: <a class="reference external" href="http://www.eng.utah.edu/~cs5780/debouncing.pdf">http://www.eng.utah.edu/~cs5780/debouncing.pdf</a> for a detailed
+explanation, along with various techniques for debouncing.</p>
+<p>All pin objects go through the pin mapper to come up with one of the
+gpio pins.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -220,8 +280,64 @@ they are used to initialise the pin.  See <code class="xref py py-meth docutils 
 </dd></dl>
 
 </div>
+<div class="section" id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="classmethod">
+<dt id="pyb.Pin.debug">
+<em class="property">classmethod </em><code class="descclassname">Pin.</code><code class="descname">debug</code><span class="sig-paren">(</span><span class="optional">[</span><em>state</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the debugging state (<code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code> for on or off).</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyb.Pin.dict">
+<em class="property">classmethod </em><code class="descclassname">Pin.</code><code class="descname">dict</code><span class="sig-paren">(</span><span class="optional">[</span><em>dict</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the pin mapper dictionary.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyb.Pin.mapper">
+<em class="property">classmethod </em><code class="descclassname">Pin.</code><code class="descname">mapper</code><span class="sig-paren">(</span><span class="optional">[</span><em>fun</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the pin mapper function.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="pyb.Pin.init">
+<code class="descclassname">Pin.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mode</em>, <em>pull=Pin.PULL_NONE</em>, <em>af=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise the pin:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">mode</span></code> can be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">Pin.IN</span></code> - configure the pin for input;</li>
+<li><code class="docutils literal"><span class="pre">Pin.OUT_PP</span></code> - configure the pin for output, with push-pull control;</li>
+<li><code class="docutils literal"><span class="pre">Pin.OUT_OD</span></code> - configure the pin for output, with open-drain control;</li>
+<li><code class="docutils literal"><span class="pre">Pin.AF_PP</span></code> - configure the pin for alternate function, pull-pull;</li>
+<li><code class="docutils literal"><span class="pre">Pin.AF_OD</span></code> - configure the pin for alternate function, open-drain;</li>
+<li><code class="docutils literal"><span class="pre">Pin.ANALOG</span></code> - configure the pin for analog.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">pull</span></code> can be one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">Pin.PULL_NONE</span></code> - no pull up or down resistors;</li>
+<li><code class="docutils literal"><span class="pre">Pin.PULL_UP</span></code> - enable the pull-up resistor;</li>
+<li><code class="docutils literal"><span class="pre">Pin.PULL_DOWN</span></code> - enable the pull-down resistor.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">when mode is <code class="docutils literal"><span class="pre">Pin.AF_PP</span></code> or <code class="docutils literal"><span class="pre">Pin.AF_OD</span></code>, then af can be the index or name
+of one of the alternate functions associated with a pin.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>Returns: <code class="docutils literal"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyb.Pin.value">
 <code class="descclassname">Pin.</code><code class="descname">value</code><span class="sig-paren">(</span><span class="optional">[</span><em>value</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.value" title="Permalink to this definition">¶</a></dt>
@@ -237,6 +353,64 @@ is set high, otherwise it is set low.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyb.Pin.__str__">
+<code class="descclassname">Pin.</code><code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string describing the pin object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.af">
+<code class="descclassname">Pin.</code><code class="descname">af</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.af" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the currently configured alternate-function of the pin. The
+integer returned will match one of the allowed constants for the af
+argument to the init function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.af_list">
+<code class="descclassname">Pin.</code><code class="descname">af_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.af_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of alternate functions available for this pin.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.gpio">
+<code class="descclassname">Pin.</code><code class="descname">gpio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.gpio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the base address of the GPIO block associated with this pin.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.mode">
+<code class="descclassname">Pin.</code><code class="descname">mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the currently configured mode of the pin. The integer returned
+will match one of the allowed constants for the mode argument to the init
+function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.name">
+<code class="descclassname">Pin.</code><code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pin name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.names">
+<code class="descclassname">Pin.</code><code class="descname">names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cpu and board names for this pin.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.pin">
+<code class="descclassname">Pin.</code><code class="descname">pin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.pin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pin number.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.Pin.port">
+<code class="descclassname">Pin.</code><code class="descname">port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pin port.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyb.Pin.pull">
 <code class="descclassname">Pin.</code><code class="descname">pull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.Pin.pull" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the currently configured pull of the pin. The integer returned
@@ -247,6 +421,105 @@ function.</p>
 </div>
 <div class="section" id="constants">
 <h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="pyb.Pin.AF_OD">
+<code class="descclassname">Pin.</code><code class="descname">AF_OD</code><a class="headerlink" href="#pyb.Pin.AF_OD" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to alternate-function mode with an open-drain drive</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.AF_PP">
+<code class="descclassname">Pin.</code><code class="descname">AF_PP</code><a class="headerlink" href="#pyb.Pin.AF_PP" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to alternate-function mode with a push-pull drive</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.ANALOG">
+<code class="descclassname">Pin.</code><code class="descname">ANALOG</code><a class="headerlink" href="#pyb.Pin.ANALOG" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to analog mode</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.IN">
+<code class="descclassname">Pin.</code><code class="descname">IN</code><a class="headerlink" href="#pyb.Pin.IN" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to input mode</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.OUT_OD">
+<code class="descclassname">Pin.</code><code class="descname">OUT_OD</code><a class="headerlink" href="#pyb.Pin.OUT_OD" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to output mode with an open-drain drive</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.OUT_PP">
+<code class="descclassname">Pin.</code><code class="descname">OUT_PP</code><a class="headerlink" href="#pyb.Pin.OUT_PP" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialise the pin to output mode with a push-pull drive</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.PULL_DOWN">
+<code class="descclassname">Pin.</code><code class="descname">PULL_DOWN</code><a class="headerlink" href="#pyb.Pin.PULL_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd><p>enable the pull-down resistor on the pin</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.PULL_NONE">
+<code class="descclassname">Pin.</code><code class="descname">PULL_NONE</code><a class="headerlink" href="#pyb.Pin.PULL_NONE" title="Permalink to this definition">¶</a></dt>
+<dd><p>don&#8217;t enable any pull up or down resistors on the pin</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pyb.Pin.PULL_UP">
+<code class="descclassname">Pin.</code><code class="descname">PULL_UP</code><a class="headerlink" href="#pyb.Pin.PULL_UP" title="Permalink to this definition">¶</a></dt>
+<dd><p>enable the pull-up resistor on the pin</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="class-pinaf-pin-alternate-functions">
+<h1>class PinAF &#8211; Pin Alternate Functions<a class="headerlink" href="#class-pinaf-pin-alternate-functions" title="Permalink to this headline">¶</a></h1>
+<p>A Pin represents a physical pin on the microprocessor. Each pin
+can have a variety of functions (GPIO, I2C SDA, etc). Each PinAF
+object represents a particular function for a pin.</p>
+<p>Usage Model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p0</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">P0</span>
+<span class="n">p0_af</span> <span class="o">=</span> <span class="n">p0</span><span class="o">.</span><span class="n">af_list</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>p0_af will now contain an array of PinAF objects which are available on
+pin P0.</p>
+<p>Normally, each peripheral would configure the af automatically, but sometimes
+the same function is available on multiple pins, and having more control
+is desired.</p>
+<div class="section" id="id1">
+<h2>Methods<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="pyb.pinaf.__str__">
+<code class="descclassname">pinaf.</code><code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pinaf.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string describing the alternate function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.pinaf.index">
+<code class="descclassname">pinaf.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pinaf.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the alternate function index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.pinaf.name">
+<code class="descclassname">pinaf.</code><code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pinaf.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the name of the alternate function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyb.pinaf.reg">
+<code class="descclassname">pinaf.</code><code class="descname">reg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pinaf.reg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the base register associated with the peripheral assigned to this
+alternate function. For example, if the alternate function were TIM2_CH3
+this would return stm.TIM2</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -270,7 +543,7 @@ function.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 Dec 2017.
+      Last updated on 09 Dec 2017.
 
     </p>
   </div>
