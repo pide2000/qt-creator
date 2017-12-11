@@ -88,6 +88,7 @@ phony.c
 # translation related:
 /share/qtcreator/translations/*_tr.h
 /share/qtcreator/translations/qtcreator_untranslated.ts
+/share/qtcreator/translations/qtcreator_untranslated.po
 
 # Directories to ignore
 # ---------------------

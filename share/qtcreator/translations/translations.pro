@@ -3,6 +3,9 @@ TEMPLATE = aux
 include(../../../qtcreator.pri)
 
 LANGUAGES = cs de fr ja pl ru sl uk zh_CN zh_TW
+#OPENMV-DIFF#
+LANGUAGES += ar es hu it
+#OPENMV-DIFF#
 # *don't* re-enable these without a prior rework
 BAD_LANGUAGES = hu
 
@@ -14,11 +17,6 @@ defineReplace(prependAll) {
 
 XMLPATTERNS = $$shell_path($$[QT_INSTALL_BINS]/xmlpatterns)
 #OPENMV-DIFF#
-# Note: while this is technically a difference specific to OPENMV to support
-# cross-compiling, it's broken in the original QtCreator code and I will be
-# submitting it to Qt as a patch since the translation tools for building
-# translations should always be found on the host system's bin path, not the
-# target system's install path:
 #LUPDATE = $$shell_path($$[QT_INSTALL_BINS]/lupdate) -locations relative -no-ui-lines -no-sort
 #LRELEASE = $$shell_path($$[QT_INSTALL_BINS]/lrelease)
 #LCONVERT = $$shell_path($$[QT_INSTALL_BINS]/lconvert)
@@ -68,20 +66,41 @@ extract.commands += \
     $(QMAKE) -o Makefile.jsonwizard JSONWIZARD_TR_H=\"$$JSONWIZARD_TR_H\" TOP_LEVEL=\"$$IDE_SOURCE_TREE/share/qtcreator/templates/wizards\" $$PWD/jsonwizard_tr.pro
 QMAKE_EXTRA_TARGETS += extract
 
-plugin_sources = $$files($$IDE_SOURCE_TREE/src/plugins/*)
-plugin_sources ~= s,^$$re_escape($$IDE_SOURCE_TREE/),,g$$i_flag
-plugin_sources -= src/plugins/plugins.pro \
-    src/plugins/helloworld \ # just an example
-    # the following ones are dead
-    src/plugins/qtestlib \
-    src/plugins/snippets \
-    src/plugins/regexp
-shared_sources = $$files($$IDE_SOURCE_TREE/src/shared/*)
-shared_sources ~= s,^$$re_escape($$IDE_SOURCE_TREE/),,g$$i_flag
-shared_sources -= \
-    src/shared/qbs
-sources = src/app src/libs $$plugin_sources $$shared_sources share/qtcreator/qmldesigner \
-          share/qtcreator/welcomescreen share/qtcreator/welcomescreen/widgets
+#OPENMV-DIFF#
+#plugin_sources = $$files($$IDE_SOURCE_TREE/src/plugins/*)
+#plugin_sources ~= s,^$$re_escape($$IDE_SOURCE_TREE/),,g$$i_flag
+#plugin_sources -= src/plugins/plugins.pro \
+#    src/plugins/helloworld \ # just an example
+#    # the following ones are dead
+#    src/plugins/qtestlib \
+#    src/plugins/snippets \
+#    src/plugins/regexp
+#OPENMV-DIFF#
+plugin_sources = src/plugins/coreplugin \
+                 src/plugins/texteditor \
+                 src/plugins/openmv
+#OPENMV-DIFF#
+#OPENMV-DIFF#
+#shared_sources = $$files($$IDE_SOURCE_TREE/src/shared/*)
+#shared_sources ~= s,^$$re_escape($$IDE_SOURCE_TREE/),,g$$i_flag
+#shared_sources -= \
+#    src/shared/qbs
+#OPENMV-DIFF#
+shared_sources = src/shared/json \
+                 src/shared/qtlockedfile \
+                 src/shared/qtsingleapplication
+#OPENMV-DIFF#
+#OPENMV-DIFF#
+#sources = src/app src/libs $$plugin_sources $$shared_sources share/qtcreator/qmldesigner \
+#          share/qtcreator/welcomescreen share/qtcreator/welcomescreen/widgets
+#OPENMV-DIFF#
+sources = src/app \
+          src/libs/aggregation \
+          src/libs/extensionsystem \
+          src/libs/utils \
+          $$plugin_sources \
+          $$shared_sources
+#OPENMV-DIFF#
 
 for(path, INCLUDEPATH): include_options *= -I$$shell_quote($$path)
 
@@ -89,14 +108,34 @@ files = $$files($$PWD/*_??.ts) $$PWD/qtcreator_untranslated.ts
 for(file, files) {
     lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
     v = ts-$${lang}.commands
-    $$v = cd $$wd && $$LUPDATE $$include_options $$sources $$MIME_TR_H $$CUSTOMWIZARD_TR_H $$JSONWIZARD_TR_H $$QMLWIZARD_TR_H $$QTQUICKWIZARD_TR_H $$EXTERNALTOOLS_TR_H -ts $$file
-    v = ts-$${lang}.depends
-    $$v = extract
+    #OPENMV-DIFF#
+    #$$v = cd $$wd && $$LUPDATE $$include_options $$sources $$MIME_TR_H $$CUSTOMWIZARD_TR_H $$JSONWIZARD_TR_H $$QMLWIZARD_TR_H $$QTQUICKWIZARD_TR_H $$EXTERNALTOOLS_TR_H -ts $$file
+    #OPENMV-DIFF#
+    $$v = cd $$wd && $$LUPDATE $$include_options $$sources -ts $$file && $$LCONVERT $$file -o $$replace(file, (.*_[^/]*)\\.ts, \\1).po
+    #OPENMV-DIFF#
+    #OPENMV-DIFF#
+    #v = ts-$${lang}.depends
+    #$$v = extract
+    #OPENMV-DIFF#
     QMAKE_EXTRA_TARGETS += ts-$$lang
 }
-ts-all.commands = cd $$wd && $$LUPDATE $$include_options $$sources $$MIME_TR_H $$CUSTOMWIZARD_TR_H $$JSONWIZARD_TR_H $$QMLWIZARD_TR_H $$QTQUICKWIZARD_TR_H $$EXTERNALTOOLS_TR_H -ts $$files
-ts-all.depends = extract
+#OPENMV-DIFF#
+#ts-all.commands = cd $$wd && $$LUPDATE $$include_options $$sources $$MIME_TR_H $$CUSTOMWIZARD_TR_H $$JSONWIZARD_TR_H $$QMLWIZARD_TR_H $$QTQUICKWIZARD_TR_H $$EXTERNALTOOLS_TR_H -ts $$files
+#ts-all.depends = extract
+#OPENMV-DIFF#
+ts-all.commands = cd $$wd && $$LUPDATE $$include_options $$sources -ts $$files
+for(file, files) {
+    ts-all.commands += && $$LCONVERT $$file -o $$replace(file, (.*_[^/]*)\\.ts, \\1).po
+}
+#OPENMV-DIFF#
 QMAKE_EXTRA_TARGETS += ts-all
+#OPENMV-DIFF#
+ts-all-update.commands = cd $$wd
+for(file, files) {
+    ts-all-update.commands += && $$LCONVERT -locations relative $$replace(file, (.*_[^/]*)\\.ts, \\1).po -o $$file
+}
+QMAKE_EXTRA_TARGETS += ts-all-update
+#OPENMV-DIFF#
 
 check-ts.commands = (cd $$replace(PWD, /, $$QMAKE_DIR_SEP) && perl check-ts.pl)
 check-ts.depends = ts-all
