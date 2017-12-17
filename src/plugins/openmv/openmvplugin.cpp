@@ -3843,7 +3843,7 @@ void OpenMVPlugin::errorFilter(const QByteArray &data)
         }
         else if(!m_portPath.isEmpty())
         {
-            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QDir::cleanPath(QDir::fromNativeSeparators(QString(fileName).prepend(m_portPath)))));
+            editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditor(QDir::cleanPath(QDir::fromNativeSeparators(QString(QDir::separator() + fileName).prepend(m_portPath)))));
         }
 
         if(editor)
