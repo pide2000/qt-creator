@@ -3337,9 +3337,9 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
         // Check ID ///////////////////////////////////////////////////////////
 
-        if(!((major2 < OLD_API_MAJOR)
-        || ((major2 == OLD_API_MAJOR) && (minor2 < OLD_API_MINOR))
-        || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 < OLD_API_PATCH))))
+        if((major2 > OLD_API_MAJOR)
+        || ((major2 == OLD_API_MAJOR) && (minor2 > OLD_API_MINOR))
+        || ((major2 == OLD_API_MAJOR) && (minor2 == OLD_API_MINOR) && (patch2 >= OLD_API_PATCH)))
         {
             QString arch2 = QString();
             QString *arch2Ptr = &arch2;
@@ -3412,9 +3412,9 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
             }
         }
 
-        if(!((major2 < LEARN_MTU_ADDED_MAJOR)
-        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 < LEARN_MTU_ADDED_MINOR))
-        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 == LEARN_MTU_ADDED_MINOR) && (patch2 < LEARN_MTU_ADDED_PATCH))))
+        if((major2 > LEARN_MTU_ADDED_MAJOR)
+        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 > LEARN_MTU_ADDED_MINOR))
+        || ((major2 == LEARN_MTU_ADDED_MAJOR) && (minor2 == LEARN_MTU_ADDED_MINOR) && (patch2 >= LEARN_MTU_ADDED_PATCH)))
         {
             bool ok2 = bool();
             bool *ok2Ptr = &ok2;
