@@ -3558,6 +3558,11 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                 {
                     if(!m_portPath.isEmpty())
                     {
+                        // Extra disk activity to flush changes...
+                        QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+                        if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
+                        delete temp;
+
 #if defined(Q_OS_WIN)
                         wchar_t driveLetter[m_portPath.size()];
                         m_portPath.toWCharArray(driveLetter);
@@ -3875,7 +3880,13 @@ void OpenMVPlugin::configureSettings()
 {
     if(!m_working)
     {
-        OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.ini")).exec();
+        if(OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.ini")).exec() == QDialog::Accepted)
+        {
+            // Extra disk activity to flush changes...
+            QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+            if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
+            delete temp;
+        }
     }
     else
     {
@@ -3917,6 +3928,13 @@ void OpenMVPlugin::saveScript()
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Script"),
                         tr("Error: %L1!").arg(file.errorString()));
+                }
+                else
+                {
+                    // Extra disk activity to flush changes...
+                    QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+                    if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
+                    delete temp;
                 }
             }
             else
