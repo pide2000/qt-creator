@@ -3634,7 +3634,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_errorFilterString = QString();
 
             m_bootloaderCommand->action()->setEnabled(true);
-            m_configureSettingsCommand->action()->setEnabled(true);
+            m_configureSettingsCommand->action()->setEnabled(false);
             m_saveCommand->action()->setEnabled(false);
             m_resetCommand->action()->setEnabled(false);
             m_connectCommand->action()->setEnabled(true);
