@@ -3559,7 +3559,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                     if(!m_portPath.isEmpty())
                     {
                         // Extra disk activity to flush changes...
-                        QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+                        QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
                         if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
                         delete temp;
 
@@ -3880,10 +3880,10 @@ void OpenMVPlugin::configureSettings()
 {
     if(!m_working)
     {
-        if(OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.ini")).exec() == QDialog::Accepted)
+        if(OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.config")).exec() == QDialog::Accepted)
         {
             // Extra disk activity to flush changes...
-            QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+            QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
             if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
             delete temp;
         }
@@ -3932,7 +3932,7 @@ void OpenMVPlugin::saveScript()
                 else
                 {
                     // Extra disk activity to flush changes...
-                    QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX"));
+                    QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
                     if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
                     delete temp;
                 }
