@@ -3559,9 +3559,9 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                     if(!m_portPath.isEmpty())
                     {
                         // Extra disk activity to flush changes...
-                        QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
-                        if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
-                        delete temp;
+                        QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
+                        if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
+                        temp.remove();
 
 #if defined(Q_OS_WIN)
                         wchar_t driveLetter[m_portPath.size()];
@@ -3713,7 +3713,60 @@ void OpenMVPlugin::startClicked()
 
         ///////////////////////////////////////////////////////////////////////
 
-        m_iodevice->scriptExec(Core::EditorManager::currentEditor()->document()->contents());
+        QRegularExpression importFromRegex(QStringLiteral("(import|from)\\s+(.*)"));
+        QRegularExpression importAsRegex(QStringLiteral("\\s+as\\s+.*"));
+        QRegularExpression fromImportRegex(QStringLiteral("\\s+import\\s+.*"));
+
+        QStringList moduleList;
+
+        foreach(const documentation_t module, m_modules)
+        {
+            moduleList.append(module.name);
+        }
+
+        QByteArray text = Core::EditorManager::currentEditor()->document()->contents();
+        QStringList lineList = QString::fromUtf8(text).replace(QRegularExpression(QStringLiteral("\\s*(\\\\\\s*)+[\r\n]+\\s*")), QStringLiteral(" ")).split(QRegularExpression(QStringLiteral("[\r\n]")), QString::SkipEmptyParts);
+
+        QStringList missingModules;
+
+        foreach(const QString &line, lineList)
+        {
+            QRegularExpressionMatchIterator importFromRegexMatch = importFromRegex.globalMatch(line);
+
+            while(importFromRegexMatch.hasNext())
+            {
+                QStringList importLineList = importFromRegexMatch.next().captured(2).split(QLatin1Char(';'), QString::SkipEmptyParts).takeFirst().remove(importAsRegex).remove(fromImportRegex).split(QLatin1Char(','), QString::SkipEmptyParts);
+
+                foreach(const QString &importLine, importLineList)
+                {
+                    QString importLinePath = importLine.simplified().replace(QLatin1Char('.'), QLatin1Char('/'));
+
+                    if(!moduleList.contains(importLinePath))
+                    {
+                        if(!m_portPath.isEmpty())
+                        {
+                            QFileInfo infoF(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QDir::separator() + importLinePath + QStringLiteral(".py"));
+
+                            if((!infoF.exists()) || (!infoF.isFile()))
+                            {
+                                QFileInfo infoD(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QDir::separator() + importLinePath);
+
+                                if((!infoD.exists()) || (!infoD.isDir()))
+                                {
+                                    missingModules.append(importLinePath);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            missingModules.append(importLinePath);
+                        }
+                    }
+                }
+            }
+        }
+
+        m_iodevice->scriptExec(text);
 
         m_timer.restart();
         m_queue.clear();
@@ -3883,9 +3936,9 @@ void OpenMVPlugin::configureSettings()
         if(OpenMVCameraSettings(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.config")).exec() == QDialog::Accepted)
         {
             // Extra disk activity to flush changes...
-            QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
-            if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
-            delete temp;
+            QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
+            if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
+            temp.remove();
         }
     }
     else
@@ -3932,9 +3985,9 @@ void OpenMVPlugin::saveScript()
                 else
                 {
                     // Extra disk activity to flush changes...
-                    QTemporaryFile *temp = new QTemporaryFile(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/XXXXXX.bin"));
-                    if(temp->open()) temp->write(QByteArray(FILE_FLUSH_BYTES, 0));
-                    delete temp;
+                    QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
+                    if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
+                    temp.remove();
                 }
             }
             else

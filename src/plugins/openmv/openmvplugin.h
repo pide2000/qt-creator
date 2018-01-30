@@ -131,7 +131,7 @@
 #define ERROR_FILTER_MAX_SIZE       1000 // in chars
 #define FPS_TIMER_EXPIRATION_TIME   2000 // in milliseconds
 
-#define FILE_FLUSH_BYTES 4096 // Extra disk activity to flush changes...
+#define FILE_FLUSH_BYTES 1024 // Extra disk activity to flush changes...
 
 namespace OpenMV {
 namespace Internal {
