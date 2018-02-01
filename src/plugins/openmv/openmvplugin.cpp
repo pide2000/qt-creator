@@ -3713,60 +3713,7 @@ void OpenMVPlugin::startClicked()
 
         ///////////////////////////////////////////////////////////////////////
 
-        QRegularExpression importFromRegex(QStringLiteral("(import|from)\\s+(.*)"));
-        QRegularExpression importAsRegex(QStringLiteral("\\s+as\\s+.*"));
-        QRegularExpression fromImportRegex(QStringLiteral("\\s+import\\s+.*"));
-
-        QStringList moduleList;
-
-        foreach(const documentation_t module, m_modules)
-        {
-            moduleList.append(module.name);
-        }
-
-        QByteArray text = Core::EditorManager::currentEditor()->document()->contents();
-        QStringList lineList = QString::fromUtf8(text).replace(QRegularExpression(QStringLiteral("\\s*(\\\\\\s*)+[\r\n]+\\s*")), QStringLiteral(" ")).split(QRegularExpression(QStringLiteral("[\r\n]")), QString::SkipEmptyParts);
-
-        QStringList missingModules;
-
-        foreach(const QString &line, lineList)
-        {
-            QRegularExpressionMatchIterator importFromRegexMatch = importFromRegex.globalMatch(line);
-
-            while(importFromRegexMatch.hasNext())
-            {
-                QStringList importLineList = importFromRegexMatch.next().captured(2).split(QLatin1Char(';'), QString::SkipEmptyParts).takeFirst().remove(importAsRegex).remove(fromImportRegex).split(QLatin1Char(','), QString::SkipEmptyParts);
-
-                foreach(const QString &importLine, importLineList)
-                {
-                    QString importLinePath = importLine.simplified().replace(QLatin1Char('.'), QLatin1Char('/'));
-
-                    if(!moduleList.contains(importLinePath))
-                    {
-                        if(!m_portPath.isEmpty())
-                        {
-                            QFileInfo infoF(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QDir::separator() + importLinePath + QStringLiteral(".py"));
-
-                            if((!infoF.exists()) || (!infoF.isFile()))
-                            {
-                                QFileInfo infoD(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QDir::separator() + importLinePath);
-
-                                if((!infoD.exists()) || (!infoD.isDir()))
-                                {
-                                    missingModules.append(importLinePath);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            missingModules.append(importLinePath);
-                        }
-                    }
-                }
-            }
-        }
-
-        m_iodevice->scriptExec(text);
+        m_iodevice->scriptExec(importHelper(Core::EditorManager::currentEditor()->document()->contents()));
 
         m_timer.restart();
         m_queue.clear();
@@ -5576,6 +5523,98 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
     free(family->name);
     free(family->codes);
     free(family);
+}
+
+QByteArray OpenMVPlugin::importHelper(const QByteArray &text)
+{
+    QRegularExpression importFromRegex(QStringLiteral("(import|from)\\s+(.*)"));
+    QRegularExpression importAsRegex(QStringLiteral("\\s+as\\s+.*"));
+    QRegularExpression fromImportRegex(QStringLiteral("\\s+import\\s+.*"));
+
+    QStringList moduleList;
+
+    foreach(const documentation_t module, m_modules)
+    {
+        moduleList.append(module.name);
+    }
+
+    QStringList lineList = QString::fromUtf8(text).replace(QRegularExpression(QStringLiteral("\\s*(\\\\\\s*)+[\r\n]+\\s*")), QStringLiteral(" ")).split(QRegularExpression(QStringLiteral("[\r\n]")), QString::SkipEmptyParts);
+
+    QStringList missingModules;
+
+    QList< QPair<QString, QByteArray> > otherModules;
+
+    foreach(const QString &line, lineList)
+    {
+        QRegularExpressionMatchIterator importFromRegexMatch = importFromRegex.globalMatch(line);
+
+        while(importFromRegexMatch.hasNext())
+        {
+            QStringList importLineList = importFromRegexMatch.next().captured(2).split(QLatin1Char(';'), QString::SkipEmptyParts).takeFirst().remove(importAsRegex).remove(fromImportRegex).split(QLatin1Char(','), QString::SkipEmptyParts);
+
+            foreach(const QString &importLine, importLineList)
+            {
+                QString importLinePath = importLine.simplified().replace(QLatin1Char('.'), QLatin1Char('/'));
+
+                if(!moduleList.contains(importLinePath))
+                {
+                    if(!m_portPath.isEmpty())
+                    {
+                        QFileInfo infoF(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath) + QDir::separator() + importLinePath + QStringLiteral(".py")));
+
+                        if((!infoF.exists()) || (!infoF.isFile()))
+                        {
+                            QFileInfo infoD(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath) + QDir::separator() + importLinePath + QDir::separator() + QStringLiteral("__init__.py")));
+
+                            if((!infoD.exists()) || (!infoD.isFile()))
+                            {
+                                missingModules.append(importLinePath);
+                            }
+                            else
+                            {
+                                QByteArray data;
+
+                                QDirIterator it(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath) + QDir::separator() + importLinePath), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+
+                                while(it.hasNext())
+                                {
+                                    QFile file(it.next());
+
+                                    if(file.open(QIODevice::ReadOnly))
+                                    {
+                                        data.append(file.readAll());
+                                    }
+                                }
+
+                                otherModules.append(QPair<QString, QByteArray>(importLinePath, QCryptographicHash::hash(data, QCryptographicHash::Sha1)));
+                            }
+                        }
+                        else
+                        {
+                            QByteArray data;
+
+                            QFile file(infoF.filePath());
+
+                            if(file.open(QIODevice::ReadOnly))
+                            {
+                                data.append(file.readAll());
+                            }
+
+                            otherModules.append(QPair<QString, QByteArray>(importLinePath, QCryptographicHash::hash(data, QCryptographicHash::Sha1)));
+                        }
+                    }
+                    else
+                    {
+                        missingModules.append(importLinePath);
+                    }
+                }
+            }
+        }
+    }
+
+    
+
+    return text;
 }
 
 } // namespace Internal

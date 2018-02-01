@@ -218,6 +218,8 @@ signals:
 
 private:
 
+    QByteArray importHelper(const QByteArray &text);
+
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
 
