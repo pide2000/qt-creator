@@ -675,6 +675,27 @@ void OpenMVPlugin::extensionsInitialized()
     });
 
     Core::ActionContainer *filesMenu = Core::ActionManager::actionContainer(Core::Constants::M_FILE);
+
+    Core::ActionContainer *documentsFolder = Core::ActionManager::createMenu(Core::Id("OpenMV.DocumentsFolder"));
+    filesMenu->addMenu(Core::ActionManager::actionContainer(Core::Constants::M_FILE_RECENTFILES), documentsFolder, Core::Constants::G_FILE_OPEN);
+    documentsFolder->menu()->setTitle(tr("Documents Folder"));
+    documentsFolder->setOnAllDisabledBehavior(Core::ActionContainer::Show);
+    connect(filesMenu->menu(), &QMenu::aboutToShow, this, [this, documentsFolder] {
+        documentsFolder->menu()->clear();
+        QMap<QString, QAction *> actions = aboutToShowExamplesRecursive(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV"), documentsFolder->menu());
+
+        if(actions.isEmpty())
+        {
+            QAction *action = new QAction(tr("Add some code to \"%L1\"").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV")), documentsFolder->menu());
+            action->setDisabled(true);
+            documentsFolder->menu()->addAction(action);
+        }
+        else
+        {
+            documentsFolder->menu()->addActions(actions.values());
+        }
+    });
+
     Core::ActionContainer *examplesMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.Examples"));
     filesMenu->addMenu(Core::ActionManager::actionContainer(Core::Constants::M_FILE_RECENTFILES), examplesMenu, Core::Constants::G_FILE_OPEN);
     examplesMenu->menu()->setTitle(tr("Examples"));
@@ -1529,6 +1550,13 @@ bool OpenMVPlugin::delayedInitialize()
             tr("WiFi Programming Disabled!"),
             tr("Another application is using the OpenMV Cam broadcast discovery port. "
                "Please close that application and restart OpenMV IDE to enable WiFi programming."));
+    }
+
+    if(!QDir().mkpath(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV")))
+    {
+        QMessageBox::warning(Core::ICore::dialogParent(),
+                    tr("Documents Folder Error"),
+                    tr("Failed to create the documents folder!"));
     }
 
     return true;
@@ -4130,27 +4158,27 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
                         else
                         {
                             QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("Open Example"),
-                                tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                                tr("Open File"),
+                                tr("Cannot open the file \"%L1\"!").arg(filePath));
                         }
                     }
                     else if(file.error() != QFile::NoError)
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
+                            tr("Open File"),
                             tr("Error: %L1!").arg(file.errorString()));
                     }
                     else
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open Example"),
-                            tr("Cannot open the example file \"%L1\"!").arg(filePath));
+                            tr("Open File"),
+                            tr("Cannot open the file \"%L1\"!").arg(filePath));
                     }
                 }
                 else
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
-                        tr("Open Example"),
+                        tr("Open File"),
                         tr("Error: %L1!").arg(file.errorString()));
                 }
             });

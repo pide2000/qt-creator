@@ -513,6 +513,9 @@ void MainWindow::registerDefaultActions()
     ActionContainer *mhelp = ActionManager::actionContainer(Constants::M_HELP);
 
     // File menu separators
+    //OPENMV-DIFF//
+    mfile->addSeparator(Constants::G_FILE_OPEN);
+    //OPENMV-DIFF//
     mfile->addSeparator(Constants::G_FILE_SAVE);
     mfile->addSeparator(Constants::G_FILE_PRINT);
     mfile->addSeparator(Constants::G_FILE_CLOSE);
@@ -553,7 +556,11 @@ void MainWindow::registerDefaultActions()
     m_openAction = new QAction(icon, tr("&Open File..."), this);
     cmd = ActionManager::registerAction(m_openAction, Constants::OPEN);
     cmd->setDefaultKeySequence(QKeySequence::Open);
-    mfile->addAction(cmd, Constants::G_FILE_OPEN);
+    //OPENMV-DIFF//
+    //mfile->addAction(cmd, Constants::G_FILE_OPEN);
+    //OPENMV-DIFF//
+    mfile->addAction(cmd, Constants::G_FILE_NEW);
+    //OPENMV-DIFF//
     connect(m_openAction, &QAction::triggered, this, &MainWindow::openFile);
 
     //// Open With Action
