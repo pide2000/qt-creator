@@ -681,7 +681,7 @@ void OpenMVPluginSerialPort_private::bootloaderReset()
 OpenMVPluginSerialPort::OpenMVPluginSerialPort(int override_read_timeout, int override_read_stall_timeout, QObject *parent) : QObject(parent)
 {
     QThread *thread = new QThread;
-    OpenMVPluginSerialPort_private* port = new OpenMVPluginSerialPort_private(override_read_timeout, override_read_stall_timeout);
+    OpenMVPluginSerialPort_private *port = new OpenMVPluginSerialPort_private(override_read_timeout, override_read_stall_timeout);
     port->moveToThread(thread);
 
     connect(this, &OpenMVPluginSerialPort::open,

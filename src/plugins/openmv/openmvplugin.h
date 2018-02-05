@@ -133,6 +133,8 @@
 
 #define FILE_FLUSH_BYTES 1024 // Extra disk activity to flush changes...
 
+#define FOLDER_SCAN_TIME 10000 // in ms
+
 namespace OpenMV {
 namespace Internal {
 
@@ -169,6 +171,28 @@ public:
 private:
 
     TextEditor::Keywords m_keywords;
+};
+
+typedef struct importData
+{
+    QString moduleName, modulePath;
+    QByteArray moduleHash;
+}
+importData_t;
+
+typedef QList<importData_t> importDataList_t;
+
+QByteArray loadFilter(const QByteArray &data);
+importDataList_t loadFolder(const QString &path);
+
+class LoadFolderThread: public QObject
+{
+    Q_OBJECT
+
+    public: explicit LoadFolderThread(const QString &path) { m_path = path; }
+    public slots: void loadFolderSlot() { emit folderLoaded(loadFolder(m_path)); }
+    signals: void folderLoaded(const importDataList_t &output);
+    private: QString m_path;
 };
 
 class OpenMVPlugin : public ExtensionSystem::IPlugin
@@ -217,8 +241,6 @@ signals:
     void disconnectDone(); // private
 
 private:
-
-    QByteArray importHelper(const QByteArray &text);
 
     OpenMVPluginSerialPort *m_ioport;
     OpenMVPluginIO *m_iodevice;
@@ -317,6 +339,14 @@ private:
 
         return false;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    importDataList_t m_exampleModules;
+    importDataList_t m_documentsModules;
+
+    void parseImports(const QString &fileText, const QStringList &builtInModules, importDataList_t &targetModules, QStringList &errorModules);
+    void importHelper(const QByteArray &text);
 };
 
 } // namespace Internal
