@@ -742,7 +742,7 @@ void OpenMVPlugin::extensionsInitialized()
     documentsFolder->setOnAllDisabledBehavior(Core::ActionContainer::Show);
     connect(filesMenu->menu(), &QMenu::aboutToShow, this, [this, documentsFolder] {
         documentsFolder->menu()->clear();
-        QMap<QString, QAction *> actions = aboutToShowExamplesRecursive(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV"), documentsFolder->menu());
+        QMap<QString, QAction *> actions = aboutToShowExamplesRecursive(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV"), documentsFolder->menu(), true);
 
         if(actions.isEmpty())
         {
@@ -3802,11 +3802,18 @@ void OpenMVPlugin::startClicked()
         ///////////////////////////////////////////////////////////////////////
 
         QByteArray contents = Core::EditorManager::currentEditor()->document()->contents();
-        importHelper(contents);
-        m_iodevice->scriptExec(contents);
 
-        m_timer.restart();
-        m_queue.clear();
+        if(importHelper(contents))
+        {
+            m_iodevice->scriptExec(contents);
+
+            m_timer.restart();
+            m_queue.clear();
+        }
+        else
+        {
+            m_fpsLabel->setText(tr("FPS: 0"));
+        }
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -3997,37 +4004,39 @@ void OpenMVPlugin::saveScript()
 
         if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
         {
-            Utils::FileSaver file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.py"));
+            QByteArray contents = Core::EditorManager::currentEditor()->document()->contents();
 
-            if(!file.hasError())
+            if(importHelper(contents))
             {
-                QByteArray contents = Core::EditorManager::currentEditor()->document()->contents();
-                importHelper(contents);
+                Utils::FileSaver file(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/main.py"));
 
-                if(answer == QMessageBox::Yes)
+                if(!file.hasError())
                 {
-                    contents = loadFilter(contents);
-                }
+                    if(answer == QMessageBox::Yes)
+                    {
+                        contents = loadFilter(contents);
+                    }
 
-                if((!file.write(contents)) || (!file.finalize()))
+                    if((!file.write(contents)) || (!file.finalize()))
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Save Script"),
+                            tr("Error: %L1!").arg(file.errorString()));
+                    }
+                    else
+                    {
+                        // Extra disk activity to flush changes...
+                        QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
+                        if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
+                        temp.remove();
+                    }
+                }
+                else
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
                         tr("Save Script"),
                         tr("Error: %L1!").arg(file.errorString()));
                 }
-                else
-                {
-                    // Extra disk activity to flush changes...
-                    QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
-                    if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
-                    temp.remove();
-                }
-            }
-            else
-            {
-                QMessageBox::critical(Core::ICore::dialogParent(),
-                    tr("Save Script"),
-                    tr("Error: %L1!").arg(file.errorString()));
             }
         }
     }
@@ -4172,7 +4181,7 @@ void OpenMVPlugin::saveDescriptor(const QRect &rect)
     }
 }
 
-QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent)
+QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QString &path, QMenu *parent, bool notExamples)
 {
     QMap<QString, QAction *> actions;
     QDirIterator it(path, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
@@ -4184,7 +4193,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
         if(it.fileInfo().isDir())
         {
             QMenu *menu = new QMenu(it.fileName(), parent);
-            QMap<QString, QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu);
+            QMap<QString, QAction *> menuActions = aboutToShowExamplesRecursive(filePath, menu, notExamples);
             menu->addActions(menuActions.values());
             menu->setDisabled(menuActions.values().isEmpty());
             actions.insertMulti(it.fileName(), menu->menuAction());
@@ -4192,7 +4201,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
         else
         {
             QAction *action = new QAction(it.fileName(), parent);
-            connect(action, &QAction::triggered, this, [this, filePath]
+            connect(action, &QAction::triggered, this, [this, filePath, notExamples]
             {
                 QFile file(filePath);
 
@@ -4206,37 +4215,37 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
                         Core::EditorManager::addCurrentPositionToNavigationHistory();
 
                         QString titlePattern = QFileInfo(filePath).baseName().simplified() + QStringLiteral("_$.") + QFileInfo(filePath).completeSuffix();
-                        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, data));
+                        TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(notExamples ? Core::EditorManager::openEditor(filePath) : Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern, data));
 
                         if(editor)
                         {
-                            editor->editorWidget()->configureGenericHighlighter();
+                            if(!notExamples) editor->editorWidget()->configureGenericHighlighter();
                             Core::EditorManager::activateEditor(editor);
                         }
                         else
                         {
                             QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("Open File"),
-                                tr("Cannot open the file \"%L1\"!").arg(filePath));
+                                notExamples ? tr("Open File") : tr("Open Example"),
+                                notExamples ? tr("Cannot open the file \"%L1\"!").arg(filePath) : tr("Cannot open the example file \"%L1\"!").arg(filePath));
                         }
                     }
                     else if(file.error() != QFile::NoError)
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open File"),
+                            notExamples ? tr("Open File") : tr("Open Example"),
                             tr("Error: %L1!").arg(file.errorString()));
                     }
                     else
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
-                            tr("Open File"),
-                            tr("Cannot open the file \"%L1\"!").arg(filePath));
+                            notExamples ? tr("Open File") : tr("Open Example"),
+                            notExamples ? tr("Cannot open the file \"%L1\"!").arg(filePath) : tr("Cannot open the example file \"%L1\"!").arg(filePath));
                     }
                 }
                 else
                 {
                     QMessageBox::critical(Core::ICore::dialogParent(),
-                        tr("Open File"),
+                        notExamples ? tr("Open File") : tr("Open Example"),
                         tr("Error: %L1!").arg(file.errorString()));
                 }
             });
@@ -5679,14 +5688,14 @@ importDataList_t loadFolder(const QString &path)
     return list;
 }
 
-void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &builtInModules, importDataList_t &targetModules, QStringList &errorModules)
+void OpenMVPlugin::parseImports(const QString &fileText, const QString &moduleFolder, const QStringList &builtInModules, importDataList_t &targetModules, QStringList &errorModules)
 {
     QRegularExpression importFromRegex(QStringLiteral("(import|from)\\s+(.*)"));
     QRegularExpression importAsRegex(QStringLiteral("\\s+as\\s+.*"));
     QRegularExpression fromImportRegex(QStringLiteral("\\s+import\\s+.*"));
 
     QStringList fileTextList = QStringList() << fileText;
-    QStringList fileTextPathList = QStringList() << QDir::separator();
+    QStringList fileTextPathList = QStringList() << moduleFolder;
 
     while(fileTextList.size())
     {
@@ -5703,7 +5712,7 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
 
                 foreach(const QString &importLine, importLineList)
                 {
-                    QString importLinePath = importLine.simplified().replace(QLatin1Char('.'), QLatin1Char('/'));
+                    QString importLinePath = importLine.simplified().split(QLatin1Char('.'), QString::SkipEmptyParts).takeFirst();
 
                     if(!builtInModules.contains(importLinePath))
                     {
@@ -5711,14 +5720,14 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
 
                         foreach(const importData_t &data, targetModules)
                         {
-                            if(data.moduleName == importLinePath)
+                            if(data.moduleName == importLinePath) 
                             {
                                 contains = true;
                                 break;
                             }
                         }
 
-                        if(!contains)
+                        if((!contains) && (!errorModules.contains(importLinePath)))
                         {
                             if(!m_portPath.isEmpty())
                             {
@@ -5726,7 +5735,7 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
 
                                 if((!infoF.exists()) || (!infoF.isFile()))
                                 {
-                                    QFileInfo infoD(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + lineListPath + QDir::separator() + importLinePath + QStringLiteral("/__init__.py"))));
+                                    QFileInfo infoD(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + importLinePath + QStringLiteral("/__init__.py"))));
 
                                     if(infoD.exists() && infoD.isFile())
                                     {
@@ -5735,7 +5744,7 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
                                         data.modulePath = infoD.path();
                                         data.moduleHash = QByteArray();
 
-                                        QDirIterator it2(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + lineListPath + QDir::separator() + importLinePath)), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+                                        QDirIterator it2(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + importLinePath)), QDir::Files, QDirIterator::Subdirectories);
 
                                         while(it2.hasNext())
                                         {
@@ -5782,6 +5791,10 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
                                     }
                                 }
                             }
+                            else
+                            {
+                                // Can't really do anything...
+                            }
                         }
                     }
                 }
@@ -5790,7 +5803,77 @@ void OpenMVPlugin::parseImports(const QString &fileText, const QStringList &buil
     }
 }
 
-void OpenMVPlugin::importHelper(const QByteArray &text)
+static bool myCopyHelper(const QFileInfo &src, const QFileInfo &dst, QString *error)
+{
+    QFile file(src.filePath());
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTemporaryFile temp;
+
+        if(temp.open())
+        {
+            QByteArray data = loadFilter(file.readAll());
+
+            if(temp.write(data) == data.size())
+            {
+                temp.close();
+
+                if(QFile::copy(QFileInfo(temp).filePath(), dst.filePath()))
+                {
+                    return true;
+                }
+                else
+                {
+                    if(error) *error = QObject::tr("Copy Failed!");
+                }
+            }
+            else
+            {
+                if(error) *error = temp.errorString();
+            }
+        }
+        else
+        {
+            if(error) *error = temp.errorString();
+        }
+    }
+    else
+    {
+        if(error) *error = file.errorString();
+    }
+
+    return false;
+}
+
+static bool myCopy(const QString &src, const QString &dst)
+{
+    QFile file(src);
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTemporaryFile temp;
+
+        if(temp.open())
+        {
+            QByteArray data = loadFilter(file.readAll());
+
+            if(temp.write(data) == data.size())
+            {
+                temp.close();
+
+                if(QFile::copy(QFileInfo(temp).filePath(), dst))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool OpenMVPlugin::importHelper(const QByteArray &text)
 {
     QMap<QString, importData_t> map;
 
@@ -5814,7 +5897,7 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
     importDataList_t targetModules;
     QStringList errorModules;
 
-    parseImports(QString::fromUtf8(text), builtInModules, targetModules, errorModules);
+    parseImports(QString::fromUtf8(loadFilter(text)), QDir::separator(), builtInModules, targetModules, errorModules);
 
     while(!targetModules.isEmpty())
     {
@@ -5822,11 +5905,12 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
 
         if(map.contains(targetModule.moduleName) && (targetModule.moduleHash != map.value(targetModule.moduleName).moduleHash))
         {
-            if(QMessageBox::question(Core::ICore::dialogParent(),
+            int answer = QMessageBox::question(Core::ICore::dialogParent(),
                 tr("Import Helper"),
-                tr("Module \"%L1\" on your OpenMV Cam may be out-of-date.\n\nWould you like OpenMV IDE to update it on your OpenMV Cam?").arg(targetModule.moduleName),
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)
-                == QMessageBox::Yes)
+                tr("Module \"%L1\" on your OpenMV Cam is different than the copy on your computer.\n\nWould you like OpenMV IDE to update the module on your OpenMV Cam?").arg(targetModule.moduleName),
+                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+
+            if(answer == QMessageBox::Yes)
             {
                 QString sourcePath = map.value(targetModule.moduleName).modulePath;
 
@@ -5840,14 +5924,30 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to remove \"%L1\%!").arg(targetPath));
+                            tr("Failed to remove \"%L1\"!").arg(targetPath));
+
+                        continue;
                     }
 
-                    if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(sourcePath), Utils::FileName::fromString(targetPath), &error))
+                    if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(sourcePath), Utils::FileName::fromString(targetPath), &error, myCopyHelper))
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to create \"%L1\%!").arg(targetPath));
+                            tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                        continue;
+                    }
+
+                    QDirIterator it(sourcePath, QDir::Files, QDirIterator::Subdirectories);
+
+                    while(it.hasNext())
+                    {
+                        QFile file(it.next());
+
+                        if(file.open(QIODevice::ReadOnly))
+                        {
+                            parseImports(QString::fromUtf8(loadFilter(file.readAll())), QDir::separator(), builtInModules, targetModules, errorModules);
+                        }
                     }
                 }
                 else
@@ -5858,16 +5958,105 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to remove \"%L1\%!").arg(targetPath));
+                            tr("Failed to remove \"%L1\"!").arg(targetPath));
+
+                        continue;
                     }
 
-                    if(!QFile::copy(sourcePath, targetPath))
+                    if(!myCopy(sourcePath, targetPath))
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to create \"%L1\%!").arg(targetPath));
+                            tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                        continue;
+                    }
+
+                    QFile file(sourcePath);
+
+                    if(file.open(QIODevice::ReadOnly))
+                    {
+                        parseImports(QString::fromUtf8(loadFilter(file.readAll())), QDir::separator(), builtInModules, targetModules, errorModules);
                     }
                 }
+            }
+            else if(answer == QMessageBox::No)
+            {
+                int answer = QMessageBox::question(Core::ICore::dialogParent(),
+                    tr("Import Helper"),
+                    tr("Would you like OpenMV IDE to update the module on your computer?"),
+                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+
+                if(answer == QMessageBox::Yes)
+                {
+                    QString targetPath = map.value(targetModule.moduleName).modulePath;
+
+                    if(Utils::FileName::fromString(targetPath).isChildOf(QDir(Core::ICore::userResourcePath() + QStringLiteral("/examples"))))
+                    {
+                        targetPath = QDir::cleanPath(QDir::fromNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/OpenMV/") + (QFileInfo(targetPath).isDir() ? QDir(targetPath).dirName() : QFileInfo(targetPath).fileName())));
+                    }
+
+                    if(QFileInfo(targetPath).isDir())
+                    {
+                        QString sourcePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + targetModule.moduleName));
+
+                        QString error;
+
+                        if(QDir(targetPath).exists()) // May not exist if copying from examples to documents folder.
+                        {
+                            if(!Utils::FileUtils::removeRecursively(Utils::FileName::fromString(targetPath), &error))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Import Helper"),
+                                    tr("Failed to remove \"%L1\"!").arg(targetPath));
+
+                                continue;
+                            }
+                        }
+
+                        if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(sourcePath), Utils::FileName::fromString(targetPath), &error)) // Don't use myCopyHelper() here...
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Import Helper"),
+                                tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        QString sourcePath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + targetModule.moduleName + QStringLiteral(".py")));
+
+                        if(QFileInfo(targetPath).exists()) // May not exist if copying from examples to documents folder.
+                        {
+                            if(!QFile::remove(targetPath))
+                            {
+                                QMessageBox::critical(Core::ICore::dialogParent(),
+                                    tr("Import Helper"),
+                                    tr("Failed to remove \"%L1\"!").arg(targetPath));
+
+                                continue;
+                            }
+                        }
+
+                        if(!QFile::copy(sourcePath, targetPath)) // Don't use myCopy() here...
+                        {
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                tr("Import Helper"),
+                                tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                            continue;
+                        }
+                    }
+                }
+                else if(answer == QMessageBox::Cancel)
+                {
+                    return false;
+                }
+            }
+            else if(answer == QMessageBox::Cancel)
+            {
+                return false;
             }
         }
     }
@@ -5878,11 +6067,12 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
 
         if(map.contains(errorModule))
         {
-            if(QMessageBox::question(Core::ICore::dialogParent(),
+            int answer = QMessageBox::question(Core::ICore::dialogParent(),
                 tr("Import Helper"),
                 tr("Module \"%L1\" may be required to run your script.\n\nWould you like OpenMV IDE to copy it to your OpenMV Cam?").arg(errorModule),
-                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)
-                == QMessageBox::Yes)
+                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+
+            if(answer == QMessageBox::Yes)
             {
                 QString sourcePath = map.value(errorModule).modulePath;
 
@@ -5892,44 +6082,65 @@ void OpenMVPlugin::importHelper(const QByteArray &text)
 
                     QString error;
 
-                    if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(sourcePath), Utils::FileName::fromString(targetPath), &error))
+                    if(!Utils::FileUtils::copyRecursively(Utils::FileName::fromString(sourcePath), Utils::FileName::fromString(targetPath), &error, myCopyHelper))
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to create \"%L1\%!").arg(targetPath));
+                            tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                        continue;
+                    }
+
+                    QDirIterator it(sourcePath, QDir::Files, QDirIterator::Subdirectories);
+
+                    while(it.hasNext())
+                    {
+                        QFile file(it.next());
+
+                        if(file.open(QIODevice::ReadOnly))
+                        {
+                            parseImports(QString::fromUtf8(loadFilter(file.readAll())), QDir::separator(), builtInModules, targetModules, errorModules);
+                        }
                     }
                 }
                 else
                 {
                     QString targetPath = QDir::cleanPath(QDir::fromNativeSeparators(m_portPath + QDir::separator() + errorModule + QStringLiteral(".py")));
 
-                    if(!QDir(QFileInfo(targetPath).path()).exists())
-                    {
-                        if(!QDir().mkpath(QFileInfo(targetPath).path()))
-                        {
-                            QMessageBox::critical(Core::ICore::dialogParent(),
-                                tr("Import Helper"),
-                                tr("Failed to create \"%L1\%!").arg(QFileInfo(targetPath).path()));
-                        }
-                    }
-
-                    if(!QFile::copy(sourcePath, targetPath))
+                    if(!QDir().mkpath(QFileInfo(targetPath).path()))
                     {
                         QMessageBox::critical(Core::ICore::dialogParent(),
                             tr("Import Helper"),
-                            tr("Failed to create \"%L1\%!").arg(targetPath));
+                            tr("Failed to create \"%L1\"!").arg(QFileInfo(targetPath).path()));
+
+                        continue;
                     }
 
-                    QFile file(targetPath);
+                    if(!myCopy(sourcePath, targetPath))
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            tr("Import Helper"),
+                            tr("Failed to create \"%L1\"!").arg(targetPath));
+
+                        continue;
+                    }
+
+                    QFile file(sourcePath);
 
                     if(file.open(QIODevice::ReadOnly))
                     {
-                        parseImports(QString::fromUtf8(file.readAll()), builtInModules, targetModules, errorModules);
+                        parseImports(QString::fromUtf8(loadFilter(file.readAll())), QDir::separator(), builtInModules, targetModules, errorModules);
                     }
                 }
             }
+            else if(answer == QMessageBox::Cancel)
+            {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 } // namespace Internal

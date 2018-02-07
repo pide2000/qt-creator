@@ -227,7 +227,7 @@ public slots: // private
     void saveImage(const QPixmap &data);
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
-    QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent);
+    QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, bool notExamples = false);
     void updateCam();
     void setPortPath(bool silent = false);
     void openTerminalAboutToShow();
@@ -345,8 +345,8 @@ private:
     importDataList_t m_exampleModules;
     importDataList_t m_documentsModules;
 
-    void parseImports(const QString &fileText, const QStringList &builtInModules, importDataList_t &targetModules, QStringList &errorModules);
-    void importHelper(const QByteArray &text);
+    void parseImports(const QString &fileText, const QString &moduleFolder, const QStringList &builtInModules, importDataList_t &targetModules, QStringList &errorModules);
+    bool importHelper(const QByteArray &text);
 };
 
 } // namespace Internal
