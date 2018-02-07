@@ -723,6 +723,7 @@ void OpenMVPlugin::extensionsInitialized()
 
         if(editor)
         {
+            Core::EditorManager::addCurrentPositionToNavigationHistory();
             editor->editorWidget()->configureGenericHighlighter();
             Core::EditorManager::activateEditor(editor);
         }
@@ -1462,6 +1463,7 @@ void OpenMVPlugin::extensionsInitialized()
 
                 if(editor)
                 {
+                    Core::EditorManager::addCurrentPositionToNavigationHistory();
                     editor->editorWidget()->configureGenericHighlighter();
                     Core::EditorManager::activateEditor(editor);
                 }
@@ -4219,6 +4221,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
 
                         if(editor)
                         {
+                            Core::EditorManager::addCurrentPositionToNavigationHistory();
                             if(!notExamples) editor->editorWidget()->configureGenericHighlighter();
                             Core::EditorManager::activateEditor(editor);
                         }
