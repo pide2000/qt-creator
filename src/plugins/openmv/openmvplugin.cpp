@@ -5899,7 +5899,6 @@ bool OpenMVPlugin::importHelper(const QByteArray &text)
 
     importDataList_t targetModules;
     QStringList errorModules;
-
     parseImports(QString::fromUtf8(loadFilter(text)), QDir::separator(), builtInModules, targetModules, errorModules);
 
     while(!targetModules.isEmpty())
