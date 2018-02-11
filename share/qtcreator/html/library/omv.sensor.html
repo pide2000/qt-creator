@@ -121,8 +121,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html"><code class="docutils literal"><span class="pre">image</span></code> &#8212; machine vision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-haarcascade-feature-descriptor">class HaarCascade &#8211; Feature Descriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-similarity-similarity-object">class Similarity &#8211; Similarity Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threhsold-threshold-object">class Threhsold &#8211; Threshold Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
@@ -132,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-displacement-displacement-object">class Displacement &#8211; Displacement object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-kptmatch-keypoint-object">class kptmatch &#8211; Keypoint Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
@@ -231,7 +234,7 @@ a script with an infinite loop.</p>
 
 <dl class="function">
 <dt id="sensor.sensor.snapshot">
-<code class="descclassname">sensor.</code><code class="descname">snapshot</code><span class="sig-paren">(</span><em>line_filter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.snapshot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">sensor.</code><code class="descname">snapshot</code><span class="sig-paren">(</span><span class="optional">[</span><em>line_filter=None</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.snapshot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a picture using the camera and returns an <code class="docutils literal"><span class="pre">image</span></code> object.</p>
 <p><code class="docutils literal"><span class="pre">line_filter</span></code> may be a python function callback used to process each line
 of pixels as they come in from the camera. For example:</p>
@@ -304,10 +307,49 @@ then <code class="docutils literal"><span class="pre">None</span></code> is retu
 <dd><p>Returns the camera module ID.</p>
 <blockquote>
 <div><ul class="simple">
-<li>sensor.OV2640: Old sensor module.</li>
-<li>sensor.OV7725: New sensor module.</li>
+<li>sensor.OV7725: Rolling shutter sensor module.</li>
+<li>sensor.MT9V034: Global shutter sensor module.</li>
 </ul>
 </div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.alloc_extra_fb">
+<code class="descclassname">sensor.</code><code class="descname">alloc_extra_fb</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>pixformat</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.alloc_extra_fb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocates another frame buffer for image storage from the frame buffer stack
+and returns an <code class="docutils literal"><span class="pre">image</span></code> object of <code class="docutils literal"><span class="pre">width</span></code>, <code class="docutils literal"><span class="pre">height</span></code>, and <code class="docutils literal"><span class="pre">pixformat</span></code>.</p>
+<p>You may call this function as many times as you like as long as there&#8217;s
+memory available to allocate any number of extra frame buffers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Creating secondary images normally requires creating them on the heap which
+has a limited amount of RAM... but, also gets fragmented making it hard to
+grab a large contigous memory array to store an image in. With this method
+you are able to allocate a very large memory array for an image instantly
+by taking space away from our frame buffer stack memory which we use for
+computer vision algorithms. That said, this also means you&#8217;ll run out of
+memory more easily if you try to execute more memory intensive machine
+vision algorithms like <code class="docutils literal"><span class="pre">find_apriltags</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.dealloc_extra_db">
+<code class="descclassname">sensor.</code><code class="descname">dealloc_extra_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.dealloc_extra_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deallocates the last previously allocated extra frame buffer. Extra frame
+buffers are stored in a stack like structure.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Your OpenMV Cam has two memory areas. First, you have your classical
+.data/.bss/heap/stack memory area. The .data/.bss/heap regions are
+fixed by firmware. The stack then grows down until it hits the heap.
+Next, frame buffers are stored in a secondary memory region. Memory is
+liad out with the main frame buffer on the bottom and the frame buffer
+stack on the top. When <code class="docutils literal"><span class="pre">snapshot()</span></code> is called it fills the frame bufer
+from the bottom. The frame buffer stack is then able to use whatever is
+left over. This memory allocation method is extremely efficent for computer
+vision on microcontrollers.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -441,46 +483,64 @@ windowing on a larger resolution you effectively are digital zooming.</p>
 
 <dl class="function">
 <dt id="sensor.sensor.set_auto_gain">
-<code class="descclassname">sensor.</code><code class="descname">set_auto_gain</code><span class="sig-paren">(</span><em>enable</em>, <em>value=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_gain" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal"><span class="pre">enable</span></code> Turns auto gain on (True) or off (False). Defaults to on.
-<code class="docutils literal"><span class="pre">value</span></code> Forced gain value. See the camera datasheet for more details.</p>
+<code class="descclassname">sensor.</code><code class="descname">set_auto_gain</code><span class="sig-paren">(</span><em>enable</em><span class="optional">[</span>, <em>gain_db=-1</em>, <em>gain_db_ceiling=-1</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_gain" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">enable</span></code> turns auto gain control on (True) or off (False).
+The camera will startup with auto gain control on.</p>
+<p>If <code class="docutils literal"><span class="pre">enable</span></code> is False you may set a fixed gain in decibels with <code class="docutils literal"><span class="pre">gain_db</span></code>.</p>
+<p>If <code class="docutils literal"><span class="pre">enable</span></code> is True you may set the maximum gain ceiling in decibels with
+<code class="docutils literal"><span class="pre">gain_db_ceiling</span></code> for the automatic gain control algorithm.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">You need to turn white balance off if you want to track colors.</p>
+<p class="last">You need to turn off white balance too if you want to track colors.</p>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">value</span></code> is keyword arguments which must be explicitly invoked in the
-function call by writing <code class="docutils literal"><span class="pre">value=</span></code>.</p>
-</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.get_gain_db">
+<code class="descclassname">sensor.</code><code class="descname">get_gain_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.get_gain_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current camera gain value in decibels (float).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="sensor.sensor.set_auto_exposure">
-<code class="descclassname">sensor.</code><code class="descname">set_auto_exposure</code><span class="sig-paren">(</span><em>enable</em>, <em>value=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_exposure" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal"><span class="pre">enable</span></code> Turns auto exposure on (True) or off (False). Defaults to on.
-<code class="docutils literal"><span class="pre">value</span></code> Forced exposure value. See the camera datasheet for more details.</p>
+<code class="descclassname">sensor.</code><code class="descname">set_auto_exposure</code><span class="sig-paren">(</span><em>enable</em><span class="optional">[</span>, <em>exposure_us=-1</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_exposure" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">enable</span></code> turns auto exposure control on (True) or off (False).
+The camera will startup with auto exposure control on.</p>
+<p>If <code class="docutils literal"><span class="pre">enable</span></code> is False you may set a fixed exposure time in microseconds
+with <code class="docutils literal"><span class="pre">exposure_us</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">value</span></code> is keyword arguments which must be explicitly invoked in the
-function call by writing <code class="docutils literal"><span class="pre">value=</span></code>.</p>
+<p class="last">Camera auto exposure algorithms are pretty conservative about how much
+they adjust the exposure value by and will generally avoid changing the
+exposure value by much. Instead, they change the gain value alot of deal
+with changing lighting.</p>
 </div>
 </dd></dl>
 
 <dl class="function">
+<dt id="sensor.sensor.get_exposure_us">
+<code class="descclassname">sensor.</code><code class="descname">get_exposure_us</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.get_exposure_us" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current camera exposure value in microseconds (int).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sensor.sensor.set_auto_whitebal">
-<code class="descclassname">sensor.</code><code class="descname">set_auto_whitebal</code><span class="sig-paren">(</span><em>enable</em>, <em>value=(-1</em>, <em>-1</em>, <em>-1)</em><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_whitebal" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal"><span class="pre">enable</span></code> Turns auto whitebal on (True) or off (False). Defaults to on.
-<code class="docutils literal"><span class="pre">value</span></code> Forced whitebal value. See the camera datasheet for more details.</p>
+<code class="descclassname">sensor.</code><code class="descname">set_auto_whitebal</code><span class="sig-paren">(</span><em>enable</em><span class="optional">[</span>, <em>rgb_gain_db=(-1</em>, <em>-1</em>, <em>-1)</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.set_auto_whitebal" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">enable</span></code> turns auto white balance on (True) or off (False).
+The camera will startup with auto white balance on.</p>
+<p>If <code class="docutils literal"><span class="pre">enable</span></code> is False you may set a fixed gain in decibels for the red, green,
+and blue channels respectively with <code class="docutils literal"><span class="pre">rgb_gain_db</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">You need to turn white balance off if you want to track colors.</p>
+<p class="last">You need to turn off gain control too if you want to track colors.</p>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">value</span></code> is keyword arguments which must be explicitly invoked in the
-function call by writing <code class="docutils literal"><span class="pre">value=</span></code></p>
-</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sensor.sensor.get_rgb_gain_db">
+<code class="descclassname">sensor.</code><code class="descname">get_rgb_gain_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensor.sensor.get_rgb_gain_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple with the current camera red, green, and blue gain values in
+decibels ((float, float, float)).</p>
 </dd></dl>
 
 <dl class="function">
@@ -598,6 +658,12 @@ grayscale images.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sensor.sensor.MT9V034">
+<code class="descclassname">sensor.</code><code class="descname">MT9V034</code><a class="headerlink" href="#sensor.sensor.MT9V034" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">sensor.get_id()</span></code> returns this for the MT9V034 camera.</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sensor.sensor.QQCIF">
 <code class="descclassname">sensor.</code><code class="descname">QQCIF</code><a class="headerlink" href="#sensor.sensor.QQCIF" title="Permalink to this definition">¶</a></dt>
 <dd><p>88x72 resolution for the camera sensor.</p>
@@ -683,6 +749,34 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sensor.sensor.B64X32">
+<code class="descclassname">sensor.</code><code class="descname">B64X32</code><a class="headerlink" href="#sensor.sensor.B64X32" title="Permalink to this definition">¶</a></dt>
+<dd><p>64x32 resolution for the camera sensor.</p>
+<p>For use with <code class="docutils literal"><span class="pre">image.find_displacement()</span></code> and any other FFT based algorithm.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B64X64">
+<code class="descclassname">sensor.</code><code class="descname">B64X64</code><a class="headerlink" href="#sensor.sensor.B64X64" title="Permalink to this definition">¶</a></dt>
+<dd><p>64x64 resolution for the camera sensor.</p>
+<p>For use with <code class="docutils literal"><span class="pre">image.find_displacement()</span></code> and any other FFT based algorithm.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B128X64">
+<code class="descclassname">sensor.</code><code class="descname">B128X64</code><a class="headerlink" href="#sensor.sensor.B128X64" title="Permalink to this definition">¶</a></dt>
+<dd><p>128x64 resolution for the camera sensor.</p>
+<p>For use with <code class="docutils literal"><span class="pre">image.find_displacement()</span></code> and any other FFT based algorithm.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.B128X128">
+<code class="descclassname">sensor.</code><code class="descname">B128X128</code><a class="headerlink" href="#sensor.sensor.B128X128" title="Permalink to this definition">¶</a></dt>
+<dd><p>128x128 resolution for the camera sensor.</p>
+<p>For use with <code class="docutils literal"><span class="pre">image.find_displacement()</span></code> and any other FFT based algorithm.</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sensor.sensor.LCD">
 <code class="descclassname">sensor.</code><code class="descname">LCD</code><a class="headerlink" href="#sensor.sensor.LCD" title="Permalink to this definition">¶</a></dt>
 <dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
@@ -692,24 +786,6 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
 <dt id="sensor.sensor.QQVGA2">
 <code class="descclassname">sensor.</code><code class="descname">QQVGA2</code><a class="headerlink" href="#sensor.sensor.QQVGA2" title="Permalink to this definition">¶</a></dt>
 <dd><p>128x160 resolution for the camera sensor (for use with the lcd shield).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.B40x30">
-<code class="descclassname">sensor.</code><code class="descname">B40x30</code><a class="headerlink" href="#sensor.sensor.B40x30" title="Permalink to this definition">¶</a></dt>
-<dd><p>40x30 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.B64x32">
-<code class="descclassname">sensor.</code><code class="descname">B64x32</code><a class="headerlink" href="#sensor.sensor.B64x32" title="Permalink to this definition">¶</a></dt>
-<dd><p>64x32 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="sensor.sensor.B64x64">
-<code class="descclassname">sensor.</code><code class="descname">B64x64</code><a class="headerlink" href="#sensor.sensor.B64x64" title="Permalink to this definition">¶</a></dt>
-<dd><p>64x64 resolution for the camera sensor (for use with <code class="docutils literal"><span class="pre">image.find_displacement</span></code>).</p>
 </dd></dl>
 
 <dl class="data">
@@ -765,7 +841,7 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 09 Dec 2017.
+      Last updated on 11 Feb 2018.
 
     </p>
   </div>
