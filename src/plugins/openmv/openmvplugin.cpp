@@ -2666,6 +2666,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         QString selectedPort;
         bool forceBootloaderBricked = false;
         QString firmwarePath = forceFirmwarePath;
+        int originalEraseFlashSectorStart = FLASH_SECTOR_START;
+        int originalEraseFlashSectorEnd = FLASH_SECTOR_END;
+        int originalEraseFlashSectorAllStart = FLASH_SECTOR_ALL_START;
+        int originalEraseFlashSectorAllEnd = FLASH_SECTOR_ALL_END;
 
         if(stringList.isEmpty())
         {
@@ -2684,6 +2688,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                 if(boards.open(QIODevice::ReadOnly))
                 {
                     QMap<QString, QString> mappings;
+                    QMap<QString, QPair<int, int> > eraseMappings;
+                    QMap<QString, QPair<int, int> > eraseAllMappings;
 
                     forever
                     {
@@ -2691,8 +2697,11 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                         {
-                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromUtf8(data));
-                            mappings.insert(mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
+                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\+(\\d+)\\+(\\d+)\\+(\\d+)")).match(QString::fromUtf8(data));
+                            QString temp = mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" "));
+                            mappings.insert(temp, mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
+                            eraseMappings.insert(temp, QPair<int, int>(mapping.captured(5).toInt(), mapping.captured(6).toInt()));
+                            eraseAllMappings.insert(temp, QPair<int, int>(mapping.captured(4).toInt(), mapping.captured(6).toInt()));
                         }
                         else
                         {
@@ -2733,6 +2742,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     forceFlashFSErase = answer == QMessageBox::Yes;
                                     forceBootloaderBricked = true;
                                     firmwarePath = Core::ICore::userResourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+                                    originalEraseFlashSectorStart = eraseMappings.value(temp).first;
+                                    originalEraseFlashSectorEnd = eraseMappings.value(temp).second;
+                                    originalEraseFlashSectorAllStart = eraseAllMappings.value(temp).first;
+                                    originalEraseFlashSectorAllEnd = eraseAllMappings.value(temp).second;
                                 }
                             }
                         }
@@ -2934,6 +2947,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                             if(boards.open(QIODevice::ReadOnly))
                             {
                                 QMap<QString, QString> mappings;
+                                QMap<QString, QPair<int, int> > eraseMappings;
+                                QMap<QString, QPair<int, int> > eraseAllMappings;
 
                                 forever
                                 {
@@ -2941,8 +2956,11 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                                     if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                                     {
-                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)")).match(QString::fromUtf8(data));
-                                        mappings.insert(mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" ")), mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
+                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\+(\\d+)\\+(\\d+)\\+(\\d+)")).match(QString::fromUtf8(data));
+                                        QString temp = mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" "));
+                                        mappings.insert(temp, mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
+                                        eraseMappings.insert(temp, QPair<int, int>(mapping.captured(5).toInt(), mapping.captured(6).toInt()));
+                                        eraseAllMappings.insert(temp, QPair<int, int>(mapping.captured(4).toInt(), mapping.captured(6).toInt()));
                                     }
                                     else
                                     {
@@ -2951,11 +2969,15 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                     }
                                 }
 
-                                QString value = mappings.value(arch2.remove(QRegularExpression(QStringLiteral("\\[(.+?):(.+?)\\]"))).simplified().replace(QStringLiteral("_"), QStringLiteral(" ")));
+                                QString temp = arch2.remove(QRegularExpression(QStringLiteral("\\[(.+?):(.+?)\\]"))).simplified().replace(QStringLiteral("_"), QStringLiteral(" "));
 
-                                if(!value.isEmpty())
+                                if(!mappings.contains(temp))
                                 {
-                                    firmwarePath = Core::ICore::userResourcePath() + QStringLiteral("/firmware/") + value + QStringLiteral("/firmware.bin");
+                                    firmwarePath = Core::ICore::userResourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+                                    originalEraseFlashSectorStart = eraseMappings.value(temp).first;
+                                    originalEraseFlashSectorEnd = eraseMappings.value(temp).second;
+                                    originalEraseFlashSectorAllStart = eraseAllMappings.value(temp).first;
+                                    originalEraseFlashSectorAllEnd = eraseAllMappings.value(temp).second;
                                 }
                                 else
                                 {
@@ -3111,8 +3133,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         // Erase Flash ////////////////////////////////////////
                         {
-                            int flash_start = forceFlashFSErase ? FLASH_SECTOR_ALL_START : FLASH_SECTOR_START;
-                            int flash_end = forceFlashFSErase ? FLASH_SECTOR_ALL_END : FLASH_SECTOR_END;
+                            int flash_start = forceFlashFSErase ? originalEraseFlashSectorAllStart : originalEraseFlashSectorStart;
+                            int flash_end = forceFlashFSErase ? originalEraseFlashSectorAllEnd : originalEraseFlashSectorEnd;
 
                             bool ok2 = bool();
                             bool *ok2Ptr = &ok2;
