@@ -2189,7 +2189,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
         layout->addWidget(box);
 
         bool boardKeyOk = dialog->exec() == QDialog::Accepted;
-        QString boardKey = edit->text();
+        QString boardKey = edit->text().replace(QRegularExpression(QStringLiteral("\\s")), QStringLiteral(""));
 
         delete dialog;
 
@@ -3658,10 +3658,10 @@ void OpenMVPlugin::disconnectClicked(bool reset)
                 {
                     if(!m_portPath.isEmpty())
                     {
-                        // Extra disk activity to flush changes...
-                        QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
-                        if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
-                        temp.remove();
+                        // DISALBED // Extra disk activity to flush changes...
+                        // DISALBED QFile temp(QDir::cleanPath(QDir::fromNativeSeparators(m_portPath)) + QStringLiteral("/openmv.null"));
+                        // DISALBED if(temp.open(QIODevice::WriteOnly)) temp.write(QByteArray(FILE_FLUSH_BYTES, 0));
+                        // DISALBED temp.remove();
 
 #if defined(Q_OS_WIN)
                         wchar_t driveLetter[m_portPath.size()];
