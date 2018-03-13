@@ -3631,14 +3631,14 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                 {
                     m_versionButton->setText(m_versionButton->text().append(tr(" - [ out of date - click here to updgrade ]")));
 
-                    if(QMessageBox::warning(Core::ICore::dialogParent(),
-                        tr("Connect"),
-                        tr("Your OpenMV Cam's firmware is out of date. Would you like to upgrade?"),
-                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                    == QMessageBox::Ok)
-                    {
-                        QTimer::singleShot(1, this, [this] { OpenMVPlugin::updateCam(); });
-                    }
+//                    if(QMessageBox::warning(Core::ICore::dialogParent(),
+//                        tr("Connect"),
+//                        tr("Your OpenMV Cam's firmware is out of date. Would you like to upgrade?"),
+//                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+//                    == QMessageBox::Ok)
+//                    {
+//                        QTimer::singleShot(1, this, [this] { OpenMVPlugin::updateCam(); });
+//                    }
                 }
                 else
                 {
