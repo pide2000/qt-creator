@@ -228,7 +228,7 @@ public slots: // private
     void saveTemplate(const QRect &rect);
     void saveDescriptor(const QRect &rect);
     QMap<QString, QAction *> aboutToShowExamplesRecursive(const QString &path, QMenu *parent, bool notExamples = false);
-    void updateCam();
+    void updateCam(bool forceYes = false);
     void setPortPath(bool silent = false);
     void openTerminalAboutToShow();
     QList<int> openThresholdEditor(const QVariant parameters = QVariant());

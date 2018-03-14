@@ -202,7 +202,6 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
         else
         {
             settings->endGroup();
-
             exit(-1);
         }
     }
@@ -2189,7 +2188,7 @@ bool OpenMVPlugin::registerOpenMVCamDialog(const QString board, const QString id
         layout->addWidget(box);
 
         bool boardKeyOk = dialog->exec() == QDialog::Accepted;
-        QString boardKey = edit->text().replace(QRegularExpression(QStringLiteral("\\s")), QStringLiteral(""));
+        QString boardKey = edit->text().replace(QRegularExpression(QStringLiteral("\\s+")), QStringLiteral(""));
 
         delete dialog;
 
@@ -2697,7 +2696,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                         if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                         {
-                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\+(\\d+)\\+(\\d+)\\+(\\d+)")).match(QString::fromUtf8(data));
+                            QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)")).match(QString::fromUtf8(data));
                             QString temp = mapping.captured(2).replace(QStringLiteral("_"), QStringLiteral(" "));
                             mappings.insert(temp, mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
                             eraseMappings.insert(temp, QPair<int, int>(mapping.captured(5).toInt(), mapping.captured(6).toInt()));
@@ -2956,7 +2955,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                                     if((boards.error() == QFile::NoError) && (!data.isEmpty()))
                                     {
-                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\+(\\d+)\\+(\\d+)\\+(\\d+)")).match(QString::fromUtf8(data));
+                                        QRegularExpressionMatch mapping = QRegularExpression(QStringLiteral("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)")).match(QString::fromUtf8(data));
                                         QString temp = mapping.captured(1).replace(QStringLiteral("_"), QStringLiteral(" "));
                                         mappings.insert(temp, mapping.captured(3).replace(QStringLiteral("_"), QStringLiteral(" ")));
                                         eraseMappings.insert(temp, QPair<int, int>(mapping.captured(5).toInt(), mapping.captured(6).toInt()));
@@ -2971,9 +2970,10 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                                 QString temp = arch2.remove(QRegularExpression(QStringLiteral("\\[(.+?):(.+?)\\]"))).simplified().replace(QStringLiteral("_"), QStringLiteral(" "));
 
-                                if(!mappings.contains(temp))
+                                if(mappings.contains(temp))
                                 {
                                     firmwarePath = Core::ICore::userResourcePath() + QStringLiteral("/firmware/") + mappings.value(temp) + QStringLiteral("/firmware.bin");
+                                    qDebug() << firmwarePath;
                                     originalEraseFlashSectorStart = eraseMappings.value(temp).first;
                                     originalEraseFlashSectorEnd = eraseMappings.value(temp).second;
                                     originalEraseFlashSectorAllStart = eraseAllMappings.value(temp).first;
@@ -3631,14 +3631,16 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                 {
                     m_versionButton->setText(m_versionButton->text().append(tr(" - [ out of date - click here to updgrade ]")));
 
-//                    if(QMessageBox::warning(Core::ICore::dialogParent(),
-//                        tr("Connect"),
-//                        tr("Your OpenMV Cam's firmware is out of date. Would you like to upgrade?"),
-//                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-//                    == QMessageBox::Ok)
-//                    {
-//                        QTimer::singleShot(1, this, [this] { OpenMVPlugin::updateCam(); });
-//                    }
+                    QTimer::singleShot(1, this, [this] {
+                        if(QMessageBox::warning(Core::ICore::dialogParent(),
+                            tr("Connect"),
+                            tr("Your OpenMV Cam's firmware is out of date. Would you like to upgrade?"),
+                            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+                        == QMessageBox::Ok)
+                        {
+                            OpenMVPlugin::updateCam(true);
+                        }
+                    });
                 }
                 else
                 {
@@ -4292,7 +4294,7 @@ QMap<QString, QAction *> OpenMVPlugin::aboutToShowExamplesRecursive(const QStrin
     return actions;
 }
 
-void OpenMVPlugin::updateCam()
+void OpenMVPlugin::updateCam(bool forceYes)
 {
     if(!m_working)
     {
@@ -4312,11 +4314,11 @@ void OpenMVPlugin::updateCam()
                 || ((m_major == match.captured(1).toInt()) && (m_minor < match.captured(2).toInt()))
                 || ((m_major == match.captured(1).toInt()) && (m_minor == match.captured(2).toInt()) && (m_patch < match.captured(3).toInt())))
                 {
-                    if(QMessageBox::warning(Core::ICore::dialogParent(),
+                    if(forceYes || (QMessageBox::warning(Core::ICore::dialogParent(),
                         tr("Firmware Update"),
                         tr("Update your OpenMV Cam's firmware to the latest version?"),
                         QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-                    == QMessageBox::Ok)
+                    == QMessageBox::Ok))
                     {
                         int answer = QMessageBox::question(Core::ICore::dialogParent(),
                             tr("Firmware Update"),
