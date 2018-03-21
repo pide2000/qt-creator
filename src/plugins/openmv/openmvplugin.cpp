@@ -3051,11 +3051,13 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                         {
                             bool done2 = bool(), loopExit = false, done22 = false;
                             bool *done2Ptr = &done2, *loopExitPtr = &loopExit, *done2Ptr2 = &done22;
+                            int version2 = int(), *version2Ptr = &version2;
 
                             QMetaObject::Connection conn = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStartResponse,
-                                this, [this, done2Ptr, loopExitPtr] (bool done) {
+                                this, [this, done2Ptr, loopExitPtr, version2Ptr] (bool done, int version) {
                                 *done2Ptr = done;
                                 *loopExitPtr = true;
+                                *version2Ptr = version;
                             });
 
                             QMetaObject::Connection conn2 = connect(m_ioport, &OpenMVPluginSerialPort::bootloaderStopResponse,
@@ -3128,6 +3130,40 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 }
 
                                 CONNECT_END();
+                            }
+
+                            if(version2 == NEW_BOOTLDR)
+                            {
+                                int start2 = int(), *start2Ptr = &start2;
+                                int all_start2 = int(), *all_start2Ptr = &all_start2;
+                                int last2 = int(), *last2Ptr = &last2;
+
+                                QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::booloaderQueryDone,
+                                    this, [this, start2Ptr, all_start2Ptr, last2Ptr] (int start, int all_start, int last) {
+                                    *start2Ptr = start;
+                                    *all_start2Ptr = all_start;
+                                    *last2Ptr = last;
+                                });
+
+                                QEventLoop loop;
+
+                                connect(m_iodevice, &OpenMVPluginIO::booloaderQueryDone,
+                                        &loop, &QEventLoop::quit);
+
+                                m_iodevice->booloaderQuery();
+
+                                loop.exec();
+
+                                disconnect(conn);
+
+                                if((start2 || all_start2 || last2)
+                                && ((0 <= start2) && (start2 <= 1023) && (0 <= all_start2) && (all_start2 <= 1023) && (0 <= last2) && (last2 <= 1023)))
+                                {
+                                    originalEraseFlashSectorStart = start2;
+                                    originalEraseFlashSectorEnd = last2;
+                                    originalEraseFlashSectorAllStart = all_start2;
+                                    originalEraseFlashSectorAllEnd = last2;
+                                }
                             }
                         }
 

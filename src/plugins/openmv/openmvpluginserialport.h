@@ -40,6 +40,7 @@
 #define __BOOTLDR_RESET                 static_cast<int>(0xABCD0002)
 #define __BOOTLDR_ERASE                 static_cast<int>(0xABCD0004)
 #define __BOOTLDR_WRITE                 static_cast<int>(0xABCD0008)
+#define __BOOTLDR_QUERY                 static_cast<int>(0xABCD0010)
 
 #define FW_VERSION_RESPONSE_LEN         12
 #define ARCH_STR_RESPONSE_LEN           64
@@ -49,6 +50,9 @@
 #define TX_BUF_LEN_RESPONSE_LEN         4
 
 #define BOOTLDR_START_RESPONSE_LEN      4
+#define BOOTLDR_QUERY_RESPONSE_LEN      12
+#define OLD_BOOTLDR static_cast<int>(0xABCD0001)
+#define NEW_BOOTLDR static_cast<int>(0xABCD0002)
 
 #define FW_VERSION_START_DELAY          25
 #define FW_VERSION_END_DELAY            25
@@ -101,6 +105,8 @@
 #define BOOTLDR_ERASE_END_DELAY         0
 #define BOOTLDR_WRITE_START_DELAY       0
 #define BOOTLDR_WRITE_END_DELAY         0
+#define BOOTLDR_QUERY_START_DELAY       0
+#define BOOTLDR_QUERY_END_DELAY         0
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -187,7 +193,7 @@ signals:
     void openResult(const QString &errorMessage);
     void commandResult(const OpenMVPluginSerialPortCommandResult &commandResult);
 
-    void bootloaderStartResponse(bool ok);
+    void bootloaderStartResponse(bool ok, int version);
     void bootloaderStopResponse();
     void bootloaderResetResponse();
 
@@ -221,7 +227,7 @@ signals:
     void bootloaderStop();
     void bootloaderReset();
 
-    void bootloaderStartResponse(bool ok);
+    void bootloaderStartResponse(bool ok, int version);
     void bootloaderStopResponse();
     void bootloaderResetResponse();
 };

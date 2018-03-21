@@ -29,6 +29,7 @@ enum
     BOOTLDR_RESET_CPL,
     BOOTLDR_ERASE_CPL,
     BOOTLDR_WRITE_CPL,
+    BOOTLDR_QUERY_CPL,
     CLOSE_CPL
 };
 
@@ -323,7 +324,8 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 }
                 case BOOTLDR_START_CPL:
                 {
-                    emit gotBootloaderStart(deserializeLong(data) == __BOOTLDR_START);
+                    int result = deserializeLong(data);
+                    emit gotBootloaderStart((result == OLD_BOOTLDR) || (result == NEW_BOOTLDR), result);
                     break;
                 }
                 case BOOTLDR_RESET_CPL:
@@ -339,6 +341,15 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 case BOOTLDR_WRITE_CPL:
                 {
                     emit flashWriteDone(true);
+                    break;
+                }
+                case BOOTLDR_QUERY_CPL:
+                {
+                    // The optimizer will mess up the order if executed in emit.
+                    int start = deserializeLong(data);
+                    int all_start = deserializeLong(data);
+                    int last = deserializeLong(data);
+                    emit booloaderQueryDone(start,  all_start, last);
                     break;
                 }
                 case CLOSE_CPL:
@@ -476,7 +487,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     }
                     case BOOTLDR_START_CPL:
                     {
-                        emit gotBootloaderStart(false);
+                        emit gotBootloaderStart(false, int());
                         break;
                     }
                     case BOOTLDR_RESET_CPL:
@@ -492,6 +503,11 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     case BOOTLDR_WRITE_CPL:
                     {
                         emit flashWriteDone(false);
+                        break;
+                    }
+                    case BOOTLDR_QUERY_CPL:
+                    {
+                        emit booloaderQueryDone(int(),  int(), int());
                         break;
                     }
                     case CLOSE_CPL:
@@ -720,7 +736,6 @@ void OpenMVPluginIO::fbEnable(bool enabled)
 void OpenMVPluginIO::jpegEnable(bool enabled)
 {
     Q_UNUSED(enabled)
-
 //  QByteArray buffer;
 //  serializeByte(buffer, __USBDBG_CMD);
 //  serializeByte(buffer, __USBDBG_JPEG_ENABLE);
@@ -776,6 +791,15 @@ void OpenMVPluginIO::flashWrite(const QByteArray &data)
     serializeLong(buffer, __BOOTLDR_WRITE);
     m_postedQueue.enqueue(OpenMVPluginSerialPortCommand(buffer + data, int(), BOOTLDR_WRITE_START_DELAY, BOOTLDR_WRITE_END_DELAY));
     m_completionQueue.enqueue(BOOTLDR_WRITE_CPL);
+    command();
+}
+
+void OpenMVPluginIO::booloaderQuery()
+{
+    QByteArray buffer;
+    serializeLong(buffer, __BOOTLDR_QUERY);
+    m_postedQueue.enqueue(OpenMVPluginSerialPortCommand(buffer, BOOTLDR_QUERY_RESPONSE_LEN, BOOTLDR_QUERY_START_DELAY, BOOTLDR_QUERY_END_DELAY));
+    m_completionQueue.enqueue(BOOTLDR_QUERY_CPL);
     command();
 }
 

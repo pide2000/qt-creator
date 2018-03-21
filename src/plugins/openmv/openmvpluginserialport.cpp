@@ -643,18 +643,22 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
                     }
                     while((response.size() < responseLen) && (!elaspedTimer.hasExpired(BOOTLOADER_READ_TIMEOUT)));
 
-                    if((response.size() >= responseLen) && (deserializeLong(response) == __BOOTLDR_START))
+                    if(response.size() >= responseLen)
                     {
-                        emit bootloaderStartResponse(true);
-                        return;
-                    }
-                    else
-                    {
-                        if(m_port)
+                        int result = deserializeLong(response);
+
+                        if((result == OLD_BOOTLDR)
+                        || (result == NEW_BOOTLDR))
                         {
-                            delete m_port;
-                            m_port = Q_NULLPTR;
+                            emit bootloaderStartResponse(true, result);
+                            return;
                         }
+                    }
+
+                    if(m_port)
+                    {
+                        delete m_port;
+                        m_port = Q_NULLPTR;
                     }
                 }
             }
@@ -664,7 +668,7 @@ void OpenMVPluginSerialPort_private::bootloaderStart(const QString &selectedPort
 
         if(m_bootloaderStop)
         {
-            emit bootloaderStartResponse(false);
+            emit bootloaderStartResponse(false, int());
             return;
         }
     }
