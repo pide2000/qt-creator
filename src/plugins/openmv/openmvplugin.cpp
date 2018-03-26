@@ -26,6 +26,7 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_major = int();
     m_minor = int();
     m_patch = int();
+    m_reconnects = int();
     m_portName = QString();
     m_portPath = QString();
 
@@ -35,10 +36,7 @@ OpenMVPlugin::OpenMVPlugin() : IPlugin()
     m_errorFilterString = QString();
 
     QTimer *timer = new QTimer(this);
-
-    connect(timer, &QTimer::timeout,
-            this, &OpenMVPlugin::processEvents);
-
+    connect(timer, &QTimer::timeout, this, &OpenMVPlugin::processEvents);
     timer->start(1);
 }
 
@@ -2880,6 +2878,16 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
             if((!major2) && (!minor2) && (!patch2))
             {
+                if(m_reconnects < RECONNECTS_MAX)
+                {
+                    m_reconnects += 1;
+
+                    QThread::msleep(10);
+                    CLOSE_RECONNECT_END();
+                }
+
+                m_reconnects = 0;
+
                 QMessageBox::critical(Core::ICore::dialogParent(),
                     tr("Connect"),
                     tr("Timeout error while getting firmware version!"));
@@ -2904,6 +2912,8 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                 CLOSE_RECONNECT_END();
             }
         }
+
+        m_reconnects = 0;
 
         // Bootloader /////////////////////////////////////////////////////////
 
