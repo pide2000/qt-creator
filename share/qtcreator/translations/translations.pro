@@ -118,6 +118,11 @@ for(file, files) {
     #$$v = extract
     #OPENMV-DIFF#
     QMAKE_EXTRA_TARGETS += ts-$$lang
+    #OPENMV-DIFF#
+    v = ts-$${lang}-update.commands
+    $$v = cd $$wd && $$LCONVERT -locations relative $$replace(file, (.*_[^/]*)\\.ts, \\1).po -o $$file
+    QMAKE_EXTRA_TARGETS += ts-$${lang}-update
+    #OPENMV-DIFF#
 }
 #OPENMV-DIFF#
 #ts-all.commands = cd $$wd && $$LUPDATE $$include_options $$sources $$MIME_TR_H $$CUSTOMWIZARD_TR_H $$JSONWIZARD_TR_H $$QMLWIZARD_TR_H $$QTQUICKWIZARD_TR_H $$EXTERNALTOOLS_TR_H -ts $$files
