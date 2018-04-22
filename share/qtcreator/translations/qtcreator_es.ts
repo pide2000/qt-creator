@@ -4008,12 +4008,12 @@ Do you want to check them out now?</source>
     <message>
         <location line="+3"/>
         <source>Use &quot;Cmd&quot;, &quot;Opt&quot;, &quot;Ctrl&quot;, and &quot;Shift&quot; for modifier keys. Use &quot;Escape&quot;, &quot;Backspace&quot;, &quot;Delete&quot;, &quot;Insert&quot;, &quot;Home&quot;, and so on, for special keys. Combine individual keys with &quot;+&quot;, and combine multiple shortcuts to a shortcut sequence with &quot;,&quot;. For example, if the user must hold the Ctrl and Shift modifier keys while pressing Escape, and then release and press A, enter &quot;Ctrl+Shift+Escape,A&quot;.</source>
-        <translation>Utilice &quot;Cmd&quot;, &quot;Opt&quot;, &quot;Ctrl&quot; y &quot;Mayús&quot; para teclas de modificación. Utilice &quot;Escape&quot;, &quot;Retroceso&quot;, &quot;Eliminar&quot;, &quot;Insertar&quot;, &quot;Inicio&quot; y demás para teclas especiales. Combine teclas individuales con &quot;+&quot; y combine atajos múltiples para una secuencia de atajos con &quot;,&quot;. Por ejemplo, si el usuario debe mantener pulsadas las teclas de modificación Ctrl y Mayús mientras pulsa Escape, y luego soltar y pulsar A, introduzca &quot;Ctrl+Mayús+Escape,A&quot;.</translation>
+        <translation>Utilice &quot;Cmd&quot;, &quot;Opt&quot;, &quot;Ctrl&quot; y &quot;Mayús&quot; para teclas de modificación. Utilice &quot;Escape&quot;, &quot;Retroceso&quot;, &quot;Eliminar&quot;, &quot;Insertar&quot;, &quot;Inicio&quot; y demás para teclas especiales. Combine teclas individuales con &quot;+&quot; y combine atajos múltiples para una secuencia de atajos con &quot;,&quot;. Por ejemplo, si el usuario debe mantener pulsadas las teclas de modificación Ctrl y Mayús mientras pulsa Escape, y luego soltar y pulsar A, introduzca &quot;Ctrl+Shift+Escape,A&quot;.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use &quot;Ctrl&quot;, &quot;Alt&quot;, &quot;Meta&quot;, and &quot;Shift&quot; for modifier keys. Use &quot;Escape&quot;, &quot;Backspace&quot;, &quot;Delete&quot;, &quot;Insert&quot;, &quot;Home&quot;, and so on, for special keys. Combine individual keys with &quot;+&quot;, and combine multiple shortcuts to a shortcut sequence with &quot;,&quot;. For example, if the user must hold the Ctrl and Shift modifier keys while pressing Escape, and then release and press A, enter &quot;Ctrl+Shift+Escape,A&quot;.</source>
-        <translation>Utilice &quot;Ctrl&quot;, &quot;Alt&quot;, &quot;Meta&quot; y &quot;Mayús&quot; para teclas de modificación. Utilice &quot;Escape&quot;, &quot;Retroceso&quot;, &quot;Eliminar&quot;, &quot;Insertar&quot;, &quot;Inicio&quot; y demás para teclas especiales. Combine teclas individuales con &quot;+&quot; y combine atajos múltiples a una secuencia de atajos con &quot;,&quot;. Por ejemplo, si el usuario debe mantener pulsadas las teclas de modificación Ctrl y Mayús mientras pulsa Escape, y luego soltar y pulsar A, introduzca &quot;Ctrl+Mayús+Escape,A&quot;.</translation>
+        <translation>Utilice &quot;Ctrl&quot;, &quot;Alt&quot;, &quot;Meta&quot; y &quot;Mayús&quot; para teclas de modificación. Utilice &quot;Escape&quot;, &quot;Retroceso&quot;, &quot;Eliminar&quot;, &quot;Insertar&quot;, &quot;Inicio&quot; y demás para teclas especiales. Combine teclas individuales con &quot;+&quot; y combine atajos múltiples a una secuencia de atajos con &quot;,&quot;. Por ejemplo, si el usuario debe mantener pulsadas las teclas de modificación Ctrl y Mayús mientras pulsa Escape, y luego soltar y pulsar A, introduzca &quot;Ctrl+Shift+Escape,A&quot;.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4693,7 +4693,7 @@ Continue?</source>
     <message>
         <location line="+2"/>
         <source>Ctrl+Shift+F</source>
-        <translation>Ctrl+Mayús+F</translation>
+        <translation>Ctrl+Shift+F</translation>
     </message>
 </context>
 <context>
@@ -4702,13 +4702,13 @@ Continue?</source>
         <location filename="../../../src/plugins/coreplugin/find/findtoolbar.cpp" line="+123"/>
         <location line="+13"/>
         <source>Shift+Enter</source>
-        <translation>Mayús+Enter</translation>
+        <translation>Shift+Enter</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+13"/>
         <source>Shift+Return</source>
-        <translation>Mayús+Return</translation>
+        <translation>Shift+Return</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -4753,7 +4753,7 @@ Continue?</source>
     <message>
         <location line="+2"/>
         <source>Ctrl+Shift+F3</source>
-        <translation>Ctrl+Mayús+F3</translation>
+        <translation>Ctrl+Shift+F3</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5361,7 +5361,7 @@ Do you want to kill it?</source>
     <message>
         <location line="+8"/>
         <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Mayús+S</translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5471,7 +5471,7 @@ Do you want to kill it?</source>
     <message>
         <location line="+0"/>
         <source>Ctrl+Shift+F11</source>
-        <translation>Ctrl+Mayús+F11</translation>
+        <translation>Ctrl+Shift+F11</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5726,12 +5726,12 @@ Do you want to kill it?</source>
     <message>
         <location line="+10"/>
         <source>Ctrl+Shift+0</source>
-        <translation>Ctrl+Mayús+0</translation>
+        <translation>Ctrl+Shift+0</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alt+Shift+0</source>
-        <translation>Alt+Mayús+0</translation>
+        <translation>Alt+Shift+0</translation>
     </message>
 </context>
 <context>
@@ -6650,7 +6650,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Mayús+Up</translation>
+        <translation>Ctrl+Shift+Up</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6660,7 +6660,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Mayús+Down</translation>
+        <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6670,7 +6670,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Alt+Up</source>
-        <translation>Ctrl+Alt+Arriba</translation>
+        <translation>Ctrl+Alt+Up</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6680,7 +6680,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Alt+Down</source>
-        <translation>Ctrl+Alt+Abajo</translation>
+        <translation>Ctrl+Alt+Down</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6700,7 +6700,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Shift+Return</source>
-        <translation>Ctrl+Mayús+Retorno</translation>
+        <translation>Ctrl+Shift+Return</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6710,7 +6710,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Return</source>
-        <translation>Ctrl+Retorno</translation>
+        <translation>Ctrl+Return</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6762,7 +6762,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+PgUp</source>
-        <translation>Ctrl+RePág</translation>
+        <translation>Ctrl+PgUp</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6782,7 +6782,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Up</source>
-        <translation>Ctrl+Arriba</translation>
+        <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6792,7 +6792,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Down</source>
-        <translation>Ctrl+Abajo</translation>
+        <translation>Ctrl+Down</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6802,7 +6802,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Ctrl+Shift+V</source>
-        <translation>Ctrl+Mayús+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -6857,7 +6857,7 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Shift+Del</source>
-        <translation>Mayús+Del</translation>
+        <translation>Shift+Del</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -6877,12 +6877,12 @@ Filtro: %2
     <message>
         <location line="+1"/>
         <source>Meta+Shift+U</source>
-        <translation>Meta+Mayús+U</translation>
+        <translation>Meta+Shift+U</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Alt+Shift+U</source>
-        <translation>Alt+Mayús+U</translation>
+        <translation>Alt+Shift+U</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -7078,12 +7078,12 @@ Filtro: %2
     <message>
         <location line="+2"/>
         <source>Meta+Space</source>
-        <translation>Meta+Espacio</translation>
+        <translation>Meta+Space</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Ctrl+Space</source>
-        <translation>Ctrl+Espacio</translation>
+        <translation>Ctrl+Space</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7093,7 +7093,7 @@ Filtro: %2
     <message>
         <location line="+2"/>
         <source>Alt+Return</source>
-        <translation>Alt+Retorno</translation>
+        <translation>Alt+Return</translation>
     </message>
     <message>
         <location line="+41"/>

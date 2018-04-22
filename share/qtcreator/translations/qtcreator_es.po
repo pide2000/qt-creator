@@ -4076,7 +4076,7 @@ msgstr ""
 "combine atajos múltiples para una secuencia de atajos con \",\". Por "
 "ejemplo, si el usuario debe mantener pulsadas las teclas de modificación "
 "Ctrl y Mayús mientras pulsa Escape, y luego soltar y pulsar A, introduzca "
-"\"Ctrl+Mayús+Escape,A\"."
+"\"Ctrl+Shift+Escape,A\"."
 
 #: ../../../src/plugins/coreplugin/dialogs/shortcutsettings.cpp:242
 msgctxt "Core::Internal::ShortcutSettingsWidget|"
@@ -4094,7 +4094,7 @@ msgstr ""
 "combine atajos múltiples a una secuencia de atajos con \",\". Por ejemplo, "
 "si el usuario debe mantener pulsadas las teclas de modificación Ctrl y Mayús "
 "mientras pulsa Escape, y luego soltar y pulsar A, introduzca "
-"\"Ctrl+Mayús+Escape,A\"."
+"\"Ctrl+Shift+Escape,A\"."
 
 #: ../../../src/plugins/coreplugin/dialogs/shortcutsettings.cpp:253
 msgctxt "Core::Internal::ShortcutSettingsWidget|"
@@ -4774,19 +4774,19 @@ msgstr "Avanzado..."
 #: ../../../src/plugins/coreplugin/find/findplugin.cpp:225
 msgctxt "Core::FindPlugin|"
 msgid "Ctrl+Shift+F"
-msgstr "Ctrl+Mayús+F"
+msgstr "Ctrl+Shift+F"
 
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:123
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:136
 msgctxt "Core::Internal::FindToolBar|"
 msgid "Shift+Enter"
-msgstr "Mayús+Enter"
+msgstr "Shift+Enter"
 
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:129
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:142
 msgctxt "Core::Internal::FindToolBar|"
 msgid "Shift+Return"
-msgstr "Mayús+Return"
+msgstr "Shift+Return"
 
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:165
 msgctxt "Core::Internal::FindToolBar|"
@@ -4831,7 +4831,7 @@ msgstr "Buscar anterior (seleccionado)"
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:219
 msgctxt "Core::Internal::FindToolBar|"
 msgid "Ctrl+Shift+F3"
-msgstr "Ctrl+Mayús+F3"
+msgstr "Ctrl+Shift+F3"
 
 #: ../../../src/plugins/coreplugin/find/findtoolbar.cpp:224
 msgctxt "Core::Internal::FindToolBar|"
@@ -5437,7 +5437,7 @@ msgstr "Guardar"
 #: ../../../src/plugins/coreplugin/mainwindow.cpp:594
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Shift+S"
-msgstr "Ctrl+Mayús+S"
+msgstr "Ctrl+Shift+S"
 
 #: ../../../src/plugins/coreplugin/mainwindow.cpp:596
 msgctxt "Core::Internal::MainWindow|"
@@ -5547,7 +5547,7 @@ msgstr "Ctrl+Meta+F"
 #: ../../../src/plugins/coreplugin/mainwindow.cpp:716
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Shift+F11"
-msgstr "Ctrl+Mayús+F11"
+msgstr "Ctrl+Shift+F11"
 
 #: ../../../src/plugins/coreplugin/mainwindow.cpp:724
 msgctxt "Core::Internal::MainWindow|"
@@ -5777,12 +5777,12 @@ msgstr "Alternar detalles del progreso"
 #: ../../../src/plugins/coreplugin/progressmanager/progressmanager.cpp:343
 msgctxt "Core::Internal::ProgressManagerPrivate|"
 msgid "Ctrl+Shift+0"
-msgstr "Ctrl+Mayús+0"
+msgstr "Ctrl+Shift+0"
 
 #: ../../../src/plugins/coreplugin/progressmanager/progressmanager.cpp:344
 msgctxt "Core::Internal::ProgressManagerPrivate|"
 msgid "Alt+Shift+0"
-msgstr "Alt+Mayús+0"
+msgstr "Alt+Shift+0"
 
 #: ../../../src/plugins/coreplugin/progressmanager/progressview.cpp:42
 msgctxt "Core::Internal::ProgressView|"
@@ -6659,7 +6659,7 @@ msgstr "Mover línea arriba"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:324
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Shift+Up"
-msgstr "Ctrl+Mayús+Up"
+msgstr "Ctrl+Shift+Up"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:326
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6669,7 +6669,7 @@ msgstr "Mover línea abajo"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:327
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Shift+Down"
-msgstr "Ctrl+Mayús+Down"
+msgstr "Ctrl+Shift+Down"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:329
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6679,7 +6679,7 @@ msgstr "Copiar línea arriba"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:330
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Alt+Up"
-msgstr "Ctrl+Alt+Arriba"
+msgstr "Ctrl+Alt+Up"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:332
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6689,7 +6689,7 @@ msgstr "Copiar línea abajo "
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:333
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Alt+Down"
-msgstr "Ctrl+Alt+Abajo"
+msgstr "Ctrl+Alt+Down"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:335
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6709,7 +6709,7 @@ msgstr "Insertar línea encima de la línea actual"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:339
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Shift+Return"
-msgstr "Ctrl+Mayús+Retorno"
+msgstr "Ctrl+Shift+Return"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:341
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6719,7 +6719,7 @@ msgstr "Insertar línea debajo de la línea actual "
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:342
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Return"
-msgstr "Ctrl+Retorno"
+msgstr "Ctrl+Return"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:346
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6771,7 +6771,7 @@ msgstr "Mover la vista hacia arriba y mantener la posición del cursor"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:364
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+PgUp"
-msgstr "Ctrl+RePág"
+msgstr "Ctrl+PgUp"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:366
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6792,7 +6792,7 @@ msgstr "Mover la vista hacia arriba y mantener la posición del cursor"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:370
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Up"
-msgstr "Ctrl+Arriba"
+msgstr "Ctrl+Up"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:372
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6802,7 +6802,7 @@ msgstr "Mover hacia abajo y mantener la posición del cursor"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:373
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Down"
-msgstr "Ctrl+Abajo"
+msgstr "Ctrl+Down"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:381
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6812,7 +6812,7 @@ msgstr "Pegar desde el historial del portapapeles "
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:382
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Ctrl+Shift+V"
-msgstr "Ctrl+Mayús+V"
+msgstr "Ctrl+Shift+V"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:402
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6867,7 +6867,7 @@ msgstr "Cortar &línea"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:428
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Shift+Del"
-msgstr "Mayús+Del"
+msgstr "Shift+Del"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:431
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -6887,12 +6887,12 @@ msgstr "Selección de mayúscula"
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:436
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Meta+Shift+U"
-msgstr "Meta+Mayús+U"
+msgstr "Meta+Shift+U"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:436
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
 msgid "Alt+Shift+U"
-msgstr "Alt+Mayús+U"
+msgstr "Alt+Shift+U"
 
 #: ../../../src/plugins/texteditor/texteditoractionhandler.cpp:439
 msgctxt "TextEditor::Internal::TextEditorActionHandler|"
@@ -7082,12 +7082,12 @@ msgstr "Realización del desencadenante"
 #: ../../../src/plugins/texteditor/texteditorplugin.cpp:106
 msgctxt "TextEditor::Internal::TextEditorPlugin|"
 msgid "Meta+Space"
-msgstr "Meta+Espacio"
+msgstr "Meta+Space"
 
 #: ../../../src/plugins/texteditor/texteditorplugin.cpp:106
 msgctxt "TextEditor::Internal::TextEditorPlugin|"
 msgid "Ctrl+Space"
-msgstr "Ctrl+Espacio"
+msgstr "Ctrl+Space"
 
 #: ../../../src/plugins/texteditor/texteditorplugin.cpp:113
 msgctxt "TextEditor::Internal::TextEditorPlugin|"
@@ -7097,7 +7097,7 @@ msgstr "Acción de refactorización del desencadenante"
 #: ../../../src/plugins/texteditor/texteditorplugin.cpp:115
 msgctxt "TextEditor::Internal::TextEditorPlugin|"
 msgid "Alt+Return"
-msgstr "Alt+Retorno"
+msgstr "Alt+Return"
 
 #: ../../../src/plugins/texteditor/texteditorplugin.cpp:156
 msgctxt "TextEditor::Internal::TextEditorPlugin|"
