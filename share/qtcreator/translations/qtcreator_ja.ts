@@ -7736,7 +7736,7 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2229"/>
+        <location line="+2231"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
@@ -7745,7 +7745,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
  OpenMV IDEのアプリケーションデータを表示/編集しているプログラムを閉じて、OpenMV IDEを再起動してください！</translation>
     </message>
     <message>
-        <location line="-1836"/>
+        <location line="-1838"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation>しきい値エディタでグレースケールしきい値を編集</translation>
     </message>
@@ -7825,32 +7825,32 @@ while(True):
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4364"/>
+        <location line="+4366"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation>ターミナルを開く</translation>
     </message>
     <message>
-        <location line="-4406"/>
+        <location line="-4408"/>
         <source>Machine Vision</source>
         <translation>マシンビジョン</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4433"/>
+        <location line="+4435"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation>しきい値エディタ</translation>
     </message>
     <message>
-        <location line="-4504"/>
-        <location line="+4582"/>
+        <location line="-4506"/>
+        <location line="+4584"/>
         <source>Keypoints Editor</source>
         <translation>キーポイントエディタ</translation>
     </message>
     <message>
-        <location line="-4575"/>
-        <location line="+4725"/>
+        <location line="-4577"/>
+        <location line="+4727"/>
         <location line="+96"/>
         <location line="+21"/>
         <location line="+10"/>
@@ -7859,7 +7859,7 @@ while(True):
         <translation>AprilTagジェネレータ</translation>
     </message>
     <message>
-        <location line="-4869"/>
+        <location line="-4871"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation>TAG16H5ファミリー（30タグ）</translation>
     </message>
@@ -7900,12 +7900,12 @@ while(True):
         <location line="+29"/>
         <location line="+14"/>
         <location line="+16"/>
-        <location line="+562"/>
+        <location line="+564"/>
         <source>Failed to open: &quot;%L1&quot;</source>
         <translation>オープンに失敗しました：&quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="-645"/>
+        <location line="-647"/>
         <source>DataMatrix Generator</source>
         <translation>データマトリックスジェネレータ</translation>
     </message>
@@ -7966,7 +7966,7 @@ while(True):
         <translation>&lt;p&gt;&lt;b&gt;OpenMV IDE %L1について&lt;/b&gt;&lt;/p&gt;&lt;p&gt;By: Ibrahim Abdelkader &amp; Kwabena W. Agyeman&lt;/p&gt;&lt;p&gt;&lt;b&gt;GNU 一般公衆利用許諾&lt;/b&gt;&lt;/p&gt;&lt;p&gt;著作権 (C) %L2 %L3&lt;/p&gt;&lt;p&gt;このプログラムは有用であることを期待して配布されていますが、保証は一切ありません。商品性または特定目的への適合性の暗黙の保証さえも含みません。詳細については、 &lt;a href=&quot;http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT&quot;&gt;GNU 一般公衆利用許諾契約書&lt;/a&gt; をご覧ください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;質問またはコメント&lt;/b&gt;&lt;/p&gt;&lt;p&gt;はこちら &lt;a href=&quot;mailto:openmv@openmv.io&quot;&gt;openmv@openmv.io&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+17"/>
         <location line="+1705"/>
         <location line="+33"/>
         <location line="+9"/>
@@ -8024,7 +8024,7 @@ while(True):
         <translation type="vanished">Ctrl+R</translation>
     </message>
     <message>
-        <location line="-251"/>
+        <location line="-253"/>
         <source>Documents Folder</source>
         <translation>ドキュメントフォルダ</translation>
     </message>
@@ -8034,7 +8034,12 @@ while(True):
         <translation>&quot;%L1&quot;にコードを追加する</translation>
     </message>
     <message>
-        <location line="+263"/>
+        <location line="+220"/>
+        <source>&lt;br/&gt;&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
+        <translation>&lt;br/&gt;&lt;p&gt;OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+45"/>
         <source>Stop (halt script)</source>
         <translation>停止（停止スクリプト）</translation>
     </message>
@@ -9355,7 +9360,7 @@ OpenMV IDEをOpenMV Camにコピーしますか？</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-5422"/>
+        <location line="-5424"/>
         <source>New File</source>
         <translation>新しいファイル</translation>
     </message>
@@ -9365,7 +9370,7 @@ OpenMV IDEをOpenMV Camにコピーしますか？</translation>
         <translation>新しいファイルを開くことができません！</translation>
     </message>
     <message>
-        <location line="+5178"/>
+        <location line="+5180"/>
         <source>Copy Failed!</source>
         <translation>コピーに失敗しました！</translation>
     </message>

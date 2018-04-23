@@ -7748,7 +7748,7 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2229"/>
+        <location line="+2231"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
@@ -7757,7 +7757,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
 Закройте все программы, которые просматривают/редактируют данные приложения OpenMV IDE, а затем перезапустите OpenMV IDE!</translation>
     </message>
     <message>
-        <location line="-1836"/>
+        <location line="-1838"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation>Изменить порог шкалы оттенков серого с помощью Threshold Editor</translation>
     </message>
@@ -7837,32 +7837,32 @@ while(True):
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4364"/>
+        <location line="+4366"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation>Открыть терминал</translation>
     </message>
     <message>
-        <location line="-4406"/>
+        <location line="-4408"/>
         <source>Machine Vision</source>
         <translation>Машинное зрение</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4433"/>
+        <location line="+4435"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation>Threshold Editor</translation>
     </message>
     <message>
-        <location line="-4504"/>
-        <location line="+4582"/>
+        <location line="-4506"/>
+        <location line="+4584"/>
         <source>Keypoints Editor</source>
         <translation>Редактор ключевых точек</translation>
     </message>
     <message>
-        <location line="-4575"/>
-        <location line="+4725"/>
+        <location line="-4577"/>
+        <location line="+4727"/>
         <location line="+96"/>
         <location line="+21"/>
         <location line="+10"/>
@@ -7871,7 +7871,7 @@ while(True):
         <translation>Генератор AprilTag</translation>
     </message>
     <message>
-        <location line="-4869"/>
+        <location line="-4871"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation>Семейство TAG16H5 (30 тегов)</translation>
     </message>
@@ -7912,12 +7912,12 @@ while(True):
         <location line="+29"/>
         <location line="+14"/>
         <location line="+16"/>
-        <location line="+562"/>
+        <location line="+564"/>
         <source>Failed to open: &quot;%L1&quot;</source>
         <translation>Не удалось открыть: &quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="-645"/>
+        <location line="-647"/>
         <source>DataMatrix Generator</source>
         <translation>Генератор DataMatrix</translation>
     </message>
@@ -7978,7 +7978,7 @@ while(True):
         <translation>&lt;p&gt;&lt;b&gt;Об OpenMV IDE %L1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Авторы: Ибрагим Абделькадер и Квабена В. Агьеман&lt;/p&gt;&lt;p&gt;&lt;b&gt;ОБЩАЯ ПУБЛИЧНАЯ ЛИЦЕНЗИЯ GNU&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Copyright (C) %L2 %L3&lt;/p&gt;&lt;p&gt;Эта программа распространяется с надеждой на то, что она будет полезна, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; даже без подразумеваемой гарантии КОММЕРЧЕСКОЙ ЦЕННОСТИ или ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ. См. &lt;a href=&quot;http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT&quot;&gt;Общая публичная лицензия GNU&lt;/a&gt; для более подробной информации.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Вопросы и комментарии?&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Связывайтесь с нами по адресу &lt;a href=&quot;mailto:openmv@openmv.io&quot;&gt;openmv@openmv.io&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+17"/>
         <location line="+1705"/>
         <location line="+33"/>
         <location line="+9"/>
@@ -8036,7 +8036,7 @@ while(True):
         <translation type="vanished">Ctrl+R</translation>
     </message>
     <message>
-        <location line="-251"/>
+        <location line="-253"/>
         <source>Documents Folder</source>
         <translation>Папка документов</translation>
     </message>
@@ -8046,7 +8046,12 @@ while(True):
         <translation>Добавьте код в &quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="+263"/>
+        <location line="+220"/>
+        <source>&lt;br/&gt;&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
+        <translation>&lt;br/&gt;&lt;p&gt;OpenMV IDE Русский перевод Сергея Сваздина.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+45"/>
         <source>Stop (halt script)</source>
         <translation>Стоп (сценарий остановки)</translation>
     </message>
@@ -9369,7 +9374,7 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-5422"/>
+        <location line="-5424"/>
         <source>New File</source>
         <translation>Новый файл</translation>
     </message>
@@ -9379,7 +9384,7 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>Не удается открыть новый файл!</translation>
     </message>
     <message>
-        <location line="+5178"/>
+        <location line="+5180"/>
         <source>Copy Failed!</source>
         <translation>Ошибка копирования!</translation>
     </message>
