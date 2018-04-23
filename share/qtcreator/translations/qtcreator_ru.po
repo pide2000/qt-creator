@@ -8029,6 +8029,16 @@ msgstr ""
 "и комментарии?</b></p><p>Связывайтесь с нами по адресу <a "
 "href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
 
+#: ../../../src/plugins/openmv/openmvplugin.cpp:969
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p><b>Credits</b></p>"
+msgstr "<p><b>кредиты</b></p>"
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:970
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+msgstr "<p>OpenMV IDE Русский перевод Сергея Сваздина.</p>"
+
 #: ../../../src/plugins/openmv/openmvplugin.cpp:978
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2683
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2716
@@ -8097,10 +8107,9 @@ msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Add some code to \"%L1\""
 msgstr "Добавьте код в \"%L1\""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:969
-msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
-msgstr "<br/><p>OpenMV IDE Русский перевод Сергея Сваздина.</p>"
+#~ msgctxt "OpenMV::Internal::OpenMVPlugin|"
+#~ msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+#~ msgstr "<br/><p>OpenMV IDE Русский перевод Сергея Сваздина.</p>"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1014
 msgctxt "OpenMV::Internal::OpenMVPlugin|"

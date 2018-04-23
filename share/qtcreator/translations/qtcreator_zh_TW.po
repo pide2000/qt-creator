@@ -7866,10 +7866,9 @@ msgstr ""
 "href=\"http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT\">GNU通用公共授權</a>查看更多詳細資訊。</p><p><b>問題或建議？</b></p><p>請聯絡我們：<a "
 "href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:969
-msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
-msgstr "<br/><p>袁旭的OpenMV IDE中文翻译.</p>"
+#~ msgctxt "OpenMV::Internal::OpenMVPlugin|"
+#~ msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+#~ msgstr "<br/><p>袁旭的OpenMV IDE中文翻译.</p>"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:978
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2683
@@ -7928,6 +7927,16 @@ msgstr "開始(運行指令碼)"
 #~ msgctxt "OpenMV::Internal::OpenMVPlugin|"
 #~ msgid "Ctrl+R"
 #~ msgstr "Ctrl+R"
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:969
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p><b>Credits</b></p>"
+msgstr "<p><b>积分</b></p>"
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:970
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+msgstr "<p>袁旭的OpenMV IDE中文翻译.</p>"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1014
 msgctxt "OpenMV::Internal::OpenMVPlugin|"

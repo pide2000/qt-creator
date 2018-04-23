@@ -7692,7 +7692,12 @@ msgstr ""
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:969
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+msgid "<p><b>Credits</b></p>"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:970
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
 msgstr ""
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:978

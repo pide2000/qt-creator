@@ -7972,12 +7972,11 @@ while(True):
         <translation>&lt;p&gt;&lt;b&gt;关于OpenMV IDE %L1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;作者：Ibrahim Abdelkader &amp; Kwabena W. Agyeman&lt;/p&gt;&lt;p&gt;&lt;b&gt;GNU通用公共许可证&lt;/b&gt;&lt;/p&gt;&lt;p&gt;版权所有 (C) %L2 %L3&lt;/p&gt;&lt;p&gt;发布这一程序的目的是希望它有用，但没有任何担保。甚至没有适合特定目的的隐含的担保。请参阅&lt;a href=&quot;http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT&quot;&gt;GNU通用公共许可证&lt;/a&gt;查看更多详细信息。&lt;/p&gt;&lt;p&gt;&lt;b&gt;问题或建议？&lt;/b&gt;&lt;/p&gt;&lt;p&gt;请联系我们：&lt;a href=&quot;mailto:openmv@openmv.io&quot;&gt;openmv@openmv.io&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+8"/>
         <source>&lt;br/&gt;&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
-        <translation>&lt;br/&gt;&lt;p&gt;袁旭的OpenMV IDE中文翻译.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;br/&gt;&lt;p&gt;袁旭的OpenMV IDE中文翻译.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+17"/>
         <location line="+1705"/>
         <location line="+33"/>
         <location line="+9"/>
@@ -8035,7 +8034,17 @@ while(True):
         <translation type="vanished">Ctrl+R</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="-25"/>
+        <source>&lt;p&gt;&lt;b&gt;Credits&lt;/b&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;积分&lt;/b&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;袁旭的OpenMV IDE中文翻译.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Stop (halt script)</source>
         <translation>停止(终止脚本)</translation>
     </message>

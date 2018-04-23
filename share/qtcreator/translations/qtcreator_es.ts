@@ -7970,7 +7970,17 @@ while(True):
         <translation>&lt;p&gt;&lt;b&gt;Acerca de OpenMV IDE %L1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Por: Ibrahim Abdelkader &amp; Kwabena W. Agyeman&lt;/p&gt;&lt;p&gt;&lt;b&gt;LICENCIA PÚBLICA GENERAL DE GNU&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Copyright (C) %L2 %L3&lt;/p&gt;&lt;p&gt;Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; sin ni siquiera la garantía implícita de COMERCIALIZACIÓN o IDONEIDAD PARA UN FIN PARTICULAR. Vea la &lt;a href=&quot;http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT&quot;&gt; Licencia Pública General de GNU&lt;/a&gt; para más información.&lt;/p&gt;&lt;p&gt;&lt;b&gt;¿Tiene preguntas o comentarios?&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Contáctenos en &lt;a href=&quot;mailto:openmv@openmv.io&quot;&gt;openmv@openmv.io&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+8"/>
+        <source>&lt;p&gt;&lt;b&gt;Credits&lt;/b&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Créditos&lt;/b&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;OpenMV IDE Traducción al español por Kwabena W. Agyeman.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+8"/>
         <location line="+1705"/>
         <location line="+33"/>
         <location line="+9"/>
@@ -8038,12 +8048,11 @@ while(True):
         <translation>Agregue un código a &quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="+220"/>
         <source>&lt;br/&gt;&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
-        <translation>&lt;br/&gt;&lt;p&gt;OpenMV IDE Traducción al español por Kwabena W. Agyeman.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;br/&gt;&lt;p&gt;OpenMV IDE Traducción al español por Kwabena W. Agyeman.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+265"/>
         <source>Stop (halt script)</source>
         <translation>Detener (detener script)</translation>
     </message>

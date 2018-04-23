@@ -7872,6 +7872,16 @@ msgstr ""
 "一般公衆利用許諾契約書</a> をご覧ください。</p><p><b>質問またはコメント</b></p><p>はこちら <a "
 "href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
 
+#: ../../../src/plugins/openmv/openmvplugin.cpp:969
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p><b>Credits</b></p>"
+msgstr "<p><b>クレジット</b></p>"
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:970
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "<p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+msgstr "<p>OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。</p>"
+
 #: ../../../src/plugins/openmv/openmvplugin.cpp:978
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2683
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2716
@@ -7940,10 +7950,9 @@ msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Add some code to \"%L1\""
 msgstr "\"%L1\"にコードを追加する"
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:969
-msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
-msgstr "<br/><p>OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。</p>"
+#~ msgctxt "OpenMV::Internal::OpenMVPlugin|"
+#~ msgid "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>"
+#~ msgstr "<br/><p>OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。</p>"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1014
 msgctxt "OpenMV::Internal::OpenMVPlugin|"

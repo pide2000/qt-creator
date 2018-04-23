@@ -7966,7 +7966,17 @@ while(True):
         <translation>&lt;p&gt;&lt;b&gt;OpenMV IDE %L1について&lt;/b&gt;&lt;/p&gt;&lt;p&gt;By: Ibrahim Abdelkader &amp; Kwabena W. Agyeman&lt;/p&gt;&lt;p&gt;&lt;b&gt;GNU 一般公衆利用許諾&lt;/b&gt;&lt;/p&gt;&lt;p&gt;著作権 (C) %L2 %L3&lt;/p&gt;&lt;p&gt;このプログラムは有用であることを期待して配布されていますが、保証は一切ありません。商品性または特定目的への適合性の暗黙の保証さえも含みません。詳細については、 &lt;a href=&quot;http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT&quot;&gt;GNU 一般公衆利用許諾契約書&lt;/a&gt; をご覧ください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;質問またはコメント&lt;/b&gt;&lt;/p&gt;&lt;p&gt;はこちら &lt;a href=&quot;mailto:openmv@openmv.io&quot;&gt;openmv@openmv.io&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+8"/>
+        <source>&lt;p&gt;&lt;b&gt;Credits&lt;/b&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;クレジット&lt;/b&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+8"/>
         <location line="+1705"/>
         <location line="+33"/>
         <location line="+9"/>
@@ -8034,12 +8044,11 @@ while(True):
         <translation>&quot;%L1&quot;にコードを追加する</translation>
     </message>
     <message>
-        <location line="+220"/>
         <source>&lt;br/&gt;&lt;p&gt;OpenMV IDE English translation by Kwabena W. Agyeman.&lt;/p&gt;</source>
-        <translation>&lt;br/&gt;&lt;p&gt;OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;br/&gt;&lt;p&gt;OpenMV IDE Kwabena W. Agyemanによる日本語翻訳。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+265"/>
         <source>Stop (halt script)</source>
         <translation>停止（停止スクリプト）</translation>
     </message>
