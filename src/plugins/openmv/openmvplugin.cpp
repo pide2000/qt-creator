@@ -703,21 +703,21 @@ void OpenMVPlugin::extensionsInitialized()
         Core::EditorManager::addCurrentPositionToNavigationHistory();
         QString titlePattern = tr("untitled_$.py");
         TextEditor::BaseTextEditor *editor = qobject_cast<TextEditor::BaseTextEditor *>(Core::EditorManager::openEditorWithContents(Core::Constants::K_DEFAULT_TEXT_EDITOR_ID, &titlePattern,
-            tr("# Untitled - By: %L1 - %L2\n"
-               "\n"
-               "import sensor, image, time\n"
-               "\n"
-               "sensor.reset()\n"
-               "sensor.set_pixformat(sensor.RGB565)\n"
-               "sensor.set_framesize(sensor.QVGA)\n"
-               "sensor.skip_frames(time = 2000)\n"
-               "\n"
-               "clock = time.clock()\n"
-               "\n"
-               "while(True):\n"
-               "    clock.tick()\n"
-               "    img = sensor.snapshot()\n"
-               "    print(clock.fps())\n").
+            QStringLiteral("# Untitled - By: %L1 - %L2\n"
+                           "\n"
+                           "import sensor, image, time\n"
+                           "\n"
+                           "sensor.reset()\n"
+                           "sensor.set_pixformat(sensor.RGB565)\n"
+                           "sensor.set_framesize(sensor.QVGA)\n"
+                           "sensor.skip_frames(time = 2000)\n"
+                           "\n"
+                           "clock = time.clock()\n"
+                           "\n"
+                           "while(True):\n"
+                           "    clock.tick()\n"
+                           "    img = sensor.snapshot()\n"
+                           "    print(clock.fps())\n").
             arg(Utils::Environment::systemEnvironment().userName()).arg(QDate::currentDate().toString()).toUtf8()));
 
         if(editor)
@@ -966,7 +966,9 @@ void OpenMVPlugin::extensionsInitialized()
         "<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href=\"http://github.com/openmv/qt-creator/raw/master/LICENSE.GPL3-EXCEPT\">GNU General Public License</a> for more details.</p>"
         "<p><b>Questions or Comments?</b></p>"
         "<p>Contact us at <a href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
-        ).arg(QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG)).arg(QLatin1String(Core::Constants::OMV_IDE_YEAR)).arg(QLatin1String(Core::Constants::OMV_IDE_AUTHOR)));
+        ).tr(
+        "<br/><p>OpenMV IDE English translation by Kwabena W. Agyeman.</p>")
+        .arg(QLatin1String(Core::Constants::OMV_IDE_VERSION_LONG)).arg(QLatin1String(Core::Constants::OMV_IDE_YEAR)).arg(QLatin1String(Core::Constants::OMV_IDE_AUTHOR)));
     });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -974,7 +976,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_connectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(CONNECT_PATH)),
         tr("Connect"), this), Core::Id("OpenMV.Connect"));
-    m_connectCommand->setDefaultKeySequence(tr("Ctrl+E"));
+    m_connectCommand->setDefaultKeySequence(QStringLiteral("Ctrl+E"));
     m_connectCommand->action()->setEnabled(true);
     m_connectCommand->action()->setVisible(true);
     connect(m_connectCommand->action(), &QAction::triggered, this, [this] {connectClicked();});
@@ -982,7 +984,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_disconnectCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(DISCONNECT_PATH)),
         tr("Disconnect"), this), Core::Id("OpenMV.Disconnect"));
-    m_disconnectCommand->setDefaultKeySequence(tr("Ctrl+E"));
+    m_disconnectCommand->setDefaultKeySequence(QStringLiteral("Ctrl+E"));
     m_disconnectCommand->action()->setEnabled(false);
     m_disconnectCommand->action()->setVisible(false);
     connect(m_disconnectCommand->action(), &QAction::triggered, this, [this] {disconnectClicked();});
@@ -990,7 +992,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_startCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(START_PATH)),
         tr("Start (run script)"), this), Core::Id("OpenMV.Start"));
-    m_startCommand->setDefaultKeySequence(tr("Ctrl+R"));
+    m_startCommand->setDefaultKeySequence(QStringLiteral("Ctrl+R"));
     m_startCommand->action()->setEnabled(false);
     m_startCommand->action()->setVisible(true);
     connect(m_startCommand->action(), &QAction::triggered, this, &OpenMVPlugin::startClicked);
@@ -1010,7 +1012,7 @@ void OpenMVPlugin::extensionsInitialized()
     m_stopCommand =
         Core::ActionManager::registerAction(new QAction(QIcon(QStringLiteral(STOP_PATH)),
         tr("Stop (halt script)"), this), Core::Id("OpenMV.Stop"));
-    m_stopCommand->setDefaultKeySequence(tr("Ctrl+R"));
+    m_stopCommand->setDefaultKeySequence(QStringLiteral("Ctrl+R"));
     m_stopCommand->action()->setEnabled(false);
     m_stopCommand->action()->setVisible(false);
     connect(m_stopCommand->action(), &QAction::triggered, this, &OpenMVPlugin::stopClicked);

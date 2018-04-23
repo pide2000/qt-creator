@@ -1071,10 +1071,10 @@ OpenMVTerminal::OpenMVTerminal(const QString &displayName, QSettings *settings, 
     Core::ICore::addContextObject(m_context);
 
     Core::Command *overrideCtrlE = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.E"), context);
-    overrideCtrlE->setDefaultKeySequence(tr("Ctrl+E"));
+    overrideCtrlE->setDefaultKeySequence(QStringLiteral("Ctrl+E"));
 
     Core::Command *overrideCtrlR = Core::ActionManager::registerAction(new QAction(QString(), Q_NULLPTR), Core::Id("OpenMV.Terminal.Ctrl.R"), context);
-    overrideCtrlR->setDefaultKeySequence(tr("Ctrl+R"));
+    overrideCtrlR->setDefaultKeySequence(QStringLiteral("Ctrl+R"));
 }
 
 OpenMVTerminal::~OpenMVTerminal()
