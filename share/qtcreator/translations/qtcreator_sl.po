@@ -4069,14 +4069,14 @@ msgstr ""
 
 #: ../../../src/plugins/coreplugin/editormanager/editormanager.cpp:216
 #: ../../../src/plugins/coreplugin/editormanager/editormanager.cpp:1545
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:574
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:581
 msgctxt "Core::EditorManager|"
 msgid "&Save"
 msgstr ""
 
 #: ../../../src/plugins/coreplugin/editormanager/editormanager.cpp:217
 #: ../../../src/plugins/coreplugin/editormanager/editormanager.cpp:1546
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:584
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:591
 msgctxt "Core::EditorManager|"
 msgid "Save &As..."
 msgstr ""
@@ -5164,182 +5164,182 @@ msgctxt "Core::Internal::MainWindow|"
 msgid "&Help"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:528
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:531
 msgctxt "Core::Internal::MainWindow|"
 msgid "Return to Editor"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:536
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:539
 msgctxt "Core::Internal::MainWindow|"
 msgid "&New File..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:553
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:556
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Open File..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:560
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:567
 msgctxt "Core::Internal::MainWindow|"
 msgid "Open File &With..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:568
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:575
 msgctxt "Core::Internal::MainWindow|"
 msgid "Recent &Files"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:579
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:586
 msgctxt "Core::Internal::MainWindow|"
 msgid "Save"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:587
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:594
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Shift+S"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:589
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:596
 msgctxt "Core::Internal::MainWindow|"
 msgid "Save As..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:593
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:600
 msgctxt "Core::Internal::MainWindow|"
 msgid "Save A&ll"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:601
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:608
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Print..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:609
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:616
 msgctxt "Core::Internal::MainWindow|"
 msgid "E&xit"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:612
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:619
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Q"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:618
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:625
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Undo"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:622
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:629
 msgctxt "Core::Internal::MainWindow|"
 msgid "Undo"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:628
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:635
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Redo"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:632
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:639
 msgctxt "Core::Internal::MainWindow|"
 msgid "Redo"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:638
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:645
 msgctxt "Core::Internal::MainWindow|"
 msgid "Cu&t"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:646
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:653
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Copy"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:654
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:661
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Paste"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:662
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:669
 msgctxt "Core::Internal::MainWindow|"
 msgid "Select &All"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:670
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:677
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Go to Line..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:672
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:679
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+L"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:680
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:687
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Options..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:691
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:698
 msgctxt "Core::Internal::MainWindow|"
 msgid "Minimize"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:694
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:701
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+M"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:698
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:705
 msgctxt "Core::Internal::MainWindow|"
 msgid "Zoom"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:705
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:712
 msgctxt "Core::Internal::MainWindow|"
 msgid "Full Screen"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:709
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:716
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Meta+F"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:709
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:716
 msgctxt "Core::Internal::MainWindow|"
 msgid "Ctrl+Shift+F11"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:717
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:724
 msgctxt "Core::Internal::MainWindow|"
 msgid "Close Window"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:742
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:749
 msgctxt "Core::Internal::MainWindow|"
 msgid "Show Mode Selector"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:752
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:759
 msgctxt "Core::Internal::MainWindow|"
 msgid "&Views"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:762
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:769
 msgctxt "Core::Internal::MainWindow|"
 msgid "About &Qt Creator"
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:764
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:771
 msgctxt "Core::Internal::MainWindow|"
 msgid "About &Qt Creator..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:772
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:779
 msgctxt "Core::Internal::MainWindow|"
 msgid "About &Plugins..."
 msgstr ""
 
-#: ../../../src/plugins/coreplugin/mainwindow.cpp:1162
+#: ../../../src/plugins/coreplugin/mainwindow.cpp:1169
 msgctxt "Core::Internal::MainWindow|"
 msgid "Settings..."
 msgstr ""
@@ -7459,31 +7459,31 @@ msgctxt "TextEditorSettings|"
 msgid "Display"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:98
+#: ../../../src/plugins/openmv/openmvplugin.cpp:96
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid argument (%1) for -override_read_timeout"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:104
+#: ../../../src/plugins/openmv/openmvplugin.cpp:102
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing argument for -override_read_timeout"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:125
+#: ../../../src/plugins/openmv/openmvplugin.cpp:123
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid argument (%1) for -override_read_stall_timeout"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:131
+#: ../../../src/plugins/openmv/openmvplugin.cpp:129
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing argument for -override_read_stall_timeout"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:173
-#: ../../../src/plugins/openmv/openmvplugin.cpp:188
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2326
+#: ../../../src/plugins/openmv/openmvplugin.cpp:171
+#: ../../../src/plugins/openmv/openmvplugin.cpp:186
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2415
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "\n"
@@ -7492,209 +7492,199 @@ msgid ""
 "data and then restart OpenMV IDE!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:580
+#: ../../../src/plugins/openmv/openmvplugin.cpp:579
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Edit Grayscale threshold with Threshold Editor"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:603
+#: ../../../src/plugins/openmv/openmvplugin.cpp:602
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Edit LAB threshold with Threshold Editor"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:637
+#: ../../../src/plugins/openmv/openmvplugin.cpp:696
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "OpenMV IDE"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:645
+#: ../../../src/plugins/openmv/openmvplugin.cpp:704
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "untitled_$.py"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:647
+#: ../../../src/plugins/openmv/openmvplugin.cpp:741
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid ""
-"# Untitled - By: %L1 - %L2\n"
-"\n"
-"import sensor, image, time\n"
-"\n"
-"sensor.reset()\n"
-"sensor.set_pixformat(sensor.RGB565)\n"
-"sensor.set_framesize(sensor.QVGA)\n"
-"sensor.skip_frames(time = 2000)\n"
-"\n"
-"clock = time.clock()\n"
-"\n"
-"while(True):\n"
-"    clock.tick()\n"
-"    img = sensor.snapshot()\n"
-"    print(clock.fps())\n"
+msgid "Documents Folder"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:680
+#: ../../../src/plugins/openmv/openmvplugin.cpp:749
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Add some code to \"%L1\""
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:761
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Examples"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:692
+#: ../../../src/plugins/openmv/openmvplugin.cpp:773
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Run Bootloader"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:698
+#: ../../../src/plugins/openmv/openmvplugin.cpp:779
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Configure OpenMV Cam settings file"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:704
+#: ../../../src/plugins/openmv/openmvplugin.cpp:785
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save open script to OpenMV Cam"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:710
+#: ../../../src/plugins/openmv/openmvplugin.cpp:791
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Reset OpenMV Cam"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:719
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4968
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5015
+#: ../../../src/plugins/openmv/openmvplugin.cpp:800
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5164
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5211
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Open Terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:724
+#: ../../../src/plugins/openmv/openmvplugin.cpp:805
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Machine Vision"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:728
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5046
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5122
+#: ../../../src/plugins/openmv/openmvplugin.cpp:809
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5242
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5318
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Threshold Editor"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:733
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5200
+#: ../../../src/plugins/openmv/openmvplugin.cpp:814
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5396
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Keypoints Editor"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:740
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5350
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5446
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5467
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5477
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5497
+#: ../../../src/plugins/openmv/openmvplugin.cpp:821
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5546
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5642
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5663
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5673
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5693
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "AprilTag Generator"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:743
+#: ../../../src/plugins/openmv/openmvplugin.cpp:824
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TAG16H5 Family (30 Tags)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:748
+#: ../../../src/plugins/openmv/openmvplugin.cpp:829
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TAG25H7 Family (242 Tags)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:753
+#: ../../../src/plugins/openmv/openmvplugin.cpp:834
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TAG25H9 Family (35 Tags)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:758
+#: ../../../src/plugins/openmv/openmvplugin.cpp:839
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TAG36H10 Family (2320 Tags)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:763
+#: ../../../src/plugins/openmv/openmvplugin.cpp:844
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TAG36H11 Family (587 Tags - Recommended)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:768
+#: ../../../src/plugins/openmv/openmvplugin.cpp:849
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "ARKTOOLKIT Family (512 Tags)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:773
+#: ../../../src/plugins/openmv/openmvplugin.cpp:854
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "QRCode Generator"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:783
-#: ../../../src/plugins/openmv/openmvplugin.cpp:797
-#: ../../../src/plugins/openmv/openmvplugin.cpp:811
-#: ../../../src/plugins/openmv/openmvplugin.cpp:840
-#: ../../../src/plugins/openmv/openmvplugin.cpp:854
-#: ../../../src/plugins/openmv/openmvplugin.cpp:870
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1431
+#: ../../../src/plugins/openmv/openmvplugin.cpp:864
+#: ../../../src/plugins/openmv/openmvplugin.cpp:878
+#: ../../../src/plugins/openmv/openmvplugin.cpp:892
+#: ../../../src/plugins/openmv/openmvplugin.cpp:921
+#: ../../../src/plugins/openmv/openmvplugin.cpp:935
+#: ../../../src/plugins/openmv/openmvplugin.cpp:951
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1513
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to open: \"%L1\""
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:787
+#: ../../../src/plugins/openmv/openmvplugin.cpp:868
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "DataMatrix Generator"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:801
+#: ../../../src/plugins/openmv/openmvplugin.cpp:882
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Barcode Generator"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:816
+#: ../../../src/plugins/openmv/openmvplugin.cpp:897
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Video Tools"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:820
+#: ../../../src/plugins/openmv/openmvplugin.cpp:901
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Convert Video File"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:825
+#: ../../../src/plugins/openmv/openmvplugin.cpp:906
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Play Video File"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:830
+#: ../../../src/plugins/openmv/openmvplugin.cpp:911
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "OpenMV Docs"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:844
+#: ../../../src/plugins/openmv/openmvplugin.cpp:925
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "OpenMV Forums"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:859
+#: ../../../src/plugins/openmv/openmvplugin.cpp:940
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "About OpenMV Cam"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:859
+#: ../../../src/plugins/openmv/openmvplugin.cpp:940
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "About OpenMV Cam..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:875
-#: ../../../src/plugins/openmv/openmvplugin.cpp:880
+#: ../../../src/plugins/openmv/openmvplugin.cpp:956
+#: ../../../src/plugins/openmv/openmvplugin.cpp:961
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "About OpenMV IDE"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:875
+#: ../../../src/plugins/openmv/openmvplugin.cpp:956
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "About OpenMV IDE..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:880
+#: ../../../src/plugins/openmv/openmvplugin.cpp:961
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "<p><b>About OpenMV IDE %L1</b></p><p>By: Ibrahim Abdelkader & Kwabena W. "
@@ -7708,357 +7698,356 @@ msgid ""
 "href=\"mailto:openmv@openmv.io\">openmv@openmv.io</a>.</p>"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:895
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2588
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2616
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2625
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2635
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2663
+#: ../../../src/plugins/openmv/openmvplugin.cpp:976
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2681
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2714
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2723
 #: ../../../src/plugins/openmv/openmvplugin.cpp:2733
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2739
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2780
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2784
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2788
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2872
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2881
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2890
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3003
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3007
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3072
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3127
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3157
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3167
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3182
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3198
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3217
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3224
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3291
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3300
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3312
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3325
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3408
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3441
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3537
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2765
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2835
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2841
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2892
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2896
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2900
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2995
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3004
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3013
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3128
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3132
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3231
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3286
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3316
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3326
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3341
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3357
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3376
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3383
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3450
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3459
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3471
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3484
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3567
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3600
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3682
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3707
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:896
-#: ../../../src/plugins/openmv/openmvplugin.cpp:904
-msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "Ctrl+E"
-msgstr ""
-
-#: ../../../src/plugins/openmv/openmvplugin.cpp:903
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3568
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3592
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3599
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3668
+#: ../../../src/plugins/openmv/openmvplugin.cpp:984
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3743
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3767
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3774
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3843
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Disconnect"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:911
+#: ../../../src/plugins/openmv/openmvplugin.cpp:992
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Start (run script)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:912
-#: ../../../src/plugins/openmv/openmvplugin.cpp:932
-msgctxt "OpenMV::Internal::OpenMVPlugin|"
-msgid "Ctrl+R"
-msgstr ""
-
-#: ../../../src/plugins/openmv/openmvplugin.cpp:931
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1012
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Stop (halt script)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:996
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1077
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Frame Buffer"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1001
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1082
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Record"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1002
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1083
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Record the Frame Buffer"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1007
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3776
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1088
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3960
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Stop"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1008
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1089
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Stop recording"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1013
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1094
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Zoom"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1014
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1095
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Zoom to fit"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1020
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1037
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1101
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1118
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "JPG"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1021
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1102
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "JPEG compress the Frame Buffer for higher performance"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1038
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1060
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3538
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3669
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3726
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3777
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3884
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3934
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4014
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4067
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4242
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4327
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1119
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1141
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3708
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3844
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3910
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3961
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4074
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4129
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4209
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4262
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4438
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4523
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Busy... please wait..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1044
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1059
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1125
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1140
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Disable"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1045
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1126
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Disable the Frame Buffer for maximum performance"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1065
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1146
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Frame Buffer Disabled - click the disable button again to enable (top right)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1072
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1153
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Elapsed: 0h:00m:00s:000ms - Size: 0 B - FPS: 0"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1128
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1209
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Histogram"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1135
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1216
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "RGB Color Space"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1136
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1217
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Grayscale Color Space"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1137
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1218
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "LAB Color Space"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1138
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1219
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "YUV Color Space"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1140
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1221
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Use Grayscale/LAB for color tracking"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1143
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1175
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1224
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1256
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Res - No Image"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1166
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1247
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Res (w:%1, h:%2) - ROI (x:%3, y:%4, w:%5, h:%6) - Pixels (%7)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1170
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1251
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Res (w:%1, h:%2)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1244
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1325
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "FPS: %L1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1250
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3650
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1331
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3825
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Version:"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1251
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1332
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Camera firmware version"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1257
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3652
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1338
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3827
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Serial Port:"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1258
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1339
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Camera serial port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1264
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3494
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3654
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4314
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1345
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3653
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3829
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4510
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Drive:"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1265
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1346
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Drive associated with port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1271
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3656
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1352
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3831
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "FPS:"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1272
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1353
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "May be different from camera FPS"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1415
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2285
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1497
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2374
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Update Available"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1415
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1497
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "A new version of OpenMV IDE (%L1.%L2.%L3) is available for download."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1418
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1500
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Download"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1529
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1611
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "WiFi Programming Disabled!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1530
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1612
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Another application is using the OpenMV Cam broadcast discovery port. Please "
 "close that application and restart OpenMV IDE to enable WiFi programming."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1594
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4404
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1619
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Documents Folder Error"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1620
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Failed to create the documents folder!"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1683
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4600
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Serial Port - %L1 - %L2 BPS"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1614
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1708
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1792
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1703
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1797
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1881
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1965
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4438
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4564
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4666
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4783
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4885
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4991
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1970
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2054
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4634
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4760
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4862
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4979
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5081
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5187
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connecting... (30 second timeout)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1614
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1708
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1792
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1703
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1797
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1881
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1965
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2127
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2295
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2694
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2953
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3034
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3089
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3136
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3230
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4438
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4564
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4666
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4783
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4885
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4991
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5408
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1970
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2054
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2216
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2384
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2796
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3078
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3193
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3248
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3295
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3389
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4634
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4760
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4862
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4979
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5081
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5187
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5604
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Cancel"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1637
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1731
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1815
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1726
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1820
 #: ../../../src/plugins/openmv/openmvplugin.cpp:1904
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1988
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2191
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2364
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2734
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2882
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3168
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3199
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3919
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3926
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4123
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4136
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4222
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4235
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4463
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4589
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4691
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4808
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4910
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5016
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1993
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2077
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2280
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2453
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2836
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3005
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3327
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3358
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4106
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4120
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4319
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4332
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4418
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4431
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4659
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4785
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4887
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5004
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5106
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5212
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Error: %L1!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1641
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1730
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "\n"
@@ -8070,110 +8059,110 @@ msgid ""
 "...in a terminal and then restart your computer."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1656
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1745
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid baud rate argument (%1) for -open_serial_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1661
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1750
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "-open_serial_terminal requires two arguments <port_name:baud_rate>"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1666
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1755
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing arguments for -open_serial_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1688
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1777
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "UDP Client Connection - %1:%2"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1745
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1834
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid port argument (%1) for -open_udp_client_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1750
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1839
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "-open_udp_client_terminal requires two arguments <host_name:port>"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1755
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1844
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing arguments for -open_udp_client_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1772
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4632
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1861
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4828
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "UDP Server Connection - %1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1834
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1923
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid port argument (%1) for -open_udp_server_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1839
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1928
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing arguments for -open_udp_server_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1861
+#: ../../../src/plugins/openmv/openmvplugin.cpp:1950
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TCP Client Connection - %1:%2"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1918
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2007
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid port argument (%1) for -open_tcp_client_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1923
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2012
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "-open_tcp_client_terminal requires two arguments <host_name:port>"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1928
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2017
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing arguments for -open_tcp_client_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:1945
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4851
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2034
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5047
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TCP Server Connection - %1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2007
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2096
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid port argument (%1) for -open_tcp_server_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2012
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2101
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Missing arguments for -open_tcp_server_terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2040
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2050
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2060
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2129
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2139
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2149
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Unregistered OpenMV Cam Detected"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2041
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2130
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Your OpenMV Cam isn't registered. You need to register your OpenMV Cam with "
@@ -8182,7 +8171,7 @@ msgid ""
 "Would you like to register your OpenMV Cam now?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2051
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2140
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Unregistered OpenMV Cams hurt the open-source OpenMV ecosystem by "
@@ -8192,7 +8181,7 @@ msgid ""
 "Would you like to register your OpenMV Cam now?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2061
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2150
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "OpenMV IDE will display these three messages boxes each time you connect "
@@ -8201,21 +8190,21 @@ msgid ""
 "Would you like to register your OpenMV Cam now?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2077
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2157
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2165
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2171
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2177
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2183
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2190
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2196
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2204
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2211
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2166
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2246
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2254
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2260
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2266
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2272
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2279
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2285
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2293
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2300
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Register OpenMV Cam"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2080
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2169
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Please enter a board key to register your OpenMV Cam.<br/><br/>If you do not "
@@ -8223,166 +8212,166 @@ msgid ""
 "href=\"https://openmv.io/products/openmv-cam-board-key\">here</a>."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2127
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2216
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Registering OpenMV Cam..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2158
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2247
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Thank you for registering your OpenMV Cam!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2166
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2255
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid Board Key!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2172
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2261
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Board Key already used!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2178
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2267
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Board and ID already registered!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2184
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2273
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Database Error!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2197
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2286
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "GET Network error!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2205
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2294
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "GET network error!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2212
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2301
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalidly formatted Board Key!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2285
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2374
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "New OpenMV IDE reources are available (e.g. examples, firmware, "
 "documentation, etc.)."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2288
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2377
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Install"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2295
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2384
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Installing..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2337
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2426
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Please close any programs that are viewing/editing OpenMV IDE's application "
 "data and then restart OpenMV IDE!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2353
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2442
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Installation Sucessful! Please restart OpenMV IDE."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2363
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2369
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2393
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2452
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2458
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2482
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Package Update"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2370
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2459
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Cannot open the resources file \"%L1\"!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2394
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2483
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Network request failed \"%L1\"!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2421
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2495
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2510
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2584
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Bootloader"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2430
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2433
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2519
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2522
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Path"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2431
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2520
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Binary (*.bin *.dfu)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2441
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2445
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2530
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2534
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Erase internal file system"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2452
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2541
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Run"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2496
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2585
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "\"%L1\" is not a file!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2589
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2682
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "No OpenMV Cams found!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2617
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2715
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Do you have an OpenMV Cam connected and is it bricked?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2625
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2723
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please select the board type"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2636
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4175
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4203
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2734
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4371
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4399
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Erase the internal file system?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2663
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4378
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2765
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4574
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please select a serial port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2694
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2953
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2796
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3078
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connecting... (Hit cancel if this takes more than 5 seconds)."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2740
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4469
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2842
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4665
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Try doing:\n"
@@ -8392,43 +8381,43 @@ msgid ""
 "...in a terminal and then restart your computer."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2781
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2893
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Timeout error while getting firmware version!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2785
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2897
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Do not try to connect while the green light on your OpenMV Cam is on!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2789
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2901
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Try to connect again?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2873
+#: ../../../src/plugins/openmv/openmvplugin.cpp:2996
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Unsupported board architecture!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2891
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3409
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3014
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3568
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Timeout error while getting board architecture!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:2953
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3078
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Disconnect your OpenMV Cam and then reconnect it..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3004
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3129
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Unable to connect to your OpenMV Cam's normal bootloader!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3008
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3133
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "OpenMV IDE can still try to upgrade your OpenMV Cam using your OpenMV Cam's "
@@ -8437,24 +8426,24 @@ msgid ""
 "Continue?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3034
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3193
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Erasing..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3073
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3128
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3232
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3287
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Timeout Error!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3089
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3136
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3248
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3295
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Programming..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3158
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3317
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Done upgrading your OpenMV Cam's firmware!\n"
@@ -8463,12 +8452,12 @@ msgid ""
 "running its built-in self test (blue led blinking - this takes a while)."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3183
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3342
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "The firmware file is empty!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3218
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3377
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "DFU update erases your OpenMV Cam's internal flash file system.\n"
@@ -8476,7 +8465,7 @@ msgid ""
 "Backup your data before continuing!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3225
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3384
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Disconnect your OpenMV Cam from your computer, add a jumper wire between the "
@@ -8485,7 +8474,7 @@ msgid ""
 "Click the Ok button after your OpenMV Cam's DFU Bootloader has enumerated."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3230
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3389
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Reprogramming...\n"
@@ -8493,14 +8482,14 @@ msgid ""
 "(may take up to 5 minutes)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3292
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3451
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "DFU firmware update complete!\n"
 "\n"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3293
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3452
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Disconnect your OpenMV Cam from your computer, remove the jumper wire "
@@ -8509,19 +8498,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3294
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3453
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Click the Ok button after your OpenMV Cam has enumerated and finished "
 "running its built-in self test (blue led blinking - this takes a while)."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3300
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3459
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "DFU firmware update failed!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3313
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3472
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "PyDFU requires the following libraries to be installed:\n"
@@ -8535,7 +8524,7 @@ msgid ""
 "    sudo pip install pyusb"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3326
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3485
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "PyDFU requires the following libraries to be installed:\n"
@@ -8544,443 +8533,463 @@ msgid ""
 "    sudo pip install pyusb"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3442
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3601
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Timeout error while learning MTU!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3490
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3649
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Version: %L1.%L2.%L3"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3492
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3651
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Serial Port: %L1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3496
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3765
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3816
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3655
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3897
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3949
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4000
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "FPS: 0"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3519
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3678
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " - [ out of date - click here to updgrade ]"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3523
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3683
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Your OpenMV Cam's firmware is out of date. Would you like to upgrade?"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3693
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " - [ latest ]"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3569
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3593
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3600
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3744
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3768
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3775
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to eject \"%L1\"!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3668
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3843
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Reset"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3725
+#: ../../../src/plugins/openmv/openmvplugin.cpp:3909
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Start"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3883
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4073
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Configure Settings"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3893
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3918
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3925
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3933
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4083
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4105
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4119
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4128
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Script"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3894
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4084
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Strip comments and convert spaces to tabs?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3944
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3957
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4139
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4152
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Image"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3946
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5131
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4141
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5327
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Image Files (*.bmp *.jpg *.jpeg *.png *.ppm)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3958
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5478
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4153
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5674
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to save the image file for an unknown reason!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3975
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3987
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4002
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4013
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4170
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4182
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4197
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4208
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Template"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3977
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4172
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Image Files (*.bmp *.jpg *.jpeg *.pgm *.ppm)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:3988
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4041
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4183
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4236
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please select a valid path on the OpenMV Cam!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4003
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4056
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4198
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4251
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "\"%L1\" is longer than a max length of %L2 characters!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4028
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4040
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4055
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4066
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4223
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4235
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4250
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4261
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Descriptor"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4030
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5219
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5299
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5316
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4225
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5415
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5495
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5512
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Keypoints Files (*.lbp *.orb)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4115
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4122
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4128
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4135
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4311
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4318
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4324
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4331
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Open Example"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4116
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4129
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4311
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4318
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4324
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4331
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Open File"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4312
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4325
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Cannot open the example file \"%L1\"!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4168
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4174
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4192
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4196
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4202
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4221
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4227
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4234
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4241
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4312
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4325
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Cannot open the file \"%L1\"!"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4364
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4370
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4388
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4392
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4398
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4417
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4423
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4430
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4437
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Update"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4169
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4365
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Update your OpenMV Cam's firmware to the latest version?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4193
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4389
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Your OpenMV Cam's firmware is up to date."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4197
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4393
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Need to reset your OpenMV Cam's firmware to the release version?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4228
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4424
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Cannot open firmware.txt!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4274
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4285
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4300
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4326
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4470
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4481
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4496
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4522
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Select Drive"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4275
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4471
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "No valid drives were found to associate with your OpenMV Cam!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4286
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4482
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "\"%L1\" is the only drive available so it must be your OpenMV Cam's drive."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4300
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4496
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please associate a drive with your OpenMV Cam"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4314
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4510
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Drive: %L1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4338
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4351
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4378
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4387
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4462
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4468
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4485
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4495
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4508
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4588
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4604
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4611
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4620
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4690
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4714
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4727
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4534
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4547
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4574
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4583
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4658
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4664
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4681
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4691
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4704
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4784
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4800
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4807
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4823
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4830
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4839
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4909
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4816
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4886
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4910
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4923
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5003
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5019
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5026
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5035
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5105
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "New Terminal"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4343
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4539
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect to serial port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4344
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4540
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect to UDP port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4345
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4541
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect to TCP port"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4351
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4547
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please select an option"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4387
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4583
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please enter a baud rate"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4486
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4605
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4612
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4824
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4831
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4682
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4801
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4808
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5020
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5027
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Invalid string: \"%L1\"!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4495
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4691
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect to a UDP server as a client or start a UDP Server?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4498
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4717
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4694
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4913
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Connect to a Server "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4499
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4718
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4695
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4914
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Start a Server "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4508
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4727
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4704
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4923
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "Please enter a IP address (or domain name) and port (e.g. "
 "xxx.xxx.xxx.xxx:xxxx)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4530
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4726
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "UDP Client Connection - %1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4620
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4839
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4816
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5035
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please enter a port number (enter 0 for any random free port)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4714
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4910
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Connect to a TCP server as a client or start a TCP Server?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4749
+#: ../../../src/plugins/openmv/openmvplugin.cpp:4945
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "TCP Client Connection - %1"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:4969
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5165
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Error: Option Index!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5038
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5234
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Clear Menu"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5046
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5242
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Source image location?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5049
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5245
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Frame Buffer "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5050
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5246
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Image File "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5070
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5141
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5266
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5337
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "The selected threshold tuple will be updated on close."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5123
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5319
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "No image loaded!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5129
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5325
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Image File"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5200
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5396
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "What would you like to do?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5203
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5399
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Edit File "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5204
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5400
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " Merge Files "
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5217
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5282
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5289
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5413
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5478
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5485
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Edit Keypoints"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5269
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5465
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Edited Keypoints"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5270
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5466
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to save the edited keypoints for an unknown reason!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5283
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5479
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to find the keypoints image file!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5290
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5486
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to load the keypoints file for an unknown reason!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5297
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5336
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5493
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5532
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Merge Keypoints"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5314
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5328
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5510
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5524
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Merged Keypoints"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5329
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5525
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to save the merged keypoints for an unknown reason!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5337
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5533
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to load the first keypoints file for an unknown reason!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5352
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5548
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "What tag images from the %L1 tag family do you want to generate?"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5369
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5565
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Min (%1)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5380
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5576
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Max (%1)"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5385
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5581
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Inlcude tag family and ID number in the image"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5403
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5599
 #, qt-format
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "AprilTag Generator - Where do you want to save %n tag image(s) to?"
@@ -8991,34 +9000,98 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5408
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5604
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Generating images..."
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5447
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5643
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Painting - begin failed!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5468
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5664
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Painting - end failed!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:5498
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5694
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Generation complete!"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:672
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5991
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6008
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6017
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6042
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6051
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6068
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6092
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6102
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6117
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6127
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6153
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6170
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6195
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6204
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Import Helper"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5992
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid ""
+"Module \"%L1\" on your OpenMV Cam is different than the copy on your "
+"computer.\n"
+"\n"
+"Would you like OpenMV IDE to update the module on your OpenMV Cam?"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6009
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6043
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6093
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6118
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Failed to remove \"%L1\"!"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6018
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6052
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6103
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6128
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6171
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6196
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6205
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Failed to create \"%L1\"!"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6069
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid "Would you like OpenMV IDE to update the module on your computer?"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:6154
+msgctxt "OpenMV::Internal::OpenMVPlugin|"
+msgid ""
+"Module \"%L1\" may be required to run your script.\n"
+"\n"
+"Would you like OpenMV IDE to copy it to your OpenMV Cam?"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:732
 msgctxt "QObject|"
 msgid "New File"
 msgstr ""
 
-#: ../../../src/plugins/openmv/openmvplugin.cpp:673
+#: ../../../src/plugins/openmv/openmvplugin.cpp:733
 msgctxt "QObject|"
 msgid "Can't open the new file!"
+msgstr ""
+
+#: ../../../src/plugins/openmv/openmvplugin.cpp:5911
+msgctxt "QObject|"
+msgid "Copy Failed!"
 msgstr ""
 
 #: ../../../src/plugins/openmv/openmvpluginfb.cpp:230
@@ -9417,16 +9490,6 @@ msgstr ""
 #: ../../../src/plugins/openmv/openmvterminal.cpp:901
 msgctxt "OpenMVTerminal|"
 msgid "Soft reset"
-msgstr ""
-
-#: ../../../src/plugins/openmv/openmvterminal.cpp:1074
-msgctxt "OpenMVTerminal|"
-msgid "Ctrl+E"
-msgstr ""
-
-#: ../../../src/plugins/openmv/openmvterminal.cpp:1077
-msgctxt "OpenMVTerminal|"
-msgid "Ctrl+R"
 msgstr ""
 
 #: ../../../src/plugins/openmv/tools/keypointseditor.cpp:179

@@ -4129,7 +4129,7 @@ Do you want to check them out now?</source>
     <message>
         <location line="+1"/>
         <location line="+1329"/>
-        <location filename="../../../src/plugins/coreplugin/mainwindow.cpp" line="+574"/>
+        <location filename="../../../src/plugins/coreplugin/mainwindow.cpp" line="+581"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5227,7 +5227,7 @@ Do you want to kill it?</source>
 <context>
     <name>Core::Internal::MainWindow</name>
     <message>
-        <location filename="../../../src/plugins/coreplugin/mainwindow.cpp" line="-427"/>
+        <location filename="../../../src/plugins/coreplugin/mainwindow.cpp" line="-434"/>
         <source>OpenMV IDE</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5257,7 +5257,7 @@ Do you want to kill it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+31"/>
         <source>Return to Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5272,7 +5272,7 @@ Do you want to kill it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+11"/>
         <source>Open File &amp;With...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7632,7 +7632,7 @@ Will not be applied to whitespace in comments and strings.</source>
 <context>
     <name>OpenMV::Internal::OpenMVPlugin</name>
     <message>
-        <location filename="../../../src/plugins/openmv/openmvplugin.cpp" line="+98"/>
+        <location filename="../../../src/plugins/openmv/openmvplugin.cpp" line="+96"/>
         <source>Invalid argument (%1) for -override_read_timeout</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7654,14 +7654,14 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2138"/>
+        <location line="+2229"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1746"/>
+        <location line="-1836"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7671,7 +7671,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+94"/>
         <source>OpenMV IDE</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7681,27 +7681,17 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source># Untitled - By: %L1 - %L2
-
-import sensor, image, time
-
-sensor.reset()
-sensor.set_pixformat(sensor.RGB565)
-sensor.set_framesize(sensor.QVGA)
-sensor.skip_frames(time = 2000)
-
-clock = time.clock()
-
-while(True):
-    clock.tick()
-    img = sensor.snapshot()
-    print(clock.fps())
-</source>
+        <location line="+37"/>
+        <source>Documents Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+8"/>
+        <source>Add some code to &quot;%L1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
         <source>Examples</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7727,32 +7717,32 @@ while(True):
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4249"/>
+        <location line="+4364"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4291"/>
+        <location line="-4406"/>
         <source>Machine Vision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4318"/>
+        <location line="+4433"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4389"/>
-        <location line="+4467"/>
+        <location line="-4504"/>
+        <location line="+4582"/>
         <source>Keypoints Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4460"/>
-        <location line="+4610"/>
+        <location line="-4575"/>
+        <location line="+4725"/>
         <location line="+96"/>
         <location line="+21"/>
         <location line="+10"/>
@@ -7761,7 +7751,7 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4754"/>
+        <location line="-4869"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7802,12 +7792,12 @@ while(True):
         <location line="+29"/>
         <location line="+14"/>
         <location line="+16"/>
-        <location line="+561"/>
+        <location line="+562"/>
         <source>Failed to open: &quot;%L1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-644"/>
+        <location line="-645"/>
         <source>DataMatrix Generator</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7869,22 +7859,22 @@ while(True):
     </message>
     <message>
         <location line="+15"/>
-        <location line="+1693"/>
-        <location line="+28"/>
+        <location line="+1705"/>
+        <location line="+33"/>
         <location line="+9"/>
         <location line="+10"/>
-        <location line="+28"/>
+        <location line="+32"/>
         <location line="+70"/>
         <location line="+6"/>
-        <location line="+41"/>
+        <location line="+51"/>
         <location line="+4"/>
         <location line="+4"/>
-        <location line="+84"/>
+        <location line="+95"/>
         <location line="+9"/>
         <location line="+9"/>
-        <location line="+113"/>
+        <location line="+115"/>
         <location line="+4"/>
-        <location line="+65"/>
+        <location line="+99"/>
         <location line="+55"/>
         <location line="+30"/>
         <location line="+10"/>
@@ -7898,19 +7888,14 @@ while(True):
         <location line="+13"/>
         <location line="+83"/>
         <location line="+33"/>
-        <location line="+96"/>
+        <location line="+82"/>
+        <location line="+25"/>
         <source>Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2641"/>
-        <location line="+8"/>
-        <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <location line="+2665"/>
+        <location line="-2723"/>
+        <location line="+2759"/>
         <location line="+24"/>
         <location line="+7"/>
         <location line="+69"/>
@@ -7918,18 +7903,12 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2757"/>
+        <location line="-2851"/>
         <source>Start (run script)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
         <location line="+20"/>
-        <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-1"/>
         <source>Stop (halt script)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7950,12 +7929,12 @@ while(True):
     </message>
     <message>
         <location line="+5"/>
-        <location line="+2769"/>
+        <location line="+2872"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2768"/>
+        <location line="-2871"/>
         <source>Stop recording</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7983,21 +7962,21 @@ while(True):
     <message>
         <location line="+17"/>
         <location line="+22"/>
-        <location line="+2478"/>
-        <location line="+131"/>
-        <location line="+57"/>
+        <location line="+2567"/>
+        <location line="+136"/>
+        <location line="+66"/>
         <location line="+51"/>
-        <location line="+107"/>
-        <location line="+50"/>
+        <location line="+113"/>
+        <location line="+55"/>
         <location line="+80"/>
         <location line="+53"/>
-        <location line="+175"/>
+        <location line="+176"/>
         <location line="+85"/>
         <source>Busy... please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3283"/>
+        <location line="-3398"/>
         <location line="+15"/>
         <source>Disable</source>
         <translation type="unfinished"></translation>
@@ -8070,58 +8049,58 @@ while(True):
     </message>
     <message>
         <location line="+6"/>
-        <location line="+2400"/>
+        <location line="+2494"/>
         <source>Firmware Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2399"/>
+        <location line="-2493"/>
         <source>Camera firmware version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+2395"/>
+        <location line="+2489"/>
         <source>Serial Port:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2394"/>
+        <location line="-2488"/>
         <source>Camera serial port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+2230"/>
-        <location line="+160"/>
-        <location line="+660"/>
+        <location line="+2308"/>
+        <location line="+176"/>
+        <location line="+681"/>
         <source>Drive:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3049"/>
+        <location line="-3164"/>
         <source>Drive associated with port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+2385"/>
+        <location line="+2479"/>
         <source>FPS:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2384"/>
+        <location line="-2478"/>
         <source>May be different from camera FPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+143"/>
-        <location line="+870"/>
+        <location line="+144"/>
+        <location line="+877"/>
         <source>Update Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-870"/>
+        <location line="-877"/>
         <source>A new version of OpenMV IDE (%L1.%L2.%L3) is available for download.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8141,18 +8120,28 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+64"/>
-        <location line="+2810"/>
+        <location line="+7"/>
+        <source>Documents Folder Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Failed to create the documents folder!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+63"/>
+        <location line="+2917"/>
         <source>Serial Port - %L1 - %L2 BPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2790"/>
+        <location line="-2897"/>
         <location line="+94"/>
         <location line="+84"/>
         <location line="+89"/>
         <location line="+84"/>
-        <location line="+2473"/>
+        <location line="+2580"/>
         <location line="+126"/>
         <location line="+102"/>
         <location line="+117"/>
@@ -8162,20 +8151,20 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3377"/>
+        <location line="-3484"/>
         <location line="+94"/>
         <location line="+84"/>
         <location line="+89"/>
         <location line="+84"/>
         <location line="+162"/>
         <location line="+168"/>
-        <location line="+399"/>
-        <location line="+259"/>
-        <location line="+81"/>
+        <location line="+412"/>
+        <location line="+282"/>
+        <location line="+115"/>
         <location line="+55"/>
         <location line="+47"/>
         <location line="+94"/>
-        <location line="+1208"/>
+        <location line="+1245"/>
         <location line="+126"/>
         <location line="+102"/>
         <location line="+117"/>
@@ -8186,20 +8175,20 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3771"/>
+        <location line="-3878"/>
         <location line="+94"/>
         <location line="+84"/>
         <location line="+89"/>
         <location line="+84"/>
         <location line="+203"/>
         <location line="+173"/>
-        <location line="+370"/>
-        <location line="+148"/>
-        <location line="+286"/>
+        <location line="+383"/>
+        <location line="+169"/>
+        <location line="+322"/>
         <location line="+31"/>
-        <location line="+720"/>
-        <location line="+7"/>
-        <location line="+197"/>
+        <location line="+748"/>
+        <location line="+14"/>
+        <location line="+199"/>
         <location line="+13"/>
         <location line="+86"/>
         <location line="+13"/>
@@ -8213,7 +8202,7 @@ while(True):
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-3375"/>
+        <location line="-3482"/>
         <source>
 
 Try doing:
@@ -8260,12 +8249,12 @@ sudo adduser %L1 dialout
     </message>
     <message>
         <location line="+17"/>
-        <location line="+2860"/>
+        <location line="+2967"/>
         <source>UDP Server Connection - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2798"/>
+        <location line="-2905"/>
         <source>Invalid port argument (%1) for -open_udp_server_terminal</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8296,12 +8285,12 @@ sudo adduser %L1 dialout
     </message>
     <message>
         <location line="+17"/>
-        <location line="+2906"/>
+        <location line="+3013"/>
         <source>TCP Server Connection - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-2844"/>
+        <location line="-2951"/>
         <source>Invalid port argument (%1) for -open_tcp_server_terminal</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8478,12 +8467,12 @@ Would you like to register your OpenMV Cam now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+93"/>
+        <location line="+97"/>
         <source>No OpenMV Cams found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+33"/>
         <source>Do you have an OpenMV Cam connected and is it bricked?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8494,26 +8483,26 @@ Would you like to register your OpenMV Cam now?</source>
     </message>
     <message>
         <location line="+11"/>
-        <location line="+1539"/>
+        <location line="+1637"/>
         <location line="+28"/>
         <source>Erase the internal file system?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1540"/>
-        <location line="+1715"/>
+        <location line="-1634"/>
+        <location line="+1809"/>
         <source>Please select a serial port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1684"/>
-        <location line="+259"/>
+        <location line="-1778"/>
+        <location line="+282"/>
         <source>Connecting... (Hit cancel if this takes more than 5 seconds).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-213"/>
-        <location line="+1729"/>
+        <location line="-236"/>
+        <location line="+1823"/>
         <source>Try doing:
 
 sudo adduser %L1 dialout
@@ -8522,7 +8511,7 @@ sudo adduser %L1 dialout
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1688"/>
+        <location line="-1772"/>
         <source>Timeout error while getting firmware version!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8537,18 +8526,18 @@ sudo adduser %L1 dialout
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+95"/>
         <source>Unsupported board architecture!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+18"/>
-        <location line="+518"/>
+        <location line="+554"/>
         <source>Timeout error while getting board architecture!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-456"/>
+        <location line="-490"/>
         <source>Disconnect your OpenMV Cam and then reconnect it...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8565,7 +8554,7 @@ Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+60"/>
         <source>Erasing...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8676,23 +8665,29 @@ HomeBrew:
     </message>
     <message>
         <location line="+4"/>
-        <location line="+269"/>
+        <location line="+242"/>
+        <location line="+52"/>
         <location line="+51"/>
         <source>FPS: 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-297"/>
+        <location line="-322"/>
         <source> - [ out of date - click here to updgrade ]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
+        <source>Your OpenMV Cam&apos;s firmware is out of date. Would you like to upgrade?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source> - [ latest ]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+51"/>
         <location line="+24"/>
         <location line="+7"/>
         <source>Failed to eject &quot;%L1&quot;!</source>
@@ -8704,48 +8699,48 @@ HomeBrew:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+66"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+164"/>
         <source>Configure Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
-        <location line="+25"/>
-        <location line="+7"/>
-        <location line="+8"/>
+        <location line="+22"/>
+        <location line="+14"/>
+        <location line="+9"/>
         <source>Save Script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="-44"/>
         <source>Strip comments and convert spaces to tabs?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+55"/>
         <location line="+13"/>
         <source>Save Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-11"/>
-        <location line="+1185"/>
+        <location line="+1186"/>
         <source>Image Files (*.bmp *.jpg *.jpeg *.png *.ppm)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1173"/>
-        <location line="+1520"/>
+        <location line="-1174"/>
+        <location line="+1521"/>
         <source>Failed to save the image file for an unknown reason!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1503"/>
+        <location line="-1504"/>
         <location line="+12"/>
         <location line="+15"/>
         <location line="+11"/>
@@ -8779,7 +8774,7 @@ HomeBrew:
     </message>
     <message>
         <location line="-36"/>
-        <location line="+1189"/>
+        <location line="+1190"/>
         <location line="+80"/>
         <location line="+17"/>
         <source>Keypoints Files (*.lbp *.orb)</source>
@@ -8794,9 +8789,23 @@ HomeBrew:
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="-20"/>
+        <location line="+7"/>
+        <location line="+6"/>
+        <location line="+7"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="-19"/>
         <location line="+13"/>
         <source>Cannot open the example file &quot;%L1&quot;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-13"/>
+        <location line="+13"/>
+        <source>Cannot open the file &quot;%L1&quot;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9118,17 +9127,78 @@ HomeBrew:
         <source>Generation complete!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location line="+297"/>
+        <location line="+17"/>
+        <location line="+9"/>
+        <location line="+25"/>
+        <location line="+9"/>
+        <location line="+17"/>
+        <location line="+24"/>
+        <location line="+10"/>
+        <location line="+15"/>
+        <location line="+10"/>
+        <location line="+26"/>
+        <location line="+17"/>
+        <location line="+25"/>
+        <location line="+9"/>
+        <source>Import Helper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-212"/>
+        <source>Module &quot;%L1&quot; on your OpenMV Cam is different than the copy on your computer.
+
+Would you like OpenMV IDE to update the module on your OpenMV Cam?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <location line="+34"/>
+        <location line="+50"/>
+        <location line="+25"/>
+        <source>Failed to remove &quot;%L1&quot;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-100"/>
+        <location line="+34"/>
+        <location line="+51"/>
+        <location line="+25"/>
+        <location line="+43"/>
+        <location line="+25"/>
+        <location line="+9"/>
+        <source>Failed to create &quot;%L1&quot;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-136"/>
+        <source>Would you like OpenMV IDE to update the module on your computer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+85"/>
+        <source>Module &quot;%L1&quot; may be required to run your script.
+
+Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-4826"/>
+        <location line="-5422"/>
         <source>New File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Can&apos;t open the new file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5178"/>
+        <source>Copy Failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9530,16 +9600,6 @@ HomeBrew:
     <message>
         <location line="+5"/>
         <source>Soft reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+173"/>
-        <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
