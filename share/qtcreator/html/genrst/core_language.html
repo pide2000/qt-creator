@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core Language &mdash; MicroPython 1.9.2 documentation</title>
+  <title>Core Language &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython differences from CPython" href="index.html"/>
         <link rel="next" title="Builtin Types" href="builtin_types.html"/>
         <link rel="prev" title="Syntax" href="syntax.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -113,6 +113,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#generator">Generator</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#context-manager-exit-not-called-in-a-generator-which-does-not-run-to-completion">Context manager __exit__() not called in a generator which does not run to completion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime">Runtime</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#local-variables-aren-t-included-in-locals-result">Local variables aren&#8217;t included in locals() result</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-running-in-eval-function-doesn-t-have-access-to-local-variables">Code running in eval() function doesn&#8217;t have access to local variables</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#import">import</a><ul>
@@ -176,7 +181,7 @@
             
   <div class="section" id="core-language">
 <h1>Core Language<a class="headerlink" href="#core-language" title="Permalink to this headline">¶</a></h1>
-<p>Generated Tue 21 Nov 2017 21:31:50 UTC</p>
+<p>Generated Sat 28 Apr 2018 19:34:04 UTC</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="special-method-del-not-implemented-for-user-defined-classes">
@@ -496,6 +501,78 @@ AttributeError: &#39;function&#39; object has no attribute &#39;x&#39;
 </table>
 </div>
 </div>
+<div class="section" id="runtime">
+<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="local-variables-aren-t-included-in-locals-result">
+<span id="cpydiff-core-locals"></span><h3>Local variables aren&#8217;t included in locals() result<a class="headerlink" href="#local-variables-aren-t-included-in-locals-result" title="Permalink to this headline">¶</a></h3>
+<p><strong>Cause:</strong> MicroPython doesn&#8217;t maintain symbolic local environment, it is optimized to an array of slots. Thus, local variables can&#8217;t be accessed by a name.</p>
+<p>Sample code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
+
+<span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>CPy output:</td>
+<td>uPy output:</td>
+</tr>
+<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;val&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+</td>
+<td><div class="first last highlight-python"><div class="highlight"><pre>{&#39;test&#39;: &lt;function test at 0x7f014da2e560&gt;, &#39;__name__&#39;: &#39;__main__&#39;, &#39;__file__&#39;: &#39;&lt;stdin&gt;&#39;}
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="code-running-in-eval-function-doesn-t-have-access-to-local-variables">
+<span id="cpydiff-core-locals-eval"></span><h3>Code running in eval() function doesn&#8217;t have access to local variables<a class="headerlink" href="#code-running-in-eval-function-doesn-t-have-access-to-local-variables" title="Permalink to this headline">¶</a></h3>
+<p><strong>Cause:</strong> MicroPython doesn&#8217;t maintain symbolic local environment, it is optimized to an array of slots. Thus, local variables can&#8217;t be accessed by a name. Effectively, <code class="docutils literal"><span class="pre">eval(expr)</span></code> in MicroPython is equivalent to <code class="docutils literal"><span class="pre">eval(expr,</span> <span class="pre">globals(),</span> <span class="pre">globals())</span></code>.</p>
+<p>Sample code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">val</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;print(val)&quot;</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>CPy output:</td>
+<td>uPy output:</td>
+</tr>
+<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="mi">2</span>
+<span class="mi">2</span>
+</pre></div>
+</div>
+</td>
+<td><div class="first last highlight-python"><div class="highlight"><pre><span class="mi">2</span>
+<span class="mi">1</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="section" id="import">
 <h2>import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="path-attribute-of-a-package-has-a-different-type-single-string-instead-of-list-of-strings-in-micropython">
@@ -510,14 +587,14 @@ AttributeError: &#39;function&#39; object has no attribute &#39;x&#39;
 </div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="71%" />
-<col width="29%" />
+<col width="74%" />
+<col width="26%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>CPy output:</td>
 <td>uPy output:</td>
 </tr>
-<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="s">&#39;/home/kwagyeman/GitHub/openmv-doc/micropython/tests/cpydiff/modules&#39;</span><span class="p">]</span>
+<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="s">&#39;/home/kwagyeman/Documents/GitHub/openmv/src/micropython/tests/cpydiff/modules&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </td>
@@ -633,8 +710,8 @@ ImportError: no module named &#39;subpkg.bar&#39;
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -721,7 +798,7 @@ ImportError: no module named &#39;subpkg.bar&#39;
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

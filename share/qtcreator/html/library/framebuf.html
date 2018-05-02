@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>framebuf — Frame buffer manipulation &mdash; MicroPython 1.9.2 documentation</title>
+  <title>framebuf — Frame buffer manipulation &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/> 
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -173,9 +173,9 @@ format of the FrameBuffer.</li>
 <li><em>width</em> is the width of the FrameBuffer in pixels</li>
 <li><em>height</em> is the height of the FrameBuffer in pixels</li>
 <li><em>format</em> specifies the type of pixel used in the FrameBuffer;
-valid values are <code class="docutils literal"><span class="pre">framebuf.MVLSB</span></code>, <code class="docutils literal"><span class="pre">framebuf.RGB565</span></code>
-and <code class="docutils literal"><span class="pre">framebuf.GS4_HMSB</span></code>. MVLSB is monochrome 1-bit color,
-RGB565 is RGB 16-bit color, and GS4_HMSB is grayscale 4-bit color.
+permissible values are listed under Constants below. These set the
+number of bits used to encode a color value and the layout of these
+bits in <em>buffer</em>.
 Where a color value c is passed to a method, c is a small integer
 with an encoding that is dependent on the format of the FrameBuffer.</li>
 <li><em>stride</em> is the number of pixels between each horizontal line
@@ -269,8 +269,9 @@ leave a footprint of the previous colors in the FrameBuffer.</p>
 If <em>key</em> is specified then it should be a color integer and the
 corresponding color will be considered transparent: all pixels with that
 color value will not be drawn.</p>
-<p>This method works between FrameBuffer&#8217;s utilising different formats, but the
-resulting colors may be unexpected due to the mismatch in color formats.</p>
+<p>This method works between FrameBuffer instances utilising different formats,
+but the resulting colors may be unexpected due to the mismatch in color
+formats.</p>
 </dd></dl>
 
 </div>
@@ -316,9 +317,21 @@ pixel lower.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="framebuf.framebuf.GS2_HMSB">
+<code class="descclassname">framebuf.</code><code class="descname">GS2_HMSB</code><a class="headerlink" href="#framebuf.framebuf.GS2_HMSB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grayscale (2-bit) color format</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="framebuf.framebuf.GS4_HMSB">
 <code class="descclassname">framebuf.</code><code class="descname">GS4_HMSB</code><a class="headerlink" href="#framebuf.framebuf.GS4_HMSB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grayscale (4-bit) color format</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="framebuf.framebuf.GS8">
+<code class="descclassname">framebuf.</code><code class="descname">GS8</code><a class="headerlink" href="#framebuf.framebuf.GS8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grayscale (8-bit) color format</p>
 </dd></dl>
 
 </div>
@@ -334,8 +347,8 @@ pixel lower.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -422,7 +435,7 @@ pixel lower.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

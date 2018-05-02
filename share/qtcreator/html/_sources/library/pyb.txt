@@ -71,26 +71,14 @@ Time related functions
 Reset related functions
 -----------------------
 
-.. only:: port_pyboard
+.. function:: hard_reset()
 
-   .. function:: hard_reset()
+   Resets the pyboard in a manner similar to pushing the external RESET
+   button.
 
-      Resets the pyboard in a manner similar to pushing the external RESET
-      button.
+.. function:: bootloader()
 
-   .. function:: bootloader()
-
-       Activate the bootloader without BOOT\* pins.
-
-.. only:: port_openmvcam
-
-   .. function:: hard_reset()
-
-      Resets the openmvcam in a manner similar to asserting the external RESET.
-
-   .. function:: bootloader()
-
-       Activate the bootloader without BOOT pin.
+   Activate the bootloader without BOOT\* pins.
 
 .. function:: fault_debug(value)
 
@@ -199,36 +187,6 @@ Power related functions
 
 .. only:: port_openmvcam
 
-    .. function:: freq([sysclk[, hclk[, pclk1[, pclk2]]]])
-
-       If given no arguments, returns a tuple of clock frequencies:
-       (sysclk, hclk, pclk1, pclk2).
-       These correspond to:
-
-        - sysclk: frequency of the CPU
-        - hclk: frequency of the AHB bus, core memory and DMA
-        - pclk1: frequency of the APB1 bus
-        - pclk2: frequency of the APB2 bus
-
-       If given any arguments then the function sets the frequency of the CPU,
-       and the busses if additional arguments are given.  Frequencies are given in
-       Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
-       not all values are supported and the largest supported frequency not greater
-       than the given value will be selected.
-
-       Supported sysclk frequencies are (in MHz): 8, 16, 24, 30, 32, 36, 40, 42, 48,
-       54, 56, 60, 64, 72, 84, 96, 108, 120, 144, 168, 192, 216.
-
-       The hclk, pclk1 and pclk2 frequencies are derived from the sysclk frequency
-       using a prescaler (divider).  Supported prescalers for hclk are: 1, 2, 4, 8,
-       16, 64, 128, 256, 512.  Supported prescalers for pclk1 and pclk2 are: 1, 2,
-       4, 8.  A prescaler will be chosen to best match the requested frequency.
-
-       A sysclk frequency of
-       8MHz uses the HSE (external crystal) directly and 16MHz uses the HSI
-       (internal oscillator) directly.  The higher frequencies use the HSE to
-       drive the PLL (phase locked loop), and then use the output of the PLL.
-
     .. function:: wfi()
 
        Wait for an internal or external interrupt.
@@ -241,7 +199,7 @@ Power related functions
 
     .. function:: stop()
 
-       Put the pyboard in a "sleeping" state.
+       Put the openmvcam in a "sleeping" state.
 
        This reduces power consumption to less than 500 uA.  To wake from this
        sleep state requires an external interrupt or a real-time-clock event.
@@ -277,18 +235,20 @@ Miscellaneous functions
 
        .. note:: This function is deprecated.  Use :meth:`pyb.USB_HID.send()` instead.
 
-.. function:: info([dump_alloc_table])
+.. only:: port_pyboard or port_openmvcam
 
-   Print out lots of information about the board.
+    .. function:: info([dump_alloc_table])
+
+       Print out lots of information about the board.
 
 .. only:: port_pyboard
 
-    .. function:: main(filename)
+   .. function:: main(filename)
 
-       Set the filename of the main script to run after boot.py is finished.  If
-       this function is not called then the default file main.py will be executed.
+      Set the filename of the main script to run after boot.py is finished.  If
+      this function is not called then the default file main.py will be executed.
 
-       It only makes sense to call this function from within boot.py.
+      It only makes sense to call this function from within boot.py.
 
 .. only:: port_pyboard or port_openmvcam
 
@@ -345,32 +305,33 @@ Miscellaneous functions
 
 .. only:: port_pyboard
 
-   .. function:: usb_mode([modestr], vid=0xf055, pid=0x9801, hid=pyb.hid_mouse)
+    .. function:: usb_mode([modestr], vid=0xf055, pid=0x9801, hid=pyb.hid_mouse)
 
-      If called with no arguments, return the current USB mode as a string.
+       If called with no arguments, return the current USB mode as a string.
 
-      If called with ``modestr`` provided, attempts to set USB mode.
-      This can only be done when called from ``boot.py`` before
-      :meth:`pyb.main()` has been called.  The following values of
-      ``modestr`` are understood:
+       If called with ``modestr`` provided, attempts to set USB mode.
+       This can only be done when called from ``boot.py`` before
+       :meth:`pyb.main()` has been called.  The following values of
+       ``modestr`` are understood:
 
-      - ``None``: disables USB
-      - ``'VCP'``: enable with VCP (Virtual COM Port) interface
-      - ``'VCP+MSC'``: enable with VCP and MSC (mass storage device class)
-      - ``'VCP+HID'``: enable with VCP and HID (human interface device)
+       - ``None``: disables USB
+       - ``'VCP'``: enable with VCP (Virtual COM Port) interface
+       - ``'MSC'``: enable with MSC (mass storage device class) interface
+       - ``'VCP+MSC'``: enable with VCP and MSC
+       - ``'VCP+HID'``: enable with VCP and HID (human interface device)
 
-      For backwards compatibility, ``'CDC'`` is understood to mean
-      ``'VCP'`` (and similarly for ``'CDC+MSC'`` and ``'CDC+HID'``).
+       For backwards compatibility, ``'CDC'`` is understood to mean
+       ``'VCP'`` (and similarly for ``'CDC+MSC'`` and ``'CDC+HID'``).
 
-      The ``vid`` and ``pid`` parameters allow you to specify the VID
-      (vendor id) and PID (product id).
+       The ``vid`` and ``pid`` parameters allow you to specify the VID
+       (vendor id) and PID (product id).
 
-      If enabling HID mode, you may also specify the HID details by
-      passing the ``hid`` keyword parameter.  It takes a tuple of
-      (subclass, protocol, max packet length, polling interval, report
-      descriptor).  By default it will set appropriate values for a USB
-      mouse.  There is also a ``pyb.hid_keyboard`` constant, which is an
-      appropriate tuple for a USB keyboard.
+       If enabling HID mode, you may also specify the HID details by
+       passing the ``hid`` keyword parameter.  It takes a tuple of
+       (subclass, protocol, max packet length, polling interval, report
+       descriptor).  By default it will set appropriate values for a USB
+       mouse.  There is also a ``pyb.hid_keyboard`` constant, which is an
+       appropriate tuple for a USB keyboard.
 
 Classes
 -------

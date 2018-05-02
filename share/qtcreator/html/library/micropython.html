@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>micropython – access and control MicroPython internals &mdash; MicroPython 1.9.2 documentation</title>
+  <title>micropython – access and control MicroPython internals &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="network — network configuration" href="network.html"/>
         <link rel="prev" title="class WDT – watchdog timer" href="machine.WDT.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -188,6 +188,17 @@ pattern.</p>
 <dd><p>If <em>level</em> is given then this function sets the optimisation level for subsequent
 compilation of scripts, and returns <code class="docutils literal"><span class="pre">None</span></code>.  Otherwise it returns the current
 optimisation level.</p>
+<p>The optimisation level controls the following compilation features:</p>
+<ul class="simple">
+<li>Assertions: at level 0 assertion statements are enabled and compiled into the
+bytecode; at levels 1 and higher assertions are not compiled.</li>
+<li>Built-in <code class="docutils literal"><span class="pre">__debug__</span></code> variable: at level 0 this variable expands to <code class="docutils literal"><span class="pre">True</span></code>;
+at levels 1 and higher it expands to <code class="docutils literal"><span class="pre">False</span></code>.</li>
+<li>Source-code line numbers: at levels 0, 1 and 2 source-code line number are
+stored along with the bytecode so that exceptions can report the line number
+they occurred at; at levels 3 and higher line numbers are not stored.</li>
+</ul>
+<p>The default optimisation level is usually level 0.</p>
 </dd></dl>
 
 <dl class="function">
@@ -205,7 +216,7 @@ for all the code following it.</p>
 <dl class="function">
 <dt id="micropython.mem_info">
 <code class="descclassname">micropython.</code><code class="descname">mem_info</code><span class="sig-paren">(</span><span class="optional">[</span><em>verbose</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#micropython.mem_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print information about currently used memory.  If the <em>verbose`</em> argument
+<dd><p>Print information about currently used memory.  If the <em>verbose</em> argument
 is given then extra information is printed.</p>
 <p>The information that is printed is implementation dependent, but currently
 includes the amount of stack and heap used.  In verbose mode it prints out
@@ -280,7 +291,15 @@ handler (an IRQ).</li>
 Such an IRQ puts restrictions on the code that runs in the IRQ (for example
 the heap may be locked) and scheduling a function to call later will lift
 those restrictions.</p>
-<p>There is a finite stack to hold the scheduled functions and <a class="reference internal" href="#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule</span></code></a>
+<p>Note: If <a class="reference internal" href="#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule()</span></code></a> is called from a preempting IRQ, when memory
+allocation is not allowed and the callback to be passed to <a class="reference internal" href="#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule()</span></code></a> is
+a bound method, passing this directly will fail. This is because creating a
+reference to a bound method causes memory allocation. A solution is to
+create a reference to the method in the class constructor and to pass that
+reference to <a class="reference internal" href="#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule()</span></code></a>. This is discussed in detail here
+<a class="reference internal" href="../reference/isr_rules.html#isr-rules"><span>reference documentation</span></a> under &#8220;Creation of Python
+objects&#8221;.</p>
+<p>There is a finite stack to hold the scheduled functions and <a class="reference internal" href="#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule()</span></code></a>
 will raise a <a class="reference internal" href="builtins.html#RuntimeError" title="RuntimeError"><code class="xref any py py-exc docutils literal"><span class="pre">RuntimeError</span></code></a> if the stack is full.</p>
 </dd></dl>
 
@@ -306,8 +325,8 @@ will raise a <a class="reference internal" href="builtins.html#RuntimeError" tit
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -394,7 +413,7 @@ will raise a <a class="reference internal" href="builtins.html#RuntimeError" tit
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

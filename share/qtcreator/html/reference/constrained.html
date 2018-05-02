@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MicroPython on Microcontrollers &mdash; MicroPython 1.9.2 documentation</title>
+  <title>MicroPython on Microcontrollers &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
-        <link rel="next" title="Inline Assembler for Thumb2 architectures" href="asm_thumb2_index.html"/>
+        <link rel="next" title="Distribution packages, package management, and deploying applications" href="packages.html"/>
         <link rel="prev" title="Maximising MicroPython Speed" href="speed_python.html"/> 
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -119,6 +119,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html">Distribution packages, package management, and deploying applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
@@ -359,14 +360,14 @@ string and an array of bytes. MicroPython ensures that Unicode strings take no
 additional space so long as all characters in the string are ASCII (i.e. have
 a value &lt; 126). If values in the full 8-bit range are required <a class="reference internal" href="../library/builtins.html#bytes" title="bytes"><code class="xref any py py-class docutils literal"><span class="pre">bytes</span></code></a> and
 <a class="reference internal" href="../library/builtins.html#bytearray" title="bytearray"><code class="xref any py py-class docutils literal"><span class="pre">bytearray</span></code></a> objects can be used to ensure that no additional space will be
-required. Note that most string methods (e.g. <a class="reference external" href="http://docs.python.org/3/library/stdtypes.html#str.strip" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">str.strip()</span></code></a>) apply also to <a class="reference internal" href="../library/builtins.html#bytes" title="bytes"><code class="xref any py py-class docutils literal"><span class="pre">bytes</span></code></a>
+required. Note that most string methods (e.g. <a class="reference external" href="http://docs.python.org/3.5/library/stdtypes.html#str.strip" title="(in Python v3.5)"><code class="xref py py-meth docutils literal"><span class="pre">str.strip()</span></code></a>) apply also to <a class="reference internal" href="../library/builtins.html#bytes" title="bytes"><code class="xref any py py-class docutils literal"><span class="pre">bytes</span></code></a>
 instances so the process of eliminating Unicode can be painless.</p>
 <div class="code highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;the quick brown fox&#39;</span>   <span class="c"># A string instance</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="s">&#39;the quick brown fox&#39;</span>  <span class="c"># A bytes instance</span>
 </pre></div>
 </div>
-<p>Where it is necessary to convert between strings and bytes the <a class="reference external" href="http://docs.python.org/3/library/stdtypes.html#str.encode" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">str.encode()</span></code></a>
-and the <a class="reference external" href="http://docs.python.org/3/library/stdtypes.html#bytes.decode" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">bytes.decode()</span></code></a> methods can be used. Note that both strings and bytes
+<p>Where it is necessary to convert between strings and bytes the <a class="reference external" href="http://docs.python.org/3.5/library/stdtypes.html#str.encode" title="(in Python v3.5)"><code class="xref py py-meth docutils literal"><span class="pre">str.encode()</span></code></a>
+and the <a class="reference external" href="http://docs.python.org/3.5/library/stdtypes.html#bytes.decode" title="(in Python v3.5)"><code class="xref py py-meth docutils literal"><span class="pre">bytes.decode()</span></code></a> methods can be used. Note that both strings and bytes
 are immutable. Any operation which takes as input such an object and produces
 another implies at least one RAM allocation to produce the result. In the
 second line below a new bytes object is allocated. This would also occur if <code class="docutils literal"><span class="pre">foo</span></code>
@@ -377,7 +378,7 @@ were a string.</p>
 </div>
 <p><strong>Runtime compiler execution</strong></p>
 <p>The Python funcitons <a class="reference internal" href="../library/builtins.html#eval" title="eval"><code class="xref any py py-func docutils literal"><span class="pre">eval</span></code></a> and <a class="reference internal" href="../library/builtins.html#exec" title="exec"><code class="xref any py py-func docutils literal"><span class="pre">exec</span></code></a> invoke the compiler at runtime, which
-requires significant amounts of RAM. Note that the <a class="reference external" href="http://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.6)"><code class="xref any docutils literal"><span class="pre">pickle</span></code></a> library from
+requires significant amounts of RAM. Note that the <a class="reference external" href="http://docs.python.org/3.5/library/pickle.html#module-pickle" title="(in Python v3.5)"><code class="xref any docutils literal"><span class="pre">pickle</span></code></a> library from
 <a class="reference internal" href="glossary.html#term-micropython-lib"><code class="xref any std std-term docutils literal"><span class="pre">micropython-lib</span></code></a> employs <a class="reference internal" href="../library/builtins.html#exec" title="exec"><code class="xref any py py-func docutils literal"><span class="pre">exec</span></code></a>. It may be more RAM efficient to use the
 <a class="reference internal" href="../library/ujson.html#module-ujson" title="ujson: JSON encoding and decoding"><code class="xref any py py-mod docutils literal"><span class="pre">ujson</span></code></a> library for object serialisation.</p>
 <p><strong>Storing strings in flash</strong></p>
@@ -392,7 +393,7 @@ modules have not been fully debugged, so long as they can be imported and run.</
 </div>
 <p>Then copy and paste all the Q(xxx) lines into a text editor. Check for and
 remove lines which are obviously invalid. Open the file qstrdefsport.h which
-will be found in stmhal (or the equivalent directory for the architecture in
+will be found in ports/stm32 (or the equivalent directory for the architecture in
 use). Copy and paste the corrected lines at the end of the file. Save the file,
 rebuild and flash the firmware. The outcome can be checked by importing the
 modules and again issuing:</p>
@@ -582,7 +583,7 @@ efficiency reasons bare metal ports do not return this value.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="asm_thumb2_index.html" class="btn btn-neutral float-right" title="Inline Assembler for Thumb2 architectures" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="packages.html" class="btn btn-neutral float-right" title="Distribution packages, package management, and deploying applications" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="speed_python.html" class="btn btn-neutral" title="Maximising MicroPython Speed" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -594,8 +595,8 @@ efficiency reasons bare metal ports do not return this value.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -682,7 +683,7 @@ efficiency reasons bare metal ports do not return this value.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

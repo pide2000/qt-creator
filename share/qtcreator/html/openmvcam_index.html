@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MicroPython documentation and references &mdash; MicroPython 1.9.2 documentation</title>
+  <title>MicroPython documentation and references &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="index.html"/>
         <link rel="next" title="Quick reference for the openmvcam" href="openmvcam/quickref.html"/> 
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -240,10 +240,6 @@
 <li class="toctree-l4"><a class="reference internal" href="library/ubinascii.html#functions">Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/ucollections.html"><code class="docutils literal"><span class="pre">ucollections</span></code> &#8211; collection and container types</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/ucollections.html#classes">Classes</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="library/uerrno.html"><code class="docutils literal"><span class="pre">uerrno</span></code> &#8211; system error codes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="library/uerrno.html#constants">Constants</a></li>
 </ul>
@@ -268,7 +264,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/uos.html"><code class="docutils literal"><span class="pre">uos</span></code> &#8211; basic &#8220;operating system&#8221; services</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/uos.html#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#general-functions">General functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#filesystem-access">Filesystem access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#terminal-redirection-and-duplication">Terminal redirection and duplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#filesystem-mounting">Filesystem mounting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/uos.html#block-devices">Block devices</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/ure.html"><code class="docutils literal"><span class="pre">ure</span></code> &#8211; simple regular expressions</a><ul>
@@ -307,6 +307,7 @@
 <li class="toctree-l4"><a class="reference internal" href="library/uzlib.html#functions">Functions</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="library/_thread.html"><code class="docutils literal"><span class="pre">_thread</span></code> &#8211; multithreading support</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="library/index.html#micropython-specific-libraries">MicroPython-specific libraries</a><ul>
@@ -598,78 +599,93 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-similarity-similarity-object">class Similarity &#8211; Similarity Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id1">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#methods">Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id1">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id2">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-threhsold-threshold-object">class Threhsold &#8211; Threshold Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id2">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id3">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id4">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id4">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id5">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-line-line-object">class Line &#8211; Line object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id6">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-circle-circle-object">class Circle &#8211; Circle object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-threshold-threshold-object">class Threshold &#8211; Threshold Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id6">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id7">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-rect-rectangle-object">class Rect &#8211; Rectangle Object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id8">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id8">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id9">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id10">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id10">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id11">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id12">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-displacement-displacement-object">class Displacement &#8211; Displacement object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-line-line-object">class Line &#8211; Line object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id12">Constructors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id13">Methods</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-circle-circle-object">class Circle &#8211; Circle object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id14">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id15">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-rect-rectangle-object">class Rect &#8211; Rectangle Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id16">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id17">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-qrcode-qrcode-object">class QRCode &#8211; QRCode object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id18">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id19">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-apriltag-apriltag-object">class AprilTag &#8211; AprilTag object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id20">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id21">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-datamatrix-datamatrix-object">class DataMatrix &#8211; DataMatrix object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id22">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id23">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-barcode-barcode-object">class BarCode &#8211; BarCode object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id24">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id25">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-displacement-displacement-object">class Displacement &#8211; Displacement object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id26">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id27">Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-kptmatch-keypoint-object">class kptmatch &#8211; Keypoint Object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id14">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id28">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id29">Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id15">Constructors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id16">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id30">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id31">Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id17">Constructors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id18">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id32">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id33">Methods</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="library/omv.image.html#class-image-image-object">class Image &#8211; Image object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id19">Constructors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id20">Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id34">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#id35">Methods</a></li>
 <li class="toctree-l4"><a class="reference internal" href="library/omv.image.html#constants">Constants</a></li>
 </ul>
 </li>
@@ -693,9 +709,8 @@
 <li class="toctree-l4"><a class="reference internal" href="library/omv.fir.html#functions">Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="library/omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.cpufreq.html#functions">Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="library/omv.cpufreq.html#constants">Constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library/omv.omv.html"><code class="docutils literal"><span class="pre">omv</span></code> &#8212; OpenMV Cam Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="library/omv.omv.html#functions">Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -724,6 +739,7 @@
 <li class="toctree-l4"><a class="reference internal" href="reference/isr_rules.html#creation-of-python-objects">Creation of Python objects</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/isr_rules.html#use-of-python-objects">Use of Python objects</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/isr_rules.html#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/isr_rules.html#using-micropython-schedule">Using micropython.schedule</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reference/isr_rules.html#exceptions">Exceptions</a></li>
@@ -775,6 +791,17 @@
 <li class="toctree-l4"><a class="reference internal" href="reference/constrained.html#footnote-gc-collect-return-value">Footnote: gc.collect() return value</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/packages.html">Distribution packages, package management, and deploying applications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#distribution-packages">Distribution packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#upip-package-manager"><code class="docutils literal"><span class="pre">upip</span></code> package manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#cross-installing-packages">Cross-installing packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#cross-installing-packages-with-freezing">Cross-installing packages with freezing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#creating-distribution-packages">Creating distribution packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#application-resources">Application resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/packages.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reference/asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a><ul>
@@ -898,6 +925,11 @@
 <li class="toctree-l4"><a class="reference internal" href="genrst/core_language.html#context-manager-exit-not-called-in-a-generator-which-does-not-run-to-completion">Context manager __exit__() not called in a generator which does not run to completion</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="genrst/core_language.html#runtime">Runtime</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="genrst/core_language.html#local-variables-aren-t-included-in-locals-result">Local variables aren&#8217;t included in locals() result</a></li>
+<li class="toctree-l4"><a class="reference internal" href="genrst/core_language.html#code-running-in-eval-function-doesn-t-have-access-to-local-variables">Code running in eval() function doesn&#8217;t have access to local variables</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="genrst/core_language.html#import">import</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="genrst/core_language.html#path-attribute-of-a-package-has-a-different-type-single-string-instead-of-list-of-strings-in-micropython">__path__ attribute of a package has a different type (single string instead of list of strings) in MicroPython</a></li>
 <li class="toctree-l4"><a class="reference internal" href="genrst/core_language.html#failed-to-load-modules-are-still-registered-as-loaded">Failed to load modules are still registered as loaded</a></li>
@@ -911,7 +943,7 @@
 <li class="toctree-l4"><a class="reference internal" href="genrst/builtin_types.html#exception-chaining-not-implemented">Exception chaining not implemented</a></li>
 <li class="toctree-l4"><a class="reference internal" href="genrst/builtin_types.html#user-defined-attributes-for-builtin-exceptions-are-not-supported">User-defined attributes for builtin exceptions are not supported</a></li>
 <li class="toctree-l4"><a class="reference internal" href="genrst/builtin_types.html#exception-in-while-loop-condition-may-have-unexpected-line-number">Exception in while loop condition may have unexpected line number</a></li>
-<li class="toctree-l4"><a class="reference internal" href="genrst/builtin_types.html#exception-init-raises-typeerror-if-overridden-and-called-by-subclass">Exception.__init__ raises TypeError if overridden and called by subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="genrst/builtin_types.html#exception-init-method-does-not-exist">Exception.__init__ method does not exist.</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="genrst/builtin_types.html#bytearray">bytearray</a><ul>
@@ -962,6 +994,10 @@
 <li class="toctree-l4"><a class="reference internal" href="genrst/modules.html#subscript-with-step-1-is-not-yet-implemented">Subscript with step != 1 is not yet implemented</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="genrst/modules.html#builtins">builtins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="genrst/modules.html#second-argument-to-next-is-not-implemented">Second argument to next() is not implemented</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="genrst/modules.html#deque">deque</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="genrst/modules.html#deque-not-implemented">Deque not implemented</a></li>
 </ul>
@@ -1005,8 +1041,8 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -1093,7 +1129,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

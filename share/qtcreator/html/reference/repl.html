@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The MicroPython Interactive Interpreter Mode (aka REPL) &mdash; MicroPython 1.9.2 documentation</title>
+  <title>The MicroPython Interactive Interpreter Mode (aka REPL) &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
         <link rel="next" title="Writing interrupt handlers" href="isr_rules.html"/>
         <link rel="prev" title="Glossary" href="glossary.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -109,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html">Distribution packages, package management, and deploying applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
@@ -176,7 +177,7 @@ level of indentation.</p>
 <p>If your cursor is all the way back at the beginning, pressing RETURN will then
 execute the code that you&#8217;ve entered. The following shows what you&#8217;d see
 after entering a for statement (the underscore shows where the cursor winds up):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">_</span>
 </pre></div>
 </div>
@@ -215,9 +216,10 @@ twice, and then a third press will finish and execute.</p>
 <h2>Auto-completion<a class="headerlink" href="#auto-completion" title="Permalink to this headline">¶</a></h2>
 <p>While typing a command at the REPL, if the line typed so far corresponds to
 the beginning of the name of something, then pressing TAB will show
-possible things that could be entered. For example type <code class="docutils literal"><span class="pre">m</span></code> and press TAB
-and it should expand to <code class="docutils literal"><span class="pre">machine</span></code>. Enter a dot <code class="docutils literal"><span class="pre">.</span></code> and press TAB again. You
-should see something like:</p>
+possible things that could be entered. For example, first import the machine
+module by entering <code class="docutils literal"><span class="pre">import</span> <span class="pre">machine</span></code> and pressing RETURN.
+Then type <code class="docutils literal"><span class="pre">m</span></code> and press TAB and it should expand to <code class="docutils literal"><span class="pre">machine</span></code>.
+Enter a dot <code class="docutils literal"><span class="pre">.</span></code> and press TAB again. You should see something like:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">machine</span><span class="o">.</span>
 <span class="go">__name__        info            unique_id       reset</span>
 <span class="go">bootloader      freq            rng             idle</span>
@@ -303,7 +305,7 @@ it were a file. Pressing Ctrl-D exits paste mode and initiates the compilation.<
 method by which you&#8217;re connected to the MicroPython board (USB-serial, or Wifi).</p>
 <p>You can perform a soft reset from the REPL by pressing Ctrl-D, or from your python
 code by executing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="ne">SystemExit</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">machine</span><span class="o">.</span><span class="n">soft_reset</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>For example, if you reset your MicroPython board, and you execute a dir()
@@ -379,8 +381,8 @@ MicroPython board.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -467,7 +469,7 @@ MicroPython board.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

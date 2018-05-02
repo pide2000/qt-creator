@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Glossary &mdash; MicroPython 1.9.2 documentation</title>
+  <title>Glossary &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
         <link rel="next" title="The MicroPython Interactive Interpreter Mode (aka REPL)" href="repl.html"/>
         <link rel="prev" title="The MicroPython language" href="index.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="isr_rules.html">Writing interrupt handlers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html">Distribution packages, package management, and deploying applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
@@ -155,15 +156,38 @@
 <h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
 <dl class="glossary docutils">
 <dt id="term-baremetal">baremetal</dt>
-<dd>A system without (full-fledged) OS, like an <a class="reference internal" href="#term-mcu"><span class="xref std std-term">MCU</span></a>. When
-running on a baremetal system, MicroPython effectively becomes
-its user-facing OS with a command interpreter (REPL).</dd>
+<dd>A system without a (full-fledged) OS, for example an
+<a class="reference internal" href="#term-mcu"><span class="xref std std-term">MCU</span></a>-based system. When running on a baremetal system,
+MicroPython effectively becomes its user-facing OS with a command
+interpreter (REPL).</dd>
 <dt id="term-board">board</dt>
 <dd>A PCB board. Oftentimes, the term is used to denote a particular
 model of an <a class="reference internal" href="#term-mcu"><span class="xref std std-term">MCU</span></a> system. Sometimes, it is used to actually
 refer to <a class="reference internal" href="#term-micropython-port"><span class="xref std std-term">MicroPython port</span></a> to a particular board (and then
 may also refer to &#8220;boardless&#8221; ports like
 <a class="reference internal" href="#term-micropython-unix-port"><span class="xref std std-term">Unix port</span></a>).</dd>
+<dt id="term-callee-owned-tuple">callee-owned tuple</dt>
+<dd>A tuple returned by some builtin function/method, containing data
+which is valid for a limited time, usually until next call to the
+same function (or a group of related functions). After next call,
+data in the tuple may be changed. This leads to the following
+restriction on the usage of callee-owned tuples - references to
+them cannot be stored. The only valid operation is extracting
+values from them (including making a copy). Callee-owned tuples
+is a MicroPython-specific construct (not available in the general
+Python language), introduced for memory allocation optimization.
+The idea is that callee-owned tuple is allocated once and stored
+on the callee side. Subsequent calls don&#8217;t require allocation,
+allowing to return multiple values when allocation is not possible
+(e.g. in interrupt context) or not desirable (because allocation
+inherently leads to memory fragmentation). Note that callee-owned
+tuples are effectively mutable tuples, making an exception to
+Python&#8217;s rule that tuples are immutable. (It may be interesting
+why tuples were used for such a purpose then, instead of mutable
+lists - the reason for that is that lists are mutable from user
+application side too, so a user could do things to a callee-owned
+list which the callee doesn&#8217;t expect and could lead to problems;
+a tuple is protected from this.)</dd>
 <dt id="term-cpython">CPython</dt>
 <dd>CPython is the reference implementation of Python programming
 language, and the most well-known one, which most of the people
@@ -187,6 +211,21 @@ classes.</dd>
 <dd>A group of <a class="reference internal" href="#term-gpio"><span class="xref std std-term">GPIO</span></a> pins, usually based on hardware
 properties of these pins (e.g. controllable by the same
 register).</dd>
+<dt id="term-interned-string">interned string</dt>
+<dd>A string referenced by its (unique) identity rather than its
+address. Interned strings are thus can be quickly compared just
+by their identifiers, instead of comparing by content. The
+drawbacks of interned strings are that interning operation takes
+time (proportional to the number of existing interned strings,
+i.e. becoming slower and slower over time) and that the space
+used for interned strings is not reclaimable. String interning
+is done automatically by MicroPython compiler and runtimer when
+it&#8217;s either required by the implementation (e.g. function keyword
+arguments are represented by interned string id&#8217;s) or deemed
+beneficial (e.g. for short enough strings, which have a chance
+to be repeated, and thus interning them would save memory on
+copies). Most of string and I/O operations don&#8217;t produce interned
+strings due to drawbacks described above.</dd>
 <dt id="term-mcu">MCU</dt>
 <dd>Microcontroller. Microcontrollers usually have much less resources
 than a full-fledged computing system, but smaller, cheaper and
@@ -200,10 +239,10 @@ separate project
 <a class="reference external" href="https://github.com/micropython/micropython-lib">micropython-lib</a>
 which provides implementations for many modules from CPython&#8217;s
 standard library. However, large subset of these modules require
-POSIX-like environment (Linux, MacOS, Windows may be partially
-supported), and thus would work or make sense only with MicroPython
-Unix port. Some subset of modules is however usable for baremetal ports
-too.</p>
+POSIX-like environment (Linux, FreeBSD, MacOS, etc.; Windows may be
+partially supported), and thus would work or make sense only with
+<a class="reference internal" href="#term-micropython-unix-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">Unix</span> <span class="pre">port</span></code></a>. Some subset of modules is however usable
+for <a class="reference internal" href="#term-baremetal"><code class="xref any std std-term docutils literal"><span class="pre">baremetal</span></code></a> ports too.</p>
 <p class="last">Unlike monolithic <a class="reference internal" href="#term-cpython"><span class="xref std std-term">CPython</span></a> stdlib, micropython-lib modules
 are intended to be installed individually - either using manual
 copying or using <a class="reference internal" href="#term-upip"><span class="xref std std-term">upip</span></a>.</p>
@@ -238,6 +277,15 @@ productivity helper and a part of normal MicroPython workflow.</dd>
 <dd>Either <a class="reference internal" href="#term-micropython-port"><span class="xref std std-term">MicroPython port</span></a> or <a class="reference internal" href="#term-gpio-port"><span class="xref std std-term">GPIO port</span></a>. If not clear
 from context, it&#8217;s recommended to use full specification like one
 of the above.</dd>
+<dt id="term-stream">stream</dt>
+<dd>Also known as a &#8220;file-like object&#8221;. An object which provides sequential
+read-write access to the underlying data. A stream object implements
+a corresponding interface, which consists of methods like <code class="docutils literal"><span class="pre">read()</span></code>,
+<code class="docutils literal"><span class="pre">write()</span></code>, <code class="docutils literal"><span class="pre">readinto()</span></code>, <code class="docutils literal"><span class="pre">seek()</span></code>, <code class="docutils literal"><span class="pre">flush()</span></code>, <code class="docutils literal"><span class="pre">close()</span></code>, etc.
+A stream is an important concept in MicroPython, many I/O objects
+implement the stream interface, and thus can be used consistently and
+interchangeably in different contexts. For more information on
+streams in MicroPython, see <a class="reference internal" href="../library/uio.html#module-uio" title="uio: input/output streams"><code class="xref any py py-mod docutils literal"><span class="pre">uio</span></code></a> module.</dd>
 <dt id="term-upip">upip</dt>
 <dd>(Literally, &#8220;micro pip&#8221;). A package manage for MicroPython, inspired
 by <a class="reference internal" href="#term-cpython"><span class="xref std std-term">CPython</span></a>&#8216;s pip, but much smaller and with reduced functionality.
@@ -266,8 +314,8 @@ support).</dd>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -354,7 +402,7 @@ support).</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

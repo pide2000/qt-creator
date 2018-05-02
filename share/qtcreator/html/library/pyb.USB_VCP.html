@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class USB_VCP – USB virtual comm port &mdash; MicroPython 1.9.2 documentation</title>
+  <title>class USB_VCP – USB virtual comm port &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="time — tracking elapsed time" href="omv.time.html"/>
         <link rel="prev" title="class UART – duplex serial communication bus" href="pyb.UART.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -132,7 +132,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-similarity-similarity-object">class Similarity &#8211; Similarity Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threhsold-threshold-object">class Threhsold &#8211; Threshold Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threshold-threshold-object">class Threshold &#8211; Threshold Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
@@ -153,7 +153,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.omv.html"><code class="docutils literal"><span class="pre">omv</span></code> &#8212; OpenMV Cam Information</a></li>
 </ul>
 </li>
 </ul>
@@ -208,8 +208,8 @@
            <div itemprop="articleBody">
             
   <div class="section" id="class-usb-vcp-usb-virtual-comm-port">
-<h1>class USB_VCP &#8211; USB virtual comm port<a class="headerlink" href="#class-usb-vcp-usb-virtual-comm-port" title="Permalink to this headline">¶</a></h1>
-<p>The USB_VCP class allows creation of an object representing the USB
+<span id="pyb-usb-vcp"></span><h1>class USB_VCP &#8211; USB virtual comm port<a class="headerlink" href="#class-usb-vcp-usb-virtual-comm-port" title="Permalink to this headline">¶</a></h1>
+<p>The USB_VCP class allows creation of a <a class="reference internal" href="../reference/glossary.html#term-stream"><code class="xref any std std-term docutils literal"><span class="pre">stream</span></code></a>-like object representing the USB
 virtual comm port.  It can be used to read and write data over USB to
 the connected host.</p>
 <div class="section" id="constructors">
@@ -258,7 +258,7 @@ a file.</p>
 <dd><p>Read at most <code class="docutils literal"><span class="pre">nbytes</span></code> from the serial device and return them as a
 bytes object.  If <code class="docutils literal"><span class="pre">nbytes</span></code> is not specified then the method reads
 all available bytes from the serial device.
-USB_VCP stream implicitly works in non-blocking mode,
+USB_VCP <a class="reference internal" href="../reference/glossary.html#term-stream"><code class="xref any std std-term docutils literal"><span class="pre">stream</span></code></a> implicitly works in non-blocking mode,
 so if no pending data available, this method will return immediately
 with <code class="docutils literal"><span class="pre">None</span></code> value.</p>
 </dd></dl>
@@ -348,8 +348,8 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -436,7 +436,7 @@ otherwise the number of bytes read into <code class="docutils literal"><span cla
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

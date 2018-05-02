@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Writing interrupt handlers &mdash; MicroPython 1.9.2 documentation</title>
+  <title>Writing interrupt handlers &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
         <link rel="next" title="Maximising MicroPython Speed" href="speed_python.html"/>
         <link rel="prev" title="The MicroPython Interactive Interpreter Mode (aka REPL)" href="repl.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#creation-of-python-objects">Creation of Python objects</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-of-python-objects">Use of Python objects</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#overcoming-the-float-limitation">Overcoming the float limitation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-micropython-schedule">Using micropython.schedule</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a></li>
@@ -121,6 +122,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="speed_python.html">Maximising MicroPython Speed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constrained.html">MicroPython on Microcontrollers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages.html">Distribution packages, package management, and deploying applications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asm_thumb2_index.html">Inline Assembler for Thumb2 architectures</a></li>
 </ul>
 </li>
@@ -189,6 +191,7 @@ the nature of the main program, and the presence of other concurrent events.</p>
 <ul class="simple">
 <li>Keep the code as short and simple as possible.</li>
 <li>Avoid memory allocation: no appending to lists or insertion into dictionaries, no floating point.</li>
+<li>Consider using <code class="docutils literal"><span class="pre">micropython.schedule</span></code> to work around the above constraint.</li>
 <li>Where an ISR returns multiple bytes use a pre-allocated <code class="docutils literal"><span class="pre">bytearray</span></code>. If multiple integers are to be
 shared between an ISR and the main program consider an array (<code class="docutils literal"><span class="pre">array.array</span></code>).</li>
 <li>Where data is shared between the main program and an ISR, consider disabling interrupts prior to accessing
@@ -238,7 +241,7 @@ example causes two LED&#8217;s to flash at different rates.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">led</span><span class="o">.</span><span class="n">toggle</span><span class="p">()</span>
 
 <span class="n">red</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">greeen</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">green</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>In this example the <code class="docutils literal"><span class="pre">red</span></code> instance associates timer 4 with LED 1: when a timer 4 interrupt occurs <code class="docutils literal"><span class="pre">red.cb()</span></code>
@@ -275,6 +278,29 @@ example <code class="docutils literal"><span class="pre">pyb.i2c.recv()</span></
 </div>
 <p>The compiler instantiates the default <code class="docutils literal"><span class="pre">buf</span></code> argument when the function is
 loaded for the first time (usually when the module it&#8217;s in is imported).</p>
+<p>An instance of object creation occurs when a reference to a bound method is
+created. This means that an ISR cannot pass a bound method to a function. One
+solution is to create a reference to the bound method in the class constructor
+and to pass that reference in the ISR. For example:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Foo</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bar_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span>  <span class="c"># Allocation occurs here</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">tim</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">tim</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">tim</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*=</span> <span class="mf">1.2</span>
+        <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="c"># Passing self.bar would cause allocation.</span>
+        <span class="n">micropython</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bar_ref</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Other techniques are to define and instantiate the method in the constructor
+or to pass <code class="xref py py-meth docutils literal"><span class="pre">Foo.bar()</span></code> with the argument <em>self</em>.</p>
 </div>
 <div class="section" id="use-of-python-objects">
 <h3>Use of Python objects<a class="headerlink" href="#use-of-python-objects" title="Permalink to this headline">¶</a></h3>
@@ -305,6 +331,24 @@ to floats is normally done in the main loop. However there are a few DSP algorit
 On platforms with hardware floating point (such as the Pyboard) the inline ARM Thumb assembler can be used to work
 round this limitation. This is because the processor stores float values in a machine word; values can be shared
 between the ISR and main program code via an array of floats.</p>
+</div>
+<div class="section" id="using-micropython-schedule">
+<h3>Using micropython.schedule<a class="headerlink" href="#using-micropython-schedule" title="Permalink to this headline">¶</a></h3>
+<p>This function enables an ISR to schedule a callback for execution &#8220;very soon&#8221;. The callback is queued for
+execution which will take place at a time when the heap is not locked. Hence it can create Python objects
+and use floats. The callback is also guaranteed to run at a time when the main program has completed any
+update of Python objects, so the callback will not encounter partially updated objects.</p>
+<p>Typical usage is to handle sensor hardware. The ISR acquires data from the hardware and enables it to
+issue a further interrupt. It then schedules a callback to process the data.</p>
+<p>Scheduled callbacks should comply with the principles of interrupt handler design outlined below. This is to
+avoid problems resulting from I/O activity and the modification of shared data which can arise in any code
+which pre-empts the main program loop.</p>
+<p>Execution time needs to be considered in relation to the frequency with which interrupts can occur. If an
+interrupt occurs while the previous callback is executing, a further instance of the callback will be queued
+for execution; this will run after the current instance has completed. A sustained high interrupt repetition
+rate therefore carries a risk of unconstrained queue growth and eventual failure with a <code class="docutils literal"><span class="pre">RuntimeError</span></code>.</p>
+<p>If the callback to be passed to <a class="reference internal" href="../library/micropython.html#micropython.schedule" title="micropython.schedule"><code class="xref any py py-func docutils literal"><span class="pre">schedule()</span></code></a> is a bound method, consider the
+note in &#8220;Creation of Python objects&#8221;.</p>
 </div>
 </div>
 <div class="section" id="exceptions">
@@ -476,8 +520,8 @@ reset with <code class="docutils literal"><span class="pre">ctrl</span> <span cl
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -564,7 +608,7 @@ reset with <code class="docutils literal"><span class="pre">ctrl</span> <span cl
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

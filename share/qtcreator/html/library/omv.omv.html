@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cpufreq — easy cpu frequency control &mdash; MicroPython 1.9.2 documentation</title>
+  <title>omv — OpenMV Cam Information &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="The MicroPython language" href="../reference/index.html"/>
         <link rel="prev" title="fir — thermopile shield driver (fir == far infrared)" href="omv.fir.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -120,7 +120,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-similarity-similarity-object">class Similarity &#8211; Similarity Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threhsold-threshold-object">class Threhsold &#8211; Threshold Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threshold-threshold-object">class Threshold &#8211; Threshold Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
@@ -141,9 +141,8 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">omv</span></code> &#8212; OpenMV Cam Information</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#constants">Constants</a></li>
 </ul>
 </li>
 </ul>
@@ -185,11 +184,11 @@
       
           <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
       
-    <li><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</li>
+    <li><code class="docutils literal"><span class="pre">omv</span></code> &#8212; OpenMV Cam Information</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/library/omv.cpufreq.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/library/omv.omv.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -199,81 +198,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-cpufreq">
-<span id="cpufreq-easy-cpu-frequency-control"></span><h1><a class="reference internal" href="#module-cpufreq" title="cpufreq: easy cpu frequency control"><code class="xref py py-mod docutils literal"><span class="pre">cpufreq</span></code></a> &#8212; easy cpu frequency control<a class="headerlink" href="#module-cpufreq" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal"><span class="pre">cpufreq</span></code> module is used for easily controlling the cpu frequency.
-In particular, the <code class="docutils literal"><span class="pre">cpufreq</span></code> module allows you to easily underclock or
-overclock your OpenMV Cam.</p>
-<p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cpufreq</span>
-
-<span class="n">cpufreq</span><span class="o">.</span><span class="n">set_frequency</span><span class="p">(</span><span class="n">cpufreq</span><span class="o">.</span><span class="n">CPUFREQ_216MHZ</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The OpenMV Cam M4&#8217;s default frequency is 180MHz.
-The OpenMV Cam M7&#8217;s default frequency is 216MHz.</p>
+  <div class="section" id="module-omv">
+<span id="omv-openmv-cam-information"></span><h1><a class="reference internal" href="#module-omv" title="omv: OpenMV Cam Information"><code class="xref py py-mod docutils literal"><span class="pre">omv</span></code></a> &#8212; OpenMV Cam Information<a class="headerlink" href="#module-omv" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">omv</span></code> module is used to get OpenMV Cam information.</p>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="cpufreq.cpufreq.get_frequency">
-<code class="descclassname">cpufreq.</code><code class="descname">get_frequency</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cpufreq.cpufreq.get_frequency" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a tuple containing:</p>
-<blockquote>
-<div><ul class="simple">
-<li>[0] - sysclk: frequency of the CPU (int).</li>
-<li>[1] - hclk: frequency of the AHB bus, core memory and DMA (int).</li>
-<li>[2] - pclk1: frequency of the APB1 bus (int).</li>
-<li>[3] - pclk2: frequency of the APB2 bus (int).</li>
-</ul>
-</div></blockquote>
+<dt id="omv.omv.version_major">
+<code class="descclassname">omv.</code><code class="descname">version_major</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.version_major" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the major version number (int).</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="cpufreq.cpufreq.set_frequency">
-<code class="descclassname">cpufreq.</code><code class="descname">set_frequency</code><span class="sig-paren">(</span><em>freq</em><span class="sig-paren">)</span><a class="headerlink" href="#cpufreq.cpufreq.set_frequency" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changes the cpu frequency. <code class="docutils literal"><span class="pre">freq</span></code> may be one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li>cpufreq.CPUFREQ_120MHZ</li>
-<li>cpufreq.CPUFREQ_144MHZ</li>
-<li>cpufreq.CPUFREQ_168MHZ</li>
-<li>cpufreq.CPUFREQ_192MHZ</li>
-<li>cpufreq.CPUFREQ_216MHZ</li>
-</ul>
-</div></blockquote>
+<dt id="omv.omv.version_minor">
+<code class="descclassname">omv.</code><code class="descname">version_minor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.version_minor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the minor version number (int).</p>
 </dd></dl>
 
-</div>
-<div class="section" id="constants">
-<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
-<dl class="data">
-<dt id="cpufreq.cpufreq.CPUFREQ_120MHZ">
-<code class="descclassname">cpufreq.</code><code class="descname">CPUFREQ_120MHZ</code><a class="headerlink" href="#cpufreq.cpufreq.CPUFREQ_120MHZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set the frequency to 120 MHz.</p>
+<dl class="function">
+<dt id="omv.omv.version_patch">
+<code class="descclassname">omv.</code><code class="descname">version_patch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.version_patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the patch version number (int).</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="cpufreq.cpufreq.CPUFREQ_144MHZ">
-<code class="descclassname">cpufreq.</code><code class="descname">CPUFREQ_144MHZ</code><a class="headerlink" href="#cpufreq.cpufreq.CPUFREQ_144MHZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set the frequency to 144 MHz.</p>
+<dl class="function">
+<dt id="omv.omv.version_string">
+<code class="descclassname">omv.</code><code class="descname">version_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.version_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the version string (e.g. &#8220;2.8.0&#8221;).</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="cpufreq.cpufreq.CPUFREQ_168MHZ">
-<code class="descclassname">cpufreq.</code><code class="descname">CPUFREQ_168MHZ</code><a class="headerlink" href="#cpufreq.cpufreq.CPUFREQ_168MHZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set the frequency to 168 MHz.</p>
+<dl class="function">
+<dt id="omv.omv.arch">
+<code class="descclassname">omv.</code><code class="descname">arch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.arch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the board architecture string. This string is really just meant for
+OpenMV IDE but you can get it with this function.</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="cpufreq.cpufreq.CPUFREQ_192MHZ">
-<code class="descclassname">cpufreq.</code><code class="descname">CPUFREQ_192MHZ</code><a class="headerlink" href="#cpufreq.cpufreq.CPUFREQ_192MHZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set the frequency to 192 MHz.</p>
+<dl class="function">
+<dt id="omv.omv.board_type">
+<code class="descclassname">omv.</code><code class="descname">board_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.board_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the board type string. This string is really just meant for
+OpenMV IDE but you can get it with this function.</p>
 </dd></dl>
 
-<dl class="data">
-<dt id="cpufreq.cpufreq.CPUFREQ_216MHZ">
-<code class="descclassname">cpufreq.</code><code class="descname">CPUFREQ_216MHZ</code><a class="headerlink" href="#cpufreq.cpufreq.CPUFREQ_216MHZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set the frequency to 216 MHz.</p>
+<dl class="function">
+<dt id="omv.omv.board_id">
+<code class="descclassname">omv.</code><code class="descname">board_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#omv.omv.board_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the board id string. This string is really just meant for
+OpenMV IDE but you can get it with this function.</p>
 </dd></dl>
 
 </div>
@@ -298,8 +270,8 @@ The OpenMV Cam M7&#8217;s default frequency is 216MHz.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -386,7 +358,7 @@ The OpenMV Cam M7&#8217;s default frequency is 216MHz.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

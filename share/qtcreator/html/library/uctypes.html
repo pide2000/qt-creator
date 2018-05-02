@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>uctypes – access binary data in a structured way &mdash; MicroPython 1.9.2 documentation</title>
+  <title>uctypes – access binary data in a structured way &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/> 
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -144,7 +144,7 @@
 behind it is similar to CPython&#8217;s <code class="docutils literal"><span class="pre">ctypes</span></code> modules, but the actual API is
 different, streamlined and optimized for small size. The basic idea of the
 module is to define data structure layout with about the same power as the
-C language allows, and the access it using familiar dot-syntax to reference
+C language allows, and then access it using familiar dot-syntax to reference
 sub-fields.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -163,25 +163,25 @@ offsets for each field. Offset are given in bytes from a structure start.</p>
 <p>Following are encoding examples for various field types:</p>
 <ul>
 <li><p class="first">Scalar types:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;field_name&quot;: uctypes.UINT32 | 0
+<div class="highlight-python"><div class="highlight"><pre>&quot;field_name&quot;: offset | uctypes.UINT32
 </pre></div>
 </div>
 <p>in other words, value is scalar type identifier ORed with field offset
 (in bytes) from the start of the structure.</p>
 </li>
 <li><p class="first">Recursive structures:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;sub&quot;: (2, {
-    &quot;b0&quot;: uctypes.UINT8 | 0,
-    &quot;b1&quot;: uctypes.UINT8 | 1,
+<div class="highlight-python"><div class="highlight"><pre>&quot;sub&quot;: (offset, {
+    &quot;b0&quot;: 0 | uctypes.UINT8,
+    &quot;b1&quot;: 1 | uctypes.UINT8,
 })
 </pre></div>
 </div>
 <p>i.e. value is a 2-tuple, first element of which is offset, and second is
 a structure descriptor dictionary (note: offsets in recursive descriptors
-are relative to a structure it defines).</p>
+are relative to the structure it defines).</p>
 </li>
 <li><p class="first">Arrays of primitive types:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;arr&quot;: (uctypes.ARRAY | 0, uctypes.UINT8 | 2),
+<div class="highlight-python"><div class="highlight"><pre>&quot;arr&quot;: (offset | uctypes.ARRAY, size | uctypes.UINT8),
 </pre></div>
 </div>
 <p>i.e. value is a 2-tuple, first element of which is ARRAY flag ORed
@@ -189,7 +189,7 @@ with offset, and second is scalar element type ORed number of elements
 in array.</p>
 </li>
 <li><p class="first">Arrays of aggregate types:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;arr2&quot;: (uctypes.ARRAY | 0, 2, {&quot;b&quot;: uctypes.UINT8 | 0}),
+<div class="highlight-python"><div class="highlight"><pre>&quot;arr2&quot;: (offset | uctypes.ARRAY, size, {&quot;b&quot;: 0 | uctypes.UINT8}),
 </pre></div>
 </div>
 <p>i.e. value is a 3-tuple, first element of which is ARRAY flag ORed
@@ -197,21 +197,21 @@ with offset, second is a number of elements in array, and third is
 descriptor of element type.</p>
 </li>
 <li><p class="first">Pointer to a primitive type:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;ptr&quot;: (uctypes.PTR | 0, uctypes.UINT8),
+<div class="highlight-python"><div class="highlight"><pre>&quot;ptr&quot;: (offset | uctypes.PTR, uctypes.UINT8),
 </pre></div>
 </div>
 <p>i.e. value is a 2-tuple, first element of which is PTR flag ORed
 with offset, and second is scalar element type.</p>
 </li>
 <li><p class="first">Pointer to an aggregate type:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;ptr2&quot;: (uctypes.PTR | 0, {&quot;b&quot;: uctypes.UINT8 | 0}),
+<div class="highlight-python"><div class="highlight"><pre>&quot;ptr2&quot;: (offset | uctypes.PTR, {&quot;b&quot;: 0 | uctypes.UINT8}),
 </pre></div>
 </div>
 <p>i.e. value is a 2-tuple, first element of which is PTR flag ORed
 with offset, second is descriptor of type pointed to.</p>
 </li>
 <li><p class="first">Bitfields:</p>
-<div class="highlight-python"><div class="highlight"><pre>&quot;bitf0&quot;: uctypes.BFUINT16 | 0 | 0 &lt;&lt; uctypes.BF_POS | 8 &lt;&lt; uctypes.BF_LEN,
+<div class="highlight-python"><div class="highlight"><pre>&quot;bitf0&quot;: offset | uctypes.BFUINT16 | lsbit &lt;&lt; uctypes.BF_POS | bitsize &lt;&lt; uctypes.BF_LEN,
 </pre></div>
 </div>
 <p>i.e. value is type of scalar value containing given bitfield (typenames are
@@ -221,18 +221,19 @@ bit offset and bit length of the bitfield within scalar value, shifted by
 BF_POS and BF_LEN positions, respectively. Bitfield position is counted
 from the least significant bit, and is the number of right-most bit of a
 field (in other words, it&#8217;s a number of bits a scalar needs to be shifted
-right to extra the bitfield).</p>
-<p>In the example above, first UINT16 value will be extracted at offset 0
+right to extract the bitfield).</p>
+<p>In the example above, first a UINT16 value will be extracted at offset 0
 (this detail may be important when accessing hardware registers, where
 particular access size and alignment are required), and then bitfield
-whose rightmost bit is least-significant bit of this UINT16, and length
-is 8 bits, will be extracted - effectively, this will access
-least-significant byte of UINT16.</p>
+whose rightmost bit is <em>lsbit</em> bit of this UINT16, and length
+is <em>bitsize</em> bits, will be extracted. For example, if <em>lsbit</em> is 0 and
+<em>bitsize</em> is 8, then effectively it will access least-significant byte
+of UINT16.</p>
 <p>Note that bitfield operations are independent of target byte endianness,
 in particular, example above will access least-significant byte of UINT16
 in both little- and big-endian structures. But it depends on the least
 significant bit being numbered 0. Some targets may use different
-numbering in their native ABI, but <code class="docutils literal"><span class="pre">uctypes</span></code> always uses normalized
+numbering in their native ABI, but <code class="docutils literal"><span class="pre">uctypes</span></code> always uses the normalized
 numbering described above.</p>
 </li>
 </ul>
@@ -366,8 +367,8 @@ and a restricted one to use when memory allocation is prohibited).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -454,7 +455,7 @@ and a restricted one to use when memory allocation is prohibited).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

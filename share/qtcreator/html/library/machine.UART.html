@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class UART – duplex serial communication bus &mdash; MicroPython 1.9.2 documentation</title>
+  <title>class UART – duplex serial communication bus &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="machine — functions related to the hardware" href="machine.html"/>
         <link rel="next" title="class SPI – a Serial Peripheral Interface bus protocol (master side)" href="machine.SPI.html"/>
         <link rel="prev" title="class Signal – control and sense external I/O devices" href="machine.Signal.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -182,7 +182,7 @@ bits wide.</p>
 only 8 and 9 bits are supported.  With parity enabled, only 7 and 8 bits
 are supported.</p>
 <p>WiPy/CC3200: Bits can be 5, 6, 7, 8. Stop can be 1 or 2.</p>
-<p>A UART object acts like a stream object and reading and writing is done
+<p>A UART object acts like a <a class="reference internal" href="../reference/glossary.html#term-stream"><code class="xref any std std-term docutils literal"><span class="pre">stream</span></code></a> object and reading and writing is done
 using the standard stream methods:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">uart</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>       <span class="c"># read 10 characters, returns a bytes object</span>
 <span class="n">uart</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>         <span class="c"># read all available characters</span>
@@ -284,8 +284,8 @@ longer than required for a normal transmission of a character.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -372,7 +372,7 @@ longer than required for a normal transmission of a character.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

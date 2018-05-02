@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Builtin Types &mdash; MicroPython 1.9.2 documentation</title>
+  <title>Builtin Types &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython differences from CPython" href="index.html"/>
         <link rel="next" title="Modules" href="modules.html"/>
         <link rel="prev" title="Core Language" href="core_language.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -103,7 +103,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#exception-chaining-not-implemented">Exception chaining not implemented</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#user-defined-attributes-for-builtin-exceptions-are-not-supported">User-defined attributes for builtin exceptions are not supported</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#exception-in-while-loop-condition-may-have-unexpected-line-number">Exception in while loop condition may have unexpected line number</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#exception-init-raises-typeerror-if-overridden-and-called-by-subclass">Exception.__init__ raises TypeError if overridden and called by subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exception-init-method-does-not-exist">Exception.__init__ method does not exist.</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#bytearray">bytearray</a><ul>
@@ -199,7 +199,7 @@
             
   <div class="section" id="builtin-types">
 <h1>Builtin Types<a class="headerlink" href="#builtin-types" title="Permalink to this headline">¶</a></h1>
-<p>Generated Tue 21 Nov 2017 21:31:50 UTC</p>
+<p>Generated Sat 28 Apr 2018 19:34:04 UTC</p>
 <div class="section" id="exception">
 <h2>Exception<a class="headerlink" href="#exception" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exception-chaining-not-implemented">
@@ -316,8 +316,18 @@ IndexError: list index out of range
 </tbody>
 </table>
 </div>
-<div class="section" id="exception-init-raises-typeerror-if-overridden-and-called-by-subclass">
-<span id="cpydiff-types-exception-subclassinit"></span><h3>Exception.__init__ raises TypeError if overridden and called by subclass<a class="headerlink" href="#exception-init-raises-typeerror-if-overridden-and-called-by-subclass" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="exception-init-method-does-not-exist">
+<span id="cpydiff-types-exception-subclassinit"></span><h3>Exception.__init__ method does not exist.<a class="headerlink" href="#exception-init-method-does-not-exist" title="Permalink to this headline">¶</a></h3>
+<p><strong>Cause:</strong> Subclassing native classes is not fully supported in MicroPython.</p>
+<p><strong>Workaround:</strong> Call using <code class="docutils literal"><span class="pre">super()</span></code> instead:</p>
+<dl class="docutils">
+<dt>class A(Exception):</dt>
+<dd><dl class="first last docutils">
+<dt>def __init__(self):</dt>
+<dd>super().__init__()</dd>
+</dl>
+</dd>
+</dl>
 <p>Sample code:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -328,8 +338,8 @@ IndexError: list index out of range
 </div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="82%" />
+<col width="15%" />
+<col width="85%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>CPy output:</td>
@@ -337,9 +347,9 @@ IndexError: list index out of range
 </tr>
 <tr class="row-even"><td>&nbsp;</td>
 <td><div class="first last highlight-python"><div class="highlight"><pre>Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 11, in &lt;module&gt;
-  File &quot;&lt;stdin&gt;&quot;, line 9, in __init__
-TypeError: argument should be a &#39;Exception&#39; not a &#39;A&#39;
+  File &quot;&lt;stdin&gt;&quot;, line 15, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 13, in __init__
+AttributeError: type object &#39;Exception&#39; has no attribute &#39;__init__&#39;
 </pre></div>
 </div>
 </td>
@@ -664,8 +674,8 @@ NotImplementedError:
 </div>
 <table border="1" class="docutils">
 <colgroup>
-<col width="49%" />
-<col width="51%" />
+<col width="30%" />
+<col width="70%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>CPy output:</td>
@@ -675,8 +685,9 @@ NotImplementedError:
 </pre></div>
 </div>
 </td>
-<td><div class="first last highlight-python"><div class="highlight"><pre>&#39;\u0840&#39;
-Should not get here
+<td><div class="first last highlight-python"><div class="highlight"><pre>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 9, in &lt;module&gt;
+NameError: name &#39;UnicodeDecodeError&#39; is not defined
 </pre></div>
 </div>
 </td>
@@ -946,8 +957,8 @@ NotImplementedError: only slices with step=1 (aka None) are supported
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -1034,7 +1045,7 @@ NotImplementedError: only slices with step=1 (aka None) are supported
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

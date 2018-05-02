@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.9.2 documentation</title>
+  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.9.3 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.2 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class Timer – control internal timers" href="pyb.Timer.html"/>
         <link rel="prev" title="class Servo – 3-wire hobby servo driver" href="pyb.Servo.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.2
+                1.9.3
               </div>
             
           
@@ -133,7 +133,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-similarity-similarity-object">class Similarity &#8211; Similarity Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-histogram-histogram-object">class Histogram &#8211; Histogram Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-percentile-percentile-object">class Percentile &#8211; Percentile Object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threhsold-threshold-object">class Threhsold &#8211; Threshold Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-threshold-threshold-object">class Threshold &#8211; Threshold Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-statistics-statistics-object">class Statistics &#8211; Statistics Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-blob-blob-object">class Blob &#8211; Blob object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-line-line-object">class Line &#8211; Line object</a></li>
@@ -154,7 +154,7 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html#class-mjpeg-mjpeg-recorder">class Mjpeg &#8211; Mjpeg recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.lcd.html"><code class="docutils literal"><span class="pre">lcd</span></code> &#8212; lcd shield driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.fir.html"><code class="docutils literal"><span class="pre">fir</span></code> &#8212; thermopile shield driver (fir == far infrared)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.cpufreq.html"><code class="docutils literal"><span class="pre">cpufreq</span></code> &#8212; easy cpu frequency control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.omv.html"><code class="docutils literal"><span class="pre">omv</span></code> &#8212; OpenMV Cam Information</a></li>
 </ul>
 </li>
 </ul>
@@ -278,7 +278,7 @@ respectively.</li>
 </div></blockquote>
 <p>Note that the SPI clock frequency will not always be the requested baudrate.
 The hardware only supports baudrates that are the APB bus frequency
-(see <a class="reference internal" href="pyb.html#pyb.freq" title="pyb.freq"><code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code></a>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
+(see <code class="xref py py-meth docutils literal"><span class="pre">pyb.freq()</span></code>) divided by a prescaler, which can be 2, 4, 8, 16, 32,
 64, 128 or 256.  SPI(2) is on AHB1.  For precise
 control over the SPI clock frequency, specify <code class="docutils literal"><span class="pre">prescaler</span></code> instead of
 <code class="docutils literal"><span class="pre">baudrate</span></code>.</p>
@@ -377,8 +377,8 @@ be created.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014-2017, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 11 Feb 2018.
+        &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
+      Last updated on 01 May 2018.
 
     </p>
   </div>
@@ -465,7 +465,7 @@ be created.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.2',
+            VERSION:'1.9.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
