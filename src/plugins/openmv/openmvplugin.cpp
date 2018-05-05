@@ -3146,30 +3146,30 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
 
                             if(version2 == NEW_BOOTLDR)
                             {
-                                int start2 = int(), *start2Ptr = &start2;
                                 int all_start2 = int(), *all_start2Ptr = &all_start2;
+                                int start2 = int(), *start2Ptr = &start2;
                                 int last2 = int(), *last2Ptr = &last2;
 
-                                QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::booloaderQueryDone,
-                                    this, [this, start2Ptr, all_start2Ptr, last2Ptr] (int start, int all_start, int last) {
-                                    *start2Ptr = start;
+                                QMetaObject::Connection conn = connect(m_iodevice, &OpenMVPluginIO::bootloaderQueryDone,
+                                    this, [this, all_start2Ptr, start2Ptr, last2Ptr] (int all_start, int start, int last) {
                                     *all_start2Ptr = all_start;
+                                    *start2Ptr = start;
                                     *last2Ptr = last;
                                 });
 
                                 QEventLoop loop;
 
-                                connect(m_iodevice, &OpenMVPluginIO::booloaderQueryDone,
+                                connect(m_iodevice, &OpenMVPluginIO::bootloaderQueryDone,
                                         &loop, &QEventLoop::quit);
 
-                                m_iodevice->booloaderQuery();
+                                m_iodevice->bootloaderQuery();
 
                                 loop.exec();
 
                                 disconnect(conn);
 
-                                if((start2 || all_start2 || last2)
-                                && ((0 <= start2) && (start2 <= 1023) && (0 <= all_start2) && (all_start2 <= 1023) && (0 <= last2) && (last2 <= 1023)))
+                                if((all_start2 || start2 || last2)
+                                && ((0 <= all_start2) && (all_start2 <= 1023) && (0 <= start2) && (start2 <= 1023) && (0 <= last2) && (last2 <= 1023)))
                                 {
                                     originalEraseFlashSectorStart = start2;
                                     originalEraseFlashSectorEnd = last2;

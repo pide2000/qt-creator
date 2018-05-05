@@ -67,7 +67,7 @@ public slots:
     void bootloaderReset();
     void flashErase(int sector);
     void flashWrite(const QByteArray &data);
-    void booloaderQuery();
+    void bootloaderQuery();
     void close();
 
 public slots: // private
@@ -96,7 +96,7 @@ signals:
     void bootloaderResetDone(bool ok);
     void flashEraseDone(bool ok);
     void flashWriteDone(bool ok);
-    void booloaderQueryDone(int start, int all_start, int last);
+    void bootloaderQueryDone(int all_start, int start, int last);
     void closeResponse();
 
 private:

@@ -98,6 +98,9 @@ static const char directoryGroupC[] = "Directories";
 static const char projectDirectoryKeyC[] = "Projects";
 static const char useProjectDirectoryKeyC[] = "UseProjectsDirectory";
 static const char buildDirectoryKeyC[] = "BuildDirectory.Template";
+//OPENMV-DIFF//
+static const char lastVisitedDirectoryC[] = "lastVisitedDirectory";
+//OPENMV-DIFF//
 
 using namespace Utils;
 
@@ -207,7 +210,11 @@ DocumentManagerPrivate::DocumentManagerPrivate() :
     m_fileWatcher(0),
     m_linkWatcher(0),
     m_blockActivated(false),
-    m_lastVisitedDirectory(QDir::currentPath()),
+    //OPENMV-DIFF//
+    //m_lastVisitedDirectory(QDir::currentPath()),
+    //OPENMV-DIFF//
+    m_lastVisitedDirectory(QString()),
+    //OPENMV-DIFF//
     m_useProjectsDirectory(true),
     m_blockedIDocument(0)
 {
@@ -905,6 +912,10 @@ QStringList DocumentManager::getOpenFileNames(const QString &filters,
     if (path.isEmpty()) {
         if (EditorManager::currentDocument() && !EditorManager::currentDocument()->isTemporary())
             path = EditorManager::currentDocument()->filePath().toString();
+        //OPENMV-DIFF//
+        if (path.isEmpty() && (!fileDialogLastVisitedDirectory().isEmpty()))
+            path = fileDialogLastVisitedDirectory();
+        //OPENMV-DIFF//
         if (path.isEmpty() && useProjectsDirectory())
             path = projectsDirectory();
     }
@@ -1229,6 +1240,9 @@ void DocumentManager::saveSettings()
     s->setValue(QLatin1String(projectDirectoryKeyC), d->m_projectsDirectory);
     s->setValue(QLatin1String(useProjectDirectoryKeyC), d->m_useProjectsDirectory);
     s->setValue(QLatin1String(buildDirectoryKeyC), d->m_buildDirectory);
+    //OPENMV-DIFF//
+    s->setValue(QLatin1String(lastVisitedDirectoryC), d->m_lastVisitedDirectory);
+    //OPENMV-DIFF//
     s->endGroup();
 }
 
@@ -1257,7 +1271,11 @@ void readSettings()
     if (!settingsProjectDir.isEmpty() && QFileInfo(settingsProjectDir).isDir())
         d->m_projectsDirectory = settingsProjectDir;
     else
-        d->m_projectsDirectory = PathChooser::homePath();
+        //OPENMV-DIFF//
+        //d->m_projectsDirectory = PathChooser::homePath();
+        //OPENMV-DIFF//
+        d->m_projectsDirectory = PathChooser::homePath() + QStringLiteral("/OpenMV");
+        //OPENMV-DIFF//
     d->m_useProjectsDirectory = s->value(QLatin1String(useProjectDirectoryKeyC),
                                          d->m_useProjectsDirectory).toBool();
 
@@ -1267,6 +1285,9 @@ void readSettings()
         d->m_buildDirectory = settingsShadowDir;
     else
         d->m_buildDirectory = QLatin1String(Constants::DEFAULT_BUILD_DIRECTORY);
+    //OPENMV-DIFF//
+    if (s->contains(QLatin1String(lastVisitedDirectoryC))) d->m_lastVisitedDirectory = s->value(QLatin1String(lastVisitedDirectoryC)).toString();
+    //OPENMV-DIFF//
 
     s->endGroup();
 }

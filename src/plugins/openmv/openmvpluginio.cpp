@@ -346,10 +346,10 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                 case BOOTLDR_QUERY_CPL:
                 {
                     // The optimizer will mess up the order if executed in emit.
-                    int start = deserializeLong(data);
                     int all_start = deserializeLong(data);
+                    int start = deserializeLong(data);
                     int last = deserializeLong(data);
-                    emit booloaderQueryDone(start,  all_start, last);
+                    emit bootloaderQueryDone(all_start, start, last);
                     break;
                 }
                 case CLOSE_CPL:
@@ -507,7 +507,7 @@ void OpenMVPluginIO::commandResult(const OpenMVPluginSerialPortCommandResult &co
                     }
                     case BOOTLDR_QUERY_CPL:
                     {
-                        emit booloaderQueryDone(int(),  int(), int());
+                        emit bootloaderQueryDone(int(), int(), int());
                         break;
                     }
                     case CLOSE_CPL:
@@ -794,7 +794,7 @@ void OpenMVPluginIO::flashWrite(const QByteArray &data)
     command();
 }
 
-void OpenMVPluginIO::booloaderQuery()
+void OpenMVPluginIO::bootloaderQuery()
 {
     QByteArray buffer;
     serializeLong(buffer, __BOOTLDR_QUERY);
