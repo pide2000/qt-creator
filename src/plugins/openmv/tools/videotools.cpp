@@ -610,7 +610,7 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             if(file.open(QIODevice::WriteOnly))
             {
                 QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86_64/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
+                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
                     QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
 
                 if(file.write(command) == command.size())
