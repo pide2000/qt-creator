@@ -785,9 +785,9 @@ msgid ""
 "and then the word to search for."
 msgstr ""
 "Specificare una breve parola/abbreviazione che può essere utilizzata per "
-"limitare i completamenti ai file da questo albero della directory.\n"
+"limitare i file da questo albero della directory.\n"
 " Per fare ciò, digita questo collegamento e uno spazio nel campo di "
-"inserimento Locator, quindi la parola da cercare."
+"inserimento nel campo Locator, quindi la parola da cercare."
 
 #: ../../../src/plugins/coreplugin/locator/directoryfilter.ui:-1
 msgctxt "Core::Internal::DirectoryFilterOptions|"
@@ -1131,7 +1131,7 @@ msgstr "Ricarica tutti gli editor invariati"
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|"
 msgid "Ignore Modifications"
-msgstr "Ignora le modifiche"
+msgstr "Ignora modifiche"
 
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|"
@@ -1146,7 +1146,7 @@ msgstr "?"
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|File Browser"
 msgid "Reset to default."
-msgstr "Ripristina le impostazioni predefinite."
+msgstr "Ripristina impostazioni predefinite."
 
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|"
@@ -1161,7 +1161,7 @@ msgstr "Browser dei file esterni:"
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|Terminal"
 msgid "Reset to default."
-msgstr "Ripristina le impostazioni predefinite."
+msgstr "Ripristina impostazioni predefinite."
 
 #: ../../../src/plugins/coreplugin/systemsettings.ui:-1
 msgctxt "Core::Internal::SystemSettings|"
@@ -2028,7 +2028,7 @@ msgstr "Mediana"
 #: ../../../src/plugins/openmv/histogram/openmvpluginhistogram.ui:-1
 msgctxt "OpenMVPluginHistogram|"
 msgid "Mode"
-msgstr "Modalità"
+msgstr "Moda"
 
 #: ../../../src/plugins/openmv/histogram/openmvpluginhistogram.ui:-1
 msgctxt "OpenMVPluginHistogram|"
@@ -9023,7 +9023,7 @@ msgstr ""
 #: ../../../src/plugins/openmv/openmvplugin.cpp:3695
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid " - [ latest ]"
-msgstr " Ultimi"
+msgstr "- [ ultimo ]"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:3746
 #: ../../../src/plugins/openmv/openmvplugin.cpp:3770
@@ -9045,7 +9045,7 @@ msgstr "Avvia"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4075
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Configure Settings"
-msgstr "Configura le impostazioni"
+msgstr "Configura impostazioni"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4085
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4107
@@ -9058,7 +9058,7 @@ msgstr "Salva script"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4086
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Strip comments and convert spaces to tabs?"
-msgstr "Elimina i commenti e converti gli spazi in schede?"
+msgstr "Elimina commenti e converti spazi in tabs?"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4141
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4154
@@ -9084,7 +9084,7 @@ msgstr "Impossibile salvare il file di immagine per un motivo sconosciuto!"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4210
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Save Template"
-msgstr "Salva template"
+msgstr "Salva Template"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4174
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
@@ -9159,7 +9159,7 @@ msgstr "Impossibile aprire il file \"%L1\"!"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4439
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Firmware Update"
-msgstr "Aggiornamento del firmware"
+msgstr "Aggiornamento firmware"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4367
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
@@ -9201,7 +9201,7 @@ msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid ""
 "\"%L1\" is the only drive available so it must be your OpenMV Cam's drive."
 msgstr ""
-"\"%L1\" è l'unica unità disponibile, quindi deve essere lil drive della tua "
+"\"%L1\" è l'unica unità disponibile, quindi deve essere il driver della tua "
 "OpenMV Cam."
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4498
@@ -9237,7 +9237,7 @@ msgstr "Drive: %L1"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:5107
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "New Terminal"
-msgstr "Nuovo terminal"
+msgstr "Nuovo Terminale"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4541
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
@@ -9257,12 +9257,12 @@ msgstr "Connetti alla porta TCP"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4549
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please select an option"
-msgstr "Seleziona un'opzione"
+msgstr "Seleziona una opzione"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4585
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Please enter a baud rate"
-msgstr "Inserisci una velocità di trasmissione"
+msgstr "Inserisci velocità di trasmissione"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4684
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4803
@@ -9400,7 +9400,7 @@ msgstr "Impossibile salvare i keypoints modificati per un motivo sconosciuto!"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:5481
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Failed to find the keypoints image file!"
-msgstr "Impossibile trovare il file immagine dei keypoints!"
+msgstr "Impossibile trovare il file dei keypoints immagine!"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:5488
 msgctxt "OpenMV::Internal::OpenMVPlugin|"

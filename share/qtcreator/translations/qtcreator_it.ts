@@ -787,8 +787,8 @@
         <location/>
         <source>Specify a short word/abbreviation that can be used to restrict completions to files from this directory tree.
 To do this, you type this shortcut and a space in the Locator entry field, and then the word to search for.</source>
-        <translation>Specificare una breve parola/abbreviazione che può essere utilizzata per limitare i completamenti ai file da questo albero della directory.
- Per fare ciò, digita questo collegamento e uno spazio nel campo di inserimento Locator, quindi la parola da cercare.</translation>
+        <translation>Specificare una breve parola/abbreviazione che può essere utilizzata per limitare i file da questo albero della directory.
+ Per fare ciò, digita questo collegamento e uno spazio nel campo di inserimento nel campo Locator, quindi la parola da cercare.</translation>
     </message>
     <message>
         <location/>
@@ -1107,7 +1107,8 @@ To do this, you type this shortcut and a space in the Locator entry field, and t
     <message>
         <location/>
         <source>min</source>
-        <extracomment>unit for minutes</extracomment>
+        <extracomment>unit for minutes
+</extracomment>
         <translation>min</translation>
     </message>
     <message>
@@ -1128,7 +1129,7 @@ To do this, you type this shortcut and a space in the Locator entry field, and t
     <message>
         <location/>
         <source>Ignore Modifications</source>
-        <translation>Ignora le modifiche</translation>
+        <translation>Ignora modifiche</translation>
     </message>
     <message>
         <location/>
@@ -1144,7 +1145,7 @@ To do this, you type this shortcut and a space in the Locator entry field, and t
         <location/>
         <source>Reset to default.</source>
         <comment>File Browser</comment>
-        <translation>Ripristina le impostazioni predefinite.</translation>
+        <translation>Ripristina impostazioni predefinite.</translation>
     </message>
     <message>
         <location/>
@@ -1160,7 +1161,7 @@ To do this, you type this shortcut and a space in the Locator entry field, and t
         <location/>
         <source>Reset to default.</source>
         <comment>Terminal</comment>
-        <translation>Ripristina le impostazioni predefinite.</translation>
+        <translation>Ripristina impostazioni predefinite.</translation>
     </message>
     <message>
         <location/>
@@ -2001,7 +2002,7 @@ Influenza l&apos;indentazione delle righe di continuazione.
     <message>
         <location/>
         <source>Mode</source>
-        <translation>Modalità</translation>
+        <translation>Moda</translation>
     </message>
     <message>
         <location/>
@@ -2960,13 +2961,15 @@ disabiliterai anche i seguenti plugin:
     <message>
         <location line="+71"/>
         <source>&lt;VARIABLE&gt;</source>
-        <extracomment>Name when inserting a new variable</extracomment>
+        <extracomment>Name when inserting a new variable
+</extracomment>
         <translation>&lt;VARIABILE&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;VALUE&gt;</source>
-        <extracomment>Value when inserting a new variable</extracomment>
+        <extracomment>Value when inserting a new variable
+</extracomment>
         <translation>&lt;VALORE&gt;</translation>
     </message>
 </context>
@@ -3815,7 +3818,8 @@ disabiliterai anche i seguenti plugin:
     <message>
         <location line="+2"/>
         <source>Useful text</source>
-        <extracomment>Sample external tool text</extracomment>
+        <extracomment>Sample external tool text
+</extracomment>
         <translation>Testo utile</translation>
     </message>
 </context>
@@ -5901,7 +5905,8 @@ al controllo della versione (%2)
     <message>
         <location line="+8"/>
         <source>&lt;br/&gt;From revision %1&lt;br/&gt;</source>
-        <extracomment>This gets conditionally inserted as argument %8 into the description string.</extracomment>
+        <extracomment>This gets conditionally inserted as argument %8 into the description string.
+</extracomment>
         <translation>&lt;br/&gt;Dalla revisione %1&lt;br/&gt;</translation>
     </message>
     <message>
@@ -6171,7 +6176,8 @@ al controllo della versione (%2)
         <source>Path: %1
 Filter: %2
 %3</source>
-        <extracomment>%3 is filled by BaseFileFind::runNewSearch</extracomment>
+        <extracomment>%3 is filled by BaseFileFind::runNewSearch
+</extracomment>
         <translation>Percorso: %1
 Filtro: %2
 %3</translation>
@@ -8869,7 +8875,7 @@ HomeBrew:
     <message>
         <location line="+10"/>
         <source> - [ latest ]</source>
-        <translation> Ultimi</translation>
+        <translation>- [ ultimo ]</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -8891,7 +8897,7 @@ HomeBrew:
     <message>
         <location line="+164"/>
         <source>Configure Settings</source>
-        <translation>Configura le impostazioni</translation>
+        <translation>Configura impostazioni</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -8904,7 +8910,7 @@ HomeBrew:
     <message>
         <location line="-44"/>
         <source>Strip comments and convert spaces to tabs?</source>
-        <translation>Elimina i commenti e converti gli spazi in schede?</translation>
+        <translation>Elimina commenti e converti spazi in tabs?</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -8930,7 +8936,7 @@ HomeBrew:
         <location line="+15"/>
         <location line="+11"/>
         <source>Save Template</source>
-        <translation>Salva template</translation>
+        <translation>Salva Template</translation>
     </message>
     <message>
         <location line="-36"/>
@@ -9004,7 +9010,7 @@ HomeBrew:
         <location line="+7"/>
         <location line="+7"/>
         <source>Firmware Update</source>
-        <translation>Aggiornamento del firmware</translation>
+        <translation>Aggiornamento firmware</translation>
     </message>
     <message>
         <location line="-72"/>
@@ -9042,7 +9048,7 @@ HomeBrew:
     <message>
         <location line="+11"/>
         <source>&quot;%L1&quot; is the only drive available so it must be your OpenMV Cam&apos;s drive.</source>
-        <translation>&quot;%L1&quot; è l&apos;unica unità disponibile, quindi deve essere lil drive della tua OpenMV Cam.</translation>
+        <translation>&quot;%L1&quot; è l&apos;unica unità disponibile, quindi deve essere il driver della tua OpenMV Cam.</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -9077,7 +9083,7 @@ HomeBrew:
         <location line="+9"/>
         <location line="+70"/>
         <source>New Terminal</source>
-        <translation>Nuovo terminal</translation>
+        <translation>Nuovo Terminale</translation>
     </message>
     <message>
         <location line="-566"/>
@@ -9097,12 +9103,12 @@ HomeBrew:
     <message>
         <location line="+6"/>
         <source>Please select an option</source>
-        <translation>Seleziona un&apos;opzione</translation>
+        <translation>Seleziona una opzione</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Please enter a baud rate</source>
-        <translation>Inserisci una velocità di trasmissione</translation>
+        <translation>Inserisci velocità di trasmissione</translation>
     </message>
     <message>
         <location line="+99"/>
@@ -9233,7 +9239,7 @@ HomeBrew:
     <message>
         <location line="+13"/>
         <source>Failed to find the keypoints image file!</source>
-        <translation>Impossibile trovare il file immagine dei keypoints!</translation>
+        <translation>Impossibile trovare il file dei keypoints immagine!</translation>
     </message>
     <message>
         <location line="+7"/>
