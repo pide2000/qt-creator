@@ -2,6 +2,43 @@
 
 #define serializeData(fp, data, size) fp.append(data, size)
 
+static QByteArray jpgToBytes(const QImage &image)
+{
+    QByteArray out;
+    QBuffer buf(&out);
+    buf.open(QIODevice::WriteOnly); // always return true
+
+    if(image.isGrayscale())
+    {
+        for(int y = 0; y < image.height(); y++)
+        {
+            for(int x = 0; x < image.width(); x++)
+            {
+                buf.putChar(qGray(image.pixel(x, y))); // always return true
+            }
+        }
+    }
+    else
+    {
+        for(int y = 0; y < image.height(); y++)
+        {
+            for(int x = 0; x < image.width(); x++)
+            {
+                QRgb pixel = image.pixel(x, y);
+                int red = int(((qRed(pixel)*31)+127.5)/255)&0x1F;
+                int green = int(((qGreen(pixel)*63)+127.5)/255)&0x3F;
+                int blue = int(((qBlue(pixel)*31)+127.5)/255)&0x1F;
+                int rgb565 = (red << 11) | (green << 5) | (blue << 0);
+                buf.putChar((rgb565 >> 8) & 0xFF); // always return true - byte reverse
+                buf.putChar((rgb565 >> 0) & 0xFF); // always return true - byte reverse
+            }
+        }
+    }
+
+    buf.close();
+    return out;
+}
+
 static QByteArray getMJPEGHeader(int width, int height, uint32_t frames, uint32_t bytes, float fps)
 {
     QByteArray fp;
@@ -548,6 +585,22 @@ static QString getOutputFormats()
 
 static bool convertVideoFile(const QString &dst, const QString &src)
 {
+    QString newSrc = src;
+    QString newDst = dst;
+    bool reformat = false;
+
+    if(dst.toLower().endsWith(QStringLiteral(".bin")))
+    {
+        newDst = QDir::tempPath() + QDir::separator() + QFileInfo(dst).completeBaseName() + QStringLiteral("-%07d.jpg");
+        reformat = true;
+    }
+
+    if(Utils::HostOsInfo::isWindowsHost())
+    {
+        newSrc = newSrc.replace(QLatin1Char('%'), QStringLiteral("%%"));
+        newDst = newDst.replace(QLatin1Char('%'), QStringLiteral("%%"));
+    }
+
     bool result = false;
 
     if(Utils::HostOsInfo::isWindowsHost())
@@ -557,8 +610,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
         if(file.open(QIODevice::WriteOnly))
         {
             QByteArray command = QString(QStringLiteral("\"") +
-                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffmpeg.exe"))) + QStringLiteral("\" -hide_banner -i \"") +
-                QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffmpeg.exe"))) + QStringLiteral("\" -hide_banner -y -i \"") +
+                QDir::cleanPath(QDir::toNativeSeparators(newSrc)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(newDst)) + QStringLiteral("\"\n")).toUtf8();
 
             if(file.write(command) == command.size())
             {
@@ -577,8 +630,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
         //    << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/windows/bin/ffmpeg.exe")))
         //    << QStringLiteral("-hide_banner")
         //    << QStringLiteral("-i")
-        //    << QDir::cleanPath(QDir::toNativeSeparators(src))
-        //    << QDir::cleanPath(QDir::toNativeSeparators(dst)));
+        //    << QDir::cleanPath(QDir::toNativeSeparators(newSrc))
+        //    << QDir::cleanPath(QDir::toNativeSeparators(newDst)));
     }
     else if(Utils::HostOsInfo::isMacHost())
     {
@@ -587,8 +640,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
         if(file.open(QIODevice::WriteOnly))
         {
             QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
-                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
-                QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+                QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/mac/ffmpeg"))) + QStringLiteral("\" -hide_banner -y -i \"") +
+                QDir::cleanPath(QDir::toNativeSeparators(newSrc)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(newDst)) + QStringLiteral("\"\n")).toUtf8();
 
             if(file.write(command) == command.size())
             {
@@ -610,8 +663,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             if(file.open(QIODevice::WriteOnly))
             {
                 QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86/ffmpeg"))) + QStringLiteral("\" -hide_banner -y -i \"") +
+                    QDir::cleanPath(QDir::toNativeSeparators(newSrc)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(newDst)) + QStringLiteral("\"\n")).toUtf8();
 
                 if(file.write(command) == command.size())
                 {
@@ -630,8 +683,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             //    << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86/ffmpeg")))
             //    << QStringLiteral("-hide_banner")
             //    << QStringLiteral("-i")
-            //    << QDir::cleanPath(QDir::toNativeSeparators(src))
-            //    << QDir::cleanPath(QDir::toNativeSeparators(dst)));
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newSrc))
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newDst)));
         }
         else if(QSysInfo::buildCpuArchitecture() == QStringLiteral("x86_64"))
         {
@@ -640,8 +693,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             if(file.open(QIODevice::WriteOnly))
             {
                 QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86_64/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86_64/ffmpeg"))) + QStringLiteral("\" -hide_banner -y -i \"") +
+                    QDir::cleanPath(QDir::toNativeSeparators(newSrc)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(newDst)) + QStringLiteral("\"\n")).toUtf8();
 
                 if(file.write(command) == command.size())
                 {
@@ -660,8 +713,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             //    << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-x86_64/ffmpeg")))
             //    << QStringLiteral("-hide_banner")
             //    << QStringLiteral("-i")
-            //    << QDir::cleanPath(QDir::toNativeSeparators(src))
-            //    << QDir::cleanPath(QDir::toNativeSeparators(dst)));
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newSrc))
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newDst)));
         }
         else if(QSysInfo::buildCpuArchitecture() == QStringLiteral("arm"))
         {
@@ -670,8 +723,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             if(file.open(QIODevice::WriteOnly))
             {
                 QByteArray command = QString(QStringLiteral("#!/bin/sh\n\n\"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-arm/ffmpeg"))) + QStringLiteral("\" -hide_banner -i \"") +
-                    QDir::cleanPath(QDir::toNativeSeparators(src)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(dst)) + QStringLiteral("\"\n")).toUtf8();
+                    QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-arm/ffmpeg"))) + QStringLiteral("\" -hide_banner -y -i \"") +
+                    QDir::cleanPath(QDir::toNativeSeparators(newSrc)) + QStringLiteral("\" \"") + QDir::cleanPath(QDir::toNativeSeparators(newDst)) + QStringLiteral("\"\n")).toUtf8();
 
                 if(file.write(command) == command.size())
                 {
@@ -690,8 +743,8 @@ static bool convertVideoFile(const QString &dst, const QString &src)
             //    << QDir::cleanPath(QDir::toNativeSeparators(Core::ICore::resourcePath() + QStringLiteral("/ffmpeg/linux-arm/ffmpeg")))
             //    << QStringLiteral("-hide_banner")
             //    << QStringLiteral("-i")
-            //    << QDir::cleanPath(QDir::toNativeSeparators(src))
-            //    << QDir::cleanPath(QDir::toNativeSeparators(dst)));
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newSrc))
+            //    << QDir::cleanPath(QDir::toNativeSeparators(newDst)));
         }
     }
 
@@ -700,6 +753,75 @@ static bool convertVideoFile(const QString &dst, const QString &src)
         QMessageBox::critical(Core::ICore::dialogParent(),
             QObject::tr("Convert Video"),
             QObject::tr("Failed to launch ffmpeg!"));
+    }
+
+    if(reformat && result)
+    {
+        if(QMessageBox::information(Core::ICore::dialogParent(),
+            QObject::tr("Convert Video"),
+            QObject::tr("Please click the \"Ok\" button to continue once FFMPEG finishes.\n\nOpenMV IDE is unable to automatically determine when FFMPEG finishes without hiding FFMPEG output."),
+            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+        == QMessageBox::Ok)
+        {
+            QFile file(dst);
+
+            if(file.open(QIODevice::WriteOnly))
+            {
+                QStringList list = QDir(QFileInfo(newDst).path()).entryList(QStringList() << (QFileInfo(dst).completeBaseName() + QStringLiteral("-*.jpg")));
+
+                QProgressDialog progress(QObject::tr("Transcoding File..."), QObject::tr("Cancel"), 0, list.size(), Core::ICore::dialogParent(),
+                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                    (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
+                progress.setWindowModality(Qt::ApplicationModal);
+
+                QByteArray data;
+                serializeData(data, "OMV ", 4);
+                serializeData(data, "IMG ", 4);
+                serializeData(data, "STR ", 4);
+                serializeData(data, "V1.0", 4);
+
+                for(int i = 0, j = list.size(); i < j; i++)
+                {
+                    progress.setValue(i);
+
+                    QFile in(QFileInfo(newDst).path() + QDir::separator() + list.at(i));
+
+                    if(in.open(QIODevice::ReadOnly))
+                    {
+                        QImage image = QImage::fromData(in.readAll(), "JPG");
+                        QByteArray out = jpgToBytes(image);
+
+                        serializeLong(data, 0);
+                        serializeLong(data, image.width());
+                        serializeLong(data, image.height());
+                        serializeLong(data, image.isGrayscale() ? 1 : 2);
+                        data.append(out + ((out.size() % 16) ? QByteArray("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 16 - (out.size() % 16)) : QByteArray()));
+
+                        if(file.write(data) != data.size())
+                        {
+                            result = false;
+                            QMessageBox::critical(Core::ICore::dialogParent(),
+                                QObject::tr("Convert Video"),
+                                QObject::tr("Unable to write to output video file!"));
+                            break;
+                        }
+
+                        data.clear();
+                    }
+                }
+            }
+            else
+            {
+                result = false;
+                QMessageBox::critical(Core::ICore::dialogParent(),
+                    QObject::tr("Convert Video"),
+                    QObject::tr("Unable to open output video file!"));
+            }
+        }
+        else
+        {
+            result = false;
+        }
     }
 
     return result;
@@ -876,9 +998,9 @@ void convertVideoFileAction(const QString &drivePath)
             QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Convert Video Output"),
                 settings->value(QStringLiteral(LAST_CONVERT_VIDEO_DST_PATH), QDir::homePath()).toString(),
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-                QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
+                QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;") + getOutputFormats());
 #else
-                QObject::tr("Video Files (*.mp4 *.*)"));
+                QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)"));
 #endif
 
         if(!dst.isEmpty())
@@ -941,9 +1063,9 @@ void saveVideoFile(const QString &srcPath)
         QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Save Video"),
             settings->value(QStringLiteral(LAST_SAVE_VIDEO_PATH), QDir::homePath()).toString(),
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            QObject::tr("Video Files (*.mp4 *.*);;") + getOutputFormats());
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;") + getOutputFormats());
 #else
-            QObject::tr("Video Files (*.mp4 *.*)"));
+            QObject::tr("Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)"));
 #endif
 
     if(!dst.isEmpty())
