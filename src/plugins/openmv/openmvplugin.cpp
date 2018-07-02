@@ -173,7 +173,7 @@ bool OpenMVPlugin::initialize(const QStringList &arguments, QString *errorMessag
         }
         else
         {
-            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html");
+            QStringList list = QStringList() << QStringLiteral("examples") << QStringLiteral("firmware") << QStringLiteral("html") << QStringLiteral("models");
 
             foreach(const QString &dir, list)
             {
@@ -893,6 +893,55 @@ void OpenMVPlugin::extensionsInitialized()
         }
     });
 
+    machineVisionToolsMenu->addSeparator();
+
+    QAction *networkLibraryCommand = new QAction(tr("CNN Network Library"), this);
+    m_networkLibraryCommand = Core::ActionManager::registerAction(networkLibraryCommand, Core::Id("OpenMV.NetworkLibrary"));
+    machineVisionToolsMenu->addAction(m_networkLibraryCommand);
+    networkLibraryCommand->setEnabled(false);
+    connect(networkLibraryCommand, &QAction::triggered, this, [this] {
+        QSettings *settings = ExtensionSystem::PluginManager::settings();
+        settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
+    
+        QString src =
+            QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Network to copy to OpenMV Cam"),
+                settings->value(QStringLiteral(LAST_NETWORK_PATH), QString(Core::ICore::userResourcePath() + QStringLiteral("/models"))).toString(),
+                QObject::tr("Neural Network Model (*.network)"));
+
+        if(!src.isEmpty())
+        {
+            QString dst =
+                QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Where to save the network on the OpenMV Cam"),
+                    QString(m_portPath + QFileInfo(src).fileName()),
+                    QObject::tr("Neural Network Model (*.network)"));
+
+            if(!dst.isEmpty())
+            {
+                if((!QFile(dst).exists()) || QFile::remove(dst))
+                {
+                    if(QFile::copy(src, dst))
+                    {
+                        settings->setValue(QStringLiteral(LAST_NETWORK_PATH), src);
+                    }
+                    else
+                    {
+                        QMessageBox::critical(Core::ICore::dialogParent(),
+                            QString(),
+                            QObject::tr("Unable to overwrite output file!"));
+                    }
+                }
+                else
+                {
+                    QMessageBox::critical(Core::ICore::dialogParent(),
+                        QString(),
+                        QObject::tr("Unable to overwrite output file!"));
+                }
+            }
+        }
+
+        settings->endGroup();
+    });
+
     Core::ActionContainer *videoToolsMenu = Core::ActionManager::createMenu(Core::Id("OpenMV.VideoTools"));
     videoToolsMenu->menu()->setTitle(tr("Video Tools"));
     videoToolsMenu->setOnAllDisabledBehavior(Core::ActionContainer::Show);
@@ -1006,6 +1055,7 @@ void OpenMVPlugin::extensionsInitialized()
             m_startCommand->action()->setVisible(!m_running);
             m_stopCommand->action()->setEnabled(m_running);
             m_stopCommand->action()->setVisible(m_running);
+            m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
         }
     });
 
@@ -1027,6 +1077,7 @@ void OpenMVPlugin::extensionsInitialized()
             m_startCommand->action()->setVisible(!running);
             m_stopCommand->action()->setEnabled(running);
             m_stopCommand->action()->setVisible(running);
+            m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
             m_running = running;
         }
     });
@@ -3646,6 +3697,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_startCommand->action()->setVisible(true);
         m_stopCommand->action()->setEnabled(false);
         m_stopCommand->action()->setVisible(false);
+        m_networkLibraryCommand->action()->setEnabled(false);
 
         m_versionButton->setEnabled(true);
         m_versionButton->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
@@ -3822,6 +3874,7 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_startCommand->action()->setVisible(true);
             m_stopCommand->action()->setEnabled(false);
             m_stopCommand->action()->setVisible(false);
+            m_networkLibraryCommand->action()->setEnabled(false);
 
             m_versionButton->setDisabled(true);
             m_versionButton->setText(tr("Firmware Version:"));
@@ -4514,6 +4567,7 @@ void OpenMVPlugin::setPortPath(bool silent)
         Core::IEditor *editor = Core::EditorManager::currentEditor();
         m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
         m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
+        m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
 
         m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
         m_frameBuffer->enableSaveDescriptor(!m_portPath.isEmpty());

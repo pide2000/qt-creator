@@ -103,6 +103,7 @@
 #define LAST_APRILTAG_RANGE_MAX "LastAprilTagRangeMax"
 #define LAST_APRILTAG_INCLUDE "LastAprilTagInclude"
 #define LAST_APRILTAG_PATH "LastAprilTagPath"
+#define LAST_NETWORK_PATH "LastNetworkPath"
 #define RESOURCES_MAJOR "ResourcesMajor"
 #define RESOURCES_MINOR "ResourcesMinor"
 #define RESOURCES_PATCH "ResourcesPatch"
@@ -275,6 +276,7 @@ private:
     Core::Command *m_disconnectCommand;
     Core::Command *m_startCommand;
     Core::Command *m_stopCommand;
+    Core::Command *m_networkLibraryCommand;
 
     QToolButton *m_jpgCompress;
     QToolButton *m_disableFrameBuffer;
