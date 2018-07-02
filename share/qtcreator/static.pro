@@ -31,6 +31,7 @@ DATA_DIRS = \
     examples \
     firmware \
     html \
+    models \
     styles \
     themes
 win32: DATA_DIRS += drivers dfuse ffmpeg/windows
