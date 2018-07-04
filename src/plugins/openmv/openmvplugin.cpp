@@ -895,24 +895,25 @@ void OpenMVPlugin::extensionsInitialized()
 
     machineVisionToolsMenu->addSeparator();
 
-    QAction *networkLibraryCommand = new QAction(tr("CNN Network Library"), this);
-    m_networkLibraryCommand = Core::ActionManager::registerAction(networkLibraryCommand, Core::Id("OpenMV.NetworkLibrary"));
-    machineVisionToolsMenu->addAction(m_networkLibraryCommand);
-    networkLibraryCommand->setEnabled(false);
-    connect(networkLibraryCommand, &QAction::triggered, this, [this] {
+    QAction *networkLibraryAction = new QAction(tr("CNN Network Library"), this);
+    Core::Command *networkLibraryCommand = Core::ActionManager::registerAction(networkLibraryAction, Core::Id("OpenMV.NetworkLibrary"));
+    machineVisionToolsMenu->addAction(networkLibraryCommand);
+    connect(networkLibraryAction, &QAction::triggered, this, [this] {
         QSettings *settings = ExtensionSystem::PluginManager::settings();
         settings->beginGroup(QStringLiteral(SETTINGS_GROUP));
-    
+
         QString src =
             QFileDialog::getOpenFileName(Core::ICore::dialogParent(), QObject::tr("Network to copy to OpenMV Cam"),
-                settings->value(QStringLiteral(LAST_NETWORK_PATH), QString(Core::ICore::userResourcePath() + QStringLiteral("/models"))).toString(),
+                Core::ICore::userResourcePath() + QStringLiteral("/models"),
                 QObject::tr("Neural Network Model (*.network)"));
 
         if(!src.isEmpty())
         {
             QString dst =
                 QFileDialog::getSaveFileName(Core::ICore::dialogParent(), QObject::tr("Where to save the network on the OpenMV Cam"),
-                    QString(m_portPath + QFileInfo(src).fileName()),
+                    m_portPath.isEmpty()
+                    ? settings->value(QStringLiteral(LAST_MODEL_NO_CAM_PATH), QDir::homePath()).toString()
+                    : settings->value(QStringLiteral(LAST_MODEL_WITH_CAM_PATH), QString(m_portPath + QFileInfo(src).fileName())).toString(),
                     QObject::tr("Neural Network Model (*.network)"));
 
             if(!dst.isEmpty())
@@ -921,7 +922,7 @@ void OpenMVPlugin::extensionsInitialized()
                 {
                     if(QFile::copy(src, dst))
                     {
-                        settings->setValue(QStringLiteral(LAST_NETWORK_PATH), src);
+                        settings->setValue(m_portPath.isEmpty() ? QStringLiteral(LAST_MODEL_NO_CAM_PATH) : QStringLiteral(LAST_MODEL_WITH_CAM_PATH), src);
                     }
                     else
                     {
@@ -1055,7 +1056,6 @@ void OpenMVPlugin::extensionsInitialized()
             m_startCommand->action()->setVisible(!m_running);
             m_stopCommand->action()->setEnabled(m_running);
             m_stopCommand->action()->setVisible(m_running);
-            m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
         }
     });
 
@@ -1077,7 +1077,6 @@ void OpenMVPlugin::extensionsInitialized()
             m_startCommand->action()->setVisible(!running);
             m_stopCommand->action()->setEnabled(running);
             m_stopCommand->action()->setVisible(running);
-            m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
             m_running = running;
         }
     });
@@ -3128,7 +3127,7 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
                                 *done2Ptr2 = true;
                             });
 
-                            QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...") : tr("Connecting... (Hit cancel if this takes more than 5 seconds)."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
+                            QProgressDialog dialog(forceBootloaderBricked ? tr("Disconnect your OpenMV Cam and then reconnect it...\n\nHit cancel to skip to DFU reprogramming.") : tr("Connecting... (Hit cancel if this takes more than 5 seconds)."), tr("Cancel"), 0, 0, Core::ICore::dialogParent(),
                                 Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
                                 (Utils::HostOsInfo::isMacHost() ? Qt::WindowType(0) : Qt::WindowType(0)));
                             dialog.setWindowModality(Qt::ApplicationModal);
@@ -3697,7 +3696,6 @@ void OpenMVPlugin::connectClicked(bool forceBootloader, QString forceFirmwarePat
         m_startCommand->action()->setVisible(true);
         m_stopCommand->action()->setEnabled(false);
         m_stopCommand->action()->setVisible(false);
-        m_networkLibraryCommand->action()->setEnabled(false);
 
         m_versionButton->setEnabled(true);
         m_versionButton->setText(tr("Firmware Version: %L1.%L2.%L3").arg(major2).arg(minor2).arg(patch2));
@@ -3874,7 +3872,6 @@ void OpenMVPlugin::disconnectClicked(bool reset)
             m_startCommand->action()->setVisible(true);
             m_stopCommand->action()->setEnabled(false);
             m_stopCommand->action()->setVisible(false);
-            m_networkLibraryCommand->action()->setEnabled(false);
 
             m_versionButton->setDisabled(true);
             m_versionButton->setText(tr("Firmware Version:"));
@@ -4567,7 +4564,6 @@ void OpenMVPlugin::setPortPath(bool silent)
         Core::IEditor *editor = Core::EditorManager::currentEditor();
         m_configureSettingsCommand->action()->setEnabled(!m_portPath.isEmpty());
         m_saveCommand->action()->setEnabled((!m_portPath.isEmpty()) && (editor ? (editor->document() ? (!editor->document()->contents().isEmpty()) : false) : false));
-        m_networkLibraryCommand->action()->setEnabled(!m_portPath.isEmpty());
 
         m_frameBuffer->enableSaveTemplate(!m_portPath.isEmpty());
         m_frameBuffer->enableSaveDescriptor(!m_portPath.isEmpty());
@@ -5706,7 +5702,9 @@ void OpenMVPlugin::openAprilTagGenerator(apriltag_family_t *family)
                 font.setPointSize(40);
                 painter.setFont(font);
 
-                painter.drawImage(8, 8, image.scaled(800, 800, Qt::KeepAspectRatio, Qt::FastTransformation));
+                painter.setBrush(QBrush(Qt::black, Qt::SolidPattern));
+                painter.drawRect(0, 0, 816, 816);
+                painter.drawImage(68, 68, image.scaled(680, 680, Qt::KeepAspectRatio, Qt::FastTransformation));
 
                 if(include)
                 {
