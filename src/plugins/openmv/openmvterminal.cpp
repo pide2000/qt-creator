@@ -443,9 +443,9 @@ void MyPlainTextEdit::execute(bool standAlone)
     {
         QByteArray data = "\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02";
 
-        for(int i = 0; i < data.size(); i++)
+        for(int i = 0; i < data.size(); i += (TABOO_PACKET_SIZE - 1))
         {
-            emit writeBytes(data.mid(i, 1));
+            emit writeBytes(data.mid(i, TABOO_PACKET_SIZE - 1));
         }
 
         // emit writeBytes("\x03\r\n\x01" + QString::fromUtf8(Core::EditorManager::currentEditor()->document()->contents()).toUtf8() + "\x04\r\n\x02");
@@ -454,9 +454,9 @@ void MyPlainTextEdit::execute(bool standAlone)
     {
         QByteArray data = "\x03\r\n\x01\r\nexecfile(\"/main.py\")\r\n\x04\r\n\x02";
 
-        for(int i = 0; i < data.size(); i++)
+        for(int i = 0; i < data.size(); i += (TABOO_PACKET_SIZE - 1))
         {
-            emit writeBytes(data.mid(i, 1));
+            emit writeBytes(data.mid(i, TABOO_PACKET_SIZE - 1));
         }
 
         // emit writeBytes("\x03\r\n\x01\r\nexecfile(\"/main.py\")\r\n\x04\r\n\x02");
@@ -672,9 +672,9 @@ void MyPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
         QByteArray data = QApplication::clipboard()->text().toUtf8();
 
-        for(int i = 0; i < data.size(); i++)
+        for(int i = 0; i < data.size(); i += (TABOO_PACKET_SIZE - 1))
         {
-            emit writeBytes(data.mid(i, 1));
+            emit writeBytes(data.mid(i, TABOO_PACKET_SIZE - 1));
         }
 
         // emit writeBytes(QApplication::clipboard()->text().toUtf8());
