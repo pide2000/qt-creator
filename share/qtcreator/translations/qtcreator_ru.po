@@ -7963,7 +7963,7 @@ msgstr "Генератор штрих-кодов"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:898
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "CNN Network Library"
-msgstr ""
+msgstr "Сетевая библиотека CNN"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:947
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
@@ -8822,6 +8822,8 @@ msgid ""
 "\n"
 "Hit cancel to skip to DFU reprogramming."
 msgstr ""
+"Отключите камеру OpenMV, а затем снова подключите ее ...\\n\\nНажмите "
+"«Отменить», чтобы перейти к перепрограммированию DFU."
 
 #~ msgctxt "OpenMV::Internal::OpenMVPlugin|"
 #~ msgid "Disconnect your OpenMV Cam and then reconnect it..."
@@ -9134,7 +9136,6 @@ msgstr "Открыть пример"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4370
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4376
 #: ../../../src/plugins/openmv/openmvplugin.cpp:4383
-#, fuzzy
 msgctxt "OpenMV::Internal::OpenMVPlugin|"
 msgid "Open File"
 msgstr "Открыть файл"
@@ -9567,18 +9568,18 @@ msgstr "Не удается открыть новый файл!"
 #: ../../../src/plugins/openmv/openmvplugin.cpp:906
 msgctxt "QObject|"
 msgid "Network to copy to OpenMV Cam"
-msgstr ""
+msgstr "Сеть для копирования в OpenMV Cam"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:908
 #: ../../../src/plugins/openmv/openmvplugin.cpp:917
 msgctxt "QObject|"
 msgid "Neural Network Model (*.network)"
-msgstr ""
+msgstr "Режим нейронной сети (*.network)"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:913
 msgctxt "QObject|"
 msgid "Where to save the network on the OpenMV Cam"
-msgstr ""
+msgstr "Где сохранить сеть на OpenMV Cam"
 
 #: ../../../src/plugins/openmv/openmvplugin.cpp:5965
 msgctxt "QObject|"
@@ -9730,16 +9731,19 @@ msgid ""
 "OpenMV IDE is unable to automatically determine when FFMPEG finishes without "
 "hiding FFMPEG output."
 msgstr ""
+"Нажмите кнопку «ОК», чтобы продолжить, как только FFMPEG "
+"закончится.\\n\\nOpenMV IDE не может автоматически определять, когда FFMPEG "
+"заканчивается, не скрывая выход FFMPEG."
 
 #: ../../../src/plugins/openmv/tools/videotools.cpp:805
 msgctxt "QObject|"
 msgid "Unable to write to output video file!"
-msgstr ""
+msgstr "Невозможно записать выходной видеофайл!"
 
 #: ../../../src/plugins/openmv/tools/videotools.cpp:818
 msgctxt "QObject|"
 msgid "Unable to open output video file!"
-msgstr ""
+msgstr "Не удалось открыть выходной видеофайл!"
 
 #: ../../../src/plugins/openmv/tools/videotools.cpp:974
 #: ../../../src/plugins/openmv/tools/videotools.cpp:1036
@@ -9778,13 +9782,13 @@ msgstr "Преобразовать вывод видеоданных"
 #: ../../../src/plugins/openmv/tools/videotools.cpp:1066
 msgctxt "QObject|"
 msgid "Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;"
-msgstr ""
+msgstr "Видео файлы (*.mp4 *.*);;Файлы OpenMV ImageReader (*.bin);;"
 
 #: ../../../src/plugins/openmv/tools/videotools.cpp:1003
 #: ../../../src/plugins/openmv/tools/videotools.cpp:1068
 msgctxt "QObject|"
 msgid "Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)"
-msgstr ""
+msgstr "Видео файлы (*.mp4 *.*);;Файлы OpenMV ImageReader (*.bin)"
 
 #~ msgctxt "QObject|"
 #~ msgid "Video Files (*.mp4 *.*);;"
