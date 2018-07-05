@@ -3992,19 +3992,19 @@ Do you want to check them out now?</source>
 <context>
     <name>Core::DocumentManager</name>
     <message>
-        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+624"/>
+        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+631"/>
         <source>Could not save the files.</source>
         <comment>error message</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+42"/>
-        <location line="+490"/>
+        <location line="+494"/>
         <source>File Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-489"/>
+        <location line="-493"/>
         <source>Error while saving file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4024,7 +4024,7 @@ Do you want to check them out now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+142"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7654,14 +7654,14 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2231"/>
+        <location line="+2281"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1838"/>
+        <location line="-1888"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7717,41 +7717,41 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4366"/>
+        <location line="+4416"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4408"/>
+        <location line="-4458"/>
         <source>Machine Vision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4435"/>
+        <location line="+4485"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4506"/>
-        <location line="+4584"/>
+        <location line="-4556"/>
+        <location line="+4634"/>
         <source>Keypoints Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4577"/>
-        <location line="+4727"/>
+        <location line="-4627"/>
+        <location line="+4777"/>
         <location line="+96"/>
-        <location line="+21"/>
+        <location line="+23"/>
         <location line="+10"/>
         <location line="+20"/>
         <source>AprilTag Generator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-4871"/>
+        <location line="-4923"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7789,7 +7789,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
         <location line="+10"/>
         <location line="+14"/>
         <location line="+14"/>
-        <location line="+29"/>
+        <location line="+79"/>
         <location line="+14"/>
         <location line="+16"/>
         <location line="+564"/>
@@ -7797,7 +7797,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-647"/>
+        <location line="-697"/>
         <source>DataMatrix Generator</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7807,7 +7807,12 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
+        <source>CNN Network Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+49"/>
         <source>Video Tools</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8548,7 +8553,9 @@ sudo adduser %L1 dialout
     </message>
     <message>
         <location line="-490"/>
-        <source>Disconnect your OpenMV Cam and then reconnect it...</source>
+        <source>Disconnect your OpenMV Cam and then reconnect it...
+
+Hit cancel to skip to DFU reprogramming.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8745,12 +8752,12 @@ HomeBrew:
     </message>
     <message>
         <location line="-1174"/>
-        <location line="+1521"/>
+        <location line="+1523"/>
         <source>Failed to save the image file for an unknown reason!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1504"/>
+        <location line="-1506"/>
         <location line="+12"/>
         <location line="+15"/>
         <location line="+11"/>
@@ -9128,7 +9135,7 @@ HomeBrew:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Painting - end failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9197,7 +9204,7 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-5424"/>
+        <location line="-5476"/>
         <source>New File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9207,7 +9214,23 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5180"/>
+        <location line="+173"/>
+        <source>Network to copy to OpenMV Cam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+9"/>
+        <source>Neural Network Model (*.network)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Where to save the network on the OpenMV Cam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5052"/>
         <source>Copy Failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9222,18 +9245,19 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+103"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+140"/>
         <source>Reading File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+63"/>
+        <location line="+569"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-621"/>
         <location line="+20"/>
         <location line="+11"/>
         <source>Reading File</source>
@@ -9256,11 +9280,12 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     </message>
     <message>
         <location line="-56"/>
+        <location line="+569"/>
         <source>Transcoding File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="-558"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+13"/>
@@ -9334,17 +9359,37 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+182"/>
+        <location line="+7"/>
+        <location line="+43"/>
+        <location line="+13"/>
         <source>Convert Video</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-62"/>
         <source>Failed to launch ffmpeg!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+7"/>
+        <source>Please click the &quot;Ok&quot; button to continue once FFMPEG finishes.
+
+OpenMV IDE is unable to automatically determine when FFMPEG finishes without hiding FFMPEG output.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Unable to write to output video file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Unable to open output video file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+156"/>
         <location line="+62"/>
         <source>Play Video</source>
         <translation type="unfinished"></translation>
@@ -9379,23 +9424,25 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     <message>
         <location line="+3"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*);;</source>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-63"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*)</source>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-46"/>
+        <location filename="../../../src/plugins/openmv/openmvplugin.cpp" line="-5034"/>
+        <location line="+7"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-46"/>
         <location line="+64"/>
         <source>Unable to overwrite output file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-23"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-23"/>
         <source>Save Video</source>
         <translation type="unfinished"></translation>
     </message>

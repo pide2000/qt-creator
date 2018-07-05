@@ -1107,8 +1107,7 @@ To do this, you type this shortcut and a space in the Locator entry field, and t
     <message>
         <location/>
         <source>min</source>
-        <extracomment>unit for minutes
-</extracomment>
+        <extracomment>unit for minutes</extracomment>
         <translation>分</translation>
     </message>
     <message>
@@ -2960,15 +2959,13 @@ will also disable the following plugins:
     <message>
         <location line="+71"/>
         <source>&lt;VARIABLE&gt;</source>
-        <extracomment>Name when inserting a new variable
-</extracomment>
+        <extracomment>Name when inserting a new variable</extracomment>
         <translation>&lt;变量&gt;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&lt;VALUE&gt;</source>
-        <extracomment>Value when inserting a new variable
-</extracomment>
+        <extracomment>Value when inserting a new variable</extracomment>
         <translation>&lt;值&gt;</translation>
     </message>
 </context>
@@ -3815,8 +3812,7 @@ will also disable the following plugins:
     <message>
         <location line="+2"/>
         <source>Useful text</source>
-        <extracomment>Sample external tool text
-</extracomment>
+        <extracomment>Sample external tool text</extracomment>
         <translation>有用的文本</translation>
     </message>
 </context>
@@ -4064,19 +4060,19 @@ Do you want to check them out now?</source>
 <context>
     <name>Core::DocumentManager</name>
     <message>
-        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+624"/>
+        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+631"/>
         <source>Could not save the files.</source>
         <comment>error message</comment>
         <translation>无法保存文件。</translation>
     </message>
     <message>
         <location line="+42"/>
-        <location line="+490"/>
+        <location line="+494"/>
         <source>File Error</source>
         <translation>文件错误</translation>
     </message>
     <message>
-        <location line="-489"/>
+        <location line="-493"/>
         <source>Error while saving file: %1</source>
         <translation>保存文件时出错：%1</translation>
     </message>
@@ -4096,7 +4092,7 @@ Do you want to check them out now?</source>
         <translation>将文件另存为</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+142"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
@@ -5898,8 +5894,7 @@ to version control (%2)
     <message>
         <location line="+8"/>
         <source>&lt;br/&gt;From revision %1&lt;br/&gt;</source>
-        <extracomment>This gets conditionally inserted as argument %8 into the description string.
-</extracomment>
+        <extracomment>This gets conditionally inserted as argument %8 into the description string.</extracomment>
         <translation>&lt;br/&gt;自版本%1&lt;br/&gt;</translation>
     </message>
     <message>
@@ -6168,8 +6163,7 @@ to version control (%2)
         <source>Path: %1
 Filter: %2
 %3</source>
-        <extracomment>%3 is filled by BaseFileFind::runNewSearch
-</extracomment>
+        <extracomment>%3 is filled by BaseFileFind::runNewSearch</extracomment>
         <translation>路径：%1
 过滤器：%2
 %3</translation>
@@ -7738,7 +7732,7 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2231"/>
+        <location line="+2281"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
@@ -7747,7 +7741,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
 请关闭任何正在查看/编辑OpenMV IDE应用程序数据的程序，然后重新启动OpenMV IDE！</translation>
     </message>
     <message>
-        <location line="-1838"/>
+        <location line="-1888"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation>使用阈值编辑器编辑灰度阈值</translation>
     </message>
@@ -7837,41 +7831,41 @@ while(True):
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4366"/>
+        <location line="+4416"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation>打开终端</translation>
     </message>
     <message>
-        <location line="-4408"/>
+        <location line="-4458"/>
         <source>Machine Vision</source>
         <translation>机器视觉</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4435"/>
+        <location line="+4485"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation>阈值编辑器</translation>
     </message>
     <message>
-        <location line="-4506"/>
-        <location line="+4584"/>
+        <location line="-4556"/>
+        <location line="+4634"/>
         <source>Keypoints Editor</source>
         <translation>关键点编辑器</translation>
     </message>
     <message>
-        <location line="-4577"/>
-        <location line="+4727"/>
+        <location line="-4627"/>
+        <location line="+4777"/>
         <location line="+96"/>
-        <location line="+21"/>
+        <location line="+23"/>
         <location line="+10"/>
         <location line="+20"/>
         <source>AprilTag Generator</source>
         <translation>AprilTag生成器</translation>
     </message>
     <message>
-        <location line="-4871"/>
+        <location line="-4923"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation>TAG16H5家族(30标签)</translation>
     </message>
@@ -7909,7 +7903,7 @@ while(True):
         <location line="+10"/>
         <location line="+14"/>
         <location line="+14"/>
-        <location line="+29"/>
+        <location line="+79"/>
         <location line="+14"/>
         <location line="+16"/>
         <location line="+564"/>
@@ -7917,7 +7911,7 @@ while(True):
         <translation>无法打开：&quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="-647"/>
+        <location line="-697"/>
         <source>DataMatrix Generator</source>
         <translation>DataMatrix码生成器</translation>
     </message>
@@ -7927,7 +7921,12 @@ while(True):
         <translation>条码生成器</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
+        <source>CNN Network Library</source>
+        <translation>CNN网络图书馆</translation>
+    </message>
+    <message>
+        <location line="+49"/>
         <source>Video Tools</source>
         <translation>视频工具</translation>
     </message>
@@ -8696,8 +8695,14 @@ sudo adduser %L1 dialout
     </message>
     <message>
         <location line="-490"/>
+        <source>Disconnect your OpenMV Cam and then reconnect it...
+
+Hit cancel to skip to DFU reprogramming.</source>
+        <translation>断开OpenMV Cam，然后重新连接......\n\n点击取消跳过DFU重新编程。</translation>
+    </message>
+    <message>
         <source>Disconnect your OpenMV Cam and then reconnect it...</source>
-        <translation>断开您的OpenMV Cam，然后重新连接...</translation>
+        <translation type="vanished">断开您的OpenMV Cam，然后重新连接...</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -8918,12 +8923,12 @@ HomeBrew：
     </message>
     <message>
         <location line="-1174"/>
-        <location line="+1521"/>
+        <location line="+1523"/>
         <source>Failed to save the image file for an unknown reason!</source>
         <translation>因为未知的原因，无法保存图像文件！</translation>
     </message>
     <message>
-        <location line="-1504"/>
+        <location line="-1506"/>
         <location line="+12"/>
         <location line="+15"/>
         <location line="+11"/>
@@ -8977,7 +8982,7 @@ HomeBrew：
         <location line="+6"/>
         <location line="+7"/>
         <source>Open File</source>
-        <translation type="unfinished">打开文件</translation>
+        <translation>打开文件</translation>
     </message>
     <message>
         <location line="-19"/>
@@ -9298,7 +9303,7 @@ HomeBrew：
         <translation>绘画 - 开始失败！</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Painting - end failed!</source>
         <translation>绘画 - 结束失败！</translation>
     </message>
@@ -9371,7 +9376,7 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-5424"/>
+        <location line="-5476"/>
         <source>New File</source>
         <translation>新建文件</translation>
     </message>
@@ -9381,7 +9386,23 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>无法打开新文件！</translation>
     </message>
     <message>
-        <location line="+5180"/>
+        <location line="+173"/>
+        <source>Network to copy to OpenMV Cam</source>
+        <translation>要复制到OpenMV Cam的网络</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+9"/>
+        <source>Neural Network Model (*.network)</source>
+        <translation>神经网络模型 (*.network)</translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Where to save the network on the OpenMV Cam</source>
+        <translation>在OpenMV Cam上保存网络的位置</translation>
+    </message>
+    <message>
+        <location line="+5052"/>
         <source>Copy Failed!</source>
         <translation>复制失败！</translation>
     </message>
@@ -9396,18 +9417,19 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>无法写入帧！</translation>
     </message>
     <message>
-        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+103"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+140"/>
         <source>Reading File...</source>
         <translation>正在读取文件...</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+63"/>
+        <location line="+569"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-621"/>
         <location line="+20"/>
         <location line="+11"/>
         <source>Reading File</source>
@@ -9430,11 +9452,12 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     </message>
     <message>
         <location line="-56"/>
+        <location line="+569"/>
         <source>Transcoding File...</source>
         <translation>正在转码文件...</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="-558"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+13"/>
@@ -9508,17 +9531,37 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>查询失败！</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+182"/>
+        <location line="+7"/>
+        <location line="+43"/>
+        <location line="+13"/>
         <source>Convert Video</source>
         <translation>转换视频</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-62"/>
         <source>Failed to launch ffmpeg!</source>
         <translation>无法启动ffmpeg！</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+7"/>
+        <source>Please click the &quot;Ok&quot; button to continue once FFMPEG finishes.
+
+OpenMV IDE is unable to automatically determine when FFMPEG finishes without hiding FFMPEG output.</source>
+        <translation>FFMPEG完成后，请单击“确定”按钮继续。\n\nOpenMV IDE无法自动确定FFMPEG何时完成而不隐藏FFMPEG输出。</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Unable to write to output video file!</source>
+        <translation>无法写入输出视频文件！</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Unable to open output video file!</source>
+        <translation>无法打开输出视频文件！</translation>
+    </message>
+    <message>
+        <location line="+156"/>
         <location line="+62"/>
         <source>Play Video</source>
         <translation>播放视频</translation>
@@ -9553,23 +9596,33 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     <message>
         <location line="+3"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*);;</source>
-        <translation>视频文件(*.mp4 *.*);;</translation>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;</source>
+        <translation>视频文件 (*.mp4 *.*);;OpenMV ImageReader文件 (*.bin);;</translation>
     </message>
     <message>
         <location line="-63"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*)</source>
-        <translation>视频文件(*.mp4 *.*)</translation>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)</source>
+        <translation>视频文件 (*.mp4 *.*);;OpenMV ImageReader文件 (*.bin)</translation>
     </message>
     <message>
-        <location line="-46"/>
+        <source>Video Files (*.mp4 *.*);;</source>
+        <translation type="vanished">视频文件(*.mp4 *.*);;</translation>
+    </message>
+    <message>
+        <source>Video Files (*.mp4 *.*)</source>
+        <translation type="vanished">视频文件(*.mp4 *.*)</translation>
+    </message>
+    <message>
+        <location filename="../../../src/plugins/openmv/openmvplugin.cpp" line="-5034"/>
+        <location line="+7"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-46"/>
         <location line="+64"/>
         <source>Unable to overwrite output file!</source>
         <translation>无法覆盖输出文件！</translation>
     </message>
     <message>
-        <location line="-23"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-23"/>
         <source>Save Video</source>
         <translation>保存视频</translation>
     </message>

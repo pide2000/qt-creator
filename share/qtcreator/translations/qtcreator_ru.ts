@@ -4066,19 +4066,19 @@ Do you want to check them out now?</source>
 <context>
     <name>Core::DocumentManager</name>
     <message>
-        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+624"/>
+        <location filename="../../../src/plugins/coreplugin/documentmanager.cpp" line="+631"/>
         <source>Could not save the files.</source>
         <comment>error message</comment>
         <translation>Не удалось сохранить файлы.</translation>
     </message>
     <message>
         <location line="+42"/>
-        <location line="+490"/>
+        <location line="+494"/>
         <source>File Error</source>
         <translation>Ошибка в файле</translation>
     </message>
     <message>
-        <location line="-489"/>
+        <location line="-493"/>
         <source>Error while saving file: %1</source>
         <translation>Ошибка при сохранении файла: %1</translation>
     </message>
@@ -4098,7 +4098,7 @@ Do you want to check them out now?</source>
         <translation>Сохранить файл как</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+142"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
@@ -7748,7 +7748,7 @@ Will not be applied to whitespace in comments and strings.</source>
     <message>
         <location line="+42"/>
         <location line="+15"/>
-        <location line="+2231"/>
+        <location line="+2281"/>
         <source>
 
 Please close any programs that are viewing/editing OpenMV IDE&apos;s application data and then restart OpenMV IDE!</source>
@@ -7757,7 +7757,7 @@ Please close any programs that are viewing/editing OpenMV IDE&apos;s application
 Закройте все программы, которые просматривают/редактируют данные приложения OpenMV IDE, а затем перезапустите OpenMV IDE!</translation>
     </message>
     <message>
-        <location line="-1838"/>
+        <location line="-1888"/>
         <source>Edit Grayscale threshold with Threshold Editor</source>
         <translation>Изменить порог шкалы оттенков серого с помощью Threshold Editor</translation>
     </message>
@@ -7837,41 +7837,41 @@ while(True):
     </message>
     <message>
         <location line="+9"/>
-        <location line="+4366"/>
+        <location line="+4416"/>
         <location line="+47"/>
         <source>Open Terminal</source>
         <translation>Открыть терминал</translation>
     </message>
     <message>
-        <location line="-4408"/>
+        <location line="-4458"/>
         <source>Machine Vision</source>
         <translation>Машинное зрение</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+4435"/>
+        <location line="+4485"/>
         <location line="+76"/>
         <source>Threshold Editor</source>
         <translation>Threshold Editor</translation>
     </message>
     <message>
-        <location line="-4506"/>
-        <location line="+4584"/>
+        <location line="-4556"/>
+        <location line="+4634"/>
         <source>Keypoints Editor</source>
         <translation>Редактор ключевых точек</translation>
     </message>
     <message>
-        <location line="-4577"/>
-        <location line="+4727"/>
+        <location line="-4627"/>
+        <location line="+4777"/>
         <location line="+96"/>
-        <location line="+21"/>
+        <location line="+23"/>
         <location line="+10"/>
         <location line="+20"/>
         <source>AprilTag Generator</source>
         <translation>Генератор AprilTag</translation>
     </message>
     <message>
-        <location line="-4871"/>
+        <location line="-4923"/>
         <source>TAG16H5 Family (30 Tags)</source>
         <translation>Семейство TAG16H5 (30 тегов)</translation>
     </message>
@@ -7909,7 +7909,7 @@ while(True):
         <location line="+10"/>
         <location line="+14"/>
         <location line="+14"/>
-        <location line="+29"/>
+        <location line="+79"/>
         <location line="+14"/>
         <location line="+16"/>
         <location line="+564"/>
@@ -7917,7 +7917,7 @@ while(True):
         <translation>Не удалось открыть: &quot;%L1&quot;</translation>
     </message>
     <message>
-        <location line="-647"/>
+        <location line="-697"/>
         <source>DataMatrix Generator</source>
         <translation>Генератор DataMatrix</translation>
     </message>
@@ -7927,7 +7927,12 @@ while(True):
         <translation>Генератор штрих-кодов</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+16"/>
+        <source>CNN Network Library</source>
+        <translation>Сетевая библиотека CNN</translation>
+    </message>
+    <message>
+        <location line="+49"/>
         <source>Video Tools</source>
         <translation>Инструменты для видео</translation>
     </message>
@@ -8046,7 +8051,7 @@ while(True):
         <translation type="vanished">Ctrl+R</translation>
     </message>
     <message>
-        <location line="-253"/>
+        <location line="-303"/>
         <source>Documents Folder</source>
         <translation>Папка документов</translation>
     </message>
@@ -8060,7 +8065,7 @@ while(True):
         <translation type="vanished">&lt;br/&gt;&lt;p&gt;OpenMV IDE Русский перевод Сергея Сваздина.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+265"/>
+        <location line="+315"/>
         <source>Stop (halt script)</source>
         <translation>Стоп (сценарий остановки)</translation>
     </message>
@@ -8706,8 +8711,14 @@ sudo adduser%L1 dialout
     </message>
     <message>
         <location line="-490"/>
+        <source>Disconnect your OpenMV Cam and then reconnect it...
+
+Hit cancel to skip to DFU reprogramming.</source>
+        <translation>Отключите камеру OpenMV, а затем снова подключите ее ...\n\nНажмите «Отменить», чтобы перейти к перепрограммированию DFU.</translation>
+    </message>
+    <message>
         <source>Disconnect your OpenMV Cam and then reconnect it...</source>
-        <translation>Отключите камеру OpenMV, а затем снова подключите ее...</translation>
+        <translation type="vanished">Отключите камеру OpenMV, а затем снова подключите ее...</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -8928,12 +8939,12 @@ HomeBrew:
     </message>
     <message>
         <location line="-1174"/>
-        <location line="+1521"/>
+        <location line="+1523"/>
         <source>Failed to save the image file for an unknown reason!</source>
         <translation>Не удалось сохранить файл изображения по неизвестной причине!</translation>
     </message>
     <message>
-        <location line="-1504"/>
+        <location line="-1506"/>
         <location line="+12"/>
         <location line="+15"/>
         <location line="+11"/>
@@ -8987,7 +8998,7 @@ HomeBrew:
         <location line="+6"/>
         <location line="+7"/>
         <source>Open File</source>
-        <translation type="unfinished">Открыть файл</translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location line="-19"/>
@@ -9310,7 +9321,7 @@ HomeBrew:
         <translation>Рисование - начало не удалось!</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+23"/>
         <source>Painting - end failed!</source>
         <translation>Рисование - окончание не удалось!</translation>
     </message>
@@ -9383,7 +9394,7 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
 <context>
     <name>QObject</name>
     <message>
-        <location line="-5424"/>
+        <location line="-5476"/>
         <source>New File</source>
         <translation>Новый файл</translation>
     </message>
@@ -9393,7 +9404,23 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>Не удается открыть новый файл!</translation>
     </message>
     <message>
-        <location line="+5180"/>
+        <location line="+173"/>
+        <source>Network to copy to OpenMV Cam</source>
+        <translation>Сеть для копирования в OpenMV Cam</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+9"/>
+        <source>Neural Network Model (*.network)</source>
+        <translation>Режим нейронной сети (*.network)</translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Where to save the network on the OpenMV Cam</source>
+        <translation>Где сохранить сеть на OpenMV Cam</translation>
+    </message>
+    <message>
+        <location line="+5052"/>
         <source>Copy Failed!</source>
         <translation>Ошибка копирования!</translation>
     </message>
@@ -9408,18 +9435,19 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>Не удалось записать кадр!</translation>
     </message>
     <message>
-        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+103"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="+140"/>
         <source>Reading File...</source>
         <translation>Чтение файла...</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+63"/>
+        <location line="+569"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-621"/>
         <location line="+20"/>
         <location line="+11"/>
         <source>Reading File</source>
@@ -9442,11 +9470,12 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     </message>
     <message>
         <location line="-56"/>
+        <location line="+569"/>
         <source>Transcoding File...</source>
         <translation>Идет транскодирование файла...</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="-558"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+13"/>
@@ -9520,17 +9549,37 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
         <translation>Запрос не выполнен!</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+182"/>
+        <location line="+7"/>
+        <location line="+43"/>
+        <location line="+13"/>
         <source>Convert Video</source>
         <translation>Конвертировать видео</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-62"/>
         <source>Failed to launch ffmpeg!</source>
         <translation>Не удалось запустить ffmpeg!</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+7"/>
+        <source>Please click the &quot;Ok&quot; button to continue once FFMPEG finishes.
+
+OpenMV IDE is unable to automatically determine when FFMPEG finishes without hiding FFMPEG output.</source>
+        <translation>Нажмите кнопку «ОК», чтобы продолжить, как только FFMPEG закончится.\n\nOpenMV IDE не может автоматически определять, когда FFMPEG заканчивается, не скрывая выход FFMPEG.</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Unable to write to output video file!</source>
+        <translation>Невозможно записать выходной видеофайл!</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Unable to open output video file!</source>
+        <translation>Не удалось открыть выходной видеофайл!</translation>
+    </message>
+    <message>
+        <location line="+156"/>
         <location line="+62"/>
         <source>Play Video</source>
         <translation>Воспроизвести видео</translation>
@@ -9565,23 +9614,33 @@ Would you like OpenMV IDE to copy it to your OpenMV Cam?</source>
     <message>
         <location line="+3"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*);;</source>
-        <translation>Видеофайлы (*.mp4 *.*);;</translation>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin);;</source>
+        <translation>Видео файлы (*.mp4 *.*);;Файлы OpenMV ImageReader (*.bin);;</translation>
     </message>
     <message>
         <location line="-63"/>
         <location line="+65"/>
-        <source>Video Files (*.mp4 *.*)</source>
-        <translation>Видеофайлы (*.mp4 *.*)</translation>
+        <source>Video Files (*.mp4 *.*);;OpenMV ImageReader Files (*.bin)</source>
+        <translation>Видео файлы (*.mp4 *.*);;Файлы OpenMV ImageReader (*.bin)</translation>
     </message>
     <message>
-        <location line="-46"/>
+        <source>Video Files (*.mp4 *.*);;</source>
+        <translation type="vanished">Видеофайлы (*.mp4 *.*);;</translation>
+    </message>
+    <message>
+        <source>Video Files (*.mp4 *.*)</source>
+        <translation type="vanished">Видеофайлы (*.mp4 *.*)</translation>
+    </message>
+    <message>
+        <location filename="../../../src/plugins/openmv/openmvplugin.cpp" line="-5034"/>
+        <location line="+7"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-46"/>
         <location line="+64"/>
         <source>Unable to overwrite output file!</source>
         <translation>Не удалось перезаписать выходной файл!</translation>
     </message>
     <message>
-        <location line="-23"/>
+        <location filename="../../../src/plugins/openmv/tools/videotools.cpp" line="-23"/>
         <source>Save Video</source>
         <translation>Сохранить видео</translation>
     </message>
