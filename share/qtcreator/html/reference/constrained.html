@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MicroPython on Microcontrollers &mdash; MicroPython 1.9.3 documentation</title>
+  <title>MicroPython on Microcontrollers &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
         <link rel="next" title="Distribution packages, package management, and deploying applications" href="packages.html"/>
         <link rel="prev" title="Maximising MicroPython Speed" href="speed_python.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -320,7 +320,7 @@ efficient, reducing fragmentation.</p>
 a file it will save RAM if this is done in a piecemeal fashion. Rather than
 creating a large string object, create a substring and feed it to the stream
 before dealing with the next.</p>
-<p>The best way to create dynamic strings is by means of the string <a class="reference internal" href="../library/omv.image.html#image.image.format" title="image.image.format"><code class="xref any py py-meth docutils literal"><span class="pre">format</span></code></a>
+<p>The best way to create dynamic strings is by means of the string <code class="docutils literal"><span class="pre">format()</span></code>
 method:</p>
 <div class="code highlight-python"><div class="highlight"><pre><span class="n">var</span> <span class="o">=</span> <span class="s">&quot;Temperature {:5.2f} Pressure {:06d}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">press</span><span class="p">)</span>
 </pre></div>
@@ -378,7 +378,7 @@ were a string.</p>
 </div>
 <p><strong>Runtime compiler execution</strong></p>
 <p>The Python funcitons <a class="reference internal" href="../library/builtins.html#eval" title="eval"><code class="xref any py py-func docutils literal"><span class="pre">eval</span></code></a> and <a class="reference internal" href="../library/builtins.html#exec" title="exec"><code class="xref any py py-func docutils literal"><span class="pre">exec</span></code></a> invoke the compiler at runtime, which
-requires significant amounts of RAM. Note that the <a class="reference external" href="http://docs.python.org/3.5/library/pickle.html#module-pickle" title="(in Python v3.5)"><code class="xref any docutils literal"><span class="pre">pickle</span></code></a> library from
+requires significant amounts of RAM. Note that the <code class="docutils literal"><span class="pre">pickle</span></code> library from
 <a class="reference internal" href="glossary.html#term-micropython-lib"><code class="xref any std std-term docutils literal"><span class="pre">micropython-lib</span></code></a> employs <a class="reference internal" href="../library/builtins.html#exec" title="exec"><code class="xref any py py-func docutils literal"><span class="pre">exec</span></code></a>. It may be more RAM efficient to use the
 <a class="reference internal" href="../library/ujson.html#module-ujson" title="ujson: JSON encoding and decoding"><code class="xref any py py-mod docutils literal"><span class="pre">ujson</span></code></a> library for object serialisation.</p>
 <p><strong>Storing strings in flash</strong></p>
@@ -596,7 +596,7 @@ efficiency reasons bare metal ports do not return this value.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -683,7 +683,7 @@ efficiency reasons bare metal ports do not return this value.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

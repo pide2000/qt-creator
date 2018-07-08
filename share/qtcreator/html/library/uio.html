@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>uio – input/output streams &mdash; MicroPython 1.9.3 documentation</title>
+  <title>uio – input/output streams &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="ujson – JSON encoding and decoding" href="ujson.html"/>
         <link rel="prev" title="uheapq – heap queue algorithm" href="uheapq.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -246,7 +246,7 @@ to implement, or subclass, a stream class in pure Python.</p>
 <code class="descclassname">uio.</code><code class="descname">open</code><span class="sig-paren">(</span><em>name</em>, <em>mode='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#uio.open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open a file. Builtin <code class="docutils literal"><span class="pre">open()</span></code> function is aliased to this function.
 All ports (which provide access to file system) are required to support
-<a class="reference internal" href="omv.image.html#image.statistics.mode" title="image.statistics.mode"><code class="xref any py py-meth docutils literal"><span class="pre">mode</span></code></a> parameter, but support for other arguments vary by port.</p>
+<em>mode</em> parameter, but support for other arguments vary by port.</p>
 </dd></dl>
 
 </div>
@@ -278,7 +278,7 @@ You should not instantiate this class directly.</p>
 text-mode I/O (similar to a normal file opened with &#8220;t&#8221; modifier).
 <a class="reference internal" href="#uio.BytesIO" title="uio.BytesIO"><code class="xref any py py-class docutils literal"><span class="pre">BytesIO</span></code></a> is used for binary-mode I/O (similar to a normal file
 opened with &#8220;b&#8221; modifier). Initial contents of file-like objects
-can be specified with <a class="reference external" href="http://docs.python.org/3.5/library/string.html#module-string" title="(in Python v3.5)"><code class="xref any docutils literal"><span class="pre">string</span></code></a> parameter (should be normal string
+can be specified with <em>string</em> parameter (should be normal string
 for <a class="reference internal" href="#uio.StringIO" title="uio.StringIO"><code class="xref any py py-class docutils literal"><span class="pre">StringIO</span></code></a> or bytes object for <a class="reference internal" href="#uio.BytesIO" title="uio.BytesIO"><code class="xref any py py-class docutils literal"><span class="pre">BytesIO</span></code></a>). All the usual file
 methods like <code class="docutils literal"><span class="pre">read()</span></code>, <code class="docutils literal"><span class="pre">write()</span></code>, <code class="docutils literal"><span class="pre">seek()</span></code>, <code class="docutils literal"><span class="pre">flush()</span></code>,
 <code class="docutils literal"><span class="pre">close()</span></code> are available on these objects, and additionally, a
@@ -314,7 +314,7 @@ following method:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -401,7 +401,7 @@ following method:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

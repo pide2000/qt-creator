@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>lcd160cr — control of LCD160CR display &mdash; MicroPython 1.9.3 documentation</title>
+  <title>lcd160cr — control of LCD160CR display &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/> 
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -339,7 +339,7 @@ will be stored.</p>
 <div class="section" id="drawing-text">
 <h2>Drawing text<a class="headerlink" href="#drawing-text" title="Permalink to this headline">¶</a></h2>
 <p>To draw text one sets the position, color and font, and then uses
-<a class="reference internal" href="pyb.UART.html#pyb.UART.write" title="pyb.UART.write"><code class="xref any py py-meth docutils literal"><span class="pre">write</span></code></a> to draw the text.</p>
+<a class="reference internal" href="#lcd160cr.LCD160CR.write" title="lcd160cr.LCD160CR.write"><code class="xref any py py-meth docutils literal"><span class="pre">LCD160CR.write</span></code></a> to draw the text.</p>
 <dl class="method">
 <dt id="lcd160cr.LCD160CR.set_pos">
 <code class="descclassname">LCD160CR.</code><code class="descname">set_pos</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#lcd160cr.LCD160CR.set_pos" title="Permalink to this definition">¶</a></dt>
@@ -501,7 +501,7 @@ change is made to this setting.</li>
 <dt id="lcd160cr.LCD160CR.is_touched">
 <code class="descclassname">LCD160CR.</code><code class="descname">is_touched</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcd160cr.LCD160CR.is_touched" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a boolean: <code class="docutils literal"><span class="pre">True</span></code> if there is currently a touch force on the screen,
-<a class="reference external" href="http://docs.python.org/3.5/library/constants.html#False" title="(in Python v3.5)"><code class="xref any docutils literal"><span class="pre">False</span></code></a> otherwise.</p>
+<code class="docutils literal"><span class="pre">False</span></code> otherwise.</p>
 </dd></dl>
 
 <dl class="method">
@@ -671,7 +671,7 @@ seconds.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -758,7 +758,7 @@ seconds.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>uselect – wait for events on a set of streams &mdash; MicroPython 1.9.3 documentation</title>
+  <title>uselect – wait for events on a set of streams &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="usocket – socket module" href="usocket.html"/>
         <link rel="prev" title="ure – simple regular expressions" href="ure.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -206,10 +206,10 @@ and is not efficient. Usage of <code class="xref py py-class docutils literal"><
 <code class="descclassname">poll.</code><code class="descname">register</code><span class="sig-paren">(</span><em>obj</em><span class="optional">[</span>, <em>eventmask</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#uselect.poll.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register <a class="reference internal" href="../reference/glossary.html#term-stream"><code class="xref any std std-term docutils literal"><span class="pre">stream</span></code></a> <em>obj</em> for polling. <em>eventmask</em> is logical OR of:</p>
 <ul class="simple">
-<li><code class="xref any docutils literal"><span class="pre">uselect.POLLIN</span></code>  - data available for reading</li>
-<li><code class="xref any docutils literal"><span class="pre">uselect.POLLOUT</span></code> - more data can be written</li>
+<li><code class="docutils literal"><span class="pre">uselect.POLLIN</span></code>  - data available for reading</li>
+<li><code class="docutils literal"><span class="pre">uselect.POLLOUT</span></code> - more data can be written</li>
 </ul>
-<p>Note that flags like <code class="xref any docutils literal"><span class="pre">uselect.POLLHUP</span></code> and <code class="xref any docutils literal"><span class="pre">uselect.POLLERR</span></code> are
+<p>Note that flags like <code class="docutils literal"><span class="pre">uselect.POLLHUP</span></code> and <code class="docutils literal"><span class="pre">uselect.POLLERR</span></code> are
 <em>not</em> valid as input eventmask (these are unsolicited events which
 will be returned from <a class="reference internal" href="#uselect.poll.poll" title="uselect.poll.poll"><code class="xref any py py-meth docutils literal"><span class="pre">poll()</span></code></a> regardless of whether they are asked
 for). This semantics is per POSIX.</p>
@@ -238,7 +238,7 @@ arg is not specified or -1, there is no timeout).</p>
 tuple, depending on a platform and version, so don&#8217;t assume that its size is 2.
 The <code class="docutils literal"><span class="pre">event</span></code> element specifies which events happened with a stream and
 is a combination of <code class="docutils literal"><span class="pre">uselect.POLL*</span></code> constants described above. Note that
-flags <code class="xref any docutils literal"><span class="pre">uselect.POLLHUP</span></code> and <code class="xref any docutils literal"><span class="pre">uselect.POLLERR</span></code> can be returned at any time
+flags <code class="docutils literal"><span class="pre">uselect.POLLHUP</span></code> and <code class="docutils literal"><span class="pre">uselect.POLLERR</span></code> can be returned at any time
 (even if were not asked for), and must be acted on accordingly (the
 corresponding stream unregistered from poll and likely closed), because
 otherwise all further invocations of <a class="reference internal" href="#uselect.poll.poll" title="uselect.poll.poll"><code class="xref any py py-meth docutils literal"><span class="pre">poll()</span></code></a> may return immediately with
@@ -291,7 +291,7 @@ behavior is useful for asynchronous I/O schedulers.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -378,7 +378,7 @@ behavior is useful for asynchronous I/O schedulers.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

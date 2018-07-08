@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sensor — camera sensor &mdash; MicroPython 1.9.3 documentation</title>
+  <title>sensor — camera sensor &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="image — machine vision" href="omv.image.html"/>
         <link rel="prev" title="time — tracking elapsed time" href="omv.time.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -139,6 +139,9 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -303,6 +306,7 @@ then <code class="docutils literal"><span class="pre">None</span></code> is retu
 <li><a class="reference internal" href="#sensor.sensor.OV2640" title="sensor.sensor.OV2640"><code class="xref any py py-data docutils literal"><span class="pre">sensor.OV2640</span></code></a>: Second gen OpenMV Cam sensor - never released.</li>
 <li><a class="reference internal" href="#sensor.sensor.OV7725" title="sensor.sensor.OV7725"><code class="xref any py py-data docutils literal"><span class="pre">sensor.OV7725</span></code></a>: Rolling shutter sensor module.</li>
 <li><a class="reference internal" href="#sensor.sensor.MT9V034" title="sensor.sensor.MT9V034"><code class="xref any py py-data docutils literal"><span class="pre">sensor.MT9V034</span></code></a>: Global shutter sensor module.</li>
+<li><a class="reference internal" href="#sensor.sensor.LEPTON" title="sensor.sensor.LEPTON"><code class="xref any py py-data docutils literal"><span class="pre">sensor.LEPTON</span></code></a>: Lepton1/2/3 sensor module.</li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -385,6 +389,8 @@ vision on microcontrollers.</p>
 <li><a class="reference internal" href="#sensor.sensor.B128X128" title="sensor.sensor.B128X128"><code class="xref any py py-data docutils literal"><span class="pre">sensor.B128X128</span></code></a>: 128x128 (for use with <a class="reference internal" href="omv.image.html#image.image.find_displacement" title="image.image.find_displacement"><code class="xref any py py-meth docutils literal"><span class="pre">image.find_displacement()</span></code></a>)</li>
 <li><a class="reference internal" href="#sensor.sensor.LCD" title="sensor.sensor.LCD"><code class="xref any py py-data docutils literal"><span class="pre">sensor.LCD</span></code></a>: 128x160 (for use with the lcd shield)</li>
 <li><a class="reference internal" href="#sensor.sensor.QQVGA2" title="sensor.sensor.QQVGA2"><code class="xref any py py-data docutils literal"><span class="pre">sensor.QQVGA2</span></code></a>: 128x160 (for use with the lcd shield)</li>
+<li><a class="reference internal" href="#sensor.sensor.WVGA" title="sensor.sensor.WVGA"><code class="xref any py py-data docutils literal"><span class="pre">sensor.WVGA</span></code></a>: 720x480</li>
+<li><a class="reference internal" href="#sensor.sensor.WVGA2" title="sensor.sensor.WVGA2"><code class="xref any py py-data docutils literal"><span class="pre">sensor.WVGA2</span></code></a>:752x480</li>
 <li><a class="reference internal" href="#sensor.sensor.SVGA" title="sensor.sensor.SVGA"><code class="xref any py py-data docutils literal"><span class="pre">sensor.SVGA</span></code></a>: 800x600 (only in JPEG mode for the OV2640 sensor)</li>
 <li><a class="reference internal" href="#sensor.sensor.SXGA" title="sensor.sensor.SXGA"><code class="xref any py py-data docutils literal"><span class="pre">sensor.SXGA</span></code></a>: 1280x1024 (only in JPEG mode for the OV2640 sensor)</li>
 <li><a class="reference internal" href="#sensor.sensor.UXGA" title="sensor.sensor.UXGA"><code class="xref any py py-data docutils literal"><span class="pre">sensor.UXGA</span></code></a>: 1600x1200 (only in JPEG mode for the OV2640 sensor)</li>
@@ -615,6 +621,12 @@ grayscale images.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sensor.sensor.LEPTON">
+<code class="descclassname">sensor.</code><code class="descname">LEPTON</code><a class="headerlink" href="#sensor.sensor.LEPTON" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#sensor.sensor.get_id" title="sensor.sensor.get_id"><code class="xref any py py-func docutils literal"><span class="pre">sensor.get_id()</span></code></a> returns this for the LEPTON1/2/3 cameras.</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sensor.sensor.QQCIF">
 <code class="descclassname">sensor.</code><code class="descname">QQCIF</code><a class="headerlink" href="#sensor.sensor.QQCIF" title="Permalink to this definition">¶</a></dt>
 <dd><p>88x72 resolution for the camera sensor.</p>
@@ -740,6 +752,18 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sensor.sensor.WVGA">
+<code class="descclassname">sensor.</code><code class="descname">WVGA</code><a class="headerlink" href="#sensor.sensor.WVGA" title="Permalink to this definition">¶</a></dt>
+<dd><p>720x480 resolution for the MT9V034 camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sensor.sensor.WVGA2">
+<code class="descclassname">sensor.</code><code class="descname">WVGA2</code><a class="headerlink" href="#sensor.sensor.WVGA2" title="Permalink to this definition">¶</a></dt>
+<dd><p>752x480 resolution for the MT9V034 camera sensor.</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sensor.sensor.SVGA">
 <code class="descclassname">sensor.</code><code class="descname">SVGA</code><a class="headerlink" href="#sensor.sensor.SVGA" title="Permalink to this definition">¶</a></dt>
 <dd><p>800x600 resolution for the camera sensor. Only works for the OV2640 camera.</p>
@@ -780,7 +804,7 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -867,7 +891,7 @@ Only works for the OV2640 camera or the OpenMV Cam M7.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

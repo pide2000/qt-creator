@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.9.3 documentation</title>
+  <title>class SPI – a master-driven serial protocol &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class Timer – control internal timers" href="pyb.Timer.html"/>
         <link rel="prev" title="class Servo – 3-wire hobby servo driver" href="pyb.Servo.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -148,6 +148,9 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -239,10 +242,10 @@ With no additional parameters, the SPI object is created but
 not initialised (it has the settings from the last initialisation of
 the bus, if any).  If extra arguments are given, the bus is initialised.
 See <code class="docutils literal"><span class="pre">init</span></code> for parameters of initialisation.</p>
-<p>The physical pins of the SPI busses are:</p>
+<p>The physical pins of the SPI bus are:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">SPI(2)</span></code> is on the Y position: <code class="docutils literal"><span class="pre">(NSS,</span> <span class="pre">SCK,</span> <span class="pre">MISO,</span> <span class="pre">MOSI)</span> <span class="pre">=</span> <span class="pre">(P3,</span> <span class="pre">P2,</span> <span class="pre">P1,</span> <span class="pre">P0)</span> <span class="pre">=</span> <span class="pre">(PB12,</span> <span class="pre">PB13,</span> <span class="pre">PB14,</span> <span class="pre">PB15)</span></code></li>
+<li><code class="docutils literal"><span class="pre">SPI(2)</span></code>: <code class="docutils literal"><span class="pre">(NSS,</span> <span class="pre">SCK,</span> <span class="pre">MISO,</span> <span class="pre">MOSI)</span> <span class="pre">=</span> <span class="pre">(P3,</span> <span class="pre">P2,</span> <span class="pre">P1,</span> <span class="pre">P0)</span> <span class="pre">=</span> <span class="pre">(PB12,</span> <span class="pre">PB13,</span> <span class="pre">PB14,</span> <span class="pre">PB15)</span></code></li>
 </ul>
 </div></blockquote>
 <p>At the moment, the NSS pin is not used by the SPI driver and is free
@@ -378,7 +381,7 @@ be created.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -465,7 +468,7 @@ be created.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

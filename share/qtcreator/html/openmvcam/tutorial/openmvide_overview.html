@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>3. OpenMV IDE Overview &mdash; MicroPython 1.9.3 documentation</title>
+  <title>3. OpenMV IDE Overview &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../../index.html"/>
         <link rel="up" title="OpenMV Cam Tutorial" href="index.html"/>
         <link rel="next" title="4. Script Structure" href="script_structure.html"/>
         <link rel="prev" title="2. Hardware Setup" href="hardware_setup.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -467,6 +467,32 @@ Cam is slow.</p>
 <p>Finally, FFMPEG is used to provide conversion and video player support and may
 be used for any non-OpenMV Cam activites you like. FFMPEG can convert/play
 a large number of file formats.</p>
+<blockquote>
+<div><ul class="simple">
+<li>To convert a video file into a set of pictures select the video file
+as the source and make the target a &#8220;%07d.bmp&#8221;/&#8221;%07d.jpg&#8221;/etc. file
+name. FFMPEG understands <code class="docutils literal"><span class="pre">printf()</span></code> like format statements with an
+image file format extension to mean it should break the video file
+up into still images of the target format.</li>
+<li>To convert a series of still images into a video set the source file
+name to &#8220;%7d.bmp&#8221;/&#8221;%7d.jpg&#8221;/etc. where all the images in a directory
+have a name like <code class="docutils literal"><span class="pre">1.bmp</span></code>, <code class="docutils literal"><span class="pre">2.bmp</span></code>, etc.  FFMPEG understands
+<code class="docutils literal"><span class="pre">printf()</span></code> like format statements with an image file format extension
+to mean it should join those images files together into a video.</li>
+<li>To convert an <a class="reference internal" href="../../library/omv.image.html#image.image.ImageWriter" title="image.image.ImageWriter"><code class="xref any py py-class docutils literal"><span class="pre">ImageWriter</span></code></a> file into any other video format select
+the file as the source and target to be whatever file format you want.</li>
+<li>To convert a video file of any format into an <a class="reference internal" href="../../library/omv.image.html#image.image.ImageWriter" title="image.image.ImageWriter"><code class="xref any py py-class docutils literal"><span class="pre">ImageWriter</span></code></a> file select
+the video file you want to convert as the source and set the target to
+be a <code class="docutils literal"><span class="pre">.bin</span></code> file. FFMPEG will then break the video into JPGs and
+OpenMV IDE will turn these JPGs into RAW Grayscale or RGB565 frames
+saves to the <code class="docutils literal"><span class="pre">.bin</span></code> file using the <a class="reference internal" href="../../library/omv.image.html#image.image.ImageWriter" title="image.image.ImageWriter"><code class="xref any py py-class docutils literal"><span class="pre">ImageWriter</span></code></a> file format.</li>
+<li>To optimize a <code class="docutils literal"><span class="pre">.gif</span></code> file saved by your OpenMV Cam for the web set the
+source file to be that <code class="docutils literal"><span class="pre">.gif</span></code> and the target file to be another <code class="docutils literal"><span class="pre">.gif</span></code>.</li>
+<li>To convert an MJPEG file saved by your OpenMV Cam to another format
+set the MJPEG file as the source and another file using another format
+(like <code class="docutils literal"><span class="pre">.mp4</span></code>) as the target.</li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="options">
 <h2>3.13. Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
@@ -498,7 +524,7 @@ characters, and more.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -585,7 +611,7 @@ characters, and more.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class DAC – digital to analog conversion &mdash; MicroPython 1.9.3 documentation</title>
+  <title>class DAC – digital to analog conversion &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class ExtInt – configure I/O pins to interrupt on external events" href="pyb.ExtInt.html"/>
         <link rel="prev" title="class CAN – controller area network communication bus" href="pyb.CAN.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -147,6 +147,9 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -209,8 +212,10 @@
             
   <div class="section" id="class-dac-digital-to-analog-conversion">
 <span id="pyb-dac"></span><h1>class DAC &#8211; digital to analog conversion<a class="headerlink" href="#class-dac-digital-to-analog-conversion" title="Permalink to this headline">¶</a></h1>
-<p>The DAC is used to output analog values (a specific voltage) on pin P6.
-The voltage will be between 0 and 3.3V.</p>
+<dl class="docutils">
+<dt>The DAC is used to output analog values (a specific voltage) on pin P6.</dt>
+<dd>The voltage will be between 0 and 3.3V.</dd>
+</dl>
 <p><em>This module will undergo changes to the API.</em></p>
 <p>Example usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyb</span> <span class="kn">import</span> <span class="n">DAC</span>
@@ -253,13 +258,26 @@ The voltage will be between 0 and 3.3V.</p>
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pyb.pyb.DAC">
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">DAC</code><span class="sig-paren">(</span><em>port</em>, <em>bits=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.DAC" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">DAC</code><span class="sig-paren">(</span><em>port</em>, <em>bits=8</em>, <em>*</em>, <em>buffering=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.pyb.DAC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a new DAC object.</p>
-<p><code class="docutils literal"><span class="pre">port</span></code> can be a pin object, or an integer (1).
-DAC(1) is on pin P6.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">port</span></code> can be a pin object, or an integer (1).</dt>
+<dd>DAC(1) is on pin P6.</dd>
+</dl>
 <p><code class="docutils literal"><span class="pre">bits</span></code> is an integer specifying the resolution, and can be 8 or 12.
 The maximum value for the write and write_timed methods will be
 2**``bits``-1.</p>
+<p>The <em>buffering</em> parameter selects the behaviour of the DAC op-amp output
+buffer, whose purpose is to reduce the output impedance.  It can be
+<code class="docutils literal"><span class="pre">None</span></code> to select the default (buffering enabled for <a class="reference internal" href="#pyb.DAC.noise" title="pyb.DAC.noise"><code class="xref py py-meth docutils literal"><span class="pre">DAC.noise()</span></code></a>,
+<a class="reference internal" href="#pyb.DAC.triangle" title="pyb.DAC.triangle"><code class="xref py py-meth docutils literal"><span class="pre">DAC.triangle()</span></code></a> and <a class="reference internal" href="#pyb.DAC.write_timed" title="pyb.DAC.write_timed"><code class="xref py py-meth docutils literal"><span class="pre">DAC.write_timed()</span></code></a>, and disabled for
+<a class="reference internal" href="#pyb.DAC.write" title="pyb.DAC.write"><code class="xref py py-meth docutils literal"><span class="pre">DAC.write()</span></code></a>), <code class="docutils literal"><span class="pre">False</span></code> to disable buffering completely, or <code class="docutils literal"><span class="pre">True</span></code>
+to enable output buffering.</p>
+<p>When buffering is enabled the DAC pin can drive loads down to 5KΩ.
+Otherwise it has an output impedance of 15KΩ maximum: consequently
+to achieve a 1% accuracy without buffering requires the applied load
+to be less than 1.5MΩ.  Using the buffer incurs a penalty in accuracy,
+especially near the extremes of range.</p>
 </dd></dl>
 
 </div>
@@ -267,8 +285,10 @@ The maximum value for the write and write_timed methods will be
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
 <dt id="pyb.DAC.init">
-<code class="descclassname">DAC.</code><code class="descname">init</code><span class="sig-paren">(</span><em>bits=8</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.DAC.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reinitialise the DAC.  <code class="docutils literal"><span class="pre">bits</span></code> can be 8 or 12.</p>
+<code class="descclassname">DAC.</code><code class="descname">init</code><span class="sig-paren">(</span><em>bits=8</em>, <em>*</em>, <em>buffering=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.DAC.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reinitialise the DAC.  <em>bits</em> can be 8 or 12.  <em>buffering</em> can be
+<code class="docutils literal"><span class="pre">None</span></code>, <code class="docutils literal"><span class="pre">False</span></code> or <code class="docutils literal"><span class="pre">True</span></code>; see above constructor for the meaning
+of this parameter.</p>
 </dd></dl>
 
 <dl class="method">
@@ -307,11 +327,11 @@ object or by using the <code class="docutils literal"><span class="pre">init</sp
 The input data is treated as an array of bytes in 8-bit mode, and
 an array of unsigned half-words (array typecode &#8216;H&#8217;) in 12-bit mode.</p>
 <p><code class="docutils literal"><span class="pre">freq</span></code> can be an integer specifying the frequency to write the DAC
-samples at, using Timer(4).  Or it can be an already-initialised
+samples at, using Timer(6).  Or it can be an already-initialised
 Timer object which is used to trigger the DAC sample.  Valid timers
-are 1, 2, and 4.</p>
+are 2, 4, 5, 6, 7 and 8.</p>
 <p><code class="docutils literal"><span class="pre">mode</span></code> can be <code class="docutils literal"><span class="pre">DAC.NORMAL</span></code> or <code class="docutils literal"><span class="pre">DAC.CIRCULAR</span></code>.</p>
-<p>Example:</p>
+<p>Example using both DACs at the same time:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">dac</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">DAC</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;P6&quot;</span><span class="p">))</span>
 <span class="n">dac</span><span class="o">.</span><span class="n">write_timed</span><span class="p">(</span><span class="n">buf1</span><span class="p">,</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="n">DAC</span><span class="o">.</span><span class="n">CIRCULAR</span><span class="p">)</span>
 </pre></div>
@@ -341,7 +361,7 @@ are 1, 2, and 4.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -428,7 +448,7 @@ are 1, 2, and 4.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

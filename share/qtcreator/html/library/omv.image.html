@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>image — machine vision &mdash; MicroPython 1.9.3 documentation</title>
+  <title>image — machine vision &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,9 +34,9 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
-        <link rel="next" title="gif — gif recording" href="omv.gif.html"/>
+        <link rel="next" title="nn — neural networks" href="omv.nn.html"/>
         <link rel="prev" title="sensor — camera sensor" href="omv.sensor.html"/> 
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -214,6 +214,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#constants">Constants</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -2111,6 +2114,17 @@ the max of each area.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="image.image.to_bitmap">
+<code class="descclassname">image.</code><code class="descname">to_bitmap</code><span class="sig-paren">(</span><span class="optional">[</span><em>copy=False</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.to_bitmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an image to a bitmap image (1 bit per pixel). This method modifies
+the underlying image pixels changing the image size in bytes too so it can
+only be done in place on a Grayscale or an RGB565 image. Otherwise <code class="docutils literal"><span class="pre">copy</span></code>
+must be True to create a new modified image on the heap.</p>
+<p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
+<p>Not supported on compressed images or bayer images.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="image.image.to_grayscale">
 <code class="descclassname">image.</code><code class="descname">to_grayscale</code><span class="sig-paren">(</span><span class="optional">[</span><em>copy=False</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.to_grayscale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an image to a grayscale image. This method modifies the underlying
@@ -2379,12 +2393,12 @@ same size as the image being operated on. Only pixels set in the mask are
 evaluated when flood filling.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="image.image.binary">
-<code class="descclassname">image.</code><code class="descname">binary</code><span class="sig-paren">(</span><em>thresholds</em><span class="optional">[</span>, <em>invert=False</em><span class="optional">[</span>, <em>zero=False</em><span class="optional">[</span>, <em>mask=None</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.binary" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">binary</code><span class="sig-paren">(</span><em>thresholds</em><span class="optional">[</span>, <em>invert=False</em><span class="optional">[</span>, <em>zero=False</em><span class="optional">[</span>, <em>mask=None</em><span class="optional">[</span>, <em>to_bitmap=False</em><span class="optional">[</span>, <em>copy=False</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets all pixels in the image to black or white depending on if the pixel
 is inside of a threshold in the threshold list <code class="docutils literal"><span class="pre">thresholds</span></code> or not.</p>
 <p><code class="docutils literal"><span class="pre">thresholds</span></code> must be a list of tuples
@@ -2421,6 +2435,10 @@ not in the threshold list untouched.</p>
 The mask should be an image with just black or white pixels and should be the
 same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
+<p><code class="docutils literal"><span class="pre">to_bitmap</span></code> turns the image data into a binary bitmap image where each
+pixel is stored in 1 bit. Set <code class="docutils literal"><span class="pre">copy</span></code> to True when using <code class="docutils literal"><span class="pre">to_bitmap</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">copy</span></code> if True creates a copy of the binarized image on the heap versus
+modifying the source image.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
 </dd></dl>
@@ -2841,7 +2859,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2865,7 +2883,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2889,7 +2907,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2949,7 +2967,6 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2979,7 +2996,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3005,7 +3022,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3025,7 +3042,7 @@ same size as the image being operated on. Only pixels set in the mask are
 modified.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3047,7 +3064,7 @@ any non-shadow pixels in those objects will show up.</p>
 <p>This method is incredibly useful for frame differencing motion detection.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Only works on RGB565 images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3057,7 +3074,7 @@ any non-shadow pixels in those objects will show up.</p>
 behind. Faster than <a class="reference internal" href="#image.image.illuminvar" title="image.image.illuminvar"><code class="xref any py py-meth docutils literal"><span class="pre">image.illuminvar()</span></code></a> but affected by shadows.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Only works on RGB565 images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3067,7 +3084,7 @@ behind. Faster than <a class="reference internal" href="#image.image.illuminvar"
 behind. Slower than <a class="reference internal" href="#image.image.chrominvar" title="image.image.chrominvar"><code class="xref any py py-meth docutils literal"><span class="pre">image.chrominvar()</span></code></a> but unaffected by shadows.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Only works on RGB565 images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3077,7 +3094,7 @@ behind. Slower than <a class="reference internal" href="#image.image.chrominvar"
 <p>Set <code class="docutils literal"><span class="pre">reverse=True</span></code> to re-project in the opposite direction.</p>
 <p>Linear polar re-projection turns rotation of an image into x-translation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3088,7 +3105,7 @@ behind. Slower than <a class="reference internal" href="#image.image.chrominvar"
 <p>Log polar re-projection turns rotation of an image into x-translation
 and scaling/zooming into y-translation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3120,7 +3137,7 @@ after rotation. Because this translation is applied in 3D space the units aren&#
 <p><code class="docutils literal"><span class="pre">zoom</span></code> is the amount to zoom in on the image by. 1.0 by default.</p>
 <p>Returns the image object so you can call another method using <code class="docutils literal"><span class="pre">.</span></code> notation.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3133,7 +3150,7 @@ file (bmp/pgm/ppm), or a scalar value. If a scalar value the value can
 either be an RGB888 tuple or the underlying pixel value (e.g. an 8-bit grayscale
 for grayscale images or a byte-reversed RGB565 value for RGB images).</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3395,7 +3412,7 @@ the magnitude and gradient responses from the sobel filter to feed a hough
 transform. It does not require any preprocessing on the image first. However,
 my cleaning up the image using filtering you may get more stable results.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3413,12 +3430,12 @@ segements that are <code class="docutils literal"><span class="pre">merge_distan
 <p>This method uses the LSD library (also used by OpenCV) to find line segements
 in the image. It&#8217;s somewhat slow but very accurate and lines don&#8217;t jump around.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="image.image.find_circles">
-<code class="descclassname">image.</code><code class="descname">find_circles</code><span class="sig-paren">(</span><span class="optional">[</span><em>roi</em><span class="optional">[</span>, <em>x_stride=2</em><span class="optional">[</span>, <em>y_stride=1</em><span class="optional">[</span>, <em>threshold=2000</em><span class="optional">[</span>, <em>x_margin=10</em><span class="optional">[</span>, <em>y_margin=10</em><span class="optional">[</span>, <em>r_margin=10</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_circles" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">image.</code><code class="descname">find_circles</code><span class="sig-paren">(</span><span class="optional">[</span><em>roi</em><span class="optional">[</span>, <em>x_stride=2</em><span class="optional">[</span>, <em>y_stride=1</em><span class="optional">[</span>, <em>threshold=2000</em><span class="optional">[</span>, <em>x_margin=10</em><span class="optional">[</span>, <em>y_margin=10</em><span class="optional">[</span>, <em>r_margin=10</em><span class="optional">[</span>, <em>r_min=2</em><span class="optional">[</span>, <em>r_max</em><span class="optional">[</span>, <em>r_step=2</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#image.image.find_circles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds circles in the image using the hough transform. Returns a list of
 <a class="reference internal" href="#image.image.circle" title="image.image.circle"><code class="xref any py py-class docutils literal"><span class="pre">image.circle</span></code></a> objects.</p>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
@@ -3439,8 +3456,13 @@ that make up that circle.</p>
 <code class="docutils literal"><span class="pre">x_margin</span></code>, <code class="docutils literal"><span class="pre">y_margin</span></code>, and <code class="docutils literal"><span class="pre">r_margin</span></code> pixels apart are merged.</p>
 <p><code class="docutils literal"><span class="pre">r_margin</span></code> controls the merging of detected circles. Circles which are
 <code class="docutils literal"><span class="pre">x_margin</span></code>, <code class="docutils literal"><span class="pre">y_margin</span></code>, and <code class="docutils literal"><span class="pre">r_margin</span></code> pixels apart are merged.</p>
+<p><code class="docutils literal"><span class="pre">r_min</span></code> controls the minimum circle radius detected. Increase this to speed
+up the algorithm. Defaults to 2.</p>
+<p><code class="docutils literal"><span class="pre">r_max</span></code> controls the maximum circle radius detected. Decrease this to speed
+up the algorithm. Defaults to min(roi.w/2, roi.h/2).</p>
+<p><code class="docutils literal"><span class="pre">r_step</span></code> controls how to step the radius detection by. Defaults to 2.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3458,7 +3480,7 @@ sobel operator across all pixels on the edges of the rectangle and summing
 their values) less than <code class="docutils literal"><span class="pre">threshold</span></code> are filtered out of the returned list.
 The correct value of <code class="docutils literal"><span class="pre">threshold</span></code> is depended on your application/scene.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3478,7 +3500,7 @@ supplied by OpenMV.</p>
 specified, it is equal to the image rectangle. Only pixels within the
 <code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3529,7 +3551,7 @@ camera sensor pixels in the Y direction (for the OV7725 camera).</p>
 <p><code class="docutils literal"><span class="pre">cy</span></code> is the image center which is just <code class="docutils literal"><span class="pre">image.height()/2</span></code>. This is not
 <code class="docutils literal"><span class="pre">roi.h()/2</span></code>.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3557,7 +3579,7 @@ not detect anything anymore. Also note that you can make <code class="docutils l
 as you like. But, any values above 240 or so do not result in much increase
 in the detection rate.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3597,7 +3619,7 @@ focal length produces the sharpest image. Blurry bar codes can&#8217;t be decode
 specified, it is equal to the image rectangle. Only pixels within the
 <code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3623,7 +3645,7 @@ result encodes both possible repsonses.</p>
 <p class="last">Please use this method on power-of-2 image sizes (e.g. <a class="reference internal" href="omv.sensor.html#sensor.sensor.B64X64" title="sensor.sensor.B64X64"><code class="xref any py py-data docutils literal"><span class="pre">sensor.B64X64</span></code></a>).</p>
 </div>
 <p>Not supported on compressed images or bayer images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3642,7 +3664,7 @@ specified, it is equal to the image rectangle. Only pixels within the
 <p class="last">This method is experimental and likely to be removed in the future once
 running any CNN trained on the PC using Caffe is available.</p>
 </div>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3660,7 +3682,7 @@ specified, it is equal to the image rectangle. Only pixels within the
 <p class="last">This method is experimental and likely to be removed in the future once
 running any CNN trained on the PC using Caffe is available.</p>
 </div>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3705,7 +3727,6 @@ value is between 1.35 and 1.5.</p>
 <p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
 specified, it is equal to the image rectangle. Only pixels within the
 <code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
-<p>Only works on grayscale images.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3791,7 +3812,7 @@ lines.</p>
 specified, it is equal to the image rectangle. Only pixels within the
 <code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
 <p>Only works on grayscale images.</p>
-<p>This method is not avaiable on the OpenMV Cam M4.</p>
+<p>This method is not available on the OpenMV Cam M4.</p>
 </dd></dl>
 
 </div>
@@ -3976,7 +3997,7 @@ on an image.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="omv.gif.html" class="btn btn-neutral float-right" title="gif — gif recording" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="omv.nn.html" class="btn btn-neutral float-right" title="nn — neural networks" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="omv.sensor.html" class="btn btn-neutral" title="sensor — camera sensor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -3989,7 +4010,7 @@ on an image.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -4076,7 +4097,7 @@ on an image.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Builtin Types &mdash; MicroPython 1.9.3 documentation</title>
+  <title>Builtin Types &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython differences from CPython" href="index.html"/>
         <link rel="next" title="Modules" href="modules.html"/>
         <link rel="prev" title="Core Language" href="core_language.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -121,7 +121,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#int">int</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#no-int-conversion-for-int-derived-types-available">No int conversion for int-derived types available</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#incorrect-error-message-when-passing-float-into-to-bytes">Incorrect error message when passing float into to_bytes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#list">list</a><ul>
@@ -131,7 +130,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#str">str</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#unicodedecodeerror-not-raised-when-expected">UnicodeDecodeError not raised when expected</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-end-indices-such-as-str-endswith-s-start-not-implemented">Start/end indices such as str.endswith(s, start) not implemented</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#attributes-subscr-not-implemented">Attributes/subscr not implemented</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#str-with-keywords-not-implemented">str(...) with keywords not implemented</a></li>
@@ -199,7 +197,7 @@
             
   <div class="section" id="builtin-types">
 <h1>Builtin Types<a class="headerlink" href="#builtin-types" title="Permalink to this headline">¶</a></h1>
-<p>Generated Sat 28 Apr 2018 19:34:04 UTC</p>
+<p>Generated Sun 08 Jul 2018 04:25:25 UTC</p>
 <div class="section" id="exception">
 <h2>Exception<a class="headerlink" href="#exception" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exception-chaining-not-implemented">
@@ -320,14 +318,11 @@ IndexError: list index out of range
 <span id="cpydiff-types-exception-subclassinit"></span><h3>Exception.__init__ method does not exist.<a class="headerlink" href="#exception-init-method-does-not-exist" title="Permalink to this headline">¶</a></h3>
 <p><strong>Cause:</strong> Subclassing native classes is not fully supported in MicroPython.</p>
 <p><strong>Workaround:</strong> Call using <code class="docutils literal"><span class="pre">super()</span></code> instead:</p>
-<dl class="docutils">
-<dt>class A(Exception):</dt>
-<dd><dl class="first last docutils">
-<dt>def __init__(self):</dt>
-<dd>super().__init__()</dd>
-</dl>
-</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>Sample code:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -462,8 +457,6 @@ NotImplementedError: only slices with step=1 (aka None) are supported
 <span id="cpydiff-types-float-rounding"></span><h3>uPy and CPython outputs formats may differ<a class="headerlink" href="#upy-and-cpython-outputs-formats-may-differ" title="Permalink to this headline">¶</a></h3>
 <p>Sample code:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.1g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="o">-</span><span class="mf">9.9</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.1e</span><span class="s">&#39;</span> <span class="o">%</span> <span class="mf">9.99</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%.1e</span><span class="s">&#39;</span> <span class="o">%</span> <span class="mf">0.999</span><span class="p">)</span>
 </pre></div>
 </div>
 <table border="1" class="docutils">
@@ -476,14 +469,10 @@ NotImplementedError: only slices with step=1 (aka None) are supported
 <td>uPy output:</td>
 </tr>
 <tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="mf">1e+01</span>
-<span class="mf">1.0e+01</span>
-<span class="mf">1.0e+00</span>
 </pre></div>
 </div>
 </td>
 <td><div class="first last highlight-python"><div class="highlight"><pre><span class="o">-</span><span class="mi">10</span>
-<span class="mf">1.0e+01</span>
-<span class="mf">1.0e+00</span>
 </pre></div>
 </div>
 </td>
@@ -522,36 +511,6 @@ NotImplementedError: only slices with step=1 (aka None) are supported
   File &quot;&lt;stdin&gt;&quot;, line 11, in &lt;module&gt;
   File &quot;&lt;stdin&gt;&quot;, line 8, in &lt;lambda&gt;
 TypeError: can&#39;t convert A to int
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="incorrect-error-message-when-passing-float-into-to-bytes">
-<span id="cpydiff-types-int-tobytesfloat"></span><h3>Incorrect error message when passing float into to_bytes<a class="headerlink" href="#incorrect-error-message-when-passing-float-into-to-bytes" title="Permalink to this headline">¶</a></h3>
-<p>Sample code:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="nb">int</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>CPy output:</td>
-<td>uPy output:</td>
-</tr>
-<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre>integer argument expected, got float
-</pre></div>
-</div>
-</td>
-<td><div class="first last highlight-python"><div class="highlight"><pre>function missing 1 required positional arguments
 </pre></div>
 </div>
 </td>
@@ -662,39 +621,6 @@ NotImplementedError:
 </div>
 <div class="section" id="str">
 <h2>str<a class="headerlink" href="#str" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="unicodedecodeerror-not-raised-when-expected">
-<span id="cpydiff-types-str-decodeerror"></span><h3>UnicodeDecodeError not raised when expected<a class="headerlink" href="#unicodedecodeerror-not-raised-when-expected" title="Permalink to this headline">¶</a></h3>
-<p>Sample code:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="s">&quot;</span><span class="se">\xa1\x80</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&#39;utf8&#39;</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Should not get here&#39;</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;UnicodeDecodeError&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="30%" />
-<col width="70%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>CPy output:</td>
-<td>uPy output:</td>
-</tr>
-<tr class="row-even"><td><div class="first last highlight-python"><div class="highlight"><pre><span class="ne">UnicodeDecodeError</span>
-</pre></div>
-</div>
-</td>
-<td><div class="first last highlight-python"><div class="highlight"><pre>Traceback (most recent call last):
-  File &quot;&lt;stdin&gt;&quot;, line 9, in &lt;module&gt;
-NameError: name &#39;UnicodeDecodeError&#39; is not defined
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="section" id="start-end-indices-such-as-str-endswith-s-start-not-implemented">
 <span id="cpydiff-types-str-endswith"></span><h3>Start/end indices such as str.endswith(s, start) not implemented<a class="headerlink" href="#start-end-indices-such-as-str-endswith-s-start-not-implemented" title="Permalink to this headline">¶</a></h3>
 <p>Sample code:</p>
@@ -958,7 +884,7 @@ NotImplementedError: only slices with step=1 (aka None) are supported
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -1045,7 +971,7 @@ NotImplementedError: only slices with step=1 (aka None) are supported
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

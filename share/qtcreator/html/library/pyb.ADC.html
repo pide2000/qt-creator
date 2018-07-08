@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class ADC – analog to digital conversion &mdash; MicroPython 1.9.3 documentation</title>
+  <title>class ADC – analog to digital conversion &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="class CAN – controller area network communication bus" href="pyb.CAN.html"/>
         <link rel="prev" title="class USB_VCP – USB virtual comm port" href="pyb.USB_VCP.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -148,6 +148,9 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -213,14 +216,16 @@
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyb</span>
 
-<span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pin</span><span class="p">)</span>              <span class="c"># create an analog object from a pin</span>
-<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>                <span class="c"># read an analog value</span>
+<span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pin</span><span class="p">)</span>                  <span class="c"># create an analog object from a pin</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>                    <span class="c"># read an analog value</span>
 
-<span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADCAll</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>    <span class="c"># create an ADCAll object</span>
-<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span> <span class="c"># read the given channel</span>
-<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_temp</span><span class="p">()</span>      <span class="c"># read MCU temperature</span>
-<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_vbat</span><span class="p">()</span>      <span class="c"># read MCU VBAT</span>
-<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_vref</span><span class="p">()</span>      <span class="c"># read MCU VREF</span>
+<span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADCAll</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>        <span class="c"># create an ADCAll object</span>
+<span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADCAll</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>  <span class="c"># create an ADCAll object for selected analog channels</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>     <span class="c"># read the given channel</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_temp</span><span class="p">()</span>          <span class="c"># read MCU temperature</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_vbat</span><span class="p">()</span>          <span class="c"># read MCU VBAT</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_core_vref</span><span class="p">()</span>          <span class="c"># read MCU VREF</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">adc</span><span class="o">.</span><span class="n">read_vref</span><span class="p">()</span>               <span class="c"># read MCU supply voltage</span>
 </pre></div>
 </div>
 <div class="section" id="constructors">
@@ -257,14 +262,14 @@ sampling frequency.</p>
 integer which specifies the frequency (in Hz) to sample at.  In this case
 Timer(6) will be automatically configured to run at the given frequency.</p>
 <p>Example using a Timer object (preferred way):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;P6&quot;</span><span class="p">))</span>        <span class="c"># create an ADC on pin P6</span>
-<span class="n">tim</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>         <span class="c"># create a timer running at 10Hz</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;P5&quot;</span><span class="p">))</span>        <span class="c"># create an ADC on pin P5</span>
+<span class="n">tim</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>         <span class="c"># create a timer running at 10Hz</span>
 <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>                <span class="c"># creat a buffer to store the samples</span>
 <span class="n">adc</span><span class="o">.</span><span class="n">read_timed</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">tim</span><span class="p">)</span>            <span class="c"># sample 100 values, taking 10s</span>
 </pre></div>
 </div>
 <p>Example using an integer for the frequency:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;P6&quot;</span><span class="p">))</span>        <span class="c"># create an ADC on pin P6</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">adc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADC</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">Pin</span><span class="p">(</span><span class="s">&quot;P5&quot;</span><span class="p">))</span>        <span class="c"># create an ADC on pin P5</span>
 <span class="n">buf</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>                <span class="c"># create a buffer of 100 bytes</span>
 <span class="n">adc</span><span class="o">.</span><span class="n">read_timed</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>             <span class="c"># read analog values into buf at 10Hz</span>
                                     <span class="c">#   this will take 10 seconds to finish</span>
@@ -272,64 +277,44 @@ Timer(6) will be automatically configured to run at the given frequency.</p>
     <span class="k">print</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>                      <span class="c"># print the value out</span>
 </pre></div>
 </div>
-<p>This function does not allocate any memory.</p>
+<p>This function does not allocate any heap memory. It has blocking behaviour:
+it does not return to the calling program until the buffer is full.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="the-adcall-object">
 <h2>The ADCAll Object<a class="headerlink" href="#the-adcall-object" title="Permalink to this headline">¶</a></h2>
-<p>Instantiating this changes all ADC pins to analog inputs. The raw MCU temperature,
+<p>Instantiating this changes all masked ADC pins to analog inputs. The preprocessed MCU temperature,
 VREF and VBAT data can be accessed on ADC channels 16, 17 and 18 respectively.
-Appropriate scaling will need to be applied. The temperature sensor on the chip
-has poor absolute accuracy and is suitable only for detecting temperature changes.</p>
-<p>The <code class="docutils literal"><span class="pre">ADCAll</span></code> <code class="docutils literal"><span class="pre">read_core_vbat()</span></code> and <code class="docutils literal"><span class="pre">read_core_vref()</span></code> methods read
-the backup battery voltage and the (1.21V nominal) reference voltage using the
-3.3V supply as a reference. Assuming the <code class="docutils literal"><span class="pre">ADCAll</span></code> object has been Instantiated with
-<code class="docutils literal"><span class="pre">adc</span> <span class="pre">=</span> <span class="pre">pyb.ADCAll(12)</span></code> the 3.3V supply voltage may be calculated:</p>
-<p><code class="docutils literal"><span class="pre">v33</span> <span class="pre">=</span> <span class="pre">3.3</span> <span class="pre">*</span> <span class="pre">1.21</span> <span class="pre">/</span> <span class="pre">adc.read_core_vref()</span></code></p>
-<p>If the 3.3V supply is correct the value of <code class="docutils literal"><span class="pre">adc.read_core_vbat()</span></code> will be
-valid. If the supply voltage can drop below 3.3V, for example in in battery
-powered systems with a discharging battery, the regulator will fail to preserve
-the 3.3V supply resulting in an incorrect reading. To produce a value which will
-remain valid under these circumstances use the following:</p>
-<p><code class="docutils literal"><span class="pre">vback</span> <span class="pre">=</span> <span class="pre">adc.read_core_vbat()</span> <span class="pre">*</span> <span class="pre">1.21</span> <span class="pre">/</span> <span class="pre">adc.read_core_vref()</span></code></p>
-<p>It is possible to access these values without incurring the side effects of <code class="docutils literal"><span class="pre">ADCAll</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">adcread</span><span class="p">(</span><span class="n">chan</span><span class="p">):</span>                              <span class="c"># 16 temp 17 vbat 18 vref</span>
-    <span class="k">assert</span> <span class="n">chan</span> <span class="o">&gt;=</span> <span class="mi">16</span> <span class="ow">and</span> <span class="n">chan</span> <span class="o">&lt;=</span> <span class="mi">18</span><span class="p">,</span> <span class="s">&#39;Invalid ADC channel&#39;</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">millis</span><span class="p">()</span>
-    <span class="n">timeout</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">RCC</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">RCC_APB2ENR</span><span class="p">]</span> <span class="o">|=</span> <span class="mh">0x100</span> <span class="c"># enable ADC1 clock.0x4100</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_CR2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>       <span class="c"># Turn on ADC</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_CR1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>       <span class="c"># 12 bit</span>
-    <span class="k">if</span> <span class="n">chan</span> <span class="o">==</span> <span class="mi">17</span><span class="p">:</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_SMPR1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x200000</span> <span class="c"># 15 cycles</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">23</span>
-    <span class="k">elif</span> <span class="n">chan</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_SMPR1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x1000000</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0xc00000</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_SMPR1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x40000</span>
-        <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">23</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_SQR3</span><span class="p">]</span> <span class="o">=</span> <span class="n">chan</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_CR2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">30</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="c"># start conversion</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_SR</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">:</span> <span class="c"># wait for EOC</span>
-        <span class="k">if</span> <span class="n">pyb</span><span class="o">.</span><span class="n">elapsed_millis</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s">&#39;ADC timout&#39;</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_DR</span><span class="p">]</span>     <span class="c"># clear down EOC</span>
-    <span class="n">stm</span><span class="o">.</span><span class="n">mem32</span><span class="p">[</span><span class="n">stm</span><span class="o">.</span><span class="n">ADC1</span> <span class="o">+</span> <span class="n">stm</span><span class="o">.</span><span class="n">ADC_CR2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>       <span class="c"># Turn off ADC</span>
-    <span class="k">return</span> <span class="n">data</span>
-
-<span class="k">def</span> <span class="nf">v33</span><span class="p">():</span>
-    <span class="k">return</span> <span class="mi">4096</span> <span class="o">*</span> <span class="mf">1.21</span> <span class="o">/</span> <span class="n">adcread</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">vbat</span><span class="p">():</span>
-    <span class="k">return</span>  <span class="mf">1.21</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">adcread</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span> <span class="o">/</span> <span class="n">adcread</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>  <span class="c"># 2:1 divider on Vbat channel</span>
-
-<span class="k">def</span> <span class="nf">vref</span><span class="p">():</span>
-    <span class="k">return</span> <span class="mf">3.3</span> <span class="o">*</span> <span class="n">adcread</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4096</span>
-
-<span class="k">def</span> <span class="nf">temperature</span><span class="p">():</span>
-    <span class="k">return</span> <span class="mi">25</span> <span class="o">+</span> <span class="mi">400</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.3</span> <span class="o">*</span> <span class="n">adcread</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4096</span> <span class="o">-</span> <span class="mf">0.76</span><span class="p">)</span>
+Appropriate scaling is handled according to reference voltage used (usually 3.3V).
+The temperature sensor on the chip is factory calibrated and allows to read the die temperature
+to +/- 1 degree centigrade. Although this sounds pretty accurate, don&#8217;t forget that the MCU&#8217;s internal
+temperature is measured. Depending on processing loads and I/O subsystems active the die temperature
+may easily be tens of degrees above ambient temperature. On the other hand a openmvcam woken up after a
+long standby period will show correct ambient temperature within limits mentioned above.</p>
+<p>The <code class="docutils literal"><span class="pre">ADCAll</span></code> <code class="docutils literal"><span class="pre">read_core_vbat()</span></code>, <code class="docutils literal"><span class="pre">read_vref()</span></code> and <code class="docutils literal"><span class="pre">read_core_vref()</span></code> methods read
+the backup battery voltage, reference voltage and the (1.21V nominal) reference voltage using the
+actual supply as a reference. All results are floating point numbers giving direct voltage values.</p>
+<p><code class="docutils literal"><span class="pre">read_core_vbat()</span></code> returns the voltage of the backup battery. This voltage is also adjusted according
+to the actual supply voltage. To avoid analog input overload the battery voltage is measured
+via a voltage divider and scaled according to the divider value. To prevent excessive loads
+to the backup battery, the voltage divider is only active during ADC conversion.</p>
+<p><code class="docutils literal"><span class="pre">read_vref()</span></code> is evaluated by measuring the internal voltage reference and backscale it using
+factory calibration value of the internal voltage reference. In most cases the reading would be close
+to 3.3V. If the openmvcam is operated from a battery, the supply voltage may drop to values below 3.3V.
+The openmvcam will still operate fine as long as the operating conditions are met. With proper settings
+of MCU clock, flash access speed and programming mode it is possible to run the openmvcam down to
+2 V and still get useful ADC conversion.</p>
+<p>It is very important to make sure analog input voltages never exceed actual supply voltage.</p>
+<p>Other analog input channels (0..15) will return unscaled integer values according to the selected
+precision.</p>
+<p>To avoid unwanted activation of analog inputs (channel 0..15) a second parameter can be specified.
+This parameter is a binary pattern where each requested analog input has the corresponding bit set.
+The default value is 0xffffffff which means all analog inputs are active. If just the internal
+channels (16..18) are required, the mask value should be 0x70000.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">adcall</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">ADCAll</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mh">0x70000</span><span class="p">)</span> <span class="c"># 12 bit resolution, internal channels</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">adcall</span><span class="o">.</span><span class="n">read_core_temp</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -355,7 +340,7 @@ remain valid under these circumstances use the following:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -442,7 +427,7 @@ remain valid under these circumstances use the following:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

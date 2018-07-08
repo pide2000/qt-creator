@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Distribution packages, package management, and deploying applications &mdash; MicroPython 1.9.3 documentation</title>
+  <title>Distribution packages, package management, and deploying applications &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="The MicroPython language" href="index.html"/>
         <link rel="next" title="Inline Assembler for Thumb2 architectures" href="asm_thumb2_index.html"/>
         <link rel="prev" title="MicroPython on Microcontrollers" href="constrained.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -201,7 +201,7 @@ size, which means that to uncompress a compressed stream, 32KB of
 contguous memory needs to be allocated. This requirement may be not
 satisfiable on low-memory devices, which may have total memory available
 less than that amount, and even if not, a contiguous block like that
-may be hard to allocate due to <code class="xref any docutils literal"><span class="pre">memory</span> <span class="pre">fragmentation</span></code>. To accommodate
+may be hard to allocate due to memory fragmentation. To accommodate
 these constraints, MicroPython distribution packages use Gzip compression
 with the dictionary size of 4K, which should be a suitable compromise
 with still achieving some compression while being able to uncompressed
@@ -383,7 +383,7 @@ the data files as &#8220;resources&#8221;, and abstracting away access to them.<
 <p>Python supports resource access using its &#8220;setuptools&#8221; library, using
 <code class="docutils literal"><span class="pre">pkg_resources</span></code> module. MicroPython, following its usual approach,
 implements subset of the functionality of that module, specifically
-<code class="xref any docutils literal"><span class="pre">pkg_resources.resource_stream(package,</span> <span class="pre">resource)</span></code> function.
+<code class="docutils literal"><span class="pre">pkg_resources.resource_stream(package,</span> <span class="pre">resource)</span></code> function.
 The idea is that an application calls this function, passing a
 resource identifier, which is a relative path to data file within
 the specified package (usually top-level application package). It
@@ -469,7 +469,7 @@ to all resource files:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -556,7 +556,7 @@ to all resource files:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>class RTC – real time clock &mdash; MicroPython 1.9.4 documentation</title>
+  <title>nn — neural networks &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   
     <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
-        <link rel="next" title="class Servo – 3-wire hobby servo driver" href="pyb.Servo.html"/>
-        <link rel="prev" title="class Pin – control I/O pins" href="pyb.Pin.html"/> 
+        <link rel="next" title="gif — gif recording" href="omv.gif.html"/>
+        <link rel="prev" title="image — machine vision" href="omv.image.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -97,15 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#python-standard-libraries-and-micro-libraries">Python standard libraries and micro-libraries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#micropython-specific-libraries">MicroPython-specific libraries</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#libraries-specific-to-the-openmv-cam">Libraries specific to the OpenMV Cam</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="pyb.html#time-related-functions">Time related functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyb.html#reset-related-functions">Reset related functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyb.html#interrupt-related-functions">Interrupt related functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyb.html#power-related-functions">Power related functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyb.html#miscellaneous-functions">Miscellaneous functions</a></li>
-<li class="toctree-l4 current"><a class="reference internal" href="pyb.html#classes">Classes</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.html"><code class="docutils literal"><span class="pre">pyb</span></code> &#8212; functions related to the board</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.ADC.html">class ADC &#8211; analog to digital conversion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.CAN.html">class CAN &#8211; controller area network communication bus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.DAC.html">class DAC &#8211; digital to analog conversion</a></li>
@@ -114,11 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pyb.LED.html">class LED &#8211; LED object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Pin.html">class Pin &#8211; control I/O pins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Pin.html#class-pinaf-pin-alternate-functions">class PinAF &#8211; Pin Alternate Functions</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="">class RTC &#8211; real time clock</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="pyb.RTC.html">class RTC &#8211; real time clock</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Servo.html">class Servo &#8211; 3-wire hobby servo driver</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.SPI.html">class SPI &#8211; a master-driven serial protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyb.Timer.html">class Timer &#8211; control internal timers</a></li>
@@ -147,9 +135,17 @@
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagewriter-imagewriter-object">class ImageWriter &#8211; ImageWriter object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-imagereader-imagereader-object">class ImageReader &#8211; ImageReader object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.image.html#class-image-image-object">class Image &#8211; Image object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.nn.html"><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="omv.nn.html#class-net-neural-network">class Net &#8211; Neural Network</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href=""><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-nn-class-nn-dection-result">class nn_class &#8211; nn dection result</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-net-neural-network">class Net &#8211; Neural Network</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html"><code class="docutils literal"><span class="pre">gif</span></code> &#8212; gif recording</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.gif.html#class-gif-gif-recorder">class Gif &#8211; Gif recorder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="omv.mjpeg.html"><code class="docutils literal"><span class="pre">mjpeg</span></code> &#8212; mjpeg recording</a></li>
@@ -196,11 +192,11 @@
       
           <li><a href="index.html">MicroPython libraries</a> &raquo;</li>
       
-    <li>class RTC &#8211; real time clock</li>
+    <li><code class="docutils literal"><span class="pre">nn</span></code> &#8212; neural networks</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/library/pyb.RTC.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/library/omv.nn.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -210,80 +206,139 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="class-rtc-real-time-clock">
-<span id="pyb-rtc"></span><h1>class RTC &#8211; real time clock<a class="headerlink" href="#class-rtc-real-time-clock" title="Permalink to this headline">¶</a></h1>
-<p>The RTC is and independent clock that keeps track of the date
-and time.</p>
-<p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">rtc</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">RTC</span><span class="p">()</span>
-<span class="n">rtc</span><span class="o">.</span><span class="n">datetime</span><span class="p">((</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">rtc</span><span class="o">.</span><span class="n">datetime</span><span class="p">())</span>
-</pre></div>
+  <div class="section" id="module-nn">
+<span id="nn-neural-networks"></span><h1><a class="reference internal" href="#module-nn" title="nn: neural networks"><code class="xref py py-mod docutils literal"><span class="pre">nn</span></code></a> &#8212; neural networks<a class="headerlink" href="#module-nn" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">nn</span></code> module is used for neural networks.</p>
+<p>Please see the examples that come with OpenMV IDE for how to use the NN module.</p>
+<p>For more information about creating your own NN examples see please see the
+<a class="reference external" href="https://github.com/openmv/openmv/tree/master/ml/cmsisnn">README on our github here</a>.</p>
 </div>
+<div class="section" id="class-nn-class-nn-dection-result">
+<h1>class nn_class &#8211; nn dection result<a class="headerlink" href="#class-nn-class-nn-dection-result" title="Permalink to this headline">¶</a></h1>
+<p>The nn_class object is returned by <a class="reference internal" href="#nn.net.search" title="nn.net.search"><code class="xref any py py-meth docutils literal"><span class="pre">net.search()</span></code></a>.</p>
 <div class="section" id="constructors">
 <h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="pyb.pyb.RTC">
-<em class="property">class </em><code class="descclassname">pyb.</code><code class="descname">RTC</code><a class="headerlink" href="#pyb.pyb.RTC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an RTC object.</p>
+<dt id="nn.nn.nn_class">
+<em class="property">class </em><code class="descclassname">nn.</code><code class="descname">nn_class</code><a class="headerlink" href="#nn.nn.nn_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Please call <a class="reference internal" href="#nn.net.search" title="nn.net.search"><code class="xref any py py-meth docutils literal"><span class="pre">net.search()</span></code></a> to create this object.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt id="pyb.RTC.datetime">
-<code class="descclassname">RTC.</code><code class="descname">datetime</code><span class="sig-paren">(</span><span class="optional">[</span><em>datetimetuple</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.RTC.datetime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get or set the date and time of the RTC.</p>
-<p>With no arguments, this method returns an 8-tuple with the current
-date and time.  With 1 argument (being an 8-tuple) it sets the date
-and time.</p>
-<p>The 8-tuple has the following format:</p>
-<blockquote>
-<div>(year, month, day, weekday, hours, minutes, seconds, subseconds)</div></blockquote>
-<p><code class="docutils literal"><span class="pre">weekday</span></code> is 1-7 for Monday through Sunday.</p>
-<p><code class="docutils literal"><span class="pre">subseconds</span></code> counts down from 255 to 0</p>
+<dt id="nn.nn_class.rect">
+<code class="descclassname">nn_class.</code><code class="descname">rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangle tuple (x, y, w, h) for use with <a class="reference internal" href="omv.image.html#module-image" title="image: machine vision"><code class="xref any py py-mod docutils literal"><span class="pre">image</span></code></a> methods
+like <a class="reference internal" href="omv.image.html#image.image.draw_rectangle" title="image.image.draw_rectangle"><code class="xref any py py-meth docutils literal"><span class="pre">image.draw_rectangle()</span></code></a> of the nn_class&#8217;s bounding box.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyb.RTC.wakeup">
-<code class="descclassname">RTC.</code><code class="descname">wakeup</code><span class="sig-paren">(</span><em>timeout</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.RTC.wakeup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the RTC wakeup timer to trigger repeatedly at every <code class="docutils literal"><span class="pre">timeout</span></code>
-milliseconds.  This trigger can wake the pyboard from both the sleep
-states: <a class="reference internal" href="pyb.html#pyb.stop" title="pyb.stop"><code class="xref py py-meth docutils literal"><span class="pre">pyb.stop()</span></code></a> and <a class="reference internal" href="pyb.html#pyb.standby" title="pyb.standby"><code class="xref py py-meth docutils literal"><span class="pre">pyb.standby()</span></code></a>.</p>
-<p>If <code class="docutils literal"><span class="pre">timeout</span></code> is <code class="docutils literal"><span class="pre">None</span></code> then the wakeup timer is disabled.</p>
-<p>If <code class="docutils literal"><span class="pre">callback</span></code> is given then it is executed at every trigger of the
-wakeup timer.  <code class="docutils literal"><span class="pre">callback</span></code> must take exactly one argument.</p>
+<dt id="nn.nn_class.x">
+<code class="descclassname">nn_class.</code><code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nn_class&#8217;s bounding box x coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[0]</span></code> on the object.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyb.RTC.info">
-<code class="descclassname">RTC.</code><code class="descname">info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyb.RTC.info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get information about the startup time and reset source.</p>
-<blockquote>
-<div><ul class="simple">
-<li>The lower 0xffff are the number of milliseconds the RTC took to
-start up.</li>
-<li>Bit 0x10000 is set if a power-on reset occurred.</li>
-<li>Bit 0x20000 is set if an external reset occurred</li>
-</ul>
-</div></blockquote>
+<dt id="nn.nn_class.y">
+<code class="descclassname">nn_class.</code><code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nn_class&#8217;s bounding box y coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[1]</span></code> on the object.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyb.RTC.calibration">
-<code class="descclassname">RTC.</code><code class="descname">calibration</code><span class="sig-paren">(</span><em>cal</em><span class="sig-paren">)</span><a class="headerlink" href="#pyb.RTC.calibration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get or set RTC calibration.</p>
-<p>With no arguments, <code class="docutils literal"><span class="pre">calibration()</span></code> returns the current calibration
-value, which is an integer in the range [-511 : 512].  With one
-argument it sets the RTC calibration.</p>
-<p>The RTC Smooth Calibration mechanism adjusts the RTC clock rate by
-adding or subtracting the given number of ticks from the 32768 Hz
-clock over a 32 second period (corresponding to 2^20 clock ticks.)
-Each tick added will speed up the clock by 1 part in 2^20, or 0.954
-ppm; likewise the RTC clock it slowed by negative values. The
-usable calibration range is:
-(-511 * 0.954) ~= -487.5 ppm up to (512 * 0.954) ~= 488.5 ppm</p>
+<dt id="nn.nn_class.w">
+<code class="descclassname">nn_class.</code><code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nn_class&#8217;s bounding box w coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[2]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nn.nn_class.h">
+<code class="descclassname">nn_class.</code><code class="descname">h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nn_class&#8217;s bounding box h coordinate (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[3]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nn.nn_class.index">
+<code class="descclassname">nn_class.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the nn class detection (int).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[4]</span></code> on the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nn.nn_class.value">
+<code class="descclassname">nn_class.</code><code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn_class.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the nn class detection (float).</p>
+<p>You may also get this value doing <code class="docutils literal"><span class="pre">[5]</span></code> on the object.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="class-net-neural-network">
+<h1>class Net &#8211; Neural Network<a class="headerlink" href="#class-net-neural-network" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Constructors<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="nn.nn.load">
+<em class="property">class </em><code class="descclassname">nn.</code><code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#nn.nn.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the neural network from a <code class="docutils literal"><span class="pre">.network</span></code> binary file into memory. The
+networks layers/weights/biases/etc. are stored on the MicroPython heap.</p>
+<p>Returns a <code class="docutils literal"><span class="pre">Net</span></code> object which can operate on an image.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h2>Methods<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="nn.net.forward">
+<code class="descclassname">net.</code><code class="descname">forward</code><span class="sig-paren">(</span><em>image</em><span class="optional">[</span>, <em>roi</em><span class="optional">[</span>, <em>softmax=False</em><span class="optional">[</span>, <em>dry_run=False</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.net.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the network on an image roi (auto scaling if necessary) and returns a
+list of floating point values representing the classification results of the
+neural network.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p>If <code class="docutils literal"><span class="pre">softmax</span></code> is True then the list of all outputs will sum to 1. Otherwise,
+any output in the list of outputs may be between 0 and 1.</p>
+<p>Set <code class="docutils literal"><span class="pre">dry_run</span></code> to True to print out which network layers are being executed
+instead of actually executing them. This is for debugging.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nn.net.search">
+<code class="descclassname">net.</code><code class="descname">search</code><span class="sig-paren">(</span><em>image</em><span class="optional">[</span>, <em>roi</em><span class="optional">[</span>, <em>threshold=0.6</em><span class="optional">[</span>, <em>min_scale=1.0</em><span class="optional">[</span>, <em>scale_mul=0.5</em><span class="optional">[</span>, <em>x_overlap=0</em><span class="optional">[</span>, <em>y_overlap=0</em><span class="optional">[</span>, <em>contrast_threshold=1</em><span class="optional">[</span>, <em>softmax=False</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#nn.net.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the network on an image roi in a sliding window manner. The network
+detector window is slid across the image at multiple scales.</p>
+<p>Returns a list of <a class="reference internal" href="#nn.nn.nn_class" title="nn.nn.nn_class"><code class="xref any py py-class docutils literal"><span class="pre">nn_class</span></code></a> objects representing the nn detections.</p>
+<p><code class="docutils literal"><span class="pre">roi</span></code> is the region-of-interest rectangle tuple (x, y, w, h). If not
+specified, it is equal to the image rectangle. Only pixels within the
+<code class="docutils literal"><span class="pre">roi</span></code> are operated on.</p>
+<p>After running on an area in the image the first maximum detection over
+<code class="docutils literal"><span class="pre">threshold</span></code> is added to the output list.</p>
+<p><code class="docutils literal"><span class="pre">min_scale</span></code> controls how much scaling is applied to the network. At the
+default value the network is not scaled. However, a value of 0.5 would allow
+for detecting objects 50% in size of the image roi size...</p>
+<p><code class="docutils literal"><span class="pre">scale_mul</span></code> controls how many different scales are tested out. The sliding
+window method works by multiplying a default scale of 1 by <code class="docutils literal"><span class="pre">scale_mul</span></code>
+while the result is over <code class="docutils literal"><span class="pre">min_scale</span></code>. The default value of <code class="docutils literal"><span class="pre">scale_mull</span></code>,
+0.5, tests out a 50% size reduction per scale change. However, a value of
+0.95 would only be a 5% size reductioin.</p>
+<p><code class="docutils literal"><span class="pre">x_overlap</span></code> controls the percentage of overlap with the next detector
+area of the sliding window. A value of zero means no overlap. A value of
+0.95 would mean 95% overlap.</p>
+<p><code class="docutils literal"><span class="pre">y_overlap</span></code> controls the percentage of overlap with the next detector
+area of the sliding window. A value of zero means no overlap. A value of
+0.95 would mean 95% overlap.</p>
+<p><code class="docutils literal"><span class="pre">contrast_threshold</span></code> controls a threshold for skipping low contrast
+regions of the image. Before the nn is run on an area in the image the
+standard deviation is calculated on that area and the area is skipped if
+the standard deviation falls below the <code class="docutils literal"><span class="pre">contrast_threshold</span></code>.</p>
+<p>If <code class="docutils literal"><span class="pre">softmax</span></code> is True then the list of all outputs will sum to 1. Otherwise,
+any output in the list of outputs may be between 0 and 1.</p>
 </dd></dl>
 
 </div>
@@ -296,10 +351,10 @@ usable calibration range is:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pyb.Servo.html" class="btn btn-neutral float-right" title="class Servo – 3-wire hobby servo driver" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="omv.gif.html" class="btn btn-neutral float-right" title="gif — gif recording" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pyb.Pin.html" class="btn btn-neutral" title="class Pin – control I/O pins" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="omv.image.html" class="btn btn-neutral" title="image — machine vision" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

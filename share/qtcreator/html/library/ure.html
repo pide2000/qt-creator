@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ure – simple regular expressions &mdash; MicroPython 1.9.3 documentation</title>
+  <title>ure – simple regular expressions &mdash; MicroPython 1.9.4 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   
 
   
-    <link rel="top" title="MicroPython 1.9.3 documentation" href="../index.html"/>
+    <link rel="top" title="MicroPython 1.9.4 documentation" href="../index.html"/>
         <link rel="up" title="MicroPython libraries" href="index.html"/>
         <link rel="next" title="uselect – wait for events on a set of streams" href="uselect.html"/>
         <link rel="prev" title="uos – basic “operating system” services" href="uos.html"/> 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.9.3
+                1.9.4
               </div>
             
           
@@ -189,17 +189,23 @@ a subset of POSIX extended regular expressions).</p>
 <dt><code class="docutils literal"><span class="pre">'[...]'</span></code></dt>
 <dd>Match set of characters. Individual characters and ranges are supported,
 including negated sets (e.g. <code class="docutils literal"><span class="pre">[^a-c]</span></code>).</dd>
+<dt><code class="docutils literal"><span class="pre">'^'</span></code></dt>
+<dd>Match the start of the string.</dd>
+<dt><code class="docutils literal"><span class="pre">'$'</span></code></dt>
+<dd>Match the end of the string.</dd>
+<dt><code class="docutils literal"><span class="pre">'?'</span></code></dt>
+<dd>Match zero or one of the previous entity.</dd>
+<dt><code class="docutils literal"><span class="pre">'*'</span></code></dt>
+<dd>Match zero or more of the previous entity.</dd>
+<dt><code class="docutils literal"><span class="pre">'+'</span></code></dt>
+<dd>Match one or more of the previous entity.</dd>
 </dl>
-<p><code class="docutils literal"><span class="pre">'^'</span></code></p>
-<p><code class="docutils literal"><span class="pre">'$'</span></code></p>
-<p><code class="docutils literal"><span class="pre">'?'</span></code></p>
-<p><code class="docutils literal"><span class="pre">'*'</span></code></p>
-<p><code class="docutils literal"><span class="pre">'+'</span></code></p>
 <p><code class="docutils literal"><span class="pre">'??'</span></code></p>
 <p><code class="docutils literal"><span class="pre">'*?'</span></code></p>
 <p><code class="docutils literal"><span class="pre">'+?'</span></code></p>
-<p><code class="docutils literal"><span class="pre">'|'</span></code></p>
 <dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">'|'</span></code></dt>
+<dd>Match either the LHS or the RHS of this operator.</dd>
 <dt><code class="docutils literal"><span class="pre">'(...)'</span></code></dt>
 <dd>Grouping. Each group is capturing (a substring it captures can be accessed
 with <a class="reference internal" href="#ure.match.group" title="ure.match.group"><code class="xref any py py-meth docutils literal"><span class="pre">match.group()</span></code></a> method).</dd>
@@ -230,6 +236,21 @@ string for first position which matches regex (which still may be
 0 if regex is anchored).</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="ure.sub">
+<code class="descclassname">ure.</code><code class="descname">sub</code><span class="sig-paren">(</span><em>regex_str</em>, <em>replace</em>, <em>string</em>, <em>count=0</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile <em>regex_str</em> and search for it in <em>string</em>, replacing all matches
+with <em>replace</em>, and returning the new string.</p>
+<p><em>replace</em> can be a string or a function.  If it is a string then escape
+sequences of the form <code class="docutils literal"><span class="pre">\&lt;number&gt;</span></code> and <code class="docutils literal"><span class="pre">\g&lt;number&gt;</span></code> can be used to
+expand to the corresponding group (or an empty string for unmatched groups).
+If <em>replace</em> is a function then it must take a single argument (the match)
+and should return a replacement string.</p>
+<p>If <em>count</em> is specified and non-zero then substitution will stop after
+this many substitutions are made.  The <em>flags</em> argument is ignored.</p>
+<p>Note: availability of this function depends on <a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>.</p>
+</dd></dl>
+
 <dl class="data">
 <dt id="ure.DEBUG">
 <code class="descclassname">ure.</code><code class="descname">DEBUG</code><a class="headerlink" href="#ure.DEBUG" title="Permalink to this definition">¶</a></dt>
@@ -247,7 +268,10 @@ string for first position which matches regex (which still may be
 <code class="descclassname">regex.</code><code class="descname">match</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.match" title="Permalink to this definition">¶</a></dt>
 <dt id="ure.regex.search">
 <code class="descclassname">regex.</code><code class="descname">search</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Similar to the module-level functions <a class="reference internal" href="#ure.match" title="ure.match"><code class="xref py py-meth docutils literal"><span class="pre">match()</span></code></a> and <a class="reference internal" href="#ure.search" title="ure.search"><code class="xref py py-meth docutils literal"><span class="pre">search()</span></code></a>.
+<dt id="ure.regex.sub">
+<code class="descclassname">regex.</code><code class="descname">sub</code><span class="sig-paren">(</span><em>replace</em>, <em>string</em>, <em>count=0</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ure.regex.sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to the module-level functions <a class="reference internal" href="#ure.match" title="ure.match"><code class="xref py py-meth docutils literal"><span class="pre">match()</span></code></a>, <a class="reference internal" href="#ure.search" title="ure.search"><code class="xref py py-meth docutils literal"><span class="pre">search()</span></code></a>
+and <a class="reference internal" href="#ure.sub" title="ure.sub"><code class="xref py py-meth docutils literal"><span class="pre">sub()</span></code></a>.
 Using methods is (much) more efficient if the same regex is applied to
 multiple strings.</p>
 </dd></dl>
@@ -263,12 +287,38 @@ may be up to <em>max_split+1</em> elements if it&#8217;s specified).</p>
 </div>
 <div class="section" id="match-objects">
 <h2>Match objects<a class="headerlink" href="#match-objects" title="Permalink to this headline">¶</a></h2>
-<p>Match objects as returned by <a class="reference internal" href="#ure.match" title="ure.match"><code class="xref any py py-func docutils literal"><span class="pre">match()</span></code></a> and <a class="reference internal" href="#ure.search" title="ure.search"><code class="xref any py py-func docutils literal"><span class="pre">search()</span></code></a> methods.</p>
+<p>Match objects as returned by <a class="reference internal" href="#ure.match" title="ure.match"><code class="xref any py py-func docutils literal"><span class="pre">match()</span></code></a> and <a class="reference internal" href="#ure.search" title="ure.search"><code class="xref any py py-func docutils literal"><span class="pre">search()</span></code></a> methods, and passed
+to the replacement function in <a class="reference internal" href="#ure.sub" title="ure.sub"><code class="xref any py py-func docutils literal"><span class="pre">sub()</span></code></a>.</p>
 <dl class="method">
 <dt id="ure.match.group">
 <code class="descclassname">match.</code><code class="descname">group</code><span class="sig-paren">(</span><span class="optional">[</span><em>index</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return matching (sub)string. <em>index</em> is 0 for entire match,
 1 and above for each capturing group. Only numeric groups are supported.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ure.match.groups">
+<code class="descclassname">match.</code><code class="descname">groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing all the substrings of the groups of the match.</p>
+<p>Note: availability of this method depends on <a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ure.match.start">
+<code class="descclassname">match.</code><code class="descname">start</code><span class="sig-paren">(</span><span class="optional">[</span><em>index</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.start" title="Permalink to this definition">¶</a></dt>
+<dt id="ure.match.end">
+<code class="descclassname">match.</code><code class="descname">end</code><span class="sig-paren">(</span><span class="optional">[</span><em>index</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index in the original string of the start or end of the
+substring group that was matched.  <em>index</em> defaults to the entire
+group, otherwise it will select a group.</p>
+<p>Note: availability of these methods depends on <a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ure.match.span">
+<code class="descclassname">match.</code><code class="descname">span</code><span class="sig-paren">(</span><span class="optional">[</span><em>index</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#ure.match.span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the 2-tuple <code class="docutils literal"><span class="pre">(match.start(index),</span> <span class="pre">match.end(index))</span></code>.</p>
+<p>Note: availability of this method depends on <a class="reference internal" href="../reference/glossary.html#term-micropython-port"><code class="xref any std std-term docutils literal"><span class="pre">MicroPython</span> <span class="pre">port</span></code></a>.</p>
 </dd></dl>
 
 </div>
@@ -294,7 +344,7 @@ may be up to <em>max_split+1</em> elements if it&#8217;s specified).</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014-2018, Damien P. George, Paul Sokolovsky, OpenMV LLC, and contributors.
-      Last updated on 05 May 2018.
+      Last updated on 08 Jul 2018.
 
     </p>
   </div>
@@ -381,7 +431,7 @@ may be up to <em>max_split+1</em> elements if it&#8217;s specified).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.3',
+            VERSION:'1.9.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
